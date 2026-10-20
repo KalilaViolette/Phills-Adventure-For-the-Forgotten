@@ -64,15 +64,38 @@ const prevBtn = [];
 let padBlocked = false;
 try { const fp = document.permissionsPolicy || document.featurePolicy; if (fp && fp.allowsFeature && !fp.allowsFeature('gamepad')) padBlocked = true; } catch (e) {}
 try { if (navigator.getGamepads) navigator.getGamepads(); } catch (e) { padBlocked = true; }
-let padId = null, padPrevY = 0, padWant = 0, padWantT = 0, padDir = 0;
-function pollPad() {
+// which controller is his: the one a button was last pressed on (or a stick pushed). Chrome lists some other things as
+// controllers too (a Bluetooth dongle, for one) and they can come first in the list, so the first one isn't always it.
+// Until something's pressed, a controller the browser knows the layout of comes before one it doesn't
+let padIdx = -1;
+const padSeen = {};                                   // each one's buttons and sticks last time, so only a new press or push counts (one stuck down or off center never takes over)
+function activePad() {
   let pads = [];
   try { pads = navigator.getGamepads ? navigator.getGamepads() : []; } catch (e) { pads = []; }
-  let gp = null;
-  for (const p of pads) if (p && p.connected) { gp = p; break; }
+  const live = [];
+  for (const p of pads) if (p && p.connected) live.push(p);
+  let pressedOn = -1, pushedOn = -1;
+  for (const p of live) {
+    const key = p.index + '|' + p.id, now = { b: p.buttons.map(x => x.pressed), a: p.axes.map(v => Math.abs(v || 0) > 0.5) };
+    // Chrome only shows them once a button's been pressed on one, and then shows all of them at once (the dongle
+    // too), so a button already down when one shows up counts. Its sticks don't: a dongle's can sit at the edge
+    const was = padSeen[key] || { b: [], a: now.a };
+    const better = cur => cur < 0 || (p.mapping === 'standard' && live.find(q => q.index === cur).mapping !== 'standard');   // (two at once: the one the browser knows the layout of)
+    if (now.b.some((x, i) => x && !was.b[i]) && better(pressedOn)) pressedOn = p.index;
+    if (now.a.some((x, i) => x && !was.a[i]) && better(pushedOn)) pushedOn = p.index;
+    padSeen[key] = now;
+  }
+  if (pressedOn >= 0) padIdx = pressedOn; else if (pushedOn >= 0) padIdx = pushedOn;
+  let gp = live.find(p => p.index === padIdx);
+  if (!gp) { gp = live.find(p => p.mapping === 'standard') || live[0] || null; padIdx = gp ? gp.index : -1; }
+  return gp;
+}
+let padId = null, padPrevY = 0, padWant = 0, padWantT = 0, padDir = 0;
+function pollPad() {
+  const gp = activePad();
   const padEl = document.getElementById('pad');
-  if ((gp && gp.id) !== padId) {
-    padId = gp ? gp.id : null;
+  if ((gp && gp.index + '|' + gp.id) !== padId) {
+    padId = gp ? gp.index + '|' + gp.id : null;
     prevBtn.length = 0; padPrevY = 0;   // a new controller (or the same one back) starts fresh: one held as it comes back counts as pressed, same as the first time (the input audit: what the old one had down swallowed it)
     padEl.textContent = gp ? 'Controller: ' + gp.id.replace(/\(.*?\)/g, '').trim().slice(0, 40) : (padBlocked ? 'Controllers are blocked in this viewer: open the downloaded file' : 'No controller yet');
     padEl.className = gp ? '' : 'none';

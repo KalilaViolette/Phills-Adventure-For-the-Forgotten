@@ -245,7 +245,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
   function padLoop(now) {
     if (!api.open) return;
     const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
-    let gp = null; try { for (const p of (navigator.getGamepads ? navigator.getGamepads() : [])) if (p && p.connected) { gp = p; break; } } catch (e) {}
+    const gp = activePad();                                                             // (the same controller the game reads: input.js)
     if (gp && !tuneOpen()) {
       const b = i => !!(gp.buttons[i] && gp.buttons[i].pressed), pressed = i => b(i) && !prev[i];
       const ay = gp.axes[1] || 0, ax = gp.axes[0] || 0;
