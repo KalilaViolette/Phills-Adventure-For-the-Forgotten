@@ -5,7 +5,8 @@
 // too, and the picked row really has the focus, so a screen reader follows along. Three save slots (world.js). A music
 // box plays the home tune once there's been a click or a key (browsers won't play anything before that). The tests skip
 // it (window.__testSkipTitle): clicking the start screen or any key just starts, like before. The menu stays hidden till
-// the first key, click, tap, mouse move or controller press (10/20/2026), so the painting shows on its own first ----------
+// the first key, click, tap or controller button (10/20/2026), so the painting shows on its own first. Moving the mouse
+// or a stick doesn't count ----------
 const titleMenu = window.titleMenu = (() => {                                // (on window too: input.js checks it)
   const api = { open: false };
   if (window.__testSkipTitle) return api;
@@ -16,7 +17,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
   const waitNote = document.createElement('span'); waitNote.className = 'tm-wait'; waitNote.setAttribute('aria-hidden', 'true'); waitNote.textContent = 'Press any button';
   startEl.appendChild(waitNote);
   api.open = true;
-  // ---- the first touch of anything brings the menu up (and that touch does nothing else, so a key can't pick Continue)
+  // ---- the first key, click, tap or button brings the menu up (and does nothing else, so a key can't pick Continue)
   let shown = false;
   function reveal() {
     if (shown) return false;
@@ -252,8 +253,8 @@ const titleMenu = window.titleMenu = (() => {                                // 
       const any = dir || hdir || [0, 1, 9].some(pressed);
       if (any) setLast('pad');
       const code = dir * 10 + hdir;
-      if (!shown) {                                                                     // (any button or the stick just brings the menu up)
-        if (any || gp.buttons.some((x, i) => x.pressed && !prev[i])) reveal();
+      if (!shown) {                                                                     // (any button just brings the menu up. The sticks don't)
+        if (gp.buttons.some((x, i) => x.pressed && !prev[i])) reveal();
         held = code; prev = gp.buttons.map(x => x.pressed); requestAnimationFrame(padLoop); return;
       }
       if (code !== held) { held = code; heldFor = 0; if (dir) focus(at + dir); else if (hdir) side(hdir); }
@@ -273,12 +274,6 @@ const titleMenu = window.titleMenu = (() => {                                // 
   // ---- mouse: the row under it lights up when it moves. Only a real move counts: the browser also sends one when the
   // menu changes under a mouse that's sitting still, and that shouldn't steal the row from the keys or the controller
   let mx = -1, my = -1;
-  let wx = null, wy = null;
-  startEl.addEventListener('pointermove', e => {                                   // (a real move of the mouse brings the menu up too, not a twitch)
-    if (shown || e.pointerType !== 'mouse' || !api.open) return;
-    if (wx === null) { wx = e.clientX; wy = e.clientY; return; }
-    if (Math.hypot(e.clientX - wx, e.clientY - wy) > 12) { setLast('mouse'); reveal(); }
-  });
   root.addEventListener('pointermove', e => {
     if (e.pointerType !== 'mouse' || (e.clientX === mx && e.clientY === my)) return;
     mx = e.clientX; my = e.clientY;
