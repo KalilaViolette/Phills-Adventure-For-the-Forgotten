@@ -18,7 +18,7 @@ function newPlayer(x, y, f) {
 // coming in through a door: same Phill (health, stamina), new spot, anything he was in the middle of is dropped
 function placePlayer(x, y, f) {
   if (P.x === undefined) newPlayer(x, y, f);
-  const keep = { health: P.health, maxHealth: P.maxHealth, en: P.en, stam: P.stam, story: P.story, worn: P.worn || 0, loose: P.loose || 0, looseBits: P.looseBits || 0, looseT: P.looseT || 0, looseMax: P.looseMax || 0, slid: P.slid || false };
+  const keep = { health: P.health, maxHealth: P.maxHealth, en: P.en, stam: P.stam, story: P.story, worn: P.worn || 0, loose: P.loose || 0, looseBits: P.looseBits || 0, looseT: P.looseT || 0, looseMax: P.looseMax || 0, slid: P.slid || false, sheathed: P.sheathed || false, calmT: P.calmT || 0 };   // (gear put away stays put away through a door)
   newPlayer(x, y, f); Object.assign(P, keep);
   P.crawl = !hasHeadroom(STAND_H); if (P.crawl) P.h = ROLL_H;
 }
@@ -435,6 +435,7 @@ function update(dt) {
     updateStory(dt); stepWorld(dt); return;
   }
   updateIdle(dt);                                    // left standing around a while: one of his little idle bits (anything pressed stops it)
+  updateSheathe(dt);                                 // his sword and shield going away on his back, or coming back out
   // presses become short buffers, so an early press still counts
   if (inp.jumpP) P.jumpBufT = tune.jumpBuffer;
   if (inp.atkP) {                                                                 // a swing that can be charged waits for the button to come back up (it swings then, or lets the charge go)
@@ -602,7 +603,7 @@ function update(dt) {
     P.vx = P.rollDir * tune.airDashSpeed; P.vy = 0; g = 0;
     if (P.atkBufT > 0 && P.dash < 0.12 && can('rollSlash') && hasHeadroom(STAND_H)) { if (spend('rollslash')) { P.dash = 0; P.h = STAND_H; P.facing = P.rollDir; P.vx *= 0.6; startAttack('rollslash'); } else P.atkBufT = 0; }
     P.ghostT -= dt;
-    if (P.ghostT <= 0) { P.ghostT = 0.045; ghosts.push({ x: P.x, y: P.y - ROLL_H / 2, name: frameName(), life: 0.16 }); }
+    if (P.ghostT <= 0) { P.ghostT = 0.045; ghosts.push({ x: P.x, y: P.y - ROLL_H / 2, name: sheathedFrame(frameName()), life: 0.16 }); }
     if (P.dash <= 0 && !P.atk) { P.vx *= 0.55; P.h = STAND_H; P.dashRec = 0.09; P.rollEndT = 0.15; if (!hasHeadroom(STAND_H)) { P.crawl = true; P.h = ROLL_H; } }
   } else {
     const guarding = inp.guardH && !P.atk && P.gbreak <= 0 && !P.guardOut;
@@ -1029,6 +1030,39 @@ function updateCling(dt, dir) {
 function pogo() {
   P.fallTop = P.y; P.downCD = 0;   // a bounce earns another down swing (once this one finishes)
   P.vy = -tune.pogo; P.jumpHeld = false; P.cut = true; P.dashUsed = false; P.flapUsed = false; P.ground = false; sfx.pogo();
+}
+
+// his sword and shield go away on his back after a while with no fighting, and come straight back out the moment he
+// swings or raises the shield (10/20/2026). The wait only counts down while nothing's after him: no enemy close by,
+// no boss fight, and he's not just been hit
+const SHEATHE_AFTER = 10, CALM_X = 260, CALM_Y = 180;
+function inFight() {
+  if (P.hurtT > 0 || P.inv > 0) return true;
+  if (typeof bossLocked === 'function' && bossLocked()) return true;
+  return foes.some(f => f.hp > 0 && f.state !== 'down' && f.state !== 'dormant' && f.state !== 'asleep' && Math.abs(f.x - P.x) < CALM_X && Math.abs(f.y - P.y) < CALM_Y);
+}
+function updateSheathe(dt) {
+  P.stowT = Math.max(0, (P.stowT || 0) - dt);
+  if (!world.has.gear) { P.sheathed = false; P.calmT = 0; return; }
+  if (inp.atkP || inp.atkH || inp.guardH || inp.spinP || P.atk || P.charge > 0 || P.spinT > 0) {   // out they come, straight into the swing or the block
+    if (P.sheathed) { P.sheathed = false; P.stowT = 0; sfx.bump(); }
+    P.calmT = 0; return;
+  }
+  if (inFight()) { P.calmT = 0; return; }
+  P.calmT = (P.calmT || 0) + dt;
+  if (!P.sheathed && P.calmT >= SHEATHE_AFTER && !P.story && !P.idleBit) {
+    P.sheathed = true; sfx.bump();
+    if (P.ground && Math.abs(P.vx) < 20 && !P.swim && !P.crawl) P.stowT = 0.3;   // standing there: a moment reaching back over his shoulder to strap them on
+  }
+}
+// the picture on the sheet for a frame: with the gear put away, its copy with them on his back (s_ frames, and the
+// idle bits' b_ ones for standing, looking up or down and landing). Crawling and swimming already have them on his back
+function sheathedFrame(n) {
+  if (!n || !P.sheathed || sheetKind !== 'gear') return n;
+  const f = n.slice(-1), m = /^idle_(\d)_[RL]$/.exec(n);
+  if (m) return P.stowT > 0 ? 'b_stow_' + f : `b_idle_${m[1]}_${f}`;
+  if (/^(look_up|look_down|land)_[RL]$/.test(n)) return 'b_' + n;
+  return META.frames['s_' + n] ? 's_' + n : n;
 }
 
 function frameName() {

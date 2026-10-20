@@ -201,7 +201,7 @@ const IDLE_BITS = {
   // after 3 minutes of nothing: very tired, he yawns, nods, sits down and lies back, and sleeps for 30 seconds (the
   // same lying down and waking up as in the nest at the start). Never picked at random, only by the 3 minute timer
   sleep: {
-    timed: true, stowOut: false,
+    timed: true,
     ok: () => true,
     steps: () => {
       const s = [ib('yawn', 1.4, () => sfx.yawn()), ib('doze_1', 0.9), ib('doze_2', 0.7), ib('jolt', 0.25), ib('idle', 0.3), ib('yawn', 1.2),
@@ -249,8 +249,10 @@ function startIdleBit(name) {
   stopIdleBit();
   const d = IDLE_BITS[name], steps = d.steps();
   const strap = () => { sfx.bump(); };
-  if (!d.held) steps.unshift(ib('b_stow', 0.22, strap));                 // straps his sword and shield on his back first
-  if (!d.held && d.stowOut !== false) steps.push(ib('b_stow', 0.22, strap));   // and takes them back after
+  // straps his sword and shield on his back first (unless they're already there), and leaves them there after: nothing's
+  // around, so they stay put away till he swings or raises the shield (10/20/2026). The sword doodle needs the sword out
+  if (!d.held && !P.sheathed) steps.unshift(ib('b_stow', 0.22, strap));
+  if (world.has.gear) P.sheathed = !d.held;
   const b = { name, steps, back: !d.held, i: -1, st: 0, t: 0, room, facing0: P.facing, dy: 0, paper: name === 'sit', zt: 0, nt: 0 };
   P.idleBit = b; idleState.last = name;
   nextIdleStep(b);

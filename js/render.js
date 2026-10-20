@@ -240,18 +240,18 @@ let bodyAt = null;                 // where and how his body was last drawn (the
 function body(im, fr, x, y) { ctx.drawImage(im, fr[0], fr[1], 64, 64, x, y, 64, 64); bodyAt = { t: ctx.getTransform(), x, y }; }
 function drawPhill(px, py, q) {
   bodyAt = null;
-  const name = frameName();
+  const name = frameName(), cell = sheathedFrame(name);           // (cell: the picture for it, the gear on his back when it's put away)
   const { im, meta } = phillSheet();
   if (!im || !name) return;
   if (!P.swim && !P.hang && !P.cling && !P.held && P.ko <= 0) groundShadow(P.x, P.y, 110, 11);
-  const fr = meta.frames[name];
+  const fr = meta.frames[cell];
   if (!fr) return;
   const cape = capeSheet();
   const blink = P.ko <= 0 && P.inv > 0 && P.roll <= 0 && P.dash <= 0 && P.dashRec <= 0 && Math.floor(P.inv * 16) % 2 === 0;
   ctx.globalAlpha = blink ? 0.35 : 1;
   const fallen = P.y - P.fallTop;
   if (!P.ground && !P.hang && !P.held && P.vy > 300 && fallen > 220 && !name.startsWith('roll')) {   // a long fall: he tumbles head over heels
-    const f2 = meta.frames['hurt_' + (P.facing > 0 ? 'R' : 'L')];
+    const f2 = meta.frames[sheathedFrame('hurt_' + (P.facing > 0 ? 'R' : 'L'))];
     ctx.save(); ctx.translate(q(px), q(py - 18)); ctx.rotate(Math.round((fallen / 40) % 8) * Math.PI / 4 * P.facing);
     ctx.drawImage(im, f2[0], f2[1], 64, 64, -32, -32, 64, 64); ctx.restore(); ctx.globalAlpha = 1;
     return;
@@ -269,7 +269,7 @@ function drawPhill(px, py, q) {
     ctx.save(); ctx.translate(q(px), q(py - ROLL_H / 2 - 4)); ctx.rotate(spin * P.rollDir * Math.PI / 2);
     body(im, fr, -32, -32); ctx.restore();
   } else if (name.startsWith('hang')) {
-    const [hx, hy] = meta.hang[name], h = P.hang || P.cling;   // his hand sits right on the corner of the ledge (or flat on the bark)
+    const [hx, hy] = meta.hang[cell], h = P.hang || P.cling;   // his hand sits right on the corner of the ledge (or flat on the bark)
     body(im, fr, Math.round(h.cx - h.dir - hx), Math.round(h.cy - hy));
   } else if (name.startsWith('airdodge')) {
     if (cape) ctx.drawImage(cape, fr[0], fr[1], 64, 64, q(px - 32), q(py - P.h / 2 - 32), 64, 64);
