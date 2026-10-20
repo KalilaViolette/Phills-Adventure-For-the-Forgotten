@@ -1,0 +1,2 @@
+// the crow's frames. Made by Sprites/crow_sprites.py, don't edit by hand.
+window.CROW_FRAMES = {"w": 150, "h": 120, "feet": [72, 96], "body": [74, 60], "frames": {"fly_1": [0, 0], "carry_1": [150, 0], "fly_2": [300, 0], "carry_2": [450, 0], "fly_3": [0, 120], "carry_3": [150, 120], "fly_4": [300, 120], "carry_4": [450, 120], "dive": [0, 240], "perch_1": [150, 240], "perch_2": [300, 240], "caw": [450, 240]}};

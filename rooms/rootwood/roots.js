@@ -1,0 +1,1366 @@
+// roots: made by Source/Rooms, don't edit by hand (change the room's .py file and run Make-Rooms.bat)
+ROOM({
+ "id": "roots",
+ "region": "rootwood",
+ "w": 64,
+ "h": 26,
+ "music": "rootwood",
+ "viewBottom": 416,
+ "art": {
+  "main": "art/rootwood/roots.png#main",
+  "pack": "art/rootwood/roots.png",
+  "parts": {
+   "main": [
+    0,
+    0,
+    1024,
+    416
+   ],
+   "L0": [
+    0,
+    416,
+    1394,
+    560
+   ],
+   "L1": [
+    0,
+    976,
+    1319,
+    532
+   ],
+   "L2": [
+    0,
+    1508,
+    1236,
+    500
+   ],
+   "L3": [
+    0,
+    2008,
+    1144,
+    464
+   ],
+   "L4": [
+    0,
+    2472,
+    1335,
+    544
+   ],
+   "L5": [
+    0,
+    3016,
+    1086,
+    442
+   ],
+   "L6": [
+    0,
+    3458,
+    1335,
+    544
+   ],
+   "L7": [
+    0,
+    4002,
+    1335,
+    420
+   ],
+   "L8": [
+    0,
+    4422,
+    1540,
+    628
+   ],
+   "L9": [
+    0,
+    5050,
+    1540,
+    420
+   ],
+   "front": [
+    0,
+    5470,
+    847,
+    182
+   ]
+  },
+  "layers": [
+   {
+    "src": "art/rootwood/roots.png#L0",
+    "f": 0.12
+   },
+   {
+    "src": "art/rootwood/roots.png#L1",
+    "f": 0.3
+   },
+   {
+    "src": "art/rootwood/roots.png#L2",
+    "f": 0.5
+   },
+   {
+    "src": "art/rootwood/roots.png#L3",
+    "f": 0.72
+   },
+   {
+    "src": "art/rootwood/roots.png#L4",
+    "f": 1.3
+   },
+   {
+    "src": "art/rootwood/roots.png#L5",
+    "f": 0.86
+   },
+   {
+    "src": "art/rootwood/roots.png#L6",
+    "f": 1.3
+   },
+   {
+    "src": "art/rootwood/roots.png#L7",
+    "f": 1.3,
+    "fy": 1.0
+   },
+   {
+    "src": "art/rootwood/roots.png#L8",
+    "f": 1.5
+   },
+   {
+    "src": "art/rootwood/roots.png#L9",
+    "f": 1.5,
+    "fy": 1.0
+   }
+  ],
+  "front": "art/rootwood/roots.png#front",
+  "frontAt": [
+   6,
+   171
+  ],
+  "uses": [
+   "art/rootwood/rootwood_sprites.png",
+   "art/rootwood/rootwood_items.png",
+   "art/wildlife/wildlife.png"
+  ],
+  "items": "art/rootwood/rootwood_items.png"
+ },
+ "doors": [
+  {
+   "id": "oak",
+   "edge": "left",
+   "a": 224,
+   "b": 352,
+   "to": "oakfall",
+   "toDoor": "root",
+   "x": 24.0,
+   "y": 352,
+   "f": 1
+  },
+  {
+   "id": "hollow",
+   "edge": "right",
+   "a": 128,
+   "b": 192,
+   "to": "hollow",
+   "toDoor": "roots",
+   "x": 1000.0,
+   "y": 192,
+   "f": -1
+  },
+  {
+   "id": "bark",
+   "edge": "top",
+   "a": 240,
+   "b": 320,
+   "to": "heartwood",
+   "toDoor": "bark",
+   "x": 280.0,
+   "y": 144,
+   "f": 1,
+   "keepX": true,
+   "falling": true,
+   "needs": "velcro"
+  },
+  {
+   "id": "knothole",
+   "edge": "top",
+   "a": 656,
+   "b": 720,
+   "to": "heartwood",
+   "toDoor": "knothole",
+   "x": 680.0,
+   "y": 96,
+   "f": 1,
+   "keepX": true,
+   "falling": true,
+   "needs": "squeak"
+  }
+ ],
+ "items": [
+  {
+   "id": "crayon_black",
+   "x": 312.0,
+   "y": 352,
+   "kind": "crayon",
+   "col": "#1e1a24"
+  }
+ ],
+ "hints": [
+  {
+   "text": "you can't climb the bark. not yet",
+   "l": 208,
+   "t": 0,
+   "r": 352,
+   "b": 368,
+   "x": 272,
+   "y": 64,
+   "after": "crayon_black",
+   "until": "velcro"
+  },
+  {
+   "text": "a knothole, foamed shut with grime",
+   "l": 608,
+   "t": 0,
+   "r": 752,
+   "b": 192,
+   "x": 688,
+   "y": 128,
+   "until": "squeak"
+  }
+ ],
+ "gates": [],
+ "events": [],
+ "spawn": null,
+ "tiles": [
+  "###############.....#####################....###################",
+  "###############.....#####################....###################",
+  "###############.....######...............====###################",
+  "###############.......####......................################",
+  "###############.......####......................................",
+  "###############.......####......................................",
+  "###############.......####...............====...................",
+  "###############.......####......................................",
+  "###############........##.......................................",
+  "###############=====...##.......................................",
+  "###############.................................................",
+  "###############..........................=====..................",
+  "###############................................#################",
+  "###############................................#################",
+  "...............................................#################",
+  "...............................................#################",
+  "........................................======.#################",
+  "...............====............................#################",
+  "...............................................#################",
+  "...............................................#################",
+  ".........................................#######################",
+  "..........................#####..........#######################",
+  "################################################################",
+  "################################################################",
+  "################################################################",
+  "################################################################"
+ ],
+ "mapAt": [
+  44,
+  84
+ ],
+ "floor": "leaves",
+ "shade": {
+  "a": 0.56,
+  "lights": [
+   [
+    312,
+    332,
+    90,
+    0.9
+   ],
+   [
+    574,
+    332,
+    70,
+    0.7
+   ],
+   [
+    528,
+    77,
+    144,
+    0.85
+   ],
+   [
+    283,
+    260,
+    22,
+    0.35
+   ],
+   [
+    272,
+    260,
+    22,
+    0.35
+   ],
+   [
+    578,
+    344,
+    22,
+    0.35
+   ],
+   [
+    728,
+    164,
+    22,
+    0.35
+   ],
+   [
+    714,
+    168,
+    22,
+    0.35
+   ],
+   [
+    1011,
+    187,
+    22,
+    0.35
+   ],
+   [
+    1014,
+    184,
+    22,
+    0.35
+   ],
+   [
+    520,
+    346,
+    46,
+    0.55
+   ],
+   [
+    529,
+    345,
+    46,
+    0.55
+   ],
+   [
+    824,
+    186,
+    46,
+    0.55
+   ],
+   [
+    828,
+    183,
+    46,
+    0.55
+   ],
+   [
+    838,
+    188,
+    46,
+    0.55
+   ]
+  ]
+ },
+ "ambient": [
+  "fireflies",
+  "spores"
+ ],
+ "grip": [
+  [
+   14,
+   0,
+   14,
+   13
+  ],
+  [
+   20,
+   0,
+   20,
+   8
+  ]
+ ],
+ "breaks": [
+  {
+   "id": "roots_foam",
+   "x0": 41,
+   "y0": 0,
+   "x1": 44,
+   "y1": 1,
+   "hp": 1,
+   "look": "foam",
+   "need": "squeak",
+   "below": true
+  }
+ ],
+ "npc": {
+  "kind": "beetle",
+  "x": 584.0,
+  "y": 352,
+  "f": -1
+ },
+ "wildlife": [
+  {
+   "kind": "beetle",
+   "at": "back",
+   "x0": 64,
+   "x1": 640,
+   "y": 352
+  },
+  {
+   "kind": "mouse",
+   "at": "back",
+   "x0": 320,
+   "x1": 896,
+   "y": 352,
+   "every": [
+    25,
+    60
+   ]
+  }
+ ],
+ "frontglow": [
+  [
+   83.4,
+   417.7,
+   1.5,
+   1.2378414601699348,
+   "#9ff2dc"
+  ],
+  [
+   74.5,
+   425.7,
+   1.5,
+   1.2378414601699348,
+   "#9ff2dc"
+  ],
+  [
+   130.7,
+   432.8,
+   1.5,
+   0.9008350792160237,
+   "#9ff2dc"
+  ],
+  [
+   125.7,
+   423.6,
+   1.5,
+   0.9008350792160237,
+   "#9ff2dc"
+  ],
+  [
+   130.4,
+   408.0,
+   1.5,
+   0.6,
+   "#9ff2dc"
+  ],
+  [
+   350.3,
+   397.4,
+   1.5,
+   1.6445405963547701,
+   "#9ff2dc"
+  ],
+  [
+   313.1,
+   400.5,
+   1.5,
+   3.2,
+   "#9ff2dc"
+  ],
+  [
+   351.5,
+   407.6,
+   1.5,
+   3.6,
+   "#9ff2dc"
+  ],
+  [
+   298.6,
+   410.5,
+   1.5,
+   1.0085879720568944,
+   "#9ff2dc"
+  ],
+  [
+   309.4,
+   408.0,
+   1.5,
+   3.8,
+   "#9ff2dc"
+  ],
+  [
+   546.9,
+   421.5,
+   1.5,
+   1.311288117960573,
+   "#9ff2dc"
+  ],
+  [
+   536.6,
+   408.6,
+   1.5,
+   1.2561914433592503,
+   "#9ff2dc"
+  ],
+  [
+   596.5,
+   434.7,
+   1.5,
+   0.897010738853857,
+   "#9ff2dc"
+  ],
+  [
+   589.8,
+   419.7,
+   1.5,
+   0.897010738853857,
+   "#9ff2dc"
+  ],
+  [
+   569.0,
+   423.2,
+   1.5,
+   2.3,
+   "#9ff2dc"
+  ],
+  [
+   707.4,
+   403.7,
+   1.5,
+   1.2217060611662995,
+   "#9ff2dc"
+  ],
+  [
+   698.3,
+   408.3,
+   1.5,
+   1.2217060611662995,
+   "#9ff2dc"
+  ],
+  [
+   690.9,
+   430.7,
+   1.5,
+   1.2217060611662995,
+   "#9ff2dc"
+  ],
+  [
+   752.4,
+   426.7,
+   1.5,
+   0.9979540574151419,
+   "#9ff2dc"
+  ],
+  [
+   973.5,
+   422.0,
+   1.5,
+   0.5,
+   "#9ff2dc"
+  ],
+  [
+   955.0,
+   397.2,
+   1.5,
+   0.5,
+   "#9ff2dc"
+  ],
+  [
+   919.8,
+   406.1,
+   1.5,
+   0.5,
+   "#9ff2dc"
+  ],
+  [
+   1006.0,
+   420.7,
+   1.5,
+   2.7,
+   "#9ff2dc"
+  ],
+  [
+   932.7,
+   397.5,
+   1.5,
+   3.2,
+   "#9ff2dc"
+  ],
+  [
+   945.3,
+   436.0,
+   1.5,
+   1.0093872555826529,
+   "#9ff2dc"
+  ],
+  [
+   1353.7,
+   420.3,
+   1.5,
+   1.2281200920194915,
+   "#9ff2dc"
+  ],
+  [
+   1319.1,
+   434.7,
+   1.5,
+   1.2281200920194915,
+   "#9ff2dc"
+  ],
+  [
+   1367.7,
+   436.3,
+   1.5,
+   1.274484481780541,
+   "#9ff2dc"
+  ],
+  [
+   1371.7,
+   422.4,
+   1.5,
+   1.274484481780541,
+   "#9ff2dc"
+  ],
+  [
+   1313.6,
+   414.0,
+   1.5,
+   1.274484481780541,
+   "#9ff2dc"
+  ],
+  [
+   1335.3,
+   406.5,
+   1.5,
+   0.6,
+   "#9ff2dc"
+  ],
+  [
+   1378.2,
+   411.7,
+   1.5,
+   2.2,
+   "#9ff2dc"
+  ],
+  [
+   1540.1,
+   414.4,
+   1.5,
+   1.288551956737276,
+   "#9ff2dc"
+  ],
+  [
+   1528.0,
+   410.7,
+   1.5,
+   1.288551956737276,
+   "#9ff2dc"
+  ],
+  [
+   1519.4,
+   421.8,
+   1.5,
+   1.0987085813449236,
+   "#9ff2dc"
+  ],
+  [
+   1516.0,
+   415.8,
+   1.5,
+   1.0987085813449236,
+   "#9ff2dc"
+  ],
+  [
+   1489.4,
+   417.0,
+   1.5,
+   1.0987085813449236,
+   "#9ff2dc"
+  ],
+  [
+   1532.6,
+   430.9,
+   1.5,
+   0.7632437192418254,
+   "#9ff2dc"
+  ],
+  [
+   1535.3,
+   423.0,
+   1.5,
+   0.7632437192418254,
+   "#9ff2dc"
+  ],
+  [
+   1524.5,
+   419.9,
+   1.5,
+   0.7632437192418254,
+   "#9ff2dc"
+  ],
+  [
+   1516.4,
+   419.0,
+   1.5,
+   0.7632437192418254,
+   "#9ff2dc"
+  ],
+  [
+   1506.0,
+   421.0,
+   1.5,
+   2.7,
+   "#9ff2dc"
+  ],
+  [
+   282.9,
+   259.7,
+   1,
+   0.5,
+   "#d8fff4"
+  ],
+  [
+   271.8,
+   260.1,
+   1,
+   0.5,
+   "#d8fff4"
+  ],
+  [
+   577.9,
+   343.8,
+   1,
+   0.4904846728409349,
+   "#d8fff4"
+  ],
+  [
+   728.0,
+   164.4,
+   1,
+   0.5,
+   "#d8fff4"
+  ],
+  [
+   713.5,
+   167.5,
+   1,
+   0.5,
+   "#d8fff4"
+  ],
+  [
+   1011.2,
+   187.2,
+   1,
+   0.4657690910146274,
+   "#d8fff4"
+  ],
+  [
+   1013.9,
+   183.8,
+   1,
+   0.4657690910146274,
+   "#d8fff4"
+  ]
+ ],
+ "glowworms": [
+  [
+   583,
+   38
+  ],
+  [
+   583,
+   62
+  ],
+  [
+   583,
+   73
+  ],
+  [
+   576,
+   41
+  ],
+  [
+   576,
+   55
+  ],
+  [
+   576,
+   72
+  ],
+  [
+   575,
+   87
+  ],
+  [
+   447,
+   46
+  ],
+  [
+   447,
+   58
+  ],
+  [
+   454,
+   43
+  ],
+  [
+   453,
+   59
+  ],
+  [
+   486,
+   45
+  ],
+  [
+   486,
+   62
+  ],
+  [
+   486,
+   79
+  ],
+  [
+   450,
+   41
+  ],
+  [
+   450,
+   51
+  ],
+  [
+   515,
+   44
+  ],
+  [
+   515,
+   56
+  ],
+  [
+   515,
+   71
+  ],
+  [
+   515,
+   88
+  ],
+  [
+   515,
+   97
+  ],
+  [
+   554,
+   38
+  ],
+  [
+   554,
+   54
+  ],
+  [
+   554,
+   64
+  ],
+  [
+   554,
+   73
+  ],
+  [
+   554,
+   83
+  ],
+  [
+   499,
+   38
+  ],
+  [
+   499,
+   61
+  ],
+  [
+   499,
+   74
+  ],
+  [
+   499,
+   87
+  ],
+  [
+   498,
+   96
+  ],
+  [
+   548,
+   46
+  ],
+  [
+   549,
+   64
+  ],
+  [
+   549,
+   75
+  ],
+  [
+   474,
+   43
+  ],
+  [
+   474,
+   63
+  ],
+  [
+   474,
+   75
+  ],
+  [
+   556,
+   40
+  ],
+  [
+   556,
+   63
+  ],
+  [
+   556,
+   75
+  ],
+  [
+   557,
+   85
+  ],
+  [
+   510,
+   40
+  ],
+  [
+   509,
+   61
+  ],
+  [
+   509,
+   82
+  ],
+  [
+   509,
+   91
+  ],
+  [
+   509,
+   101
+  ],
+  [
+   500,
+   39
+  ],
+  [
+   500,
+   59
+  ],
+  [
+   499,
+   79
+  ],
+  [
+   499,
+   93
+  ],
+  [
+   623,
+   45
+  ],
+  [
+   518,
+   42
+  ],
+  [
+   518,
+   64
+  ],
+  [
+   518,
+   74
+  ],
+  [
+   518,
+   83
+  ],
+  [
+   518,
+   98
+  ],
+  [
+   457,
+   41
+  ],
+  [
+   457,
+   64
+  ],
+  [
+   540,
+   37
+  ],
+  [
+   540,
+   49
+  ],
+  [
+   539,
+   71
+  ],
+  [
+   539,
+   81
+  ],
+  [
+   539,
+   91
+  ],
+  [
+   610,
+   39
+  ],
+  [
+   578,
+   41
+  ],
+  [
+   578,
+   65
+  ],
+  [
+   578,
+   76
+  ],
+  [
+   541,
+   46
+  ],
+  [
+   541,
+   60
+  ],
+  [
+   541,
+   78
+  ],
+  [
+   541,
+   93
+  ],
+  [
+   541,
+   103
+  ],
+  [
+   541,
+   111
+  ],
+  [
+   559,
+   43
+  ],
+  [
+   559,
+   61
+  ],
+  [
+   559,
+   78
+  ],
+  [
+   528,
+   39
+  ],
+  [
+   528,
+   62
+  ],
+  [
+   528,
+   71
+  ],
+  [
+   507,
+   42
+  ],
+  [
+   507,
+   55
+  ],
+  [
+   507,
+   70
+  ],
+  [
+   507,
+   86
+  ],
+  [
+   534,
+   37
+  ],
+  [
+   534,
+   57
+  ],
+  [
+   535,
+   73
+  ],
+  [
+   535,
+   88
+  ],
+  [
+   535,
+   101
+  ],
+  [
+   535,
+   116
+  ],
+  [
+   603,
+   43
+  ],
+  [
+   603,
+   52
+  ],
+  [
+   565,
+   45
+  ],
+  [
+   565,
+   62
+  ],
+  [
+   565,
+   71
+  ],
+  [
+   565,
+   82
+  ],
+  [
+   569,
+   43
+  ],
+  [
+   568,
+   60
+  ],
+  [
+   568,
+   41
+  ],
+  [
+   567,
+   64
+  ],
+  [
+   567,
+   76
+  ],
+  [
+   567,
+   84
+  ],
+  [
+   552,
+   38
+  ],
+  [
+   552,
+   57
+  ],
+  [
+   553,
+   68
+  ],
+  [
+   553,
+   82
+  ],
+  [
+   553,
+   99
+  ],
+  [
+   576,
+   38
+  ],
+  [
+   576,
+   57
+  ],
+  [
+   576,
+   73
+  ],
+  [
+   576,
+   86
+  ],
+  [
+   535,
+   46
+  ],
+  [
+   535,
+   60
+  ],
+  [
+   534,
+   78
+  ],
+  [
+   441,
+   44
+  ],
+  [
+   583,
+   45
+  ]
+ ],
+ "foes": [],
+ "detail": {
+  "tiles": [
+   90,
+   91,
+   92,
+   93,
+   94,
+   95,
+   96,
+   99,
+   100,
+   101,
+   102,
+   103,
+   153,
+   154,
+   156,
+   158,
+   159,
+   161,
+   162,
+   163,
+   164,
+   174,
+   175,
+   217,
+   218,
+   237,
+   238,
+   239,
+   240,
+   241,
+   242,
+   243,
+   244,
+   248,
+   251,
+   252,
+   253,
+   254,
+   255,
+   281,
+   304,
+   305,
+   306,
+   309,
+   310,
+   311,
+   312,
+   313,
+   314,
+   315,
+   345,
+   409,
+   470,
+   473,
+   474,
+   534,
+   535,
+   537,
+   598,
+   599,
+   600,
+   601,
+   663,
+   752,
+   753,
+   754,
+   755,
+   756,
+   757,
+   758,
+   759,
+   760,
+   761,
+   762,
+   763,
+   764,
+   815,
+   835,
+   836,
+   837,
+   838,
+   839,
+   840,
+   841,
+   842,
+   843,
+   844,
+   879,
+   901,
+   903,
+   904,
+   905,
+   906,
+   909,
+   942,
+   943,
+   1006,
+   1007,
+   1070,
+   1071,
+   1135,
+   1199,
+   1258,
+   1259,
+   1260,
+   1261,
+   1262,
+   1263,
+   1307,
+   1308,
+   1309,
+   1321,
+   1347,
+   1348,
+   1349,
+   1350,
+   1351,
+   1352,
+   1353,
+   1354,
+   1355,
+   1356,
+   1357,
+   1358,
+   1359,
+   1360,
+   1361,
+   1365,
+   1366,
+   1367,
+   1368,
+   1369,
+   1375,
+   1376,
+   1377,
+   1378,
+   1382,
+   1383,
+   1384
+  ],
+  "bits": "///////////////////////////////////H/8P/wf//////////////////////////////////////////AP//////////////////////////////////////+v/w//////////////////////////////R/4D/AP4A/AB//////////////////////////////////////4P8AD//////////////////////////////////////////+///////////////////////////////////P/w//AB///////////////////////////////////////////P///////////////////////////////////////z/+////////////////////////////////////////A//////////////////////////////////////////z///////////////////////////////////////////f/////v/+//7//v/+//7//v/+//7//v/////////////gAPAA8ADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/gB8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4AOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+f8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/4A8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////////////////////////////7/////////////////////////////////////nx8ED////////////////////////////////v/+//7//v/+AAAAAAAAAACAAIAAgACAAIAAAAAAAAAAAAAAAAAAAAB//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8AHwAPAAcAAwADAAMAAAAAAAAAAAAAAAAAAAAAAAD//////////////////3//f/9//3//P/8f/w//B/wAeP//////////////////////////////////v/8P/wP//////////////////////////////////////////ID/////////////////////////////////////+B8AAP////////////////////////////////////8f/wAP//////////////////////////////////////8/+A//////////////////////////////////////////n//////////////////////////////////////4D4AA/////////////////////////////////////4f/AAD///////////////////////////////////////8A////////////////////////////////////+f/AAAAA//7//v/+//7//P/8//j/+P/4//z//P/4//j/+P/4//wA4ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/AfgAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAz/8ABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/8//z//P/8//7//v/+//7//v/+//7///////////////////////////////7//v/+//7//v///////////////////////////////3//f/9//3//P/8f/w//Af8AB//////////////////+//7//v/+//7//P/4//D/4P4AgACAAIAAgACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAPAA8ABwADAAMAAQAAAAAAAAAAAAAAAAAAAAAAAP////9//3//f///////f/9//3//f/9//3///////////AD4APAA4ADAAMAAwADAAMAAwACAAIAAgAAAAAAAgAAAAAAAAAEAAQABAAEAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////////f/9//3//f/8//x//D/8H/wB//////////////////////v/+//7//v/8//j/8P/g/gCAAIAAgACAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMADwA/AP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAD/4P///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/AD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/8D//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAED////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/A////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH///////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+A//////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAADwD//P///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAD4AP+A//gP/z//f/9////////////////////////////////////////////////////////////////////////4AOAA/////////////////////////////////////wH/AA////////////////////////////////////////j/4P////////////////////////////////////sAAAAA////////////////////////////////////////Af////////////////////////////////////////j/8P////////////////////////////////////8f/wH////////////////////////////////////////9//D///////////////////////////////////////8A+P//////////////////////////////////////DwAH//////////////////////////////////9//3//P///gB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AH8ADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wDgAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAT//H/8//z//f/9//3//////////////////////////AAEAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAEAAQADAAP///////9//z//H/8f/3///////////////////////wADAAMAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////f/9//3//f///////////////////////////////////////////////f/9//3//f/8//z//P/8//3//f///////////////f/9//3//f/9//3//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB///8AAAAAAAcADwAPAB8AHwB/AP8A/wH/A/8H/x///////3//f/9/////////////f/9//3//f/9//3//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfwD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAD/8//3//f/////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf+////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/8D/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8D////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+AP///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAP4A//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwB/A/8f/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwA//z/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/////8AAAAAAAAAAAAAAAAAAAAAAAAAAQAPAf8f/////////wAPAD8A/wP/B/8P/z//f///////////////////////8AD8AP8A/8D/4P/w//z//v////////////////////8AAAAAAAAAAAAAAAAAAAAAAACAAOAA8AD4AP///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AD/4P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcB/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/4D/////AAAAAAAAAAEAAwADAAcADwAfAD8AfwD/A/8H//////8="
+ }
+});
