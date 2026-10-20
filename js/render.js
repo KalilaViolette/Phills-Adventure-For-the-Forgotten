@@ -279,7 +279,7 @@ function drawPhill(px, py, q) {
     ctx.save(); ctx.translate(q(px), q(py - ROLL_H / 2)); ctx.rotate(P.swimRot);
     body(im, fr, -ax, -(meta.baseline - ROLL_H / 2)); ctx.restore();
   } else {
-    const top = meta.frames[name.replace(/_[RL]$/, '_top')];           // sitting facing us: his feet and arms go on top
+    const top = /_[RL]$/.test(name) && meta.frames[name.replace(/_[RL]$/, '_top')];   // sitting facing us: his feet and arms go on top (only frames with a facing have one: 'turn' was finding itself, and drew the gear-in-hand turn over the put-away one)
     let ax = name === 'turn' || top ? 31.5 : name.startsWith('ko') ? 32 : (P.facing > 0 ? 30.5 : 33.5);
     if (name.startsWith('crawlatk')) ax -= P.facing * 14;            // the jab's drawn shoved back in its cell so the blade fits (CRAWL_ATK_SHIFT in phill_sprites.py)
     const fx = q(px - ax), fy = q(py - meta.baseline);
