@@ -54,6 +54,17 @@ const bearWalkTo = (x, pace = BEAR_PACE) => {
     return false;
   };
 };
+// climbing the lace (10/21/2026): bearClimb is a scene step. From under the lace he goes up it, a pull every BEAR_PULL
+// seconds, till he's in his hole, then he's peeking out of it
+const BEAR_PULL = 0.3, BEAR_CLIMB_PACE = 34;
+const bearClimb = () => (t, dt) => {
+  const a = actors.bear, h = room.def.bearhole; if (!a || !h) return true;
+  if (t === 0) { a.climb = { t: 0 }; a.face = h.cx < a.x ? 'L' : 'R'; a.x = h.x + (a.face === 'L' ? 16 : -16); }   // (the lace runs up 4 px in from the side of his picture that he's facing: both paws on it)
+  const was = Math.floor(a.climb.t / BEAR_PULL); a.climb.t += dt || 0; a.y -= BEAR_CLIMB_PACE * (dt || 0);
+  if (Math.floor(a.climb.t / BEAR_PULL) !== was && a.y > h.cy + 16) sfx.rustle(0.25);   // a little rustle each pull, while he's still out on the lace
+  if (a.y <= h.cy - 18) { a.climb = null; a.peek = true; a.face = 'L'; a.pose = null; return true; }   // his feet past the top of the hole: he's in
+  return false;
+};
 function drawBearPic(im, name, x, y) {
   const F = window.BEAR_FRAMES, fr = F && F.frames[name];
   if (!fr) return;
@@ -63,10 +74,15 @@ function drawBearPic(im, name, x, y) {
 function drawBear(a) {
   const im = Assets.get(BEAR_SHEET);
   if (!im) return;
-  if (a.peek) {                                                                        // just his head, poking out of his hole
-    const h = room.def.bearhole; if (!h) return;
+  const h = room.def.bearhole;
+  if (a.peek && h) {                                                                   // his head poking out of his hole, paws on the rim (10/21/2026: its own picture)
     ctx.save(); ctx.beginPath(); ctx.ellipse(h.cx, h.cy, 12, 16, 0, 0, Math.PI * 2); ctx.clip();
-    drawBearPic(im, bearFrame(a), h.cx + 2, h.cy + 62);
+    drawBearPic(im, 'peek_' + (a.face || 'L'), h.cx + 2, h.cy + 56);
+    ctx.restore(); return;
+  }
+  if (a.climb && h) {                                                                  // going up the lace into his hole: only what's below the hole or inside it shows, so he goes in (10/21/2026)
+    ctx.save(); ctx.beginPath(); ctx.rect(h.cx - 200, h.cy + 16, 400, 600); ctx.ellipse(h.cx, h.cy, 12, 16, 0, 0, Math.PI * 2); ctx.clip();
+    drawBearPic(im, 'climb_' + (Math.floor(a.climb.t / BEAR_PULL) % 2 + 1) + '_' + (a.face || 'L'), a.x, a.y);
     ctx.restore(); return;
   }
   groundShadow(a.x, a.y, 60, 13);
@@ -302,10 +318,10 @@ SCENES.bearInvite = def => {
     say('bear', 'I put that over the brambles for you.', "So you don't get scratched, coming and going."),
     camTo(iv.x + side * 20, iv.y - 60, 0.6),
     say('bear', 'Okay. Okay, good.', "Give me a second. I'll tidy up a bit."),
-    bearWalkTo(h.x - 14), wait(0.2),                                              // over to the lace (10/21/2026)
-    fadeTo(1, 0.4),
-    run(() => { const a = actors.bear; if (a) Object.assign(a, { peek: true, face: 'L', pose: null }); world.flags.bearInvited = true; world.flags.metBear = true; saveWorld(); }),
-    wait(0.4), fadeTo(0, 0.4), camTo(h.cx - 20, h.cy + 30, 0.6), wait(0.3),
+    bearWalkTo(h.x + 16), wait(0.3),                                              // over to the lace (10/21/2026), the far side of it so he climbs facing Phill's way
+    together(bearClimb(), camTo(h.cx - 20, h.cy + 30, 2.5)),                     // and up it, into his hole
+    run(() => { world.flags.bearInvited = true; world.flags.metBear = true; saveWorld(); }),
+    wait(0.5),
     say('bear', 'Come on up.'),
     camBack(), bars(false), run(() => music.play(room.def.music)),
   ];
