@@ -35,11 +35,25 @@ function breathAt(t) { let u = t % BREATH_T; for (const [d, k] of BREATH) { if (
 function bearFrame(a) {
   const f = a.face || 'L', b = breathAt(a.t);
   if (a.pose) return a.pose + '_' + f;
+  if (a.walk) return 'walk_' + (Math.floor(a.walk.t / BEAR_STEP) % BEAR_WALK_N) + '_' + f;
   const line = talk && talk.who === 'bear' ? talk.lines[talk.i] : null;
   if (line && talk.n < line.length) return (Math.floor(a.t / 0.13) % 2 ? 'talk_' : 'idle_') + b + '_' + f;
   if (a.t % 3.7 < 0.12) return 'blink_' + b + '_' + f;
   return 'idle_' + b + '_' + f;
 }
+// walking (10/21/2026): a waddle, 8 pictures, slow. bearWalkTo is a scene step: he turns the way he's going and walks
+// there at his own pace, then stands
+const BEAR_STEP = 0.09, BEAR_PACE = 30, BEAR_WALK_N = 8;
+const bearWalkTo = (x, pace = BEAR_PACE) => {
+  let mv = null;
+  return (t, dt) => {
+    const a = actors.bear; if (!a) return true;
+    if (t === 0) { a.face = x < a.x ? 'L' : 'R'; a.walk = { t: 0 }; mv = moveActor('bear', x, a.y, Math.max(0.05, Math.abs(x - a.x) / pace), { linear: true }); }
+    a.walk.t += dt || 0;
+    if (mv(t, dt)) { a.walk = null; return true; }
+    return false;
+  };
+};
 function drawBearPic(im, name, x, y) {
   const F = window.BEAR_FRAMES, fr = F && F.frames[name];
   if (!fr) return;
@@ -131,7 +145,7 @@ goTo = (id, door) => {                                                          
 // in his home he turns to look at Phill
 function faceBearHome() {
   const a = actors.bear;
-  if (!a || a.pose || room.def.id !== BEAR_AT.home.room) return;
+  if (!a || a.pose || a.walk || room.def.id !== BEAR_AT.home.room) return;
   if (Math.abs(P.x - a.x) > 6) a.face = P.x < a.x ? 'L' : 'R';
 }
 const _checkEventsBear = checkEvents;
@@ -160,9 +174,10 @@ SCENES.bearMeet = def => {
     say('bear', "It doesn't matter. You don't need a name to be friends, right?"),
     ...nod(),
     say('bear', "Good. That's good.", "The playground's up past the gate. Be careful up there.", "I'll be around. Come find me whenever you want."),
-    fadeTo(1, 0.5),
-    run(() => { delete actors.bear; }),                                     // and he's gone
-    wait(0.3), fadeTo(0, 0.5), camBack(), bars(false), run(() => music.play(room.def.music)),
+    wait(0.3),
+    bearWalkTo(m.x + 84),                                                     // and off he goes, toward where his home turns out to be (10/21/2026)
+    fadeTo(1, 0.45), run(() => { delete actors.bear; }), wait(0.3), fadeTo(0, 0.45),   // (a short fade still covers the rest of the way: it's a long walk out of the picture at his pace)
+    camBack(), bars(false), run(() => music.play(room.def.music)),
   ];
 };
 
@@ -287,6 +302,7 @@ SCENES.bearInvite = def => {
     say('bear', 'I put that over the brambles for you.', "So you don't get scratched, coming and going."),
     camTo(iv.x + side * 20, iv.y - 60, 0.6),
     say('bear', 'Okay. Okay, good.', "Give me a second. I'll tidy up a bit."),
+    bearWalkTo(h.x - 14), wait(0.2),                                              // over to the lace (10/21/2026)
     fadeTo(1, 0.4),
     run(() => { const a = actors.bear; if (a) Object.assign(a, { peek: true, face: 'L', pose: null }); world.flags.bearInvited = true; world.flags.metBear = true; saveWorld(); }),
     wait(0.4), fadeTo(0, 0.4), camTo(h.cx - 20, h.cy + 30, 0.6), wait(0.3),
