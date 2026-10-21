@@ -25,15 +25,20 @@ const bearWaiting = () => !!(world.flags.soldierDown && !world.flags.metBear);
 const firstBossDown = () => !!(world.flags.sailboatDown || world.flags.topDown);       // the sailboat or the spinning top, whichever he did first
 const inviteWaiting = () => firstBossDown() && !world.flags.bearInvited;
 
+// his breath (10/21/2026): slow, in two steps and out again, most of the time resting. It was a hard swap every 0.75 s
+// between in and out, and that read as his whole body lurching
+const BREATH = [[1.7, 0], [0.3, 1], [1.0, 2], [0.4, 1]];                             // how long at each step, and the step (0 rest, 1 a little in, 2 all the way in)
+const BREATH_T = BREATH.reduce((n, [d]) => n + d, 0);
+function breathAt(t) { let u = t % BREATH_T; for (const [d, k] of BREATH) { if (u < d) return k; u -= d; } return 0; }
 // which picture: a pose a scene holds (the flinch), his mouth going while his words are still coming up, a blink now
-// and then, otherwise breathing
+// and then, otherwise breathing. The blink and the talking are drawn at whatever step of the breath he's at
 function bearFrame(a) {
-  const f = a.face || 'L';
+  const f = a.face || 'L', b = breathAt(a.t);
   if (a.pose) return a.pose + '_' + f;
   const line = talk && talk.who === 'bear' ? talk.lines[talk.i] : null;
-  if (line && talk.n < line.length) return (Math.floor(a.t / 0.13) % 2 ? 'talk' : 'idle_1') + '_' + f;
-  if (a.t % 3.7 < 0.12) return 'blink_' + f;
-  return (Math.floor(a.t / 0.75) % 2 ? 'idle_2' : 'idle_1') + '_' + f;
+  if (line && talk.n < line.length) return (Math.floor(a.t / 0.13) % 2 ? 'talk_' : 'idle_') + b + '_' + f;
+  if (a.t % 3.7 < 0.12) return 'blink_' + b + '_' + f;
+  return 'idle_' + b + '_' + f;
 }
 function drawBearPic(im, name, x, y) {
   const F = window.BEAR_FRAMES, fr = F && F.frames[name];
@@ -68,7 +73,7 @@ drawWildlife = (at, camX, camY) => {
   const f = toward > X + camX ? 'R' : 'L';
   ctx.save(); ctx.globalAlpha = Math.min(1, 0.25 + L.f * 0.8);           // the same haze as the animals that far back
   ctx.translate(Math.round(X), Math.round(Y)); ctx.scale(w.scale, w.scale);
-  drawBearPic(im, (t % 4.1 < 0.12 ? 'blink' : Math.floor(t / 0.8) % 2 ? 'idle_2' : 'idle_1') + '_' + f, 0, 0);
+  drawBearPic(im, (t % 4.1 < 0.12 ? 'blink_' : 'idle_') + breathAt(t) + '_' + f, 0, 0);
   ctx.restore();
 };
 
