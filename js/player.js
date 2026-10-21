@@ -715,6 +715,7 @@ function update(dt) {
       } else if (!P.dashUsed) {
         P.dash = (wearing('dfwing') ? 0.2 : 0.15) * (P.tiredDodge ? 0.6 : 1); P.dashTired = P.tiredDodge; P.rollDir = d; P.facing = d; P.dashUsed = true; P.vy = 0; P.h = ROLL_H; P.ghostT = 0; P.airHang = null;
         P.atk = null; P.dodgeBufT = 0; P.rollCD = 0.35; sfx.airdodge();
+        P.fallTop = P.y;                                                               // the air dodge catches him: the splat height counts from here, the same as a glide (10/21/2026)
         if (!world.flags.airDodgedOnce) { world.flags.airDodgedOnce = true; saveWorld(); }
         puff(P.x - d * 6, P.y - 10, 12, 90, '#ffffff', 70);
       }
@@ -994,6 +995,7 @@ function doJump() {
 // the cape flap (from the Greenhouse): one more jump in midair, the cape snapping down under him
 function doFlap() {
   P.vy = -jumpVel() * 0.9; P.flapUsed = true; P.jumpBufT = 0; P.jumpHeld = true; P.cut = false; P.dashUsed = false; P.flapT = 0.22;
+  P.fallTop = P.y;                                                                     // a fresh jump: the splat height counts from here, the same as a glide (10/21/2026)
   for (let i = 0; i < 10; i++) addPart({ x: P.x + (Math.random() * 2 - 1) * 12, y: P.y - 4, vx: (Math.random() * 2 - 1) * 70, vy: 40 + Math.random() * 60, life: 0.35, max: 0.35, c: i % 2 ? '#f4ecd8' : '#d8c8b0', s: 2, g: 0 });
   sfx.flap ? sfx.flap() : sfx.jump();
 }
