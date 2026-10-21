@@ -8,7 +8,7 @@
 // When Phill asks his name it hurts, and he flinches. His frames are made by Sprites/bear_sprites.py
 const BEAR_SHEET = 'art/bear/bear.png';
 const BEAR_AT = {
-  meet: { room: 'eastedge', x: 274, y: 448, l: 72, r: 200 },               // where he stands at the east edge (past the big trunk, so he shows against the dark), and where Phill walking in starts the meeting
+  meet: { room: 'eastedge', x: 274, y: 448, talk: 110, clear: [220, 100] },   // where he stands at the east edge (past the big trunk, so he shows against the dark), how close Phill comes to start the meeting, and how far round him the Grime things have to be gone first
   watch: { room: 'clearing', layer: 1, x: 200, y: 224, scale: 0.5 },       // watching the soldier fight, far back on the clearing's second layer (in the shade, off to the side of the light)
 };
 // his picture is loaded with the rooms he's in, like the rest of a room's pictures
@@ -62,26 +62,35 @@ drawWildlife = (at, camX, camY) => {
   ctx.restore();
 };
 
-// ---- the east edge: he's there till Phill's met him. The room's Grime things stay still while he's around
+// ---- the east edge: he's there till Phill's met him. The meeting only starts once the Grime things round him are beaten
+// (10/20/2026), so nothing comes at Phill while they talk
 function setupBearRoom() {
   const m = BEAR_AT.meet;
   if (room.def.id !== m.room || !bearWaiting()) return;
   addActor('bear', { kind: 'bear', x: m.x, y: m.y, face: 'R', layer: 'back' });   // facing away, busy with nothing much
-  for (const f of foes) if (f.state !== 'down') { f.bearHold = true; f.state = 'asleep'; f.wake = -1; }
-  room.events.push({ kind: 'scene', name: 'bearMeet', flag: 'metBear', l: m.l, r: m.r, t: m.y - 80, b: m.y, cool: 0, inside: false });
 }
 const _setupPondRoomBear = setupPondRoom;
 setupPondRoom = () => { _setupPondRoomBear(); setupBearRoom(); };
+const bearClear = () => { const m = BEAR_AT.meet; return !foes.some(f => f.hp > 0 && f.state !== 'down' && Math.abs(f.x - m.x) < m.clear[0] && Math.abs(f.y - m.y) < m.clear[1]); };
+function checkBear() {
+  const m = BEAR_AT.meet, a = actors.bear;
+  if (!a || room.def.id !== m.room || !bearWaiting() || P.story || sceneRunning() || P.ko > 0 || !P.ground) return;
+  if (Math.abs(P.x - m.x) > m.talk || Math.abs(P.y - m.y) > 40 || !bearClear()) return;
+  world.flags.metBear = true; saveWorld();
+  playScene(SCENES.bearMeet(room.def));
+}
+const _checkEventsBear = checkEvents;
+checkEvents = dt => { _checkEventsBear(dt); checkBear(); };
 
 // ---- meeting him (the lines are a first draft, 10/20/2026)
 const bearDo = fn => run(() => { const a = actors.bear; if (a) fn(a); });
 SCENES.bearMeet = def => {
-  const m = BEAR_AT.meet;
+  const m = BEAR_AT.meet, side = P.x < m.x ? -1 : 1;                       // (whichever side of him Phill's on)
   return [
     bars(true), run(() => { P.vx = 0; music.play('bear'); }),
-    walkTo(m.x - 58), faceTo(m.x), camTo(m.x - 30, m.y - 50, 0.8),
+    walkTo(m.x + side * 58), faceTo(m.x), camTo(m.x + side * 30, m.y - 50, 0.8),
     wait(0.5),
-    bearDo(a => { a.face = 'L'; sfx.bump(); }), wait(0.6),                 // he turns round
+    bearDo(a => { a.face = side < 0 ? 'L' : 'R'; sfx.bump(); }), wait(0.6),   // he turns round
     say('bear', 'Oh. Hello.', "I didn't hear you come up. Not many come out this way."),
     say('bear', 'Did you come through the clearing? Past the tin soldier?'),
     ...nod(),
@@ -97,10 +106,7 @@ SCENES.bearMeet = def => {
     ...nod(),
     say('bear', "Good. That's good.", "The playground's up past the gate. Be careful up there.", "I'll be around. Come find me whenever you want."),
     fadeTo(1, 0.5),
-    run(() => {                                                             // and he's gone
-      delete actors.bear;
-      for (const f of foes) if (f.bearHold) { f.bearHold = false; setFoeState(f, 'walk'); f.cd = 1.2; }
-    }),
+    run(() => { delete actors.bear; }),                                     // and he's gone
     wait(0.3), fadeTo(0, 0.5), camBack(), bars(false), run(() => music.play(room.def.music)),
   ];
 };
