@@ -84,10 +84,10 @@ function setupBearRoom() {
   }
   if (id === iv.room && world.flags.bearInvited && !world.flags.bearVisited)           // asked him in: still peeking out, waiting for him to come up
     addActor('bear', { kind: 'bear', peek: true, x: 0, y: 0, face: 'L', layer: 'back' });
-  if (id === BEAR_AT.home.room && !world.flags.bearVisited) {                         // the first time Phill comes up into his home
+  if (id === BEAR_AT.home.room) {                                                      // he's home whenever Phill comes up (10/20/2026)
     const hm = BEAR_AT.home;
     addActor('bear', { kind: 'bear', x: hm.x, y: hm.y, face: 'L', layer: 'back' });
-    playScene(SCENES.bearHome(room.def));
+    if (!world.flags.bearVisited) playScene(SCENES.bearHome(room.def));                 // the first time
     return;
   }
   if (id !== m.room || !bearWaiting()) return;
@@ -110,8 +110,26 @@ function checkInvite() {
   if (Math.hypot(P.x - e.x, P.y - e.y) < iv.go) return;
   playScene(SCENES.bearInvite(room.def));
 }
+// once he's asked, his home is the way on: going for either way out of the east edge, he calls Phill back (10/20/2026)
+const mustGoUp = () => room && room.def.id === BEAR_AT.invite.room && !!world.flags.bearInvited && !world.flags.bearVisited;
+function checkLeave() {
+  if (!mustGoUp() || P.story || sceneRunning() || P.ko > 0) return;
+  const left = P.x < 3 * T && P.y > 20 * T, right = P.x > 46.5 * T && P.y < 13 * T;    // nearly out through the clearing's way, or up at the Playground's
+  if (left || right) playScene(SCENES.bearThisWay(room.def, left ? 6 * T : 44.5 * T));
+}
+const _goToB = goTo;
+goTo = (id, door) => {                                                                // (and if he gets to a way out anyway, he doesn't go through it)
+  if (mustGoUp() && id !== BEAR_AT.home.room) { if (!sceneRunning()) playScene(SCENES.bearThisWay(room.def, P.x < room.pxW / 2 ? 6 * T : 44.5 * T)); return; }
+  _goToB(id, door);
+};
+// in his home he turns to look at Phill
+function faceBearHome() {
+  const a = actors.bear;
+  if (!a || a.pose || room.def.id !== BEAR_AT.home.room) return;
+  if (Math.abs(P.x - a.x) > 6) a.face = P.x < a.x ? 'L' : 'R';
+}
 const _checkEventsBear = checkEvents;
-checkEvents = dt => { _checkEventsBear(dt); checkBear(); checkInvite(); };
+checkEvents = dt => { _checkEventsBear(dt); checkBear(); checkInvite(); checkLeave(); faceBearHome(); };
 
 // ---- meeting him (the lines are a first draft, 10/20/2026)
 const bearDo = fn => run(() => { const a = actors.bear; if (a) fn(a); });
@@ -170,10 +188,16 @@ function laceHere() {
   if (!d || !bearLaceDown() || scene) return null;
   return P.x > h.x - 30 && P.x < h.x + 12 && Math.abs(P.y - d.y) < 12 ? h : null;   // (the bank's foot starts right under it, so mostly from the left)
 }
+function bearHere() {                                                               // in his home, close enough to talk to
+  const a = actors.bear;
+  if (!a || a.peek || scene || room.def.id !== BEAR_AT.home.room || !world.flags.bearVisited) return null;
+  return Math.abs(P.x - a.x) < 44 && Math.abs(P.y - a.y) < 30 ? a : null;
+}
 const _nearbyB = nearby;
-nearby = () => (laceHere() ? { kind: 'bearlace', label: '{up}: climb' } : _nearbyB());
+nearby = () => (laceHere() ? { kind: 'bearlace', label: '{up}: climb' } : bearHere() ? { kind: 'beartalk', label: '{up}: talk' } : _nearbyB());
 const _interactB = interact;
 interact = () => {
+  if (bearHere() && !scene) { P.vx = 0; playScene(SCENES.bearChat()); return true; }
   const h = laceHere();
   if (h && !scene) {
     P.vx = 0;
@@ -235,4 +259,36 @@ SCENES.bearHome = def => {
     run(() => { world.flags.bearVisited = true; saveWorld(); }),
     bars(false),
   ];
+};
+
+// ---- calling Phill back to the lace if he goes for a way out before he's been up (10/20/2026, a first draft)
+SCENES.bearThisWay = (def, backTo) => {
+  const h = def.bearhole, first = !room.calledBack; room.calledBack = true;
+  return [
+    run(() => { P.vx = 0; sfx.bearTalk && sfx.bearTalk(); }), bars(true),
+    camTo(h.cx - 20, h.cy + 30, 0.6),
+    say('bear', ...(first ? ['Hey. Up here.', 'This way. Up the lace.'] : ['Up here.', 'This way.'])),
+    camBack(), walkTo(backTo), bars(false),
+  ];
+};
+
+// ---- talking to him at home: optional, a little more about him every time, light things first and harder ones the more
+// Phill keeps coming back to him (10/20/2026, the lines are a first draft)
+const BEAR_CHAT = [
+  () => [say('bear', "Oh, the cups? There's no tea. I don't have any tea.", "They're just nice to have out. In case.")],
+  () => [say('bear', 'I found the mitten by the fence, the first winter. Some kid\'s hand was cold that day, I bet.', 'I sleep better in it than I ever did on a shelf.')],
+  () => [say('bear', "Seven caps. I wanted eight, so it'd come out even.", "I'll find the last one. I'm good at finding things.")],
+  () => [say('bear', 'My stitches? I sewed them up myself.', "They're not pretty. But they keep the stuffing in. That's the important part.")],
+  () => [say('bear', "I know every corner of this park.", "Where it's warm, where the rain doesn't get in.", "Where not to go after dark.")],
+  () => [say('bear', 'Before the park? A shelf. A long one, with a lot of us on it.', 'Then a kid picked me. Carried me right out the door.'), wait(0.8), say('bear', "...That part doesn't matter.")],
+  () => [say('bear', 'I tried out names once. Said them out loud to see how they sounded.', "None of them stuck. They didn't feel like mine.")],
+  () => [say('bear', 'Do you have a kid? Somebody waiting for you?'), ...nod(), wait(0.6), say('bear', "That's nice.", 'They must miss you a lot.')],
+  () => [say('bear', "There's other toys under the big oak, you know. A whole town of them, dug in.", 'I went there once.'), wait(0.8), say('bear', "It doesn't matter. I've got my own place now.")],
+  () => [say('bear', "The Grime things don't bother me much out here.", 'I keep to myself. They keep to themselves.')],
+];
+const BEAR_IDLE = [["It's nice, you being here."], ['Stay as long as you like.'], ['Careful out there.'], ["Come back soon, okay?"], ['Sit down, if you want. That seat\'s for you.']];
+SCENES.bearChat = () => {
+  const n = world.bearChat || 0;
+  const lines = n < BEAR_CHAT.length ? BEAR_CHAT[n]() : [say('bear', ...BEAR_IDLE[Math.floor(Math.random() * BEAR_IDLE.length)])];
+  return [faceTo(actors.bear.x), ...lines, run(() => { if (n < BEAR_CHAT.length) { world.bearChat = n + 1; saveWorld(); } })];
 };
