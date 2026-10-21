@@ -210,6 +210,7 @@ const sfx = {
   owlTalk: () => { const f = 340 + Math.random() * 40; tone(f, f * 0.92, 0.08, 'sine', 0.04); },   // the owl talking: soft low hoo-ish notes
   crowTalk: () => { const f = 480 + Math.random() * 80; tone(f, f * 0.82, 0.05, 'sawtooth', 0.016); noise(0.04, 1600, 800, 0.02, 1.5); },   // the crow talking: short and rough
   snailTalk: () => { const f = 300 + Math.random() * 60; tone(f, f * 0.9, 0.09, 'sine', 0.03); },   // the snail: slow, low and soft
+  bearTalk: () => { const f = 190 + Math.random() * 40; tone(f, f * 0.94, 0.1, 'triangle', 0.035); },   // the bear: low and woody, like his tune's lead
   frogTalk: () => { const f = 110 + Math.random() * 30; tone(f, f * 0.8, 0.07, 'sawtooth', 0.03); noise(0.05, 400, 200, 0.03, 2); },
   croak: () => { tone(120, 85, 0.35, 'sawtooth', 0.06); tone(60, 45, 0.35, 'square', 0.04); },
   buzz: () => { tone(220, 240, 0.25, 'sawtooth', 0.012); },
@@ -659,9 +660,31 @@ const music = (() => {
     if (rand() < 0.6) { const tt = t0 + rand() * 4 * BEAT; voice(tt, 1400 + rand() * 600, 'sine', 0.012, 0.15, out()); }        // a drip
     if (bar % 4 === 2) { const tt = t0 + BEAT; brush(tt, 0.03, 220, 0.5); }                                                     // a gurgle, far off
   }
+  // the bear, meeting him (10/20/2026, from "The bear, meeting him" in Music studies): three beats instead of Home's four,
+  // a lower wooden lead instead of the music box, and the chord held under him instead of rolling. His little figure is
+  // a note said twice, a breath, then a step up and an answer. Friendly, nothing hiding in it yet. The flute answers him in
+  // the gaps the second time round
+  const BEAR_CH = [['G2', 'G3 B3 D4'], ['E2', 'E3 G3 B3'], ['C2', 'C3 E3 G3'], ['D2', 'D3 F#3 A3'], ['G2', 'G3 B3 D4'], ['E2', 'E3 G3 B3'], ['A2', 'A3 C4 E4'], ['D2', 'D3 F#3 A3'],
+                   ['G2', 'G3 B3 D4'], ['E2', 'E3 G3 B3'], ['C2', 'C3 E3 G3'], ['D2', 'D3 F#3 A3'], ['G2', 'G3 B3 D4'], ['C2', 'C3 E3 G3'], ['D2', 'D3 F#3 A3 C4'], ['G2', 'G3 B3 D4']];
+  const BEAR_TUNE = ['B4 B4 . E5 - D5', 'B4 - - . . .', 'A4 A4 . D5 - C5', 'A4 - - . . D4', 'B4 B4 . E5 - G5', 'E5 - D5 . B4 .', 'C5 - A4 . B4 C5', 'D5 - - . . .',
+                     'B4 B4 . E5 - D5', 'B4 - - . G4 A4', 'A4 A4 . D5 - E5', 'F#5 - - . E5 D5', 'D5 B4 . G4 - A4', 'E5 - - . D5 C5', 'B4 - A4 . F#4 A4', 'G4 - - - . .'];
+  // his lead: a soft mallet on wood (a damped triangle with a knock on the front). Held notes ring a little longer
+  function wood(t, m, dur, vol = 0.05) { voice(t, hz(m), 'triangle', vol, Math.min(0.9, 0.35 + dur * 0.5), out(), 1300); voice(t, hz(m) * 0.5, 'sine', vol * 0.35, 0.5, out()); brush(t, vol * 0.18, 1800, 0.02); }
+  function playBear(bar, t0) {
+    const E = BEAT / 2, [root, ch] = BEAR_CH[bar], line = BEAR_TUNE[bar].split(' ');
+    feltPiano(t0, N(root), 0.05);
+    for (const m of ch.split(' ').map(N)) pad(t0, m, 6 * E, 0.011);                     // the chord held under him, the whole bar
+    for (let e = 0; e < line.length; e++) {
+      const n = line[e]; if (n === '.' || n === '-') continue;
+      let len = 1; while (e + len < line.length && line[e + len] === '-') len++;
+      wood(t0 + e * E, N(n), len * E, 0.036);
+    }
+    const fl = pass % 2 ? { 1: ['G5', 'A5'], 7: ['F#5', 'A5'], 9: ['G5', 'E5'] }[bar] : null;
+    if (fl) fl.forEach((n, k) => flute(t0 + (3.2 + k * 1.1) * E, N(n), E * 0.9, 0.022));
+  }
   // each region gets its own song. wind: up in the oak
   const SONGS = { title: { beat: 60 / 80, swing: 0.5, bar: playTitle }, home: { beat: 60 / 92, swing: 0.5, bar: playHome }, jazz: { beat: 60 / 108, swing: 0.63, bar: (b, t) => playBar(b, t) }, wind: { beat: 1, swing: 0.5, bar: playWind },
-    rootwood: { beat: 60 / 70, swing: 0.5, bar: playRoot }, soldier: { beat: 60 / 116, swing: 0.5, bar: playMarch },
+    rootwood: { beat: 60 / 70, swing: 0.5, bar: playRoot }, soldier: { beat: 60 / 116, swing: 0.5, bar: playMarch }, bear: { beat: 60 / 96, swing: 0.5, bar: playBear, beats: 3 },
     pond: { beat: 60 / 96, swing: 0.56, bar: playPond }, deep: { beat: 60 / 72, swing: 0.5, bar: playDeep }, sailboat: { beat: 60 / 132, swing: 0.6, bar: playShanty },
     tangle: { beat: 60 / 100, swing: 0.5, bar: playTangle }, swan: { beat: 60 / 150, swing: 0.5, bar: playWaltz, beats: 3 },
     playground: { beat: 60 / 84, swing: 0.5, bar: playDusk, beats: 3 }, top: { beat: 60 / 160, swing: 0.5, bar: playPolka }, marionette: { beat: 60 / 120, swing: 0.5, bar: playPuppet, beats: 3 },

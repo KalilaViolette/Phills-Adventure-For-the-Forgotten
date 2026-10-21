@@ -145,6 +145,7 @@ function drawActors(layer) {
       continue;
     }
     if (a.kind === 'rw') { if (a.frame) spr(a.frame, a.x, a.y, a.flip); continue; }   // something from Rootwood's sheet (the woodpecker)
+    if (a.kind === 'bear') { if (typeof drawBear === 'function') drawBear(a); continue; }   // the bear (js/bear.js)
     if (!crow || !a.frame) continue;
     const CF = window.CROW_FRAMES, fr = CF.frames[a.frame];
     const anchor = a.frame.startsWith('perch') || a.frame === 'caw' ? CF.feet : CF.body;

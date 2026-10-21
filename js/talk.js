@@ -14,6 +14,7 @@ const VOICE = {
   monkey: { name: 'old monkey', col: '#e0b070', speed: 46, every: 3, blip: () => sfx.monkeyTalk(), noise: () => sfx.clang() },
   owl: { name: 'owl', col: '#d8c0a0', speed: 36, every: 4, blip: () => sfx.owlTalk(), noise: () => sfx.hoot() },
   crow: { name: 'the crow', col: '#b0a0e0', speed: 40, every: 3, blip: () => sfx.crowTalk(), noise: () => sfx.caw(0.7) },
+  bear: { name: 'the bear', col: '#d8b88a', speed: 32, every: 3, blip: () => sfx.bearTalk(), noise: () => sfx.bearTalk() },   // (10/20/2026: no name yet, he never got one)
 };
 // "*kraa* There." -> the text without the stars, and where the sound words are in it
 function parseTalk(raw) {
