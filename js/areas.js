@@ -6,7 +6,7 @@ const AREA_NAMES = {
   flight: 'the flight', nest: "the crow's nest", oakfall: 'the fall from the oak',
   roots: 'under the oak', hollow: "the squirrel's hollow", litterpath: 'the litter path', bramble: 'the bramble thicket', burrow: 'the hidden burrow',
   well: 'the mushroom well', woodpecker: "the woodpecker's tree", clearing: 'the clearing', mossbank: 'the moss bank', ferns: 'the ferns',
-  grimepool: 'the grime pool', undercroft: 'the undercroft', rootlattice: 'the root lattice', sunkroots: 'the sunk roots', trail: "the tin soldier's trail", eastedge: 'up and out of rootwood',
+  grimepool: 'the grime pool', undercroft: 'the undercroft', rootlattice: 'the root lattice', sunkroots: 'the sunk roots', trail: "the tin soldier's trail", eastedge: 'up and out of rootwood', bearhome: "the bear's home",
   reedbank: 'the reed bank', dock: 'the dock', lilypads: 'the lily pads', deepwater: 'deep water', stormdrain: 'the storm drain', shallows: 'the shallows', cattails: 'the cattails',
   dragonfly: 'the dragonfly', overlook: 'the overlook', sailboat: 'the sailboat', fishline: 'the fishing line', grotto: 'the grotto', sunken: 'the sunken', drainmouth: 'the drain mouth',
   foamline: 'the foam line', swan: 'the swan', fenceside: 'by the fence', silt: 'the silt',

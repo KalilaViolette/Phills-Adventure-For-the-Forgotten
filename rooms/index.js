@@ -107,5 +107,6 @@ window.ROOM_FILES = {
  "waxworks": "rooms/hive/waxworks.js",
  "pinata": "rooms/hive/pinata.js",
  "queen": "rooms/hive/queen.js",
- "propolis": "rooms/hive/propolis.js"
+ "propolis": "rooms/hive/propolis.js",
+ "bearhome": "rooms/rootwood/bearhome.js"
 };
