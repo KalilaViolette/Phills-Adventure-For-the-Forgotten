@@ -77,6 +77,7 @@ drawWildlife = (at, camX, camY) => {
 function setupBearRoom() {
   const m = BEAR_AT.meet, iv = BEAR_AT.invite, id = room.def.id;
   room.bearEntry = { x: P.x, y: P.y };
+  setupBearBridge();
   if (id === iv.room && inviteWaiting()) {                                             // after Phill's first boss: waiting under his hole for him. Not a Grime thing in the
     foes.length = 0;                                                                   // room this time (they're back next time), and he doesn't say why
     addActor('bear', { kind: 'bear', x: iv.x, y: iv.y, face: P.x < iv.x ? 'L' : 'R', layer: 'back' });
@@ -180,7 +181,58 @@ drawNpc = () => {
   _drawNpcB();
   const h = room && room.def.bearhole;
   if (h && (bearLaceDown() || (actors.bear && inviteWaiting()))) drawBearLace(h, BEAR_LACE);   // (he came down it to wait for Phill)
+  if (room && room.def.id === BEAR_BRIDGE.room && (bridgeUp() || world.flags.bearBridgeGone)) drawBearBridge(!bridgeUp());
 };
+
+// ---- the way over the brambles (10/20/2026): ready for when he asks Phill home (after Phill's first boss), the bear's laid two old wooden rulers end
+// to end over the thorns at the east edge, propped on two cotton reels in the bramble, with a ruler leaning up to it at
+// each end, so Phill can come and go without getting scratched. After the fight around 60% he breaks it
+// (bearBridgeGone, set by that fight when it's built): the pieces are left lying in the thorns
+const BEAR_BRIDGE = { room: 'eastedge', top: 26 * 16, x0: 19 * 16, x1: 34 * 16, l: 15.5 * 16, r: 39 * 16, reels: [23 * 16, 30 * 16] };   // (the right end comes down past the little rise in the ground there)
+const bridgeUp = () => (firstBossDown() || !!world.flags.bearInvited) && !world.flags.bearBridgeGone;
+function groundAt(x) { let y = BEAR_BRIDGE.top; while (y < room.pxH && !solidPx(x, y)) y++; return y; }
+function setupBearBridge() {
+  const b = BEAR_BRIDGE;
+  if (room.def.id !== b.room || !bridgeUp()) return;
+  b.gl = groundAt(b.l); b.gr = groundAt(b.r);
+  const pts = [[Math.round(b.l), b.gl - 2], [b.x0, b.top], [b.x1, b.top], [Math.round(b.r), b.gr - 2]];   // one one-way slope, up, across and down, its ends just over the ground (any lower and he snags on the ground stepping off)
+  const x0 = pts[0][0], x1 = pts[3][0], ys = new Float32Array(x1 - x0 + 1); let k = 0;
+  for (let x = x0; x <= x1; x++) {
+    while (k < pts.length - 2 && pts[k + 1][0] < x) k++;
+    const [ax, ay] = pts[k], [bx, by] = pts[k + 1];
+    ys[x - x0] = ay + (by - ay) * (x - ax) / (bx - ax);
+  }
+  room.ramps.push({ x0, x1, ys, bearBridge: true });
+}
+function ruler(xa, ya, xb, yb, th = 5) {                                               // an old wooden ruler, its marks along the top
+  const n = Math.max(1, Math.abs(xb - xa));
+  for (let i = 0; i <= n; i++) {
+    const x = Math.round(xa + (xb - xa) * i / n), y = Math.round(ya + (yb - ya) * i / n);
+    ctx.fillStyle = '#2a2030'; ctx.fillRect(x, y - 1, 1, th + 2);
+    ctx.fillStyle = i % 2 ? '#d2ae64' : '#d8b46a'; ctx.fillRect(x, y, 1, th);
+    ctx.fillStyle = '#e8cc88'; ctx.fillRect(x, y, 1, 1);
+    if (i % 4 === 0) { ctx.fillStyle = '#5a4428'; ctx.fillRect(x, y, 1, i % 16 === 0 ? 3 : 2); }
+  }
+}
+function reel(x, top, bottom) {                                                         // an empty cotton reel standing in the bramble
+  const h = bottom - top;
+  ctx.fillStyle = '#2a2030'; ctx.fillRect(x - 11, top, 22, 5); ctx.fillRect(x - 11, bottom - 5, 22, 5); ctx.fillRect(x - 7, top + 4, 14, h - 8);
+  ctx.fillStyle = '#a87a4a'; ctx.fillRect(x - 10, top + 1, 20, 3); ctx.fillRect(x - 10, bottom - 4, 20, 3);
+  ctx.fillStyle = '#8a6238'; ctx.fillRect(x - 6, top + 5, 12, h - 10); ctx.fillStyle = '#a87a4a'; ctx.fillRect(x - 6, top + 5, 3, h - 10);
+}
+function lashing(x, y) { ctx.fillStyle = '#b83a3a'; for (let k = 0; k < 5; k++) { ctx.fillRect(x - 2 + k, y + k, 1, 1); ctx.fillRect(x + 2 - k, y + k, 1, 1); } }
+function drawBearBridge(broken) {
+  const b = BEAR_BRIDGE, gl = b.gl || 446, gr = b.gr || 446;
+  if (!broken) {
+    for (const x of b.reels) reel(x, b.top + 5, 448);
+    ruler(b.l, gl, b.x0, b.top); ruler(b.x1, b.top, b.r, gr);
+    ruler(b.x0, b.top, (b.x0 + b.x1) / 2, b.top); ruler((b.x0 + b.x1) / 2, b.top, b.x1, b.top);
+    lashing(b.x0, b.top); lashing((b.x0 + b.x1) / 2, b.top); lashing(b.x1, b.top);
+    return;
+  }
+  ruler(b.l, gl, b.l + 34, gl - 10); ruler(330, 442, 396, 447); ruler(452, 446, 512, 437); ruler(b.r - 30, gr - 7, b.r, gr);   // snapped and dropped in the thorns
+  ctx.fillStyle = '#2a2030'; ctx.fillRect(458, 433, 27, 15); ctx.fillStyle = '#8a6238'; ctx.fillRect(459, 438, 25, 9); ctx.fillStyle = '#a87a4a'; ctx.fillRect(459, 434, 4, 13); ctx.fillRect(480, 434, 4, 13);   // a reel knocked on its side
+}
 
 // up the lace, once he's asked: {up} under it and Phill climbs up into his home
 function laceHere() {
@@ -226,6 +278,9 @@ SCENES.bearInvite = def => {
     bearDo(a => { a.face = side < 0 ? 'L' : 'R'; }), camTo(iv.x + side * 20, iv.y - 60, 0.6),
     say('bear', 'You can come up.', 'If you want to.'),
     ...nod(),
+    camTo((BEAR_BRIDGE.x0 + BEAR_BRIDGE.x1) / 2, BEAR_BRIDGE.top - 30, 0.8), wait(0.3),          // the way over the brambles he's put down
+    say('bear', 'I put that over the brambles for you.', "So you don't get scratched, coming and going."),
+    camTo(iv.x + side * 20, iv.y - 60, 0.6),
     say('bear', 'Okay. Okay, good.', "Give me a second. I'll tidy up a bit."),
     fadeTo(1, 0.4),
     run(() => { const a = actors.bear; if (a) Object.assign(a, { peek: true, face: 'L', pose: null }); world.flags.bearInvited = true; world.flags.metBear = true; saveWorld(); }),
