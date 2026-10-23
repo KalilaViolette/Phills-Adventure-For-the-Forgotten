@@ -54,9 +54,16 @@ const touchUI = (() => {
   let home = [0, 0], rhome = [0, 0];
   hudDY = 0;
   function layout() {                                                               // (10/17/2026: every button a circle the same size)
-    const W = el.clientWidth, H = el.clientHeight; if (!W || !H) return;
+    const W0 = el.clientWidth, H0 = el.clientHeight; if (!W0 || !H0) return;
+    // kept in from the phone's sides (10/23/2026), where a swipe in from the edge is the phone's back gesture and a
+    // thumb on a button there kept setting it off. Turned on its side in full screen, the phone's sides are the
+    // game's top and bottom, so the gap goes there instead
+    const rot = document.body.classList.contains('rot');
+    const side = Math.round(Math.min(44, Math.max(26, (rot ? H0 : W0) * 0.045))), gx = rot ? 8 : side, gy = rot ? side : 8;
+    const W = W0 - gx * 2, H = H0 - gy * 2;
+    zone.style.left = gx + 'px'; zone.style.bottom = gy + 'px'; zone.style.width = (W * 0.42) + 'px'; zone.style.height = (H * 0.52) + 'px';
     const u = Math.max(36, Math.min(H * 0.146, W * 0.07, 72));                         // one button
-    const put = (b, x, y, w, h = w) => { b.style.left = (x - w / 2) + 'px'; b.style.top = (y - h / 2) + 'px'; b.style.width = w + 'px'; b.style.height = h + 'px'; };
+    const put = (b, x, y, w, h = w) => { b.style.left = (gx + x - w / 2) + 'px'; b.style.top = (gy + y - h / 2) + 'px'; b.style.width = w + 'px'; b.style.height = h + 'px'; };
     const edge = u * 0.5 + Math.max(5, H * 0.015);                                   // a button's middle, in from the edge
     // the shoulders, right up in the top corners
     const topY = edge;
@@ -82,7 +89,7 @@ const touchUI = (() => {
     }
     base.style.margin = -rad + 'px 0 0 ' + -rad + 'px';
     if (stickId === null) { base.style.left = home[0] + 'px'; base.style.top = home[1] + 'px'; }
-    rhome = [W - sx, sy]; rbase.style.left = (W - sx - rad) + 'px'; rbase.style.top = (sy - rad) + 'px';
+    rhome = [W - sx, sy]; rbase.style.left = (gx + W - sx - rad) + 'px'; rbase.style.top = (gy + sy - rad) + 'px';
     // the shoulder buttons again, round the right stick where the thumb already is (10/17/2026): L2 up and to
     // the left of it, the shield to its left, the swing down and to the left, R2 up and to the right. The ones up top stay
     const rd = rad + u * 0.62, ring = [['l2', -113], ['guard', -154], ['atk', 160], ['r2', -30]];
@@ -97,7 +104,7 @@ const touchUI = (() => {
     const ty = W / 2 - half < edge + u * 2.4 + 6 ? topY + u / 2 + th * 0.65 + 10 : th / 2 + 8;
     put(B('map'), W / 2 - tw / 2 - th * 0.8 - 8, ty, tw, th); put(B('max'), W / 2, ty, th * 1.3, th * 1.3); put(B('menu'), W / 2 + tw / 2 + th * 0.8 + 8, ty, tw, th);
     // his health in the game's top left sits under the shoulder buttons: it moves down out from under them
-    const dpr = window.devicePixelRatio || 1, below = (Math.max(topY + u * 0.5, ty > th ? ty + th * 0.65 : 0) + 4) * dpr;
+    const dpr = window.devicePixelRatio || 1, below = (gy + Math.max(topY + u * 0.5, ty > th ? ty + th * 0.65 : 0) + 4) * dpr;
     hudDY = active ? Math.max(0, Math.ceil((below - offY) / S) - 6) : 0;
   }
   window.addEventListener('resize', () => setTimeout(layout, 60));

@@ -37,9 +37,12 @@
 
   let R = 40, home = [0, 0];
   function layout() {
-    const W = el.clientWidth, H = el.clientHeight; if (!W || !H) return;
+    const W0 = el.clientWidth, H0 = el.clientHeight; if (!W0 || !H0) return;
+    // kept in from the sides, where a swipe in from the edge is the phone's back gesture (the same as js/touch.js)
+    const gx = Math.round(Math.min(44, Math.max(26, W0 * 0.045))), gy = 8, W = W0 - gx * 2, H = H0 - gy * 2;
+    zone.style.left = gx + 'px'; zone.style.bottom = gy + 'px'; zone.style.width = (W * 0.45) + 'px'; zone.style.height = (H * 0.7) + 'px';
     const u = Math.max(44, Math.min(H * 0.15, W * 0.085, 76));                     // one button
-    const put = (b, x, y, w, h = w) => { b.style.left = (x - w / 2) + 'px'; b.style.top = (y - h / 2) + 'px'; b.style.width = w + 'px'; b.style.height = h + 'px'; };
+    const put = (b, x, y, w, h = w) => { b.style.left = (gx + x - w / 2) + 'px'; b.style.top = (gy + y - h / 2) + 'px'; b.style.width = w + 'px'; b.style.height = h + 'px'; };
     const edge = u * 0.5 + Math.max(8, H * 0.02), g = u * 1.02;
     const dX = W - edge - g, dY = H - edge - g;                                     // the middle of the diamond, low on the right
     put(B('sew'), dX, dY - g, u); put(B('jump'), dX, dY + g, u); put(B('attack'), dX - g, dY, u); put(B('hook'), dX + g, dY, u);
