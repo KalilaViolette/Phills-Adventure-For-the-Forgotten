@@ -115,7 +115,7 @@ const MOVES = {
   airDodge: () => !!world.learned.airdodge,   // watching the dragonfly (the Pond)
   squeak: () => !!world.learned.squeak,       // the old bullfrog (the Pond)
   swim: () => !!world.learned.waterproof,     // waterproof: deep water doesn't sink him (comes from another region)
-  glide: () => !!world.has.cape,              // the handkerchief cape (the Old Oak)
+  glide: () => !!world.has.cape && (!GLIDE_IN_CANOPY || !!world.learned.glide),   // the handkerchief cape (the Old Oak)
   velcro: () => !!world.learned.velcro,       // velcro patches on his hands: clings to rough walls (the Old Oak)
   flap: () => !!world.learned.flap,           // the cape flap, a jump in midair (the Greenhouse)
   spin: () => !!world.learned.spin,           // riding the merry-go-round (the Playground)
@@ -126,4 +126,9 @@ const MOVES = {
   spark: () => !!world.learned.spark,         // static spark: a ranged shot (the Greenhouse, not built yet)
   flop: () => !!world.learned.flop,           // the belly flop (the Hive, not built yet)
 };
+// The glide comes later than the cape (10/23/2026): he ties the cape on at the oak, but it's only a cape till he learns
+// to glide with it in the Canopy, riding on Purl's back. The Canopy isn't built yet, so for now the cape still glides
+// from the start (or the Pond's and the Playground's glide gates would shut him in). Once it's built: true here, and
+// world.learned.glide set by the ride
+const GLIDE_IN_CANOPY = false;
 const can = m => unlockAll || (MOVES[m] ? MOVES[m]() : false);
