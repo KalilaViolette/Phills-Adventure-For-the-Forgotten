@@ -9,7 +9,14 @@
 const T = 16, VW = 640, VH = 360;
 const C = document.getElementById('c'), ctx = C.getContext('2d');
 let S = 2;
-function fit() { S = Math.max(1, Math.floor(Math.min(innerWidth / VW, (innerHeight - 30) / VH))); C.width = VW * S; C.height = VH * S; ctx.imageSmoothingEnabled = false; }
+function fit() {
+  if (document.body.classList.contains('touch')) {                                  // on a phone: as big as the screen, not just whole steps (js/purl_touch.js)
+    const k = Math.min(innerWidth / VW, innerHeight / VH);
+    S = Math.max(1, Math.ceil(k * (window.devicePixelRatio || 1)));
+    C.style.width = Math.floor(VW * k) + 'px'; C.style.height = Math.floor(VH * k) + 'px';
+  } else { S = Math.max(1, Math.floor(Math.min(innerWidth / VW, (innerHeight - 30) / VH))); C.style.width = C.style.height = ''; }
+  C.width = VW * S; C.height = VH * S; ctx.imageSmoothingEnabled = false;
+}
 addEventListener('resize', fit); fit();
 
 // ---------- tuning: first picks, all in one place ----------
