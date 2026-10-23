@@ -278,7 +278,8 @@ ROOM({
    "kind": "can",
    "x": 1224.0,
    "y": 288,
-   "f": -1
+   "f": -1,
+   "beat": "soldierDown"
   }
  ],
  "detail": {

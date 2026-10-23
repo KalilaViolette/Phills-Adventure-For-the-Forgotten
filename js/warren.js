@@ -373,7 +373,7 @@ const TOCK_SPOTS = {                                                            
 };
 function addFoe(kind, x, y, tag) {
   const k = FOE[kind]; if (!k) return null;
-  const f = { room: room.def.id, i: 900 + foes.length, kind, x, y, x0: x, y0: y, f: -1, hp: foeHP(k), state: 'walk', t: 0, cd: 1.2 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: patrol(x, y), tag };
+  const f = { room: room.def.id, i: 900 + foes.length, kind, x, y, x0: x, y0: y, f: -1, hp: foeHP(k, kind), state: 'walk', t: 0, cd: 1.2 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: patrol(x, y), tag };
   f.moves = movesFor(kind);
   if (k.setup) k.setup(f);
   foes.push(f); return f;
@@ -401,7 +401,7 @@ function setupWarrenRoom() {
     addActor('tock', { kind: 'rw', x: sp.x, y: sp.y, frame: n === 1 ? 'tock_cower' : n === 2 ? 'tock_tangled' : 'tock_rundown', layer: 'back', flip: false });
     if (n === 1) {
       room.tock.state = 'cornered';
-      for (const cx of sp.caps) addFoe('cap', cx * T, sp.y, 'tock');
+      for (const cx of sp.caps.slice(0, world.flags.soldierDown ? 3 : 1)) addFoe('cap', cx * T, sp.y, 'tock');   // (one cap cornering him before the tin soldier's down, three after: the first fight in the game was six, 10/23/2026)
     }
     if (n === 3) room.tockKey = { x: sp.key.x, y: sp.key.y };
   }

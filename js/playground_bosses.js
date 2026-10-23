@@ -7,7 +7,8 @@
 // with a spray of sand that rolls out both ways (jump it), and spins in place kicking sand at you.
 BOSS_KINDS.top = {
   soundStates: ['skateWind'],                                                   // when a squeak startles it (boss.js bossHeard)
-  name: 'the spinning top', hp: 26, song: 'top', phase2: 'it spins faster', downText: 'the spinning top is down', starsY: 70,
+  name: 'the spinning top', hp: 22,                                                   // (26 down to 22, 10/23/2026: he has no sword work yet when he gets here)
+  song: 'top', phase2: 'it spins faster', downText: 'the spinning top is down', starsY: 70,
   wakeSound: () => { sfx.whirl(); setTimeout(() => sfx.whirl(), 200); }, downSound: () => { sfx.thud(); sfx.clunk(); },
   setup(def) { pbSetup(def, { vx: 0, bumps: 0 }); },
   hurtBox: () => ({ l: boss.x - 26, r: boss.x + 26, t: boss.y - 50, b: boss.y }),

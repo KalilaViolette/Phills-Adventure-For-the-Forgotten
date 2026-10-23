@@ -1077,7 +1077,8 @@ ROOM({
    "kind": "dewlash",
    "x": 648.0,
    "y": 512,
-   "f": -1
+   "f": -1,
+   "beat": "soldierDown"
   }
  ],
  "detail": {

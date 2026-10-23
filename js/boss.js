@@ -7,7 +7,7 @@
 let boss = null;
 const BOSS_KINDS = {};          // the other regions' bosses add themselves here: { setup, update, hits, draw, name, hp, squeaked }
 const bossKind = () => boss && boss.def.kind && BOSS_KINDS[boss.def.kind];
-const SOL = { hp: 20, walk: 44, reach: 66, wind: 0.62, wind2: 0.46, thrust: 0.15, recover: 0.5, raise: 0.8, slam: 0.14, stagger: 1.8 };
+const SOL = { hp: 14, walk: 44, reach: 66, wind: 0.62, wind2: 0.46, thrust: 0.15, recover: 0.5, raise: 0.8, slam: 0.14, stagger: 2.2, combo2: 2 };   // (10/23/2026: 20 down to 14, down for 2.2 s not 1.8, thrusts in twos once he's wound up, not threes: the first boss was about six clean parries)
 const BOSS_DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 4, chargedchop: 4, chargedwhirl: 4 };
 function setupBoss() {
   boss = null;
@@ -125,7 +125,7 @@ function updateBoss(dt) {
       facePhill();
       b.x += b.f * SOL.walk * (b.phase === 2 ? 1.3 : 1) * dt;
       if (Math.floor(b.t / 0.32) !== Math.floor((b.t - dt) / 0.32)) sfx.stomp();
-      if (dist <= SOL.reach) { b.combo = b.phase === 2 ? 3 : 1; bossState('aim'); sfx.windup(); }
+      if (dist <= SOL.reach) { b.combo = b.phase === 2 ? SOL.combo2 : 1; bossState('aim'); sfx.windup(); }
       else if (b.t > 2.2) { bossState('raise'); sfx.heavyWindup(); popup(b.x, b.y - 100, '!!', '#ff6b5a', true); }
       break;
     }

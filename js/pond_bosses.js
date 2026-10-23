@@ -80,7 +80,8 @@ const pbWalls = () => { if (boss.walled) for (const [x0, y0, x1, y1] of boss.def
 // rams along the water. Hit it from the pads, or bounce down off its sail.
 BOSS_KINDS.sailboat = {
   soundStates: ['aim'],                                                   // when a squeak startles it (boss.js bossHeard)
-  name: 'the toy sailboat', hp: 44, song: 'sailboat', phase2: 'it trims its sail and picks up speed', downText: 'the sailboat is down', starsY: 118,
+  name: 'the toy sailboat', hp: 34,                                                    // (44 down to 34, 10/23/2026: he has no sword work yet when he gets here)
+  song: 'sailboat', phase2: 'it trims its sail and picks up speed', downText: 'the sailboat is down', starsY: 118,
   wakeSound: () => { sfx.creak(); setTimeout(() => sfx.boom(), 300); }, downSound: () => { sfx.creak(); sfx.splash(2); },
   setup(def) { pbSetup(def, { vx: 0, y: def.y + 6 }); },
   hurtBox: () => ({ l: boss.x - 52, r: boss.x + 54, t: boss.y - 96, b: boss.y + 2 }),

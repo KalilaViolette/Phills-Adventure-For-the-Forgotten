@@ -271,7 +271,8 @@ function hurt(fromX, kind, dmg = 1) {
   if (mapView) closeMapNow();
   // his fluff: what this hit knocks out he can still win back by fighting. Anything still loose from the hit before is
   // locked in now: it wears his most health down until he sews himself up at a resting spot
-  if (P.loose > 0) { P.worn = Math.min(world.maxHealth - 1, P.worn + P.loose); P.maxHealth = world.maxHealth - P.worn; }
+  // (10/23/2026: not till the tin soldier's down. Before that a puff he didn't win back is just gone, so the rally gets learned before it costs anything)
+  if (P.loose > 0 && world.flags.soldierDown) { P.worn = Math.min(world.maxHealth - 1, P.worn + P.loose); P.maxHealth = world.maxHealth - P.worn; }
   P.loose = Math.min(dmg, P.health); P.looseBits = 0; P.looseT = tune.rallyTime; P.looseMax = tune.rallyTime;
   // the first time any's knocked loose, a note over him says what it is (the teaching audit, 10/18/2026: it only ever said
   // so after he'd already won some back). It stays up till he's won a puff back once

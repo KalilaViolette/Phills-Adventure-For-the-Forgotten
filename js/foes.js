@@ -14,7 +14,18 @@ const DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 3, charged
 // Rootwood's own enemies got two new attacks each, so a few start with more than 3 (baseMoves)
 const REGION_DIST = { rootwood: 0, home: 0, pond: 1, playground: 1, oak: 1, warren: 1, greenhouse: 2, hive: 2 };
 const regionDist = r => REGION_DIST[r] ?? 2;
-const movesFor = kind => (FOE[kind].baseMoves || 3) + regionDist(room && room.def.region);
+// The start of the game (10/23/2026): Rootwood's first enemies only use the two attacks they're named for till the tin
+// soldier's down, and the first halves of the Pond and the Playground keep Rootwood's count (their second halves get the
+// extra one). A player meets one new trick at a time, and the rest come back as the story goes on
+const STARTERS = new Set(['cap', 'can', 'spinner']);
+const FIRST_HALF = new Set(['reedbank', 'shallows', 'dock', 'cattails', 'dragonfly', 'overlook', 'lilypads', 'sailboat',
+  'gate', 'bins', 'puddle', 'tires', 'bikes', 'woodchips', 'sandbox', 'spinner', 'slide', 'lostfound', 'balloonwall']);
+const firstHalf = () => !!(room && FIRST_HALF.has(room.def.id));
+const earlyRootwood = () => !!(room && room.def.region === 'rootwood' && !world.flags.soldierDown);
+const movesFor = kind => {
+  if (earlyRootwood() && STARTERS.has(kind)) return 2;
+  return (FOE[kind].baseMoves || 3) + (firstHalf() ? 0 : regionDist(room && room.def.region));
+};
 const hasMove = (f, n) => n <= (f.moves || 3);
 // an attack it's started, it finishes (10/16/2026: every enemy went down to button mashing, because a hit
 // knocked it out of its wind-up). Hits in these states still hurt and flash but don't stop it. A parry, a wound up
@@ -250,10 +261,18 @@ function roomsApart(a, b, most = 8) {
 const POND_DEEP = new Set(['deepwater', 'silt', 'fishline', 'grotto', 'sunken', 'drainmouth', 'foamline', 'swan', 'fenceside']);
 function regionToughness() {
   const r = room.def.region;
-  if (r === 'pond') return POND_DEEP.has(room.def.id) ? 2 : 1.5;
-  return { rootwood: 1, home: 1, playground: 1.5, oak: 1.75, greenhouse: 2, hive: 2 }[r] || 1;
+  if (r === 'pond') return POND_DEEP.has(room.def.id) ? 2 : firstHalf() ? 1.2 : 1.6;          // (the first half was 1.5, 10/23/2026: Phill's no stronger there yet)
+  if (r === 'playground') return firstHalf() ? 1.2 : 1.6;
+  return { rootwood: 1, home: 1, oak: 1.75, greenhouse: 2, hive: 2 }[r] || 1;
 }
-const foeHP = k => k.hp <= 1 ? k.hp : Math.round(k.hp * regionToughness());
+// Rootwood's enemies on the way to the tin soldier keep the health they had on 10/15/2026, before it went up by one or
+// two across the board; once he's down they have today's (10/23/2026, the start was getting too hard)
+const EARLY_HP = { cap: 3, can: 4, spinner: 2, wrapper: 2, juice: 3 };
+const foeHP = (k, kind) => {
+  if (k.hp <= 1) return k.hp;
+  if (kind && earlyRootwood() && EARLY_HP[kind] !== undefined) return EARLY_HP[kind];
+  return Math.round(k.hp * regionToughness());
+};
 function spawnFoes() {
   if (foes.length && foes[0].room && foes[0].room !== room.def.id) {
     const down = new Set(foes.filter(f => f.state === 'down' || f.hp <= 0).map(f => f.i));
@@ -266,8 +285,9 @@ function spawnFoes() {
   foes.length = 0; shots.length = 0; drops.length = 0;
   (room.def.foes || []).forEach((d, i) => {
     const k = FOE[d.kind]; if (!k) return;
+    if (d.beat && !world.flags[d.beat]) return;                       // not here yet: it turns up once the story's got that far (10/23/2026)
     if (gone && gone.has(i)) return;
-    const f = { room: room.def.id, i, kind: d.kind, x: d.x, y: d.y, x0: d.x, y0: d.y, f: d.f || -1, hp: foeHP(k), state: 'walk', t: 0, cd: 0.8 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: k.free ? [2 * T, room.pxW - 2 * T] : patrol(d.x, d.y) };
+    const f = { room: room.def.id, i, kind: d.kind, x: d.x, y: d.y, x0: d.x, y0: d.y, f: d.f || -1, hp: foeHP(k, d.kind), state: 'walk', t: 0, cd: 0.8 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: k.free ? [2 * T, room.pxW - 2 * T] : patrol(d.x, d.y) };
     f.moves = movesFor(d.kind);
     if (d.asleep) { f.state = 'asleep'; f.wake = d.wake || 72; f.after = d.after; }   // lying still till he's met the one before it (the teaching audit, 10/18/2026): see updateFoes
     keepClearOfDoors(f, k);

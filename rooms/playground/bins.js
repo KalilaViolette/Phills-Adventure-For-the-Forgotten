@@ -299,7 +299,8 @@ ROOM({
    "kind": "teeth",
    "x": 424.0,
    "y": 464,
-   "f": -1
+   "f": -1,
+   "beat": "topDown"
   },
   {
    "kind": "jack",

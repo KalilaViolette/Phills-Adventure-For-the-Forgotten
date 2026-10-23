@@ -206,7 +206,8 @@ ROOM({
    "kind": "spinner",
    "x": 424.0,
    "y": 224,
-   "f": -1
+   "f": -1,
+   "beat": "soldierDown"
   }
  ],
  "detail": {
