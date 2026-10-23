@@ -21,8 +21,8 @@ addEventListener('resize', fit); fit();
 
 // ---------- tuning: first picks, all in one place ----------
 const TUNE = {
-  run: 150, chainBoost: 0.22, chainMax: 3, accel: 900, airAccel: 520, jumpV: 370, gravity: 1050, maxFall: 620, jumpCut: 0.45,
-  reach: 208, hookSpeed: 950, yankSpeed: 470, yankMax: 0.6, holdForSwing: 0.18, reel: 1100, swingMin: 48,
+  run: 205, chainBoost: 0.22, chainMax: 3, accel: 2400, airAccel: 900, jumpV: 370, gravity: 1050, maxFall: 620, jumpCut: 0.45,
+  reach: 208, hookSpeed: 1150, yankSpeed: 560, yankMax: 0.6, holdForSwing: 0.3, reel: 1100, swingMin: 48,
   rallyTime: 4, rallyHits: 3, spareMax: 9, sewTime: 1.4, sewCost: 2, health: 5,
 };
 
@@ -125,10 +125,10 @@ function pickKnot() {
   return best;
 }
 function throwHook() {
-  hook.x = P.x + P.f * 10; hook.y = P.y - 40; hook.held = 0; hook.mode = null;
+  hook.x = P.x + P.f * 10; hook.y = P.y - 40; hook.held = 0; hook.let = false; hook.mode = null;
   const k = pickKnot();
   if (k) { hook.state = 'fly'; hook.knot = k; hook.tx = k.x; hook.ty = k.y; }
-  else { hook.state = 'miss'; hook.knot = null; hook.tx = P.x + P.f * TUNE.reach * 0.85; hook.ty = P.y - 30 - TUNE.reach * 0.5; hook.missT = 0; }
+  else { hook.state = 'miss'; hook.knot = null; if (!pops.some(p => p.text === 'no knot in reach')) pops.push({ text: 'no knot in reach', x: P.x, y: P.y - 80, t: 0.9 }); hook.tx = P.x + P.f * TUNE.reach * 0.85; hook.ty = P.y - 30 - TUNE.reach * 0.5; hook.missT = 0; }
   P.throwT = 0.18; P.sewing = false; P.sewT = 0;
 }
 function letGo() {
@@ -137,7 +137,7 @@ function letGo() {
 }
 function updateHook(dt) {
   if (hook.state === 'home') return;
-  if (inp.hook) hook.held += dt;
+  if (inp.hook && !hook.let) hook.held += dt; else hook.let = true;   // (let: the button's been let go since the throw)
   const tp = tailPoint();
   if (hook.state === 'fly' || hook.state === 'miss') {
     const dx = hook.tx - hook.x, dy = hook.ty - hook.y, d = Math.hypot(dx, dy), s = TUNE.hookSpeed * dt;
@@ -152,7 +152,7 @@ function updateHook(dt) {
     return;
   }
   if (hook.state === 'stuck') {
-    if (hook.mode === 'yank' && inp.hook && hook.held >= TUNE.holdForSwing && hook.yankT < 0.08) hook.mode = 'swing';   // held on: a swing after all
+    if (hook.mode === 'yank' && !hook.let && hook.held >= TUNE.holdForSwing) hook.mode = 'swing';   // still held from the throw: a swing after all
     if (hook.mode === 'swing' && (!inp.hook || pressed('jump'))) { if (pressed('jump')) P.vy = Math.min(P.vy, -220); letGo(); }
     return;
   }
@@ -342,8 +342,23 @@ function drawWorld() {
     ctx.fillStyle = '#8a6a40'; ctx.beginPath(); ctx.ellipse(px, py, 4, 3, 0, 0, 7); ctx.fill();
     ctx.fillStyle = '#2a1c10'; ctx.fillRect(px - 1, py - 1, 2, 2);
   }
-  const target = hook.state === 'home' && !P.sewing ? pickKnot() : null;
-  if (target) { ctx.strokeStyle = 'rgba(255,240,200,0.8)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(target.x - cam.x, target.y - cam.y, 10 + Math.sin(performance.now() / 120), 0, 7); ctx.stroke(); }
+  // what the hook will catch: every knot in reach gets a faint ring, and the one a throw goes to now gets bright
+  // brackets round it and a dotted line out to it from her, so it's never a guess (10/23/2026)
+  const target = hook.state === 'home' && !P.sewing ? pickKnot() : null, now = performance.now();
+  for (const k of knots) {
+    if (k === target || Math.hypot(k.x - P.x, k.y - (P.y - 30)) > TUNE.reach) continue;
+    ctx.strokeStyle = 'rgba(255,240,200,0.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(k.x - cam.x, k.y - cam.y, 10, 0, 7); ctx.stroke();
+  }
+  if (target) {
+    const tx = target.x - cam.x, ty = target.y - cam.y, r = 13 + Math.sin(now / 110) * 1.5, l = 6;
+    ctx.strokeStyle = '#fff1b0'; ctx.lineWidth = 2;
+    for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+      ctx.beginPath(); ctx.moveTo(tx + sx * r, ty + sy * (r - l)); ctx.lineTo(tx + sx * r, ty + sy * r); ctx.lineTo(tx + sx * (r - l), ty + sy * r); ctx.stroke();
+    }
+    const fx = P.x - cam.x, fy = P.y - 40 - cam.y, d = Math.hypot(tx - fx, ty - fy);
+    ctx.fillStyle = 'rgba(255,241,176,0.55)';
+    for (let i = 14; i < d - 16; i += 9) ctx.fillRect(fx + (tx - fx) * i / d - 1, fy + (ty - fy) * i / d - 1, 2, 2);
+  }
   for (const s of scraps) if (!s.got) { ctx.fillStyle = '#c86a9a'; ctx.fillRect(s.x - cam.x - 3, s.y - cam.y - 6, 6, 3); ctx.fillRect(s.x - cam.x - 1, s.y - cam.y - 8, 3, 7); }
   for (const f of foes) {
     if (f.dead) continue;
@@ -365,7 +380,7 @@ function drawHUD() {
   for (const p of pops) if (p.text) { ctx.globalAlpha = Math.min(1, p.t * 2); ctx.fillStyle = '#fff6dc'; ctx.fillText(p.text, p.x - cam.x - ctx.measureText(p.text).width / 2, p.y - cam.y); ctx.globalAlpha = 1; }
 }
 function render() {
-  cam.x += ((P.x + P.f * 40 - VW / 2) - cam.x) * 0.12; cam.y += ((P.y - VH * 0.6) - cam.y) * 0.1;
+  cam.x += ((P.x + P.f * (50 + Math.min(110, Math.abs(P.vx) * 0.25)) - VW / 2) - cam.x) * 0.12; cam.y += ((P.y - VH * 0.6) - cam.y) * 0.1;
   cam.x = Math.max(0, Math.min(W * T - VW, cam.x)); cam.y = Math.max(-80, Math.min(H * T - VH + 40, cam.y));
   ctx.setTransform(S, 0, 0, S, 0, 0); ctx.imageSmoothingEnabled = false;
   drawWorld();
