@@ -30,6 +30,11 @@
 // till something stops it (landing, a dodge, a swing, a hit, the hook). The right stick turns her, so she can swing
 // one way while backing off the other. R1 attack, Circle dodge, Square sew, R2 the hook, Triangle for an ability later.
 // And she's never still in the air: every moment there has a frame that moves.
+//
+// The fifth pass (10/23/2026): her tail is drawn here, not in the frames. Each frame says where the tail starts and
+// which way its first link points (tr, td, from purl_proto_sheet.py); a chain of four links hangs off that, pulled
+// toward the frame's pose but a little behind it, so it trails her through a run, whips round when she turns and
+// swings out on a jump, and the plum at its end goes on moving after she stops. The yarn runs from the live tip.
 
 const T = 16, VW = 640, VH = 360;
 const C = document.getElementById('c'), ctx = C.getContext('2d');
@@ -78,7 +83,11 @@ const ATTACKS = {
 // One idea a stretch, each with a sign, and a safe ledge to come back to at the start of each one:
 // run and jump; tap the hook to yank across; hold it to swing; chain throws without landing; up between two trunks;
 // and a last run to the end. The first part has a floor far below it that catches a miss; past that, real drops.
-const W = 222, H = 40;
+// Two places to run: the course (the default), and a blockout of the Canopy's first two rooms at game scale,
+// the long bough and the first gap, laid out from the room briefs, to try the spacing before any art is made
+// (purl.html?room=canopy, 10/23/2026)
+const ROOM = (new URLSearchParams(location.search).get('room') || 'course') === 'canopy' ? 'canopy' : 'course';
+const W = ROOM === 'canopy' ? 256 : 222, H = ROOM === 'canopy' ? 60 : 40;
 const tiles = new Uint8Array(W * H);                     // 0 open, 1 solid wood, 2 a twig (stand on it from above)
 const knots = [], foes = [], scraps = [], signs = [];
 const at = (x, y) => (x < 0 || x >= W) ? 1 : (y < 0 || y >= H) ? 0 : tiles[y * W + x];
@@ -90,7 +99,35 @@ function scrap(x, y) { scraps.push({ x: x * T + 8, y: y * T + 2, got: false }); 
 function sign(x, y, text) { signs.push({ x: x * T + 8, y: y * T, text }); }
 const LEDGES = [];
 function ledge(x0, x1, y, atX) { LEDGES.push({ x0, x1, at: { x: (atX ?? x0 + 2) * T, y: y * T } }); }
-(function build() {
+function buildCanopy() {
+  // The long bough (160 by 32 tiles in the briefs, laid along the top of a taller world so the first gap can drop
+  // away under it): one oak limb reaching east, dipping and rising, then the next tree's branch tips reaching back
+  // stretch one: broad and continuous, knots overhead every 10 tiles or so, nothing to cross
+  wood(0, 14, 22, 25); wood(15, 28, 23, 26); wood(29, 40, 21, 24); ledge(0, 14, 22, 4);
+  sign(5, 22, 'The long bough. Knots overhead to practice on, nothing to cross yet');
+  knot(10, 16); knot(20, 17); knot(30, 15); knot(40, 15);
+  // stretch two: the limb breaks up into branch tips, short gaps with one knot each, short landings between
+  wood(41, 48, 22, 24); knot(54, 16);
+  wood(59, 64, 21, 23); knot(70, 15);
+  wood(76, 80, 22, 24); knot(86, 15);
+  sign(42, 22, 'Branch tips. Tap the hook over each gap and keep running');
+  // the safe ledge in the middle: the second tree's limb coming up, wide and flat at its base
+  wood(93, 99, 21, 23); wood(100, 112, 20, 26); ledge(100, 112, 20, 103); scrap(108, 20);
+  sign(101, 20, 'A wide fork, safe to stop on. Two knots and no landing next');
+  // stretch three: the first chain, two knots at different heights over one long gap
+  knot(119, 15); knot(130, 12);
+  wood(137, 159, 20, 22); ledge(137, 159, 20, 140); scrap(150, 20);
+  sign(145, 20, 'The oak\'s last branch runs out over the first gap');
+  // The first gap (96 by 60): the crossing goes down through the middle and climbs back up to the maple
+  twig(164, 170, 23);                                     // a dead branch sticking out from the oak's side
+  knot(176, 16); knot(188, 17);
+  twig(193, 199, 26);                                     // the broken branch caught hanging in the middle: one small landing
+  knot(206, 19); knot(216, 15); knot(225, 11);           // up the kite's string to its frame
+  wood(232, W - 1, 18, 24); ledge(232, W - 1, 18, 236); scrap(240, 18);   // the maple's fork
+  sign(236, 18, 'The maple. The end of the blockout, R or Select to go again');
+  foe(24, 23); foe(106, 20);
+}
+function buildCourse() {
   wood(0, 95, 38, 39);                                   // a floor far below the first part, to catch a miss while she's learning
   // 1. run and jump: a broad bough, a log to hop and a stump to pull herself up onto, and a gap to jump
   wood(0, 30, 30, 31); ledge(0, 30, 30, 6);
@@ -122,7 +159,8 @@ function ledge(x0, x1, y, atX) { LEDGES.push({ x0, x1, at: { x: (atX ?? x0 + 2) 
   knot(207, 7);
   wood(212, W - 1, 16, 17); ledge(212, W - 1, 16, 214); scrap(217, 16);
   sign(214, 16, 'The end. R or Select to go again');
-})();
+}
+if (ROOM === 'canopy') buildCanopy(); else buildCourse();
 const START = LEDGES[0].at;
 
 // ---------- her ----------
@@ -174,8 +212,8 @@ function moveX(dx) {                                       // true if she ran in
   for (let i = 0; i < steps; i++) {
     const nx = P.x + dx / steps;
     if (!boxHits(nx, P.y)) { P.x = nx; continue; }
-    // a ledge she nearly makes: she pulls herself up onto it (a small step on the ground, more in the air)
-    const most = P.ground ? 6 : TUNE.mantle;
+    // a ledge she nearly makes: she pulls herself up onto it (a step of a tile on the ground without breaking her run, more in the air)
+    const most = P.ground ? T : TUNE.mantle;
     let up = 0;
     for (let k = 2; k <= most; k += 2) if (!boxHits(nx, P.y - k)) { up = k; break; }
     if (up && P.vy > -260) { P.y -= up; P.x = nx; if (!P.ground) { P.vy = Math.min(P.vy, 0); P.land = 0.06; if (up > 10) { mark('mantle', 0.2); dust(P.x + P.f * 8, P.y, 3); } } continue; }
@@ -201,8 +239,90 @@ function moveY(dy) {                                       // true if she ran in
   }
   return false;
 }
-function tailPoint() {                                     // where the yarn leaves her: near her tail, at her back and low
+function tailPoint() {                                     // where the yarn leaves her when there's no tail to go by: near her tail, at her back and low
   return { x: P.x - P.f * 22, y: P.y - 14 };
+}
+
+// ---------- her tail, drawn live ----------
+// Four links of 8 pixels from the frame's tail root, each pulled toward where the frame's pose would have it (the
+// first link the way the frame points, the rest curling on round the way her tail rests), the pull weaker toward the
+// tip, so the tip lags and whips. Verlet with the link lengths kept, so it never stretches.
+const TAIL = { links: 4, len: 8, curl: [0, 14, 43, 70], pull: [0, 150, 95, 60, 38], damp: 9, grav: 50, snap: 80 };
+const tail = { n: [], prev: [], root: null, was: null, off: { x: 0, y: 0 }, dir: 0, sg: 1, ok: false };
+function tailRest() {                                      // where the frame would have each joint: [root, j1, j2, j3, tip]
+  const out = [{ x: tail.root.x, y: tail.root.y }];
+  for (let i = 0; i < TAIL.links; i++) {
+    const a = (tail.dir + tail.sg * TAIL.curl[i]) * Math.PI / 180, l = out[out.length - 1];
+    out.push({ x: l.x + Math.cos(a) * TAIL.len, y: l.y + Math.sin(a) * TAIL.len });
+  }
+  return out;
+}
+function tailReset() { const r = tailRest(); tail.n = r.map(q => ({ x: q.x, y: q.y })); tail.prev = r.map(q => ({ x: q.x, y: q.y })); tail.was = { x: tail.root.x, y: tail.root.y }; tail.off = { x: 0, y: 0 }; tail.ok = true; }
+function updateTail(dt) {
+  const pl = placement(); if (!pl) return;
+  const fr = pl.fr, fac = fr.body_facing || pl.fac;
+  if (fr.tr) { tail.root = { x: pl.dx + fr.tr[0], y: pl.dy + fr.tr[1] }; tail.dir = fr.td; }
+  else { const t = tailPoint(); tail.root = { x: t.x, y: t.y }; tail.dir = fac === 'right' ? 173 : 7; }
+  tail.sg = fac === 'right' ? 1 : -1;
+  if (!tail.ok || Math.hypot(tail.root.x - tail.n[0].x, tail.root.y - tail.n[0].y) > TAIL.snap) { tailReset(); return; }   // (put down somewhere else: no whip across the screen)
+  const rest = tailRest(), k = Math.exp(-TAIL.damp * dt);
+  // the root follows the frame's root, but a jump of it (the frames flip when she turns, and the root with them)
+  // is eased over a few ticks, so the tail sweeps round through the turn instead of flicking across
+  const jx = tail.root.x - tail.was.x, jy = tail.root.y - tail.was.y; tail.was = { x: tail.root.x, y: tail.root.y };
+  if (Math.hypot(jx, jy) > 10) { tail.off.x -= jx; tail.off.y -= jy; }
+  tail.off.x *= 0.88; tail.off.y *= 0.88;
+  tail.n[0] = { x: tail.root.x + tail.off.x, y: tail.root.y + tail.off.y };
+  for (let i = 1; i <= TAIL.links; i++) {
+    const q = tail.n[i], o = tail.prev[i], ax = (rest[i].x - q.x) * TAIL.pull[i], ay = (rest[i].y - q.y) * TAIL.pull[i] + TAIL.grav;
+    const nx = q.x + (q.x - o.x) * k + ax * dt * dt, ny = q.y + (q.y - o.y) * k + ay * dt * dt;
+    tail.prev[i] = { x: q.x, y: q.y }; tail.n[i] = { x: nx, y: ny };
+  }
+  for (let pass = 0; pass < 2; pass++) for (let i = 1; i <= TAIL.links; i++) {   // the links keep their length, from the root out
+    const a = tail.n[i - 1], b = tail.n[i]; let dx = b.x - a.x, dy = b.y - a.y; const d = Math.hypot(dx, dy) || 1;
+    b.x = a.x + dx / d * TAIL.len; b.y = a.y + dy / d * TAIL.len;
+  }
+}
+function tailTip() { return tail.ok ? tail.n[TAIL.links] : tailPoint(); }
+const tailCanvas = document.createElement('canvas'); tailCanvas.width = tailCanvas.height = 80;
+const tailCtx = tailCanvas.getContext('2d');
+const TAIL_COL = { furUp: [167, 91, 50], furDown: [132, 64, 32], plumUp: [128, 42, 72], plumDown: [98, 30, 54], line: [28, 16, 12] };
+function drawTail() {
+  // her tail as pixels: a smooth curve through the joints, stamped as discs that thin toward the tip, lit from above
+  // (the light fur on top, the darker underneath), the last link the plum, and an outline round it all
+  if (!tail.ok) return;
+  const N = tail.n, W = tailCanvas.width, ox = Math.round(N[0].x) - W / 2, oy = Math.round(N[0].y) - W / 2;
+  const img = tailCtx.createImageData(W, W), d = img.data, kind = new Uint8Array(W * W);   // 1 fur up, 2 fur down, 3 plum up, 4 plum down
+  const pts = []; const total = TAIL.links * 6;
+  for (let i = 0; i < TAIL.links; i++) {                     // Catmull-Rom through the joints, six steps a link
+    const p0 = N[Math.max(0, i - 1)], p1 = N[i], p2 = N[i + 1], p3 = N[Math.min(TAIL.links, i + 2)];
+    for (let j = 0; j < 6; j++) {
+      const t = j / 6, t2 = t * t, t3 = t2 * t;
+      pts.push({ x: 0.5 * (2 * p1.x + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3),
+                 y: 0.5 * (2 * p1.y + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3), s: (i * 6 + j) / total });
+    }
+  }
+  pts.push({ x: N[TAIL.links].x, y: N[TAIL.links].y, s: 1 });
+  for (const q of pts) {
+    const r = 2.3 - 0.8 * q.s + (q.s > 0.93 ? 0.3 : 0), cx = q.x - ox, cy = q.y - oy, plum = q.s > 0.72;
+    for (let y = Math.floor(cy - r); y <= Math.ceil(cy + r); y++) for (let x = Math.floor(cx - r); x <= Math.ceil(cx + r); x++) {
+      if (x < 1 || y < 1 || x >= W - 1 || y >= W - 1) continue;
+      if (Math.hypot(x + 0.5 - cx, y + 0.5 - cy) > r) continue;
+      kind[y * W + x] = (plum ? 3 : 1) + (y + 0.5 > cy + 0.2 ? 1 : 0);
+    }
+  }
+  if (P.loose > 0) {                                        // yarn knocked loose: a strand flapping off the tip till she wins it back
+    const e = N[TAIL.links], ph = performance.now() / 90, bx = e.x - ox, by = e.y - oy, away = Math.sign(e.x - N[0].x) || -P.f;
+    for (let i = 1; i <= 9; i++) { const x = Math.round(bx + away * i * 1.1), y = Math.round(by - 1 + Math.sin(ph + i * 0.9) * 2.2); if (x > 0 && y > 0 && x < W - 1 && y < W - 1 && !kind[y * W + x]) kind[y * W + x] = i % 3 ? 5 : 6; }
+  }
+  const cols = [null, TAIL_COL.furUp, TAIL_COL.furDown, TAIL_COL.plumUp, TAIL_COL.plumDown, [128, 42, 72], [162, 68, 102]];
+  for (let i = 0; i < W * W; i++) {
+    let c = cols[kind[i]];
+    if (!c && ((kind[i - 1] && kind[i - 1] < 5) || (kind[i + 1] && kind[i + 1] < 5) || (kind[i - W] && kind[i - W] < 5) || (kind[i + W] && kind[i + W] < 5))) c = TAIL_COL.line;
+    if (c) { d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255; }
+  }
+  tailCtx.putImageData(img, 0, 0);
+  if (P.inv > 0 && Math.floor(P.inv * 20) % 2) ctx.globalAlpha = 0.5;
+  ctx.drawImage(tailCanvas, ox - Math.round(cam.x), oy - Math.round(cam.y)); ctx.globalAlpha = 1;
 }
 
 // ---------- the hook ----------
@@ -540,6 +660,7 @@ function update(dt) {
   for (const s of scraps) if (!s.got && Math.abs(s.x - P.x) < 14 && Math.abs(s.y - P.y) < 30) { s.got = true; P.spare = Math.min(TUNE.spareMax, P.spare + 1); pop('a scrap of yarn'); }
   for (const p of pops) { p.t -= dt; p.y -= 20 * dt; } while (pops.length && pops[0].t <= 0) pops.shift();
   P.anim += dt * (P.ground ? Math.max(0.6, Math.abs(P.vx) / TUNE.run) : 1);
+  updateTail(dt);
   Object.assign(was, inp);
 }
 
@@ -602,18 +723,33 @@ function frameFor() {
   if (!r || !meta.facings[r[2]].anims[r[0]]) r = [P.ground ? 'idle' : 'air', 0, fac];
   return r;
 }
-function drawPurl() {
-  if (!meta || !sheet.complete) { ctx.fillStyle = '#c87a40'; ctx.fillRect(P.x - cam.x - 8, P.y - cam.y - 60, 16, 60); return null; }
+let lastDrawn = null, ghost = null;
+function placement() {                                     // the frame she's in and where its cell's top left sits in the world: {name, k, fac, fr, dx, dy}
+  if (!meta) return null;
   const [name, k, fac] = frameFor(), fm = meta.facings[fac];
   const fr = fm.anims[name][Math.min(k, fm.anims[name].length - 1)];
-  const [cw, ch] = meta.cell, sx = (fr.i % meta.cols) * cw, sy = Math.floor(fr.i / meta.cols) * ch;
   let dx, dy;
-  if (fr.mid && (fr.ball || (!P.ground && !(hook.state === 'stuck' && hook.mode === 'swing')))) { dx = Math.round(P.x - fr.mid[0] - cam.x); dy = Math.round(P.y - (fr.ball && P.ground ? 22 : 28) - fr.mid[1] - cam.y); }   // in the air (and curled in a ball) every frame sits on the middle of her body, so she doesn't shift between moves
-  else { dx = Math.round(P.x - (fr.fx ?? fm.feet_x) - cam.x); dy = Math.round(P.y - (fr.fy ?? meta.floor) - cam.y); }
-  P.frameNow = name + ' ' + k + ' ' + fac;
+  if (fr.mid && (fr.ball || (!P.ground && !(hook.state === 'stuck' && hook.mode === 'swing')))) { dx = Math.round(P.x - fr.mid[0]); dy = Math.round(P.y - (fr.ball && P.ground ? 22 : 28) - fr.mid[1]); }   // in the air (and curled in a ball) every frame sits on the middle of her body, so she doesn't shift between moves
+  else { dx = Math.round(P.x - (fr.fx ?? fm.feet_x)); dy = Math.round(P.y - (fr.fy ?? meta.floor)); }
+  return { name, k, fac, fr, dx, dy };
+}
+function drawPurl() {
+  if (!meta || !sheet.complete) { ctx.fillStyle = '#c87a40'; ctx.fillRect(P.x - cam.x - 8, P.y - cam.y - 60, 16, 60); return null; }
+  const pl = placement(), fr = pl.fr, [cw, ch] = meta.cell, sx = (fr.i % meta.cols) * cw, sy = Math.floor(fr.i / meta.cols) * ch;
+  const dx = pl.dx - Math.round(cam.x), dy = pl.dy - Math.round(cam.y);
+  P.frameNow = pl.name + ' ' + pl.k + ' ' + pl.fac;
+  // a join between two clips while she's moving fast leaves the frame before as a faint afterimage for two screen
+  // frames (a smear, the way a fast swing is drawn), so the change of pose reads as motion and not a cut (10/23/2026)
+  if (lastDrawn && lastDrawn.name !== pl.name && (Math.hypot(P.vx, P.vy) > 150 || P.atk || P.roll > 0 || P.airDodge > 0)) ghost = { i: lastDrawn.i, dx: lastDrawn.dx, dy: lastDrawn.dy, t: 2 };
+  lastDrawn = { name: pl.name, i: fr.i, dx: pl.dx, dy: pl.dy };
+  drawTail();
+  if (ghost && ghost.t > 0) {
+    ctx.globalAlpha = 0.18 * ghost.t; ctx.drawImage(sheet, (ghost.i % meta.cols) * cw, Math.floor(ghost.i / meta.cols) * ch, cw, ch, ghost.dx - Math.round(cam.x), ghost.dy - Math.round(cam.y), cw, ch); ctx.globalAlpha = 1; ghost.t--;
+  }
+  if (hook.state === 'home' && fr.pts && fr.pts.hook_butt) drawYarn(tailTip(), { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4);   // (the yarn behind her, tail to hook)
   if (P.inv > 0 && Math.floor(P.inv * 20) % 2) ctx.globalAlpha = 0.5;
   ctx.drawImage(sheet, sx, sy, cw, ch, dx, dy, cw, ch); ctx.globalAlpha = 1;
-  return fr.tail ? { x: dx + fr.tail[0] + cam.x, y: dy + fr.tail[1] + cam.y } : tailPoint();
+  return tailTip();
 }
 function drawYarn(from, to, slack) {
   const mx = (from.x + to.x) / 2, my = (from.y + to.y) / 2 + slack, n = Math.ceil(Math.hypot(to.x - from.x, to.y - from.y) / 1.5) + 2;
@@ -640,15 +776,15 @@ function drawWorld() {
       for (const ox of [0, 1400]) { ctx.beginPath(); ctx.ellipse(x + ox, y, 26 + layer * 8, 14 + layer * 5, 0, 0, 7); ctx.fill(); }
     }
   }
-  for (let x = Math.floor(cam.x / T); x <= Math.floor(cam.x / T) + VW / T + 1; x++) if (!at(x, 38) && x >= 0 && x < W) {   // nothing to catch her here: the park far below, small and hazy
-    const px = x * T - cam.x, py = 38 * T - cam.y; ctx.fillStyle = 'rgba(40,50,40,0.55)'; ctx.fillRect(px, py - 6, T, 200);
+  for (let x = Math.floor(cam.x / T); x <= Math.floor(cam.x / T) + VW / T + 1; x++) if (!at(x, H - 2) && x >= 0 && x < W) {   // nothing to catch her here: the park far below, small and hazy
+    const px = x * T - cam.x, py = (H - 2) * T - cam.y; ctx.fillStyle = 'rgba(40,50,40,0.55)'; ctx.fillRect(px, py - 6, T, 200);
     ctx.fillStyle = 'rgba(90,110,80,0.5)'; if ((x * 13) % 7 < 3) ctx.fillRect(px + 3, py - 10, 8, 4);
   }
   const x0 = Math.floor(cam.x / T), x1 = x0 + VW / T + 1, y0 = Math.floor(cam.y / T), y1 = y0 + VH / T + 1;
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
     const t = at(x, y); if (!t || y >= H) continue;
     const px = x * T - cam.x, py = y * T - cam.y;
-    if (t === 1) { ctx.fillStyle = y >= 38 ? '#3a2c1e' : '#6a4a2c'; ctx.fillRect(px, py, T, T); if (at(x, y - 1) !== 1) { ctx.fillStyle = '#8a6a40'; ctx.fillRect(px, py, T, 3); } }
+    if (t === 1) { ctx.fillStyle = y >= H - 2 ? '#3a2c1e' : '#6a4a2c'; ctx.fillRect(px, py, T, T); if (at(x, y - 1) !== 1) { ctx.fillStyle = '#8a6a40'; ctx.fillRect(px, py, T, 3); } }
     else { ctx.fillStyle = '#7a5a34'; ctx.fillRect(px, py + 2, T, 4); ctx.fillStyle = '#5a7a34'; if ((x * 7) % 5 === 0) ctx.fillRect(px + 4, py - 3, 6, 4); }
   }
   for (const k of knots) {                                    // knots in the bark: always drawn the same, so they can be spotted
@@ -711,11 +847,11 @@ function render() {
   drawWorld();
   for (const c of scratches) { ctx.globalAlpha = Math.min(1, c.t * 2); ctx.fillStyle = '#2a1a10'; ctx.fillRect(Math.round(c.x - cam.x), Math.round(c.y - cam.y), 1, 5); ctx.fillRect(Math.round(c.x - cam.x) + 2, Math.round(c.y - cam.y) + 1, 1, 4); ctx.globalAlpha = 1; }
   for (const d of dusts) { ctx.globalAlpha = Math.min(0.8, d.t * 2); ctx.fillStyle = d.bright ? '#fff6c0' : '#d8c39a'; const z = d.t > 0.25 ? 3 : 2; ctx.fillRect(Math.round(d.x - cam.x), Math.round(d.y - cam.y), z, z); ctx.globalAlpha = 1; }
-  const tail = drawPurl() || tailPoint();
+  const tip = drawPurl() || tailPoint();
   if (hook.state !== 'home') {
-    const ang = hook.state === 'reel' ? 180 + Math.atan2(tail.x - hook.x, -(tail.y - hook.y)) * 180 / Math.PI : Math.atan2(hook.x - tail.x, -(hook.y - tail.y)) * 180 / Math.PI;
+    const ang = hook.state === 'reel' ? 180 + Math.atan2(tip.x - hook.x, -(tip.y - hook.y)) * 180 / Math.PI : Math.atan2(hook.x - tip.x, -(hook.y - tip.y)) * 180 / Math.PI;
     const butt = drawHook(hook.x, hook.y, ang);
-    drawYarn(tail, butt, hook.state === 'stuck' && hook.mode === 'swing' ? 0 : hook.state === 'stuck' ? 2 : 10);
+    drawYarn(tip, butt, hook.state === 'stuck' && hook.mode === 'swing' ? 0 : hook.state === 'stuck' ? 2 : 10);
   }
   drawHUD();
 }
@@ -727,4 +863,4 @@ function loop(now) {
   render(); requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-window.__purl = { P, hook, knots, foes, TUNE, LEDGES, keys, update, reset, at, render, frameFor };
+window.__purl = { P, hook, knots, foes, TUNE, LEDGES, keys, update, reset, at, render, frameFor, placement, tail, TAIL, cam, get meta() { return meta; } };
