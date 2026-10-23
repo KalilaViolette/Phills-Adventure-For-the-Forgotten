@@ -23,7 +23,7 @@
   document.body.appendChild(el);
   const tog = document.createElement('button'); tog.id = 'touchToggle'; document.body.appendChild(tog);
 
-  const KEY = { jump: 'KeyZ', hook: 'KeyC', attack: 'KeyX', sew: 'KeyV', reset: 'KeyR', left: 'ArrowLeft', right: 'ArrowRight', down: 'ArrowDown' };
+  const KEY = { jump: 'KeyZ', hook: 'KeyC', attack: 'KeyX', sew: 'KeyV', reset: 'KeyR', left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown' };
   // each thing holding a key is kept track of on its own, so letting go of one doesn't let go of a key something else still holds
   const held = {};
   function key(act, down, src) {
@@ -56,19 +56,19 @@
     put(B('reset'), W / 2 - tw / 2 - 6, th / 2 + 8, tw, th); put(B('max'), W / 2 + tw / 2 + 6, th / 2 + 8, tw, th);
   }
 
-  // the stick: left and right, and down (down drops her through a twig)
+  // the stick: left and right, up (aims the hook higher) and down (drops her through a twig)
   let stickId = null, cx = 0, cy = 0;
   const local = e => { const r = zone.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   function stickAt(x, y) {
     let dx = x - cx, dy = y - cy; const d = Math.hypot(dx, dy);
     if (d > R) { dx *= R / d; dy *= R / d; }
     knob.style.transform = `translate(${dx}px, ${dy}px)`;
-    key('left', dx / R < -0.3, 'stick'); key('right', dx / R > 0.3, 'stick'); key('down', dy / R > 0.6, 'stick');
+    key('left', dx / R < -0.3, 'stick'); key('right', dx / R > 0.3, 'stick'); key('up', dy / R < -0.6, 'stick'); key('down', dy / R > 0.6, 'stick');
   }
   function stickHome() {
     stickId = null; knob.style.transform = ''; base.classList.remove('on');
     base.style.left = home[0] + 'px'; base.style.top = home[1] + 'px';
-    for (const a of ['left', 'right', 'down']) key(a, false, 'stick');
+    for (const a of ['left', 'right', 'up', 'down']) key(a, false, 'stick');
   }
   zone.addEventListener('pointerdown', e => {
     if (stickId !== null) return;

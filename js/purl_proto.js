@@ -5,6 +5,12 @@
 // mending: winning loose yarn back by hitting back fast (the rally), and sitting to crochet herself closed when she's
 // got a breather (sewing, which uses spare yarn). On its own page, so nothing in the game is touched.
 // Her frames are made by Source/Sprites/purl_proto_sheet.py.
+//
+// The second pass (10/23/2026): she's a quick, agile stoat, so she moves like one. She jumps higher than she is tall,
+// gets up to speed at once and turns on the spot. A jump pressed a moment early or a moment after running off an edge
+// still counts. Coming up short of a ledge, she pulls herself up onto it. Against a trunk she scampers up a little,
+// slides down slowly, and kicks off it with a jump. A yank flings her up and over the knot with the speed it gave her,
+// and the yarn's back almost at once, so the next throw is ready. Up on the stick aims the hook higher.
 
 const T = 16, VW = 640, VH = 360;
 const C = document.getElementById('c'), ctx = C.getContext('2d');
@@ -19,69 +25,98 @@ function fit() {
 }
 addEventListener('resize', fit); fit();
 
-// ---------- tuning: first picks, all in one place ----------
+// ---------- tuning: all in one place ----------
 const TUNE = {
-  run: 205, chainBoost: 0.22, chainMax: 3, accel: 2400, airAccel: 900, jumpV: 370, gravity: 1050, maxFall: 620, jumpCut: 0.45,
-  reach: 208, hookSpeed: 1150, yankSpeed: 560, yankMax: 0.6, holdForSwing: 0.3, reel: 1100, swingMin: 48,
+  run: 230, chainBoost: 0.18, chainMax: 3, accel: 3200, airAccel: 1500, airDrag: 700, stop: 2600,
+  jumpV: 520, riseGrav: 1350, fallGrav: 1900, apexGrav: 0.55, maxFall: 720, jumpCut: 170,  // (about 100 pixels up, more than her height, and about 10 tiles across at a run)
+  coyote: 0.1, jumpBuffer: 0.13, mantle: 30,
+  wallSlide: 170, wallJumpX: 330, wallJumpV: 500, wallLock: 0.15, scamper: 0.3, scamperV: 300,
+  reach: 240, hookSpeed: 1600, yankSpeed: 620, yankMax: 0.7, flingUp: 330, holdForSwing: 0.25, reel: 2600, hookBuffer: 0.18,
+  swingMin: 48, swingPump: 420, swingLetGo: 1.12,
   rallyTime: 4, rallyHits: 3, spareMax: 9, sewTime: 1.4, sewCost: 2, health: 5,
 };
 
 // ---------- the course: branches, twigs, knots ----------
-const W = 210, H = 40;
+// One idea a stretch, each with a sign, and a safe ledge to come back to at the start of each one:
+// run and jump; tap the hook to yank across; hold it to swing; chain throws without landing; up between two trunks;
+// and a last run to the end. The first part has a floor far below it that catches a miss; past that, real drops.
+const W = 222, H = 40;
 const tiles = new Uint8Array(W * H);                     // 0 open, 1 solid wood, 2 a twig (stand on it from above)
-const knots = [], foes = [], scraps = [];
+const knots = [], foes = [], scraps = [], signs = [];
 const at = (x, y) => (x < 0 || x >= W) ? 1 : (y < 0 || y >= H) ? 0 : tiles[y * W + x];
 function wood(x0, x1, y0, y1) { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) tiles[y * W + x] = 1; }
 function twig(x0, x1, y) { for (let x = x0; x <= x1; x++) if (!tiles[y * W + x]) tiles[y * W + x] = 2; }
 function knot(x, y) { knots.push({ x: x * T + 8, y: y * T + 8 }); }
 function foe(x, y) { foes.push({ x: x * T + 8, y: y * T, x0: x * T + 8, vx: 30, hp: 3, flash: 0, dead: 0, f: 1 }); }
 function scrap(x, y) { scraps.push({ x: x * T + 8, y: y * T + 2, got: false }); }
+function sign(x, y, text) { signs.push({ x: x * T + 8, y: y * T, text }); }
+const LEDGES = [];
+function ledge(x0, x1, y, atX) { LEDGES.push({ x0, x1, at: { x: (atX ?? x0 + 2) * T, y: y * T } }); }
 (function build() {
-  wood(0, 95, 38, 39);                                   // the first part has a floor under it: a miss is caught while she's learning
-  // past that, real drops (10/23/2026): a fall costs a heart and puts her back on the safe ledge at the start of the stretch she was on
-  wood(0, 40, 30, 31); knot(20, 22); knot(31, 20);      // a broad bough to start on, knots overhead to try the throw
-  for (let i = 0; i < 4; i++) twig(41 + i * 4, 43 + i * 4, 34 - i);   // a way back up from the floor
-  knot(48, 21);                                          // the first gap: one throw across
-  wood(56, 90, 28, 29); foe(66, 28); foe(80, 28); scrap(73, 28);
-  for (let i = 0; i < 6; i++) twig(84 - i * 5, 87 - i * 5, 36 - i * 1.5 | 0);
-  knot(99, 19); knot(111, 16); knot(123, 18);            // the long gap: a chain, or swing it
-  twig(104, 108, 33); twig(116, 120, 31);
-  wood(130, 158, 24, 25); foe(144, 24); scrap(150, 24);
-  wood(160, 163, 6, 30);                                 // a trunk: up the knots on its side to the top
-  knot(156, 17); knot(158, 9);
-  wood(150, 186, 6, 7); foe(176, 6); scrap(184, 6);
-  twig(166, 172, 18); twig(170, 176, 26); twig(164, 168, 33);
-  knot(192, 12);
-  wood(196, W - 1, 22, 23); scrap(204, 22);              // the end
+  wood(0, 95, 38, 39);                                   // a floor far below the first part, to catch a miss while she's learning
+  // 1. run and jump: a broad bough, a log to hop and a stump to pull herself up onto, and a gap to jump
+  wood(0, 30, 30, 31); ledge(0, 30, 30, 6);
+  wood(13, 14, 28, 29); wood(21, 23, 26, 29);
+  sign(6, 30, 'Run, and jump. She pulls herself up onto a ledge she nearly makes');
+  twig(33, 36, 34);                                      // (a way back up from the floor)
+  // 2. a tap of the hook: one knot over a gap too wide to jump
+  wood(38, 60, 28, 29); ledge(38, 60, 28); foe(52, 28);
+  sign(41, 28, 'Tap the hook at a knot to yank across. Up on the stick aims higher');
+  knot(68, 20);
+  twig(63, 66, 34); twig(69, 72, 31);
+  // 3. hold the hook: a swing over the first real drop
+  wood(76, 92, 28, 29); ledge(76, 92, 28); foe(86, 28);
+  sign(79, 28, 'Hold the hook to swing. Let go near the top to fly');
+  knot(101, 17);
+  // 4. a chain: three knots, throw again before she lands
+  wood(112, 126, 29, 30); ledge(112, 126, 29); scrap(124, 29);
+  sign(115, 29, 'Throw again before you land. A chain with no stops makes her faster');
+  knot(133, 21); knot(145, 19); knot(157, 21);
+  twig(150, 152, 31);
+  // 5. up between two trunks: jump at one, kick off it to the other (or hook the knots)
+  wood(163, 184, 27, 28); ledge(163, 172, 27); foe(168, 27);
+  sign(164, 27, 'Jump at a trunk and jump again to kick off it. Or hook the knots');
+  wood(174, 175, 13, 21);                                // the left trunk, high enough to walk under
+  wood(183, 186, 12, 26);                                // the right trunk, up to the top
+  knot(179, 19); knot(180, 10);
+  // 6. the top, and one last throw to the end
+  wood(183, 202, 12, 13); ledge(187, 202, 12); foe(196, 12); scrap(200, 12);
+  knot(207, 7);
+  wood(212, W - 1, 16, 17); ledge(212, W - 1, 16, 214); scrap(217, 16);
+  sign(214, 16, 'The end. R or Select to go again');
 })();
-const START = { x: 6 * T, y: 30 * T };
-const LEDGES = [{ x0: 0, x1: 40, at: START }, { x0: 56, x1: 90, at: { x: 58 * T, y: 28 * T } }, { x0: 130, x1: 158, at: { x: 132 * T, y: 24 * T } },
-  { x0: 150, x1: 186, at: { x: 152 * T, y: 6 * T }, top: true }, { x0: 196, x1: W, at: { x: 198 * T, y: 22 * T } }];   // the safe ledges each stretch starts from
+const START = LEDGES[0].at;
+
+// ---------- her ----------
+const P = { x: START.x, y: START.y, vx: 0, vy: 0, f: 1, ground: false, hw: 9, h: 50, health: TUNE.health, loose: 0, looseT: 0, rally: 0,
+  spare: 2, sewT: 0, sewing: false, chain: 0, airFromHook: false, still: 0, inv: 0, atk: 0, land: 0, anim: 0, hurtT: 0,
+  coyote: 0, jumpBuf: 0, hookBuf: 0, jumpHeld: false, wall: 0, wallLock: 0, scamper: 0 };
+const hook = { state: 'home', x: 0, y: 0, tx: 0, ty: 0, knot: null, held: 0, let: false, len: 0, yankT: 0, mode: null };
 
 // ---------- input: keyboard and a controller ----------
 const keys = {};
 addEventListener('keydown', e => { keys[e.code] = true; if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); });
 addEventListener('keyup', e => { keys[e.code] = false; });
-const inp = { x: 0, jump: false, attack: false, hook: false, sew: false, reset: false };
+const inp = { x: 0, up: false, down: false, jump: false, attack: false, hook: false, sew: false, reset: false };
 const was = {};
 function readInput() {
   const pad = (navigator.getGamepads ? [...navigator.getGamepads()].find(p => p) : null);
   const b = i => !!(pad && pad.buttons[i] && pad.buttons[i].pressed);
   let x = (keys.ArrowRight || keys.KeyD ? 1 : 0) - (keys.ArrowLeft || keys.KeyA ? 1 : 0);
-  if (pad) { const ax = pad.axes[0] || 0; if (Math.abs(ax) > 0.35) x = Math.sign(ax); if (b(15)) x = 1; if (b(14)) x = -1; }
-  inp.x = x;
-  inp.jump = keys.KeyZ || keys.Space || b(0);
-  inp.attack = keys.KeyX || b(5);
-  inp.hook = keys.KeyC || b(7) || b(2);
-  inp.sew = keys.KeyV || b(4);
-  inp.reset = keys.KeyR || b(8);
+  let up = !!(keys.ArrowUp || keys.KeyW), down = !!(keys.ArrowDown || keys.KeyS);
+  if (pad) {
+    const ax = pad.axes[0] || 0, ay = pad.axes[1] || 0;
+    if (Math.abs(ax) > 0.35) x = Math.sign(ax); if (b(15)) x = 1; if (b(14)) x = -1;
+    if (ay < -0.5 || b(12)) up = true; if (ay > 0.5 || b(13)) down = true;
+  }
+  inp.x = x; inp.up = up; inp.down = down;
+  inp.jump = !!(keys.KeyZ || keys.Space || b(0));
+  inp.attack = !!(keys.KeyX || b(5) || b(2));
+  inp.hook = !!(keys.KeyC || b(7) || b(1));
+  inp.sew = !!(keys.KeyV || b(4));
+  inp.reset = !!(keys.KeyR || b(8));
 }
 const pressed = k => inp[k] && !was[k];
-
-// ---------- her ----------
-const P = { x: START.x, y: START.y, vx: 0, vy: 0, f: 1, ground: false, hw: 9, h: 50, health: TUNE.health, loose: 0, looseT: 0, rally: 0,
-  spare: 2, sewT: 0, sewing: false, chain: 0, airFromHook: false, still: 0, inv: 0, atk: 0, land: 0, anim: 0, hurtT: 0 };
-const hook = { state: 'home', x: 0, y: 0, tx: 0, ty: 0, knot: null, held: 0, len: 0, yankT: 0, missT: 0, mode: null };
 
 function solidAt(px, py) { return at(Math.floor(px / T), Math.floor(py / T)) === 1; }
 function twigAt(px, py) { return at(Math.floor(px / T), Math.floor(py / T)) === 2; }
@@ -90,21 +125,34 @@ function boxHits(x, y) {                                   // her box with its f
   for (const xx of [x - P.hw, x, x + P.hw]) if (solidAt(xx, y - 0.01)) return true;
   return false;
 }
-function moveX(dx) {
+function moveX(dx) {                                       // true if she ran into something
   const steps = Math.ceil(Math.abs(dx) / 4) || 1;
-  for (let i = 0; i < steps; i++) { const nx = P.x + dx / steps; if (boxHits(nx, P.y)) { P.vx = 0; return true; } P.x = nx; }
+  for (let i = 0; i < steps; i++) {
+    const nx = P.x + dx / steps;
+    if (!boxHits(nx, P.y)) { P.x = nx; continue; }
+    // a ledge she nearly makes: she pulls herself up onto it (a small step on the ground, more in the air)
+    const most = P.ground ? 6 : TUNE.mantle;
+    let up = 0;
+    for (let k = 2; k <= most; k += 2) if (!boxHits(nx, P.y - k)) { up = k; break; }
+    if (up && P.vy > -260) { P.y -= up; P.x = nx; if (!P.ground) { P.vy = Math.min(P.vy, 0); P.land = 0.06; } continue; }
+    P.vx = 0; return true;
+  }
   return false;
 }
-function moveY(dy) {
+function moveY(dy) {                                       // true if she ran into something
   const steps = Math.ceil(Math.abs(dy) / 4) || 1;
   P.ground = false;
   for (let i = 0; i < steps; i++) {
     const ny = P.y + dy / steps;
     if (dy > 0) {
       const footRowWas = Math.floor((P.y - 0.01) / T), footRow = Math.floor((ny - 0.01) / T);
-      const onTwig = footRow > footRowWas && [P.x - P.hw, P.x, P.x + P.hw].some(xx => twigAt(xx, ny - 0.01)) && !(inp.x === 0 && keys.ArrowDown);
+      const onTwig = footRow > footRowWas && [P.x - P.hw, P.x, P.x + P.hw].some(xx => twigAt(xx, ny - 0.01)) && !inp.down;
       if (boxHits(P.x, ny) || onTwig) { P.y = onTwig ? footRow * T : Math.floor(ny / T) * T; P.vy = 0; P.ground = true; return true; }
-    } else if (boxHits(P.x, ny)) { P.vy = 0; return true; }
+    } else if (boxHits(P.x, ny)) {
+      for (const s of [4, -4, 8, -8]) if (!boxHits(P.x + s, ny)) { P.x += s; P.y = ny; break; }   // a corner just clipped: slip past it
+      if (P.y !== ny) { P.vy = 0; return true; }
+      continue;
+    }
     P.y = ny;
   }
   return false;
@@ -115,27 +163,34 @@ function tailPoint() {                                     // where the yarn lea
 
 // ---------- the hook ----------
 function pickKnot() {
+  // in reach, and not behind her; ahead and up preferred, the way she's going, and up on the stick prefers higher ones
+  const fx = Math.abs(P.vx) > 40 ? Math.sign(P.vx) : P.f;
   let best = null, bd = 1e9;
   for (const k of knots) {
     const dx = k.x - P.x, dy = k.y - (P.y - 30), d = Math.hypot(dx, dy);
-    if (d > TUNE.reach || dx * P.f < -24) continue;        // in reach, and not behind her
-    const score = d - (dy < 0 ? 30 : 0) - dx * P.f * 0.2;   // up and ahead a little preferred
+    if (d > TUNE.reach || dx * fx < -32 || dy > 40) continue;
+    const score = d - dx * fx * 0.35 + (dy < 0 ? -40 : 0) + (inp.up ? dy * 0.6 : 0) + (k === hook.last && hook.lastT > 0 ? 400 : 0);
     if (score < bd) { bd = score; best = k; }
   }
   return best;
 }
 function throwHook() {
-  hook.x = P.x + P.f * 10; hook.y = P.y - 40; hook.held = 0; hook.let = false; hook.mode = null;
+  hook.x = P.x + P.f * 10; hook.y = P.y - 40; hook.held = 0; hook.let = !inp.hook; hook.mode = null;
   const k = pickKnot();
   if (k) { hook.state = 'fly'; hook.knot = k; hook.tx = k.x; hook.ty = k.y; }
-  else { hook.state = 'miss'; hook.knot = null; if (!pops.some(p => p.text === 'no knot in reach')) pops.push({ text: 'no knot in reach', x: P.x, y: P.y - 80, t: 0.9 }); hook.tx = P.x + P.f * TUNE.reach * 0.85; hook.ty = P.y - 30 - TUNE.reach * 0.5; hook.missT = 0; }
-  P.throwT = 0.18; P.sewing = false; P.sewT = 0;
+  else {
+    hook.state = 'miss'; hook.knot = null; hook.tx = P.x + P.f * TUNE.reach * 0.7; hook.ty = P.y - 30 - TUNE.reach * 0.45;
+    if (!pops.some(p => p.text === 'no knot in reach')) pops.push({ text: 'no knot in reach', x: P.x, y: P.y - 80, t: 0.9 });
+  }
+  P.throwT = 0.14; P.sewing = false; P.sewT = 0;
 }
 function letGo() {
   if (hook.state !== 'stuck') return;
-  hook.state = 'reel'; hook.mode = null; P.airFromHook = true;
+  hook.last = hook.knot; hook.lastT = 0.35;                // (the next throw goes on to a new knot, not back to this one)
+  hook.state = 'reel'; hook.mode = null; P.airFromHook = true; P.scamper = TUNE.scamper;
 }
 function updateHook(dt) {
+  hook.lastT = Math.max(0, (hook.lastT || 0) - dt);
   if (hook.state === 'home') return;
   if (inp.hook && !hook.let) hook.held += dt; else hook.let = true;   // (let: the button's been let go since the throw)
   const tp = tailPoint();
@@ -145,15 +200,16 @@ function updateHook(dt) {
       hook.x = hook.tx; hook.y = hook.ty;
       if (hook.state === 'miss') { hook.state = 'reel'; return; }
       hook.state = 'stuck'; hook.len = Math.max(TUNE.swingMin, Math.hypot(hook.x - P.x, hook.y - (P.y - 30)));
-      hook.mode = (inp.hook && hook.held >= TUNE.holdForSwing) ? 'swing' : 'yank'; hook.yankT = 0; P.sewing = false;
+      hook.mode = (!hook.let && hook.held >= TUNE.holdForSwing) ? 'swing' : 'yank'; hook.yankT = 0; P.sewing = false;
       return;
     }
     hook.x += dx / d * s; hook.y += dy / d * s;
     return;
   }
   if (hook.state === 'stuck') {
-    if (hook.mode === 'yank' && !hook.let && hook.held >= TUNE.holdForSwing) hook.mode = 'swing';   // still held from the throw: a swing after all
-    if (hook.mode === 'swing' && (!inp.hook || pressed('jump'))) { if (pressed('jump')) P.vy = Math.min(P.vy, -220); letGo(); }
+    if (hook.mode === 'yank' && !hook.let && hook.held >= TUNE.holdForSwing) {   // still held from the throw: a swing after all
+      hook.mode = 'swing'; hook.len = Math.max(TUNE.swingMin, Math.hypot(hook.x - P.x, hook.y - (P.y - 30)));
+    }
     return;
   }
   if (hook.state === 'reel') {                             // back to her tail, while she keeps going
@@ -188,12 +244,18 @@ function dropped() {                                       // off into the open:
   if (P.health <= 0) { reset(); return; }
   const c = P.check || START; P.x = c.x; P.y = c.y; P.vx = 0; P.vy = 0; P.inv = 1.0; P.airFromHook = false; pop('a fall: lost a bit of yarn');
 }
-function reset() { P.check = null; Object.assign(P, { x: START.x, y: START.y, vx: 0, vy: 0, health: TUNE.health, loose: 0, chain: 0, inv: 0, sewing: false, sewT: 0 }); hook.state = 'home'; for (const f of foes) { f.dead = 0; f.hp = 3; } }
+function reset() {
+  P.check = null; Object.assign(P, { x: START.x, y: START.y, vx: 0, vy: 0, health: TUNE.health, loose: 0, chain: 0, inv: 0, sewing: false, sewT: 0, wall: 0 });
+  hook.state = 'home'; for (const f of foes) { f.dead = 0; f.hp = 3; f.x = f.x0; } for (const s of scraps) s.got = false; P.spare = 2;
+}
 
 function update(dt) {
   readInput();
   if (pressed('reset')) reset();
   P.inv = Math.max(0, P.inv - dt); P.hurtT = Math.max(0, P.hurtT - dt); P.land = Math.max(0, P.land - dt); P.throwT = Math.max(0, (P.throwT || 0) - dt);
+  P.jumpBuf = pressed('jump') ? TUNE.jumpBuffer : Math.max(0, P.jumpBuf - dt);
+  P.hookBuf = pressed('hook') ? TUNE.hookBuffer : Math.max(0, P.hookBuf - dt);
+  P.wallLock = Math.max(0, P.wallLock - dt);
   if (P.loose > 0) { P.looseT -= dt; if (P.looseT <= 0) { P.loose = 0; pop('it frayed off'); } }
 
   // sewing: standing still, holding the button, with spare yarn
@@ -203,54 +265,90 @@ function update(dt) {
     if (P.sewT >= TUNE.sewTime) { P.sewT = 0; P.spare -= TUNE.sewCost; P.health = Math.min(TUNE.health, P.health + 1); pop('sewn up'); }
   } else { P.sewing = false; P.sewT = 0; }
 
-  // the hook
-  if (pressed('hook') && hook.state === 'home' && !P.sewing) throwHook();
+  // the hook (a press a moment before the yarn's back still throws, once it is)
+  if (P.hookBuf > 0 && hook.state === 'home' && !P.sewing) { P.hookBuf = 0; throwHook(); }
   updateHook(dt);
   const yank = hook.state === 'stuck' && hook.mode === 'yank', swing = hook.state === 'stuck' && hook.mode === 'swing';
 
-  if (yank) {                                               // pulled to the knot, then let go with the speed
+  if (yank) {                                               // pulled to the knot, then flung on up and over it
     hook.yankT += dt;
-    const tx = hook.x, ty = hook.y + 34, dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy);
-    P.vx = dx / d * TUNE.yankSpeed; P.vy = dy / d * TUNE.yankSpeed; P.f = Math.sign(dx) || P.f;
-    if (d < 22 || hook.yankT > TUNE.yankMax || pressed('jump')) { if (pressed('jump')) P.vy = Math.min(P.vy, -260); else P.vy = Math.min(P.vy, -120); letGo(); }
+    const tx = hook.x, ty = hook.y + 34, dx = tx - P.x, dy = ty - P.y, d = Math.hypot(dx, dy) || 1;
+    P.vx = dx / d * TUNE.yankSpeed; P.vy = dy / d * TUNE.yankSpeed; if (Math.abs(dx) > 4) P.f = Math.sign(dx);
+    const hitX = moveX(P.vx * dt), hitY = moveY(P.vy * dt);
+    if (P.jumpBuf > 0) { P.jumpBuf = 0; P.vy = -TUNE.jumpV; P.vx = Math.sign(P.vx || P.f) * Math.max(Math.abs(P.vx), TUNE.run); letGo(); }
+    else if (d < 20 || hook.yankT > TUNE.yankMax || hitX || hitY) {
+      const keep = Math.max(TUNE.run * 1.1, Math.abs(P.vx));
+      P.vx = (inp.x || P.f) * keep; P.vy = Math.min(P.vy * 0.4, -TUNE.flingUp);
+      letGo();
+    }
   } else if (swing) {                                       // on the line like a pendulum
-    P.vy = Math.min(P.vy + TUNE.gravity * dt, TUNE.maxFall); P.vx += inp.x * 260 * dt;
+    P.vy = Math.min(P.vy + TUNE.fallGrav * 0.75 * dt, TUNE.maxFall); P.vx += inp.x * TUNE.swingPump * dt;
     let cx = P.x, cy = P.y - 30; cx += P.vx * dt; cy += P.vy * dt;
     const dx = cx - hook.x, dy = cy - hook.y, d = Math.hypot(dx, dy);
     if (d > hook.len) { const nx = dx / d, ny = dy / d; cx = hook.x + nx * hook.len; cy = hook.y + ny * hook.len; const vr = P.vx * nx + P.vy * ny; P.vx -= vr * nx; P.vy -= vr * ny; }
-    P.vx = Math.max(-520, Math.min(520, P.vx)); if (Math.abs(P.vx) > 20) P.f = Math.sign(P.vx);
-    if (moveX(cx - P.x)) letGo(); if (moveY(cy + 30 - P.y)) letGo();
+    P.vx = Math.max(-560, Math.min(560, P.vx)); if (Math.abs(P.vx) > 20) P.f = Math.sign(P.vx);
+    const hx = moveX(cx - P.x), hy = moveY(cy + 30 - P.y);
+    if (!inp.hook || P.jumpBuf > 0 || hx || hy || P.ground) {   // let go: with a lift if she's on the way up
+      if (!P.ground) { P.vx *= TUNE.swingLetGo; P.vy = Math.min(P.vy * TUNE.swingLetGo, P.vy < 0 ? P.vy - 120 : -120); }
+      if (P.jumpBuf > 0) { P.jumpBuf = 0; P.vy = Math.min(P.vy, -TUNE.jumpV * 0.8); }
+      letGo();
+    }
   } else {
+    // running: quick to speed, quick to turn, quick to stop
     const top = TUNE.run * (1 + TUNE.chainBoost * P.chain);
+    let ix = inp.x; if (P.wallLock > 0 && ix === P.wallFrom) ix = 0;
     if (!P.sewing && P.atk <= 0) {
-      const want = inp.x * top, a = (P.ground ? TUNE.accel : TUNE.airAccel) * dt;
-      if (P.ground || inp.x) P.vx += Math.max(-a, Math.min(a, want - P.vx));
-      if (inp.x) P.f = inp.x;
+      if (!P.ground && Math.abs(P.vx) > top && Math.sign(P.vx) !== -ix) {   // faster than she runs, off a yank or a swing: it eases off in the air
+        P.vx -= Math.sign(P.vx) * Math.min(Math.abs(P.vx) - top, TUNE.airDrag * dt);
+      } else {
+        const a = (P.ground ? (ix ? TUNE.accel : TUNE.stop) : (ix ? TUNE.airAccel : 300)) * dt * (ix && Math.sign(P.vx) === -ix ? 1.8 : 1);
+        P.vx += Math.max(-a, Math.min(a, ix * top - P.vx));
+      }
+      if (ix) P.f = ix;
     } else if (P.ground) P.vx *= 0.8;
-    if (pressed('jump') && P.ground && !P.sewing) { P.vy = -TUNE.jumpV; P.ground = false; }
-    if (!inp.jump && P.vy < 0 && !P.airFromHook) P.vy *= (1 - TUNE.jumpCut * dt * 10);
-    P.vy = Math.min(P.vy + TUNE.gravity * dt, TUNE.maxFall);
+
+    // a trunk beside her in the air: scamper up it a little, then slide down slowly
+    P.wall = 0;
+    if (!P.ground && ix && boxHits(P.x + ix * 3, P.y - 4)) P.wall = ix;
+    if (P.wall) {
+      if (P.scamper > 0 && P.vy > -TUNE.scamperV) { P.vy = -TUNE.scamperV; P.scamper -= dt; }
+      else P.vy = Math.min(P.vy, TUNE.wallSlide);
+    }
+
+    // jumping: off the ground (or just after running off it), or off a trunk
+    if (P.jumpBuf > 0 && !P.sewing) {
+      if (P.ground || P.coyote > 0) { P.vy = -TUNE.jumpV; P.ground = false; P.coyote = 0; P.jumpBuf = 0; P.jumpHeld = true; }
+      else if (P.wall || boxHits(P.x + 5, P.y - 4) || boxHits(P.x - 5, P.y - 4)) {   // (a trunk on either side: pushing away from it as she jumps still kicks off it)
+        const w = P.wall || (boxHits(P.x + 5, P.y - 4) ? 1 : -1); P.vx = -w * TUNE.wallJumpX; P.vy = -TUNE.wallJumpV; P.f = -w; P.wallFrom = w; P.wallLock = TUNE.wallLock;
+        P.jumpBuf = 0; P.jumpHeld = true; P.scamper = TUNE.scamper * 0.5; P.wall = 0;
+      }
+    }
+    if (P.jumpHeld && (!inp.jump || P.vy >= 0)) { if (!inp.jump && P.vy < -TUNE.jumpCut && !P.airFromHook) P.vy = -TUNE.jumpCut; P.jumpHeld = false; }
+    let g = P.vy < 0 ? TUNE.riseGrav : TUNE.fallGrav;
+    if (inp.jump && Math.abs(P.vy) < 90) g *= TUNE.apexGrav;  // a little hang at the top of a held jump
+    if (!P.wall || P.vy < 0) P.vy = Math.min(P.vy + g * dt, TUNE.maxFall);
     const wasAir = !P.ground, fall = P.vy;
     moveX(P.vx * dt); moveY(P.vy * dt);
+    if (P.ground) { P.coyote = TUNE.coyote; P.scamper = TUNE.scamper; } else P.coyote = Math.max(0, P.coyote - dt);
     if (P.ground && wasAir) {                               // landing: a clean one off the line keeps the speed going
-      if (fall > 380) P.land = 0.12;
-      if (P.airFromHook) { if (Math.abs(P.vx) > 150 && fall < 560) { P.chain = Math.min(TUNE.chainMax, P.chain + 1); if (P.chain > 1) pop('faster'); } else P.chain = 0; }
+      if (fall > 520) P.land = 0.08;
+      if (P.airFromHook) { if (Math.abs(P.vx) > 160) { P.chain = Math.min(TUNE.chainMax, P.chain + 1); if (P.chain > 1) pop('faster'); } else P.chain = 0; }
       P.airFromHook = false;
     }
     if (P.ground && Math.abs(P.vx) < 20 && !inp.x) { P.still += dt; if (P.still > 0.6) P.chain = 0; } else P.still = 0;
   }
   if (P.ground) for (const l of LEDGES) {                     // standing on a stretch's safe ledge: that's where a drop brings her back to
     const tx = P.x / T, ty = P.y / T;
-    if (tx >= l.x0 && tx <= l.x1 && Math.abs(ty - l.at.y / T) < 0.6) P.check = l.at;
+    if (tx >= l.x0 && tx <= l.x1 + 1 && Math.abs(ty - l.at.y / T) < 0.6) P.check = l.at;
   }
   if (P.y > H * T + 40) dropped();
 
   // the thrust
-  if (pressed('attack') && P.atk <= 0 && !P.sewing && !swing && !yank) { P.atk = 0.32; P.hitDone = false; }
+  if (pressed('attack') && P.atk <= 0 && !P.sewing && !swing && !yank) { P.atk = 0.26; P.hitDone = false; }
   if (P.atk > 0) {
     P.atk -= dt;
-    if (!P.hitDone && P.atk < 0.24 && P.atk > 0.12) {
-      const box = { l: P.f > 0 ? P.x + 6 : P.x - 52, r: P.f > 0 ? P.x + 52 : P.x - 6, t: P.y - 48, b: P.y - 18 };
+    if (!P.hitDone && P.atk < 0.2 && P.atk > 0.08) {
+      const box = { l: P.f > 0 ? P.x + 6 : P.x - 56, r: P.f > 0 ? P.x + 56 : P.x - 6, t: P.y - 50, b: P.y - 14 };
       for (const f of foes) if (!f.dead && f.x + 10 > box.l && f.x - 10 < box.r && f.y - 2 > box.t && f.y - 22 < box.b) {
         f.hp--; f.flash = 0.12; f.x += P.f * 10; P.hitDone = true; landedHit();
         if (f.hp <= 0) { f.dead = 6; pop('knocked out'); }
@@ -359,6 +457,10 @@ function drawWorld() {
     ctx.fillStyle = 'rgba(255,241,176,0.55)';
     for (let i = 14; i < d - 16; i += 9) ctx.fillRect(fx + (tx - fx) * i / d - 1, fy + (ty - fy) * i / d - 1, 2, 2);
   }
+  for (const s of signs) {                                    // the signs: a little post (what it says is shown along the top, see drawHUD)
+    const px = s.x - cam.x, py = s.y - cam.y; if (px < -20 || px > VW + 20) continue;
+    ctx.fillStyle = '#5a3e24'; ctx.fillRect(px - 1, py - 26, 3, 26); ctx.fillStyle = '#c9a46a'; ctx.fillRect(px - 9, py - 32, 19, 10);
+  }
   for (const s of scraps) if (!s.got) { ctx.fillStyle = '#c86a9a'; ctx.fillRect(s.x - cam.x - 3, s.y - cam.y - 6, 6, 3); ctx.fillRect(s.x - cam.x - 1, s.y - cam.y - 8, 3, 7); }
   for (const f of foes) {
     if (f.dead) continue;
@@ -368,6 +470,13 @@ function drawWorld() {
   }
 }
 function drawHUD() {
+  // the sign she last passed (or is coming up to), along the top of the screen while she's in its stretch
+  let near = null; for (const s of signs) if (P.x > s.x - 5 * T) near = s;
+  if (near && P.x < near.x + 26 * T) {
+    ctx.font = '12px system-ui'; const w = ctx.measureText(near.text).width, bx = Math.round(VW / 2 - w / 2);
+    ctx.fillStyle = 'rgba(30,24,20,0.72)'; ctx.fillRect(bx - 8, 58, w + 16, 20);
+    ctx.fillStyle = '#fff3d6'; ctx.fillText(near.text, bx, 72);
+  }
   for (let i = 0; i < TUNE.health; i++) {
     const x = 12 + i * 16, y = 12, filled = i < P.health, loose = i === P.health && P.loose > 0;
     ctx.fillStyle = filled ? '#f0e6d2' : loose ? `rgba(240,230,210,${0.3 + 0.3 * Math.sin(performance.now() / 90)})` : '#3a3440';
@@ -396,8 +505,8 @@ function render() {
 let last = performance.now(), acc = 0;
 function loop(now) {
   acc += Math.min(0.1, (now - last) / 1000); last = now;
-  while (acc >= 1 / 120) { update(1 / 120); acc -= 1 / 120; }
+  while (acc >= 1 / 120) { if (!window.__purlHold) update(1 / 120); acc -= 1 / 120; }   // (__purlHold: the tests step it themselves)
   render(); requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-window.__purl = { P, hook, knots, foes, TUNE, update, reset };
+window.__purl = { P, hook, knots, foes, TUNE, LEDGES, keys, update, reset, at, render };
