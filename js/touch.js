@@ -59,7 +59,7 @@ const touchUI = (() => {
     // thumb on a button there kept setting it off. Turned on its side in full screen, the phone's sides are the
     // game's top and bottom, so the gap goes there instead
     const rot = document.body.classList.contains('rot');
-    const side = Math.round(Math.min(44, Math.max(26, (rot ? H0 : W0) * 0.045))), gx = rot ? 8 : side, gy = rot ? side : 8;
+    const side = Math.round(Math.min(44, Math.max(26, (rot ? H0 : W0) * 0.045))), gx = rot ? 0 : side, gy = rot ? side : 0;
     const W = W0 - gx * 2, H = H0 - gy * 2;
     zone.style.left = gx + 'px'; zone.style.bottom = gy + 'px'; zone.style.width = (W * 0.42) + 'px'; zone.style.height = (H * 0.52) + 'px';
     const u = Math.max(36, Math.min(H * 0.146, W * 0.07, 72));                         // one button
