@@ -18,12 +18,12 @@
   const btn = (act, word, cls = 'face') => `<button class="tb ${cls}" data-act="${act}"><span>${word}</span></button>`;
   el.innerHTML = `
     <div class="tzone"><div class="tbase"><i></i><div class="tknob"></div></div></div>
-    ${btn('jump', 'jump')}${btn('hook', 'hook')}${btn('attack', 'thrust')}${btn('sew', 'sew')}
+    ${btn('jump', 'jump')}${btn('dodge', 'dodge')}${btn('sew', 'sew')}${btn('ability', 'soon')}${btn('attack', 'attack')}${btn('hook', 'hook')}
     ${btn('reset', 'restart', 'tiny')}${btn('max', 'full screen', 'tiny')}`;
   document.body.appendChild(el);
   const tog = document.createElement('button'); tog.id = 'touchToggle'; document.body.appendChild(tog);
 
-  const KEY = { jump: 'KeyZ', hook: 'KeyC', attack: 'KeyX', sew: 'KeyV', reset: 'KeyR', left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown' };
+  const KEY = { jump: 'KeyZ', hook: 'KeyC', attack: 'KeyX', sew: 'KeyV', dodge: 'ShiftLeft', ability: 'KeyF', reset: 'KeyR', left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown' };
   // each thing holding a key is kept track of on its own, so letting go of one doesn't let go of a key something else still holds
   const held = {};
   function key(act, down, src) {
@@ -45,7 +45,10 @@
     const put = (b, x, y, w, h = w) => { b.style.left = (gx + x - w / 2) + 'px'; b.style.top = (gy + y - h / 2) + 'px'; b.style.width = w + 'px'; b.style.height = h + 'px'; };
     const edge = u * 0.5 + Math.max(8, H * 0.02), g = u * 1.02;
     const dX = W - edge - g, dY = H - edge - g;                                     // the middle of the diamond, low on the right
-    put(B('sew'), dX, dY - g, u); put(B('jump'), dX, dY + g, u); put(B('attack'), dX - g, dY, u); put(B('hook'), dX + g, dY, u);
+    // laid out like the controller: jump on cross at the bottom, dodge on circle, sew on square, the ability on triangle,
+    // and the attack (R1) and the hook (R2) up on the shoulder above them
+    put(B('ability'), dX, dY - g, u); put(B('jump'), dX, dY + g, u); put(B('sew'), dX - g, dY, u); put(B('dodge'), dX + g, dY, u);
+    put(B('attack'), dX - g * 0.5, dY - g * 2.3, u); put(B('hook'), dX + g * 0.6, dY - g * 2.5, u);
     for (const b of el.querySelectorAll('.tb.face span')) b.style.fontSize = Math.round(Math.max(11, u * (b.textContent.length > 5 ? 0.2 : 0.25))) + 'px';
     const rad = Math.max(44, Math.min(u * 1.15, H * 0.18)); R = rad * 0.5;
     base.style.width = base.style.height = rad * 2 + 'px'; base.style.margin = -rad + 'px 0 0 ' + -rad + 'px';

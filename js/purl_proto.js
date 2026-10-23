@@ -17,6 +17,19 @@
 // the air, a wheeling slash she can do again, a small uppercut that pops her higher, and down for a plunge that
 // bounces her back up off whatever she lands on; down on the ground is the low sweep (a slide first if she's
 // running), and down again sweeps back the other way. Every swing has its hit on the frame the art marks.
+//
+// The fourth pass (10/23/2026): the ground attack is a sweeping slash in two halves that join end to end
+// (down from behind her to low in front, then back up the same way), so pressing again and again swings back and
+// forth without a stop; holding the button follows with the slam, a short hop with both paws on the hook coming down
+// hard. In the air a hit holds her still for a moment. The dodge (Circle) is her thing: a quick roll with a moment
+// nothing can touch her, and in the air it turns her the way the stick points without losing any speed. Attacking out
+// of a dodge is a slash with the roll's speed, or the slam if she's pushing back the way she came. Dodge an attack at
+// the last moment and the next press is the counter (snik). Swinging as an enemy lunges is a clash: both knocked back,
+// the enemy dazed. Down in the air is the down swing with Phill's rules: it bounces off what it hits, once off a wall
+// till her feet touch down, and one per fall unless a bounce lands. After the uppercut she keeps spinning in the air
+// till something stops it (landing, a dodge, a swing, a hit, the hook). The right stick turns her, so she can swing
+// one way while backing off the other. R1 attack, Circle dodge, Square sew, R2 the hook, Triangle for an ability later.
+// And she's never still in the air: every moment there has a frame that moves.
 
 const T = 16, VW = 640, VH = 360;
 const C = document.getElementById('c'), ctx = C.getContext('2d');
@@ -40,18 +53,22 @@ const TUNE = {
   reach: 240, hookSpeed: 1600, yankSpeed: 620, yankMax: 0.7, flingUp: 330, holdForSwing: 0.25, reel: 2600, hookBuffer: 0.18,
   swingMin: 48, swingPump: 420, swingLetGo: 1.12,
   rallyTime: 4, rallyHits: 3, spareMax: 9, sewTime: 1.4, sewCost: 2, health: 5,
-  holdUnit: 1 / 18, comboWindow: 0.22, uppercutV: 540, launchV: 420, airUpV: 300, plungeV: 640, bounceV: 430, slideV: 300,
+  holdUnit: 1 / 18, uppercutV: 540, launchV: 420, airUpV: 300, pogoV: 430, slideV: 300, slamHop: 260, slamDown: 520,
+  airStall: 0.1, holdForSlam: 0.3, backSpeed: 0.6,
+  rollTime: 0.26, rollSpeed: 380, iStart: 0.03, iLen: 0.16, rollCD: 0.12, airDodgeTime: 0.2, airDodgeMin: 320, counterWindow: 0.6, downCD: 1.0,
+  clashStun: 1.0, hitstop: 0.05, bigHitstop: 0.12, lungeEvery: 2.2, lungeWind: 0.45, lungeTime: 0.3, lungeSpeed: 170,
 };
+let hitstop = 0;                                           // (the whole game held for a moment on a hit: the weight of it)
 // her attacks, one per clip: what starts it, how it moves her, and what a hit does. The hit frames come from the art
 // (the frames with a smear). reach: how far ahead the hook hits, and how high and low from her feet
 const ATTACKS = {
-  thrust:     { clip: 'combo_thrust', ground: true, next: 'chop', reach: [6, 60, -54, -12], dmg: 1, push: 10 },
-  chop:       { clip: 'combo_chop', ground: true, next: 'spin', reach: [-4, 64, -70, -6], dmg: 1, push: 14, hop: 120 },
-  spin:       { clip: 'combo_spin', ground: true, reach: [-40, 56, -72, -6], dmg: 2, push: 22, hop: 160, both: true },
-  uppercut:   { clip: 'uppercut', ground: true, reach: [-8, 52, -96, -4], dmg: 2, launch: true, rise: 'uppercutV', airOk: true },
-  airslash:   { clip: 'air_slash', air: true, reach: [-44, 60, -78, 4], dmg: 1, push: 8, both: true, again: true },
-  airup:      { clip: 'air_uppercut', air: true, reach: [-10, 46, -90, -6], dmg: 1, launch: true, rise: 'airUpV' },
-  plunge:     { clip: 'downstrike_bounce', air: true, reach: [-16, 18, -24, 26], dmg: 2, plunge: true },
+  slash_down: { clip: 'slash_down', reach: [-6, 70, -74, 0], dmg: 1, push: 12, next: 'slash_up', anyAir: true },
+  slash_up:   { clip: 'slash_up', reach: [-6, 70, -74, 0], dmg: 1, push: 12, next: 'slash_down', anyAir: true },
+  slam:       { clip: 'slam', reach: [-10, 56, -60, 4], dmg: 2, push: 18, slam: true, anyAir: true },
+  counter:    { clip: 'counter', reach: [0, 72, -60, -4], dmg: 3, push: 40, counter: true },
+  uppercut:   { clip: 'uppercut', ground: true, reach: [-8, 52, -96, -4], dmg: 2, launch: true, rise: 'uppercutV', spin: true },
+  airup:      { clip: 'air_uppercut', air: true, reach: [-10, 46, -90, -6], dmg: 1, launch: true, rise: 'airUpV', spin: true },
+  down:       { clip: 'downstrike_bounce', air: true, reach: [-16, 18, -26, 30], dmg: 2, down: true },
   sweep:      { clip: 'low_sweep', ground: true, next: 'backsweep', reach: [-6, 66, -30, 0], dmg: 1, push: 16, low: true },
   slide:      { clip: 'low_slide', ground: true, next: 'sweep', reach: [-4, 50, -26, 0], dmg: 1, push: 6, low: true, slide: true },
   backsweep:  { clip: 'return_sweep', ground: true, reach: [-66, 6, -30, 0], dmg: 1, push: 16, low: true, turn: true },
@@ -68,7 +85,7 @@ const at = (x, y) => (x < 0 || x >= W) ? 1 : (y < 0 || y >= H) ? 0 : tiles[y * W
 function wood(x0, x1, y0, y1) { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) tiles[y * W + x] = 1; }
 function twig(x0, x1, y) { for (let x = x0; x <= x1; x++) if (!tiles[y * W + x]) tiles[y * W + x] = 2; }
 function knot(x, y) { knots.push({ x: x * T + 8, y: y * T + 8 }); }
-function foe(x, y) { foes.push({ x: x * T + 8, y: y * T, y0: y * T, x0: x * T + 8, vx: 30, hp: 3, flash: 0, dead: 0, f: 1, air: 0, vy: 0 }); }
+function foe(x, y) { foes.push({ x: x * T + 8, y: y * T, y0: y * T, x0: x * T + 8, vx: 30, hp: 3, flash: 0, dead: 0, f: 1, air: 0, vy: 0, lunge: 0, lungeT: 0, stun: 0 }); }
 function scrap(x, y) { scraps.push({ x: x * T + 8, y: y * T + 2, got: false }); }
 function sign(x, y, text) { signs.push({ x: x * T + 8, y: y * T, text }); }
 const LEDGES = [];
@@ -109,7 +126,7 @@ function ledge(x0, x1, y, atX) { LEDGES.push({ x0, x1, at: { x: (atX ?? x0 + 2) 
 const START = LEDGES[0].at;
 
 // ---------- her ----------
-const P = { x: START.x, y: START.y, vx: 0, vy: 0, f: 1, ground: false, hw: 9, h: 50, health: TUNE.health, loose: 0, looseT: 0, rally: 0, atk: null, airHits: 0, bigJump: false,
+const P = { x: START.x, y: START.y, vx: 0, vy: 0, f: 1, ground: false, hw: 9, h: 50, health: TUNE.health, loose: 0, looseT: 0, rally: 0, atk: null, airHits: 0, bigJump: false, roll: 0, rollT: 0, rollDir: 1, rollCD: 0, airDodge: 0, airDodged: false, counterT: 0, downCD: 0, wallPogoUsed: false, swingNext: 'slash_down', swingT: 0, atkHeld: 0, stallT: 0, spinning: false, spinT: 0,
   spare: 2, sewT: 0, sewing: false, chain: 0, airFromHook: false, still: 0, inv: 0, atk: 0, land: 0, anim: 0, hurtT: 0,
   coyote: 0, jumpBuf: 0, hookBuf: 0, jumpHeld: false, wall: 0, wallLock: 0, scamper: 0 };
 const hook = { state: 'home', x: 0, y: 0, tx: 0, ty: 0, knot: null, held: 0, let: false, len: 0, yankT: 0, mode: null };
@@ -118,7 +135,7 @@ const hook = { state: 'home', x: 0, y: 0, tx: 0, ty: 0, knot: null, held: 0, let
 const keys = {};
 addEventListener('keydown', e => { keys[e.code] = true; if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); });
 addEventListener('keyup', e => { keys[e.code] = false; });
-const inp = { x: 0, up: false, down: false, jump: false, attack: false, hook: false, sew: false, reset: false };
+const inp = { x: 0, up: false, down: false, aim: 0, aimY: 0, jump: false, attack: false, dodge: false, hook: false, sew: false, ability: false, reset: false };
 const was = {};
 function readInput() {
   const pad = (navigator.getGamepads ? [...navigator.getGamepads()].find(p => p) : null);
@@ -131,10 +148,16 @@ function readInput() {
     if (ay < -0.5 || b(12)) up = true; if (ay > 0.5 || b(13)) down = true;
   }
   inp.x = x; inp.up = up; inp.down = down;
+  // the right stick turns her to face that way (Q and E on the keys), so she can swing one way while backing off the other
+  let aim = (keys.KeyE ? 1 : 0) - (keys.KeyQ ? 1 : 0), ay2 = 0;
+  if (pad) { const rx = pad.axes[2] || 0, ry = pad.axes[3] || 0; if (Math.abs(rx) > 0.45) aim = Math.sign(rx); if (Math.abs(ry) > 0.55) ay2 = Math.sign(ry); }
+  inp.aim = aim; inp.aimY = ay2;
   inp.jump = !!(keys.KeyZ || keys.Space || b(0));
-  inp.attack = !!(keys.KeyX || b(5) || b(2));
-  inp.hook = !!(keys.KeyC || b(7) || b(1));
-  inp.sew = !!(keys.KeyV || b(4));
+  inp.attack = !!(keys.KeyX || b(5));
+  inp.dodge = !!(keys.ShiftLeft || keys.ShiftRight || keys.KeyB || b(1));
+  inp.hook = !!(keys.KeyC || b(7));
+  inp.sew = !!(keys.KeyV || b(2));
+  inp.ability = !!(keys.KeyF || b(3));
   inp.reset = !!(keys.KeyR || b(8));
 }
 const pressed = k => inp[k] && !was[k];
@@ -203,7 +226,7 @@ function throwHook() {
     hook.state = 'miss'; hook.knot = null; hook.tx = P.x + P.f * TUNE.reach * 0.7; hook.ty = P.y - 30 - TUNE.reach * 0.45;
     if (!pops.some(p => p.text === 'no knot in reach')) pops.push({ text: 'no knot in reach', x: P.x, y: P.y - 80, t: 0.9 });
   }
-  P.throwT = 0.14; mark('throw', 0.2); P.sewing = false; P.sewT = 0;
+  P.throwT = 0.14; mark('throw', 0.2); P.sewing = false; P.sewT = 0; P.spinning = false;
 }
 function letGo() {
   if (hook.state !== 'stuck') return;
@@ -241,11 +264,13 @@ function updateHook(dt) {
 }
 
 // ---------- her moves ----------
+function dodging() { return P.roll > 0 && P.rollT >= TUNE.iStart && P.rollT < TUNE.iStart + TUNE.iLen || P.airDodge > 0; }
 function hurt(fromX) {
+  if (dodging()) { if (!P.counterT) pop('snik'); P.counterT = TUNE.counterWindow; return; }   // dodged at the last moment: the counter's ready
   if (P.inv > 0) return;
   if (P.loose > 0) P.loose = 0;                            // loose yarn not won back is gone for good
   P.health -= 1; P.loose = 1; P.looseT = TUNE.rallyTime; P.rally = 0;
-  P.inv = 1.0; P.hurtT = 0.25; mark('hit', 0.3); P.atk = null; P.vx = Math.sign(P.x - fromX || -P.f) * 180; P.vy = -220; P.chain = 0; P.sewing = false; P.sewT = 0;
+  P.inv = 1.0; P.hurtT = 0.25; mark('hit', 0.3); P.atk = null; P.roll = 0; P.airDodge = 0; P.spinning = false; P.vx = Math.sign(P.x - fromX || -P.f) * 180; P.vy = -220; P.chain = 0; P.sewing = false; P.sewT = 0;
   if (hook.state === 'stuck') letGo();
   if (P.health <= 0) { reset(); }
 }
@@ -273,62 +298,117 @@ const dusts = [], scratches = [];
 function dust(x, y, n) { for (let i = 0; i < n; i++) dusts.push({ x: x + (Math.random() - 0.5) * 10, y: y - 2, vx: (Math.random() - 0.5) * 70, vy: -20 - Math.random() * 30, t: 0.35 + Math.random() * 0.2 }); }
 function scratch(x, y) { scratches.push({ x, y, t: 0.6 }); }
 function reset() {
-  P.check = null; Object.assign(P, { x: START.x, y: START.y, vx: 0, vy: 0, health: TUNE.health, loose: 0, chain: 0, inv: 0, sewing: false, sewT: 0, wall: 0, atk: null });
+  hitstop = 0; P.check = null; Object.assign(P, { x: START.x, y: START.y, vx: 0, vy: 0, health: TUNE.health, loose: 0, chain: 0, inv: 0, sewing: false, sewT: 0, wall: 0, atk: null, roll: 0, airDodge: 0, counterT: 0, downCD: 0, spinning: false });
   hook.state = 'home'; for (const f of foes) { f.dead = 0; f.hp = 3; f.x = f.x0; } for (const s of scraps) s.got = false; P.spare = 2;
 }
 
 function atkLen() { const A = meta.facings[P.f > 0 ? 'right' : 'left'].anims[P.atk.def.clip]; return A.reduce((t, f) => t + (f.hold || 2) * TUNE.holdUnit, 0); }
 function atkT() { return P.atk.t; }
 function atkFrame() { const A = meta.facings[P.f > 0 ? 'right' : 'left'].anims[P.atk.def.clip]; let t = 0; for (let i = 0; i < A.length; i++) { t += (A[i].hold || 2) * TUNE.holdUnit; if (P.atk.t < t) return [i, A[i]]; } return [A.length - 1, A[A.length - 1]]; }
-function startAttack(name) {
-  const def = ATTACKS[name]; P.atk = { name, def, t: 0, hits: new Set(), landed: false, bounced: false }; P.sewing = false; P.sewT = 0;
+function startAttack(name, keepVx) {
+  const def = ATTACKS[name]; P.atk = { name, def, t: 0, hits: new Set(), landed: false, bounced: false, stall: 0 }; P.sewing = false; P.sewT = 0; P.roll = 0; P.spinning = false;
   if (def.slide) { P.vx = P.f * TUNE.slideV; dust(P.x - P.f * 6, P.y, 3); }
   if (def.turn) { P.f = -P.f; }
-  if (def.plunge) { P.vy = Math.max(P.vy, TUNE.plungeV * 0.6); }
+  if (def.slam && P.ground) { P.vy = -TUNE.slamHop; P.ground = false; P.vx = keepVx ? P.vx * 0.6 : P.f * 40; dust(P.x, P.y, 2); }
+  if (def.down) { P.downCD = TUNE.downCD; P.vy = Math.max(P.vy, 120); }
+  if (def.counter) { P.counterT = 0; P.vx = P.f * 260; }
+  if (name === 'slash_down' || name === 'slash_up') { P.swingNext = def.next; P.swingT = 0.6; }   // (the next press swings back the other way)
 }
 function updateAttack(dt, busy) {
   if (!meta) return;
-  // starting one: the stick says which. On the ground: neutral the combo, up the uppercut, down the sweep (a slide
-  // first at a run). In the air: neutral the wheeling slash, up the small uppercut, down the plunge
-  if (pressed('attack') && !P.sewing && !busy && P.wall === 0) {
-    const cur = P.atk;
-    if (cur && cur.def.next && atkT() > atkLen() * 0.45 && !(inp.down && !cur.def.low) && !inp.up) startAttack(cur.def.next);   // the combo: the next one, once this one's hit has landed
-    else if (!cur || (cur.def.again && atkT() > atkLen() * 0.6) || (cur.def.air && P.ground)) {
-      if (P.ground) startAttack(inp.up ? 'uppercut' : inp.down ? (Math.abs(P.vx) > 140 ? 'slide' : 'sweep') : 'thrust');
-      else if (P.airHits < 4) { startAttack(inp.down ? 'plunge' : inp.up ? 'airup' : 'airslash'); P.airHits++; }
+  P.swingT = Math.max(0, P.swingT - dt); if (!P.swingT) P.swingNext = 'slash_down';
+  P.counterT = Math.max(0, P.counterT - dt); P.downCD = Math.max(0, P.downCD - dt);
+  P.atkHeld = inp.attack ? P.atkHeld + dt : 0;
+  const cur = P.atk;
+  // starting one. The stick says which: neutral the sweep (the counter if a dodge just earned it; out of a dodge, the
+  // slash with the roll's speed, or the slam when she's pushing back the way she came), up the uppercut, down the low
+  // sweep (a slide first at a run) or in the air the down swing
+  if (!inp.attack) P.slamDone = false;
+  if (inp.attack && P.atkHeld >= TUNE.holdForSlam && !P.slamDone && P.ground && !P.sewing && !busy && (!cur || ((cur.name === 'slash_down' || cur.name === 'slash_up') && atkT() >= atkLen() * 0.85))) {   // held on: the slam
+    P.slamDone = true; P.atkBuf = 0; startAttack('slam'); return;
+  }
+  if (P.atkBuf > 0 && !P.sewing && !busy && P.wall === 0) {
+    const chain = cur && cur.def.next && atkT() > atkLen() * 0.5;
+    if (!cur || chain || (cur.def.anyAir && !P.ground && atkT() > atkLen() * 0.6)) {
+      P.atkBuf = 0;
+      if (P.roll > 0) startAttack(inp.x && inp.x === -P.rollDir ? 'slam' : 'slash_down', true);
+      else if (P.counterT > 0) startAttack('counter');
+      else if (chain && cur.def.low) startAttack(cur.def.next);
+      else if (inp.up || inp.aimY < 0) { if (P.ground) startAttack('uppercut'); else startAttack('airup'); }
+      else if (inp.down || inp.aimY > 0) { if (P.ground) startAttack(Math.abs(P.vx) > 140 ? 'slide' : 'sweep'); else if (P.downCD <= 0) startAttack('down'); }
+      else startAttack(P.swingNext);
     }
   }
-  if (!P.atk) return;
+  if (!P.atk) { if (P.spinning) P.spinT += dt; return; }
   const A = P.atk, d = A.def; A.t += dt;
+  // the down swing and the slam hold their coming-down frame till she lands on something (or a while has passed)
+  const frameEnd = i => { const F = meta.facings[P.f > 0 ? 'right' : 'left'].anims[d.clip]; let t = 0; for (let j = 0; j <= i; j++) t += (F[j].hold || 2) * TUNE.holdUnit; return t; };
+  if ((d.down && !A.bounced) || (d.slam && !P.ground && !A.landed2)) { const i = d.down ? 1 : 2, end = frameEnd(i) - 0.001; A.wait = (A.wait || 0) + dt; if (A.t > end && A.wait < 1.0) A.t = end; }
   const [k, fr] = atkFrame(), hitFrame = !!fr.hit;
-  // the moves the swing makes: the uppercut lifts her off the ground on its rising frame, a chop or a spin hops her
+  // the moves the swing makes: the uppercut lifts her on its rising frame; the slam comes down hard once it's over the top
   if (d.rise && !A.rose && hitFrame && k >= 2) { A.rose = true; P.vy = -TUNE[d.rise]; P.ground = false; P.airFromHook = false; P.bigJump = true; dust(P.x, P.y, 3); }
-  if (d.hop && !A.rose && hitFrame && P.ground) { A.rose = true; P.vy = -d.hop; P.ground = false; }
-  if (d.plunge && !A.bounced) { P.vy = Math.max(P.vy, TUNE.plungeV); if (P.ground) { A.t = Math.max(A.t, atkLen() * 0.55); A.bounced = true; dust(P.x, P.y, 5); } }
-  if (d.plunge && A.bounced && atkT() > atkLen() * 0.99) { P.atk = null; return; }
+  if (d.slam && k >= 2 && !P.ground) P.vy = Math.max(P.vy, TUNE.slamDown);
+  if (d.slam && k >= 2 && P.ground && !A.landed2) { A.landed2 = true; dust(P.x, P.y, 6); A.t = Math.max(A.t, atkLen() - 3 * TUNE.holdUnit); }
+  // in the air a hit holds her still for a moment, and the down swing bounces off what it meets
+  if (hitFrame && !P.ground && A.landed && A.stall < TUNE.airStall) { A.stall += dt; P.stallT = 0.02; }
+  if (d.down) {
+    if (hitFrame && P.ground && !A.bounced) { A.bounced = true; pogo(); A.t = Math.max(A.t, atkLen() * 0.55); }
+    if (hitFrame && !A.bounced && !P.wallPogoUsed && (boxHits(P.x + 7, P.y - 12) || boxHits(P.x - 7, P.y - 12))) { P.wallPogoUsed = true; A.bounced = true; pogo(); A.t = Math.max(A.t, atkLen() * 0.55); scratch(P.x + (boxHits(P.x + 7, P.y - 12) ? 9 : -9), P.y - 20); }
+  }
   // the hit, on the frames the art marks
   if (hitFrame) {
     const r = d.reach, l = P.f > 0 ? P.x + r[0] : P.x - r[1], rr = P.f > 0 ? P.x + r[1] : P.x - r[0], t = P.y + r[2], b = P.y + r[3];
     for (const f of foes) {
       if (f.dead || A.hits.has(f)) continue;
-      const fl = d.both ? P.x - Math.max(-r[0], r[1]) : l, fr_ = d.both ? P.x + Math.max(-r[0], r[1]) : rr;
-      if (f.x + 10 > fl && f.x - 10 < fr_ && f.y - 2 > t && f.y - 22 < b) {
-        A.hits.add(f); A.landed = true; f.hp -= d.dmg; f.flash = 0.12; landedHit();
+      if (f.x + 10 > l && f.x - 10 < rr && f.y - 2 > t && f.y - 22 < b) {
+        A.hits.add(f); A.landed = true;
+        if (f.lunge > 0 && f.lunge <= TUNE.lungeTime + 0.08) {                    // swung as it lunged: a clash. Both knocked back, it's dazed, no harm done
+          f.stun = TUNE.clashStun; f.lunge = 0; f.x += P.f * 22; P.vx = -P.f * 160; hitstop = TUNE.bigHitstop; spark(f.x - P.f * 12, f.y - 16); pop('clash'); continue;
+        }
+        f.hp -= d.dmg; f.flash = 0.12; landedHit(); hitstop = d.counter ? TUNE.bigHitstop : TUNE.hitstop;
         if (d.push) f.x += P.f * d.push;
         if (d.launch) { f.vy = -TUNE.launchV; f.air = 0.6; }
-        if (d.plunge && !A.bounced) { A.bounced = true; P.vy = -TUNE.bounceV; P.airHits = 0; A.t = Math.max(A.t, atkLen() * 0.55); pop('bounce'); }
+        if (d.counter) { f.stun = 0.8; spark(f.x, f.y - 16); }
+        if (d.down && !A.bounced) { A.bounced = true; pogo(); A.t = Math.max(A.t, atkLen() * 0.55); }
         if (f.hp <= 0) { f.dead = 6; pop('knocked out'); }
       }
     }
   }
-  if (A.t >= atkLen()) P.atk = null;
+  if (A.t >= atkLen()) { if (d.spin && !P.ground) { P.spinning = true; P.spinT = 0; } P.atk = null; }   // (after an uppercut she keeps spinning till something stops it)
 }
+function pogo() { P.vy = -TUNE.pogoV; P.ground = false; P.airFromHook = false; P.bigJump = true; P.downCD = 0; P.airDodged = false; pop('bounce'); }
+// the dodge: a quick roll on the ground with a moment nothing can touch her; in the air it turns her the way the
+// stick points without losing any speed (once till her feet touch down or she's on the line)
+function updateDodge(dt, busy) {
+  P.rollCD = Math.max(0, P.rollCD - dt);
+  if (P.dodgeBuf > 0 && !P.sewing && !busy && !P.atk && P.wall === 0) {
+    P.dodgeBuf = 0;
+    if (P.ground && P.rollCD <= 0) { P.roll = TUNE.rollTime; P.rollT = 0; P.rollDir = inp.x || P.f; P.f = P.rollDir; P.rollCD = TUNE.rollTime + TUNE.rollCD; dust(P.x, P.y, 3); }
+    else if (!P.ground && !P.airDodged) {
+      P.airDodged = true; P.airDodge = TUNE.airDodgeTime; P.spinning = false;
+      const sp = Math.max(TUNE.airDodgeMin, Math.hypot(P.vx, P.vy)), dx = inp.x, dy = (inp.up ? -1 : 0) + (inp.down ? 1 : 0);
+      if (dx || dy) { const n = Math.hypot(dx, dy); P.vx = dx / n * sp; P.vy = dy / n * sp; if (dx) P.f = dx; }
+      else { const n = Math.hypot(P.vx, P.vy) || 1; P.vx = P.vx / n * sp; P.vy = P.vy / n * sp; }
+      P.airFromHook = false;
+    }
+  }
+  if (P.roll > 0) {
+    P.roll -= dt; P.rollT += dt; P.vx = P.rollDir * TUNE.rollSpeed * (P.roll < 0.06 ? 0.5 : 1);
+    if (P.roll <= 0) { P.roll = 0; if (inp.x === -P.rollDir) P.f = inp.x; }
+  }
+  if (P.airDodge > 0) { P.airDodge -= dt; if (P.airDodge <= 0) P.airDodge = 0; }
+}
+function spark(x, y) { for (let i = 0; i < 6; i++) dusts.push({ x, y, vx: (Math.random() - 0.5) * 220, vy: (Math.random() - 0.5) * 220, t: 0.18 + Math.random() * 0.1, bright: true }); }
 function update(dt) {
   readInput();
   if (pressed('reset')) reset();
-  P.inv = Math.max(0, P.inv - dt); P.hurtT = Math.max(0, P.hurtT - dt); P.land = Math.max(0, P.land - dt); P.throwT = Math.max(0, (P.throwT || 0) - dt);
+  P.atkBuf = pressed('attack') ? 0.12 : Math.max(0, (P.atkBuf || 0) - dt);     // (a press a moment early, or during a hit's pause, still counts)
   P.jumpBuf = pressed('jump') ? TUNE.jumpBuffer : Math.max(0, P.jumpBuf - dt);
   P.hookBuf = pressed('hook') ? TUNE.hookBuffer : Math.max(0, P.hookBuf - dt);
+  P.dodgeBuf = pressed('dodge') ? 0.12 : Math.max(0, (P.dodgeBuf || 0) - dt);
+  if (hitstop > 0) { hitstop -= dt; Object.assign(was, inp); return; }
+  if (pressed('ability')) pop('an ability goes here');
+  P.inv = Math.max(0, P.inv - dt); P.hurtT = Math.max(0, P.hurtT - dt); P.land = Math.max(0, P.land - dt); P.throwT = Math.max(0, (P.throwT || 0) - dt);
   P.wallLock = Math.max(0, P.wallLock - dt);
   for (const k in marks) marks[k].t = Math.max(0, marks[k].t - dt);
   for (const d of dusts) { d.t -= dt; d.x += d.vx * dt; d.y += d.vy * dt; d.vy += 60 * dt; } while (dusts.length && dusts[0].t <= 0) dusts.shift();
@@ -381,8 +461,9 @@ function update(dt) {
       else if (!ix && Math.abs(P.vx) > 170 && !marked('skid')) { mark('skid', 0.2); dust(P.x - Math.sign(P.vx) * 6, P.y, 3); }
       else if (ix && Math.abs(P.vx) < 30 && !marked('start')) mark('start', 0.1);
     }
-    if (P.atk && P.atk.def.slide && P.ground) { P.vx = P.f * TUNE.slideV * Math.max(0, 1 - atkT() / atkLen()); }   // the slide carries her under things, dying off
-    else if (P.atk && P.ground && !P.atk.def.slide) P.vx *= 0.75;   // feet planted for a swing on the ground
+    if (P.roll > 0) {}                                       // (the dodge sets her speed)
+    else if (P.atk && P.atk.def.slide && P.ground) { P.vx = P.f * TUNE.slideV * Math.max(0, 1 - atkT() / atkLen()); }   // the slide carries her under things, dying off
+    else if (P.atk && P.ground && !P.atk.def.slide && !P.atk.def.counter) P.vx *= 0.75;   // feet planted for a swing on the ground
     else if (!P.sewing && !P.atk) {
       if (!P.ground && Math.abs(P.vx) > top && Math.sign(P.vx) !== -ix) {   // faster than she runs, off a yank or a swing: it eases off in the air
         P.vx -= Math.sign(P.vx) * Math.min(Math.abs(P.vx) - top, TUNE.airDrag * dt);
@@ -390,7 +471,8 @@ function update(dt) {
         const a = (P.ground ? (ix ? TUNE.accel : TUNE.stop) : (ix ? TUNE.airAccel : 300)) * dt * (ix && Math.sign(P.vx) === -ix ? 1.8 : 1);
         P.vx += Math.max(-a, Math.min(a, ix * top - P.vx));
       }
-      if (ix) P.f = ix;
+      if (inp.aim) P.f = inp.aim; else if (ix) P.f = ix;
+      if (inp.aim && ix === -inp.aim && P.ground && Math.abs(P.vx) > TUNE.run * TUNE.backSpeed) P.vx = ix * TUNE.run * TUNE.backSpeed;   // backing off, facing the other way: a bit slower
     } else if (P.ground) P.vx *= 0.8;
 
     // a trunk beside her in the air: scamper up it a little, then slide down slowly
@@ -403,6 +485,7 @@ function update(dt) {
 
     // jumping: off the ground (or just after running off it), or off a trunk
     if (P.jumpBuf > 0 && !P.sewing && !(P.atk && P.ground)) {
+      if (P.roll > 0) P.roll = 0;
       if (P.ground || P.coyote > 0) { P.vy = -TUNE.jumpV; P.ground = false; P.coyote = 0; P.jumpBuf = 0; P.jumpHeld = true; mark('spring', 0.08); dust(P.x, P.y, 2); P.bigJump = true; }
       else if (P.wall || boxHits(P.x + 5, P.y - 4) || boxHits(P.x - 5, P.y - 4)) {   // (a trunk on either side: pushing away from it as she jumps still kicks off it)
         const w = P.wall || (boxHits(P.x + 5, P.y - 4) ? 1 : -1); P.vx = -w * TUNE.wallJumpX; P.vy = -TUNE.wallJumpV; P.f = -w; P.wallFrom = w; P.wallLock = TUNE.wallLock;
@@ -412,10 +495,12 @@ function update(dt) {
     if (P.jumpHeld && (!inp.jump || P.vy >= 0)) { if (!inp.jump && P.vy < -TUNE.jumpCut && !P.airFromHook) { P.vy = -TUNE.jumpCut; P.bigJump = false; } P.jumpHeld = false; }
     let g = P.vy < 0 ? TUNE.riseGrav : TUNE.fallGrav;
     if (inp.jump && Math.abs(P.vy) < 90) g *= TUNE.apexGrav;  // a little hang at the top of a held jump
-    if (!P.wall || P.vy < 0) P.vy = Math.min(P.vy + g * dt, TUNE.maxFall);
+    if (P.airDodge > 0) {}                                                     // (an air dodge keeps its line)
+    else if (P.stallT > 0) P.vy = Math.min(P.vy, 0);                           // (a hit in the air holds her a moment)
+    else if (!P.wall || P.vy < 0) P.vy = Math.min(P.vy + g * dt, TUNE.maxFall);
     const wasAir = !P.ground, fall = P.vy;
     moveX(P.vx * dt); moveY(P.vy * dt);
-    if (P.ground) { P.coyote = TUNE.coyote; P.scamper = TUNE.scamper; P.bigJump = false; P.airHits = 0; } else P.coyote = Math.max(0, P.coyote - dt);
+    if (P.ground) { P.coyote = TUNE.coyote; P.scamper = TUNE.scamper; P.bigJump = false; P.airHits = 0; P.airDodged = false; P.wallPogoUsed = false; P.downCD = 0; P.spinning = false; } else P.coyote = Math.max(0, P.coyote - dt);
     if (P.ground && wasAir) {                               // landing: a clean one off the line keeps the speed going
       if (fall > 520) P.land = 0.08;
       if (Math.abs(P.vx) > 120) mark('landrun', 0.16); else if (fall > 300) mark('landing', 0.14);
@@ -431,17 +516,25 @@ function update(dt) {
   }
   if (P.y > H * T + 40) dropped();
 
-  // the attacks, built to her frames (ATTACKS)
+  // the attacks, built to her frames (ATTACKS), and the dodge
   updateAttack(dt, swing || yank);
+  updateDodge(dt, swing || yank);
+  P.stallT = Math.max(0, P.stallT - dt);
   // a yank straight into one is a hit too
   if (yank) for (const f of foes) if (!f.dead && Math.abs(f.x - P.x) < 22 && Math.abs(f.y - P.y) < 30 && !f.yanked) { f.yanked = 0.5; f.hp--; f.flash = 0.12; landedHit(); if (f.hp <= 0) f.dead = 6; }
 
   // the litter: back and forth, a touch hurts
   for (const f of foes) {
     f.flash = Math.max(0, f.flash - dt); f.yanked = Math.max(0, (f.yanked || 0) - dt);
-    if (f.dead > 0) { f.dead -= dt; if (f.dead <= 0) { f.dead = 0; f.hp = 3; f.x = f.x0; f.y = f.y0; f.air = 0; } continue; }
+    if (f.dead > 0) { f.dead -= dt; if (f.dead <= 0) { f.dead = 0; f.hp = 3; f.x = f.x0; f.y = f.y0; f.air = 0; f.lunge = 0; f.stun = 0; } continue; }
+    f.stun = Math.max(0, (f.stun || 0) - dt);
+    if (f.stun > 0) { continue; }                                                      // dazed by a clash or the counter
+    // every so often it lunges at her when she's near: a wind up, then a dart. Swinging as it darts is a clash
+    f.lungeT = (f.lungeT || 0) + dt;
+    if (!f.lunge && f.lungeT > TUNE.lungeEvery && Math.abs(f.x - P.x) < 70 && Math.abs(f.y - P.y) < 30 && !f.air) { f.lunge = TUNE.lungeWind + TUNE.lungeTime; f.lungeDir = Math.sign(P.x - f.x) || 1; f.lungeT = 0; }
+    if (f.lunge > 0) { f.lunge -= dt; if (f.lunge <= TUNE.lungeTime) f.x += f.lungeDir * TUNE.lungeSpeed * dt; if (f.lunge <= 0) f.lunge = 0; }
     if (f.air > 0) { f.air -= dt; f.y += (f.vy || 0) * dt; f.vy = (f.vy || 0) + 1400 * dt; if (f.y >= f.y0) { f.y = f.y0; f.air = 0; f.vy = 0; } }   // launched up by the uppercut, and falling back
-    f.x += f.vx * dt; if (Math.abs(f.x - f.x0) > 40) { f.vx = -f.vx; f.x = f.x0 + Math.sign(f.x - f.x0) * 40; }
+    if (!f.lunge) { f.x += f.vx * dt; if (Math.abs(f.x - f.x0) > 40) { f.vx = -f.vx; f.x = f.x0 + Math.sign(f.x - f.x0) * 40; } }
     if (Math.abs(f.x - P.x) < 16 && P.y > f.y - 20 && P.y - 40 < f.y && !yank && !(P.atk && P.atk.def.low) && !f.air) hurt(f.x);   // (low to the ground she's under its reach)
   }
   for (const s of scraps) if (!s.got && Math.abs(s.x - P.x) < 14 && Math.abs(s.y - P.y) < 30) { s.got = true; P.spare = Math.min(TUNE.spareMax, P.spare + 1); pop('a scrap of yarn'); }
@@ -472,6 +565,9 @@ function frameFor() {
   else if (marked('hit')) r = C('hit', markT('hit'));
   else if (!P.ground && P.vy > 450 && P.y > (H - 7) * T) r = C('fall_tumble', (performance.now() / 1000) % 0.25);
   else if (P.atk) { const [k] = atkFrame(); r = [P.atk.def.clip, k, fac]; }
+  else if (P.roll > 0) r = ['dodge', Math.floor(P.rollT / TUNE.rollTime * 4) % 4, fac];
+  else if (P.airDodge > 0) r = ['dodge', Math.floor((TUNE.airDodgeTime - P.airDodge) / TUNE.airDodgeTime * 4) % 4, fac];
+  else if (P.spinning && !P.ground) r = ['dodge', Math.floor(P.spinT * 14) % 4, fac];   // (spinning on after the uppercut)
   else if (hook.state === 'stuck' && hook.mode === 'swing') {                  // on the line: the hang turned to where she is in the swing
     const ang = -Math.atan2(P.x - hook.x, (P.y - 30) - hook.y) * 180 / Math.PI, A = meta.facings[fac].anims.line_swing;
     let best = 0; for (let i = 1; i < A.length; i++) if (Math.abs((A[i].rot || 0) - ang) < Math.abs((A[best].rot || 0) - ang)) best = i;
@@ -485,10 +581,14 @@ function frameFor() {
   else if (P.wall) r = P.vy < 0 ? ['trunk_scamper', Math.floor(performance.now() / 70) % 4, P.wall > 0 ? 'right' : 'left'] : ['trunk_slide', Math.floor(performance.now() / 160) % 2, P.wall > 0 ? 'right' : 'left'];
   else if (marked('throw')) r = P.ground ? ['throw_running', Math.min(2, Math.floor(markT('throw') / 0.06)), fac] : ['throw_air', Math.min(2, Math.floor(markT('throw') / 0.06)), fac];
   else if (marked('drop')) r = ['drop_through', markT('drop') < 0.06 ? 0 : 1, fac];
-  else if (!P.ground) {
-    if (bare) r = ['air_bare', 0, fac];
+  else if (!P.ground) {                                      // never still in the air: rising, the curl at the top of a big jump, then two falling frames that trade
+    const fall = Math.floor(performance.now() / 110) % 2;
+    if (bare) r = ['fall_bare', fall, fac];
     else if (marked('spring')) r = ['jump', 1, fac];
-    else r = ['jump', P.vy < -230 ? 2 : P.vy < 230 ? (P.bigJump ? 3 : (P.vy < 0 ? 2 : 4)) : 4, fac];   // (the loose curl at the top only on a big jump; a little hop goes straight from the rise to the fall)
+    else if (P.vy < -230) r = ['jump', 2, fac];
+    else if (P.vy < 230 && P.bigJump) r = ['jump', 3, fac];
+    else if (P.vy < 0) r = ['jump', 2, fac];
+    else r = ['fall', fall, fac];
   }
   else if (marked('landrun')) r = C('land_run', markT('landrun'));
   else if (marked('landing')) r = ['jump', 5, fac];
@@ -508,7 +608,7 @@ function drawPurl() {
   const fr = fm.anims[name][Math.min(k, fm.anims[name].length - 1)];
   const [cw, ch] = meta.cell, sx = (fr.i % meta.cols) * cw, sy = Math.floor(fr.i / meta.cols) * ch;
   let dx, dy;
-  if (fr.mid && !P.ground && !(hook.state === 'stuck' && hook.mode === 'swing')) { dx = Math.round(P.x - fr.mid[0] - cam.x); dy = Math.round(P.y - 28 - fr.mid[1] - cam.y); }   // in the air every frame sits on the middle of her body, so she doesn't shift between moves
+  if (fr.mid && (fr.ball || (!P.ground && !(hook.state === 'stuck' && hook.mode === 'swing')))) { dx = Math.round(P.x - fr.mid[0] - cam.x); dy = Math.round(P.y - (fr.ball && P.ground ? 22 : 28) - fr.mid[1] - cam.y); }   // in the air (and curled in a ball) every frame sits on the middle of her body, so she doesn't shift between moves
   else { dx = Math.round(P.x - (fr.fx ?? fm.feet_x) - cam.x); dy = Math.round(P.y - (fr.fy ?? meta.floor) - cam.y); }
   P.frameNow = name + ' ' + k + ' ' + fac;
   if (P.inv > 0 && Math.floor(P.inv * 20) % 2) ctx.globalAlpha = 0.5;
@@ -581,7 +681,7 @@ function drawWorld() {
   for (const f of foes) {
     if (f.dead) continue;
     const px = f.x - cam.x, py = f.y - cam.y;
-    ctx.fillStyle = f.flash > 0 ? '#ffffff' : '#2a2030'; ctx.beginPath(); ctx.ellipse(px, py - 10, 12, 10, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = f.flash > 0 ? '#ffffff' : f.stun > 0 ? '#4a4050' : f.lunge > TUNE.lungeTime ? '#5a2030' : '#2a2030'; ctx.beginPath(); ctx.ellipse(px + (f.lunge > TUNE.lungeTime ? -f.lungeDir * 3 : 0), py - (f.stun > 0 ? 6 : 10), 12 + (f.stun > 0 ? 3 : 0), f.stun > 0 ? 6 : 10, 0, 0, 7); ctx.fill();
     ctx.fillStyle = '#e04a5a'; ctx.fillRect(px - 5 + Math.sign(f.vx) * 3, py - 14, 3, 3); ctx.fillRect(px + 2 + Math.sign(f.vx) * 3, py - 14, 3, 3);
   }
 }
@@ -610,7 +710,7 @@ function render() {
   ctx.setTransform(S, 0, 0, S, 0, 0); ctx.imageSmoothingEnabled = false;
   drawWorld();
   for (const c of scratches) { ctx.globalAlpha = Math.min(1, c.t * 2); ctx.fillStyle = '#2a1a10'; ctx.fillRect(Math.round(c.x - cam.x), Math.round(c.y - cam.y), 1, 5); ctx.fillRect(Math.round(c.x - cam.x) + 2, Math.round(c.y - cam.y) + 1, 1, 4); ctx.globalAlpha = 1; }
-  for (const d of dusts) { ctx.globalAlpha = Math.min(0.8, d.t * 2); ctx.fillStyle = '#d8c39a'; const z = d.t > 0.25 ? 3 : 2; ctx.fillRect(Math.round(d.x - cam.x), Math.round(d.y - cam.y), z, z); ctx.globalAlpha = 1; }
+  for (const d of dusts) { ctx.globalAlpha = Math.min(0.8, d.t * 2); ctx.fillStyle = d.bright ? '#fff6c0' : '#d8c39a'; const z = d.t > 0.25 ? 3 : 2; ctx.fillRect(Math.round(d.x - cam.x), Math.round(d.y - cam.y), z, z); ctx.globalAlpha = 1; }
   const tail = drawPurl() || tailPoint();
   if (hook.state !== 'home') {
     const ang = hook.state === 'reel' ? 180 + Math.atan2(tail.x - hook.x, -(tail.y - hook.y)) * 180 / Math.PI : Math.atan2(hook.x - tail.x, -(hook.y - tail.y)) * 180 / Math.PI;
