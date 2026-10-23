@@ -134,7 +134,7 @@ function moveX(dx) {                                       // true if she ran in
     const most = P.ground ? 6 : TUNE.mantle;
     let up = 0;
     for (let k = 2; k <= most; k += 2) if (!boxHits(nx, P.y - k)) { up = k; break; }
-    if (up && P.vy > -260) { P.y -= up; P.x = nx; if (!P.ground) { P.vy = Math.min(P.vy, 0); P.land = 0.06; } continue; }
+    if (up && P.vy > -260) { P.y -= up; P.x = nx; if (!P.ground) { P.vy = Math.min(P.vy, 0); P.land = 0.06; if (up > 10) { mark('mantle', 0.2); dust(P.x + P.f * 8, P.y, 3); } } continue; }
     P.vx = 0; return true;
   }
   return false;
@@ -182,7 +182,7 @@ function throwHook() {
     hook.state = 'miss'; hook.knot = null; hook.tx = P.x + P.f * TUNE.reach * 0.7; hook.ty = P.y - 30 - TUNE.reach * 0.45;
     if (!pops.some(p => p.text === 'no knot in reach')) pops.push({ text: 'no knot in reach', x: P.x, y: P.y - 80, t: 0.9 });
   }
-  P.throwT = 0.14; P.sewing = false; P.sewT = 0;
+  P.throwT = 0.14; mark('throw', 0.2); P.sewing = false; P.sewT = 0;
 }
 function letGo() {
   if (hook.state !== 'stuck') return;
@@ -214,7 +214,7 @@ function updateHook(dt) {
   }
   if (hook.state === 'reel') {                             // back to her tail, while she keeps going
     const dx = tp.x - hook.x, dy = tp.y - hook.y, d = Math.hypot(dx, dy), s = TUNE.reel * dt;
-    if (d <= s + 4) { hook.state = 'home'; return; }
+    if (d <= s + 4) { hook.state = 'home'; mark('catch', 0.12); return; }
     hook.x += dx / d * s; hook.y += dy / d * s;
   }
 }
@@ -224,7 +224,7 @@ function hurt(fromX) {
   if (P.inv > 0) return;
   if (P.loose > 0) P.loose = 0;                            // loose yarn not won back is gone for good
   P.health -= 1; P.loose = 1; P.looseT = TUNE.rallyTime; P.rally = 0;
-  P.inv = 1.0; P.hurtT = 0.25; P.vx = Math.sign(P.x - fromX || -P.f) * 180; P.vy = -220; P.chain = 0; P.sewing = false; P.sewT = 0;
+  P.inv = 1.0; P.hurtT = 0.25; mark('hit', 0.3); P.vx = Math.sign(P.x - fromX || -P.f) * 180; P.vy = -220; P.chain = 0; P.sewing = false; P.sewT = 0;
   if (hook.state === 'stuck') letGo();
   if (P.health <= 0) { reset(); }
 }
@@ -237,6 +237,10 @@ function landedHit() {                                     // a hit on an enemy:
   }
   if (P.loose > 0) P.looseT = Math.min(TUNE.rallyTime, P.looseT + 0.75);
 }
+const marks = {};                                          // (short timers for the in-between moves the frames show: a skid, a landing, a turn...)
+function mark(name, t) { marks[name] = { t, of: t }; }
+const marked = name => marks[name] && marks[name].t > 0;
+const markT = name => marks[name] ? marks[name].of - marks[name].t : 0;       // (how long since it started)
 const pops = [];
 function pop(text) { pops.push({ text, x: P.x, y: P.y - 80, t: 1.2 }); }
 function dropped() {                                       // off into the open: a heart, and back to the ledge the stretch started from
@@ -244,6 +248,9 @@ function dropped() {                                       // off into the open:
   if (P.health <= 0) { reset(); return; }
   const c = P.check || START; P.x = c.x; P.y = c.y; P.vx = 0; P.vy = 0; P.inv = 1.0; P.airFromHook = false; pop('a fall: lost a bit of yarn');
 }
+const dusts = [], scratches = [];
+function dust(x, y, n) { for (let i = 0; i < n; i++) dusts.push({ x: x + (Math.random() - 0.5) * 10, y: y - 2, vx: (Math.random() - 0.5) * 70, vy: -20 - Math.random() * 30, t: 0.35 + Math.random() * 0.2 }); }
+function scratch(x, y) { scratches.push({ x, y, t: 0.6 }); }
 function reset() {
   P.check = null; Object.assign(P, { x: START.x, y: START.y, vx: 0, vy: 0, health: TUNE.health, loose: 0, chain: 0, inv: 0, sewing: false, sewT: 0, wall: 0 });
   hook.state = 'home'; for (const f of foes) { f.dead = 0; f.hp = 3; f.x = f.x0; } for (const s of scraps) s.got = false; P.spare = 2;
@@ -256,6 +263,11 @@ function update(dt) {
   P.jumpBuf = pressed('jump') ? TUNE.jumpBuffer : Math.max(0, P.jumpBuf - dt);
   P.hookBuf = pressed('hook') ? TUNE.hookBuffer : Math.max(0, P.hookBuf - dt);
   P.wallLock = Math.max(0, P.wallLock - dt);
+  for (const k in marks) marks[k].t = Math.max(0, marks[k].t - dt);
+  for (const d of dusts) { d.t -= dt; d.x += d.vx * dt; d.y += d.vy * dt; d.vy += 60 * dt; } while (dusts.length && dusts[0].t <= 0) dusts.shift();
+  for (const c of scratches) c.t -= dt; while (scratches.length && scratches[0].t <= 0) scratches.shift();
+  if (P.ground && inp.down && pressed('down') && [P.x - P.hw, P.x, P.x + P.hw].some(xx => twigAt(xx, P.y + 2))) mark('drop', 0.16);
+  if (P.wall && P.vy > 60 && Math.random() < dt * 14) scratch(P.x + P.wall * 9, P.y - 24);
   if (P.loose > 0) { P.looseT -= dt; if (P.looseT <= 0) { P.loose = 0; pop('it frayed off'); } }
 
   // sewing: standing still, holding the button, with spare yarn
@@ -263,7 +275,7 @@ function update(dt) {
   if (inp.sew && canSew && P.health < TUNE.health && P.spare >= TUNE.sewCost) {
     P.sewing = true; P.sewT += dt;
     if (P.sewT >= TUNE.sewTime) { P.sewT = 0; P.spare -= TUNE.sewCost; P.health = Math.min(TUNE.health, P.health + 1); pop('sewn up'); }
-  } else { P.sewing = false; P.sewT = 0; }
+  } else { if (P.sewing) mark('rise', 0.14); P.sewing = false; P.sewT = 0; }
 
   // the hook (a press a moment before the yarn's back still throws, once it is)
   if (P.hookBuf > 0 && hook.state === 'home' && !P.sewing) { P.hookBuf = 0; throwHook(); }
@@ -279,7 +291,7 @@ function update(dt) {
     else if (d < 20 || hook.yankT > TUNE.yankMax || hitX || hitY) {
       const keep = Math.max(TUNE.run * 1.1, Math.abs(P.vx));
       P.vx = (inp.x || P.f) * keep; P.vy = Math.min(P.vy * 0.4, -TUNE.flingUp);
-      letGo();
+      letGo(); mark('fling', 0.3);
     }
   } else if (swing) {                                       // on the line like a pendulum
     P.vy = Math.min(P.vy + TUNE.fallGrav * 0.75 * dt, TUNE.maxFall); P.vx += inp.x * TUNE.swingPump * dt;
@@ -291,12 +303,17 @@ function update(dt) {
     if (!inp.hook || P.jumpBuf > 0 || hx || hy || P.ground) {   // let go: with a lift if she's on the way up
       if (!P.ground) { P.vx *= TUNE.swingLetGo; P.vy = Math.min(P.vy * TUNE.swingLetGo, P.vy < 0 ? P.vy - 120 : -120); }
       if (P.jumpBuf > 0) { P.jumpBuf = 0; P.vy = Math.min(P.vy, -TUNE.jumpV * 0.8); }
-      letGo();
+      letGo(); if (!P.ground) mark('release', 0.22);
     }
   } else {
     // running: quick to speed, quick to turn, quick to stop
     const top = TUNE.run * (1 + TUNE.chainBoost * P.chain);
     let ix = inp.x; if (P.wallLock > 0 && ix === P.wallFrom) ix = 0;
+    if (P.ground && !P.sewing && P.atk <= 0) {                // the in-between moves on the ground: a snap turn, a skid, a quick start
+      if (ix && Math.sign(P.vx) === -ix && Math.abs(P.vx) > 150 && !marked('turn')) { mark('turn', 0.2); P.turnFrom = Math.sign(P.vx); dust(P.x, P.y, 3); }
+      else if (!ix && Math.abs(P.vx) > 170 && !marked('skid')) { mark('skid', 0.2); dust(P.x - Math.sign(P.vx) * 6, P.y, 3); }
+      else if (ix && Math.abs(P.vx) < 30 && !marked('start')) mark('start', 0.1);
+    }
     if (!P.sewing && P.atk <= 0) {
       if (!P.ground && Math.abs(P.vx) > top && Math.sign(P.vx) !== -ix) {   // faster than she runs, off a yank or a swing: it eases off in the air
         P.vx -= Math.sign(P.vx) * Math.min(Math.abs(P.vx) - top, TUNE.airDrag * dt);
@@ -317,10 +334,10 @@ function update(dt) {
 
     // jumping: off the ground (or just after running off it), or off a trunk
     if (P.jumpBuf > 0 && !P.sewing) {
-      if (P.ground || P.coyote > 0) { P.vy = -TUNE.jumpV; P.ground = false; P.coyote = 0; P.jumpBuf = 0; P.jumpHeld = true; }
+      if (P.ground || P.coyote > 0) { P.vy = -TUNE.jumpV; P.ground = false; P.coyote = 0; P.jumpBuf = 0; P.jumpHeld = true; mark('spring', 0.08); dust(P.x, P.y, 2); }
       else if (P.wall || boxHits(P.x + 5, P.y - 4) || boxHits(P.x - 5, P.y - 4)) {   // (a trunk on either side: pushing away from it as she jumps still kicks off it)
         const w = P.wall || (boxHits(P.x + 5, P.y - 4) ? 1 : -1); P.vx = -w * TUNE.wallJumpX; P.vy = -TUNE.wallJumpV; P.f = -w; P.wallFrom = w; P.wallLock = TUNE.wallLock;
-        P.jumpBuf = 0; P.jumpHeld = true; P.scamper = TUNE.scamper * 0.5; P.wall = 0;
+        P.jumpBuf = 0; P.jumpHeld = true; P.scamper = TUNE.scamper * 0.5; P.wall = 0; mark('kick', 0.22); scratch(P.x + w * 9, P.y - 20);
       }
     }
     if (P.jumpHeld && (!inp.jump || P.vy >= 0)) { if (!inp.jump && P.vy < -TUNE.jumpCut && !P.airFromHook) P.vy = -TUNE.jumpCut; P.jumpHeld = false; }
@@ -332,6 +349,8 @@ function update(dt) {
     if (P.ground) { P.coyote = TUNE.coyote; P.scamper = TUNE.scamper; } else P.coyote = Math.max(0, P.coyote - dt);
     if (P.ground && wasAir) {                               // landing: a clean one off the line keeps the speed going
       if (fall > 520) P.land = 0.08;
+      if (Math.abs(P.vx) > 120) mark('landrun', 0.16); else if (fall > 300) mark('landing', 0.14);
+      if (fall > 300) dust(P.x, P.y, fall > 600 ? 6 : 3);
       if (P.airFromHook) { if (Math.abs(P.vx) > 160) { P.chain = Math.min(TUNE.chainMax, P.chain + 1); if (P.chain > 1) pop('faster'); } else P.chain = 0; }
       P.airFromHook = false;
     }
@@ -377,24 +396,58 @@ sheet.src = 'art/purl/purl_proto.png'; hooksImg.src = 'art/purl/purl_hooks.png';
 fetch('art/purl/purl_proto.json').then(r => r.json()).then(j => { meta = j; }).catch(() => {});
 const cam = { x: 0, y: 0 };
 
+// which frame she's in: [animation, frame, facing], the in-between moves first (they're short), then what she's doing
+function clipAt(fac, name, t) {                                // the frame of a clip t seconds in, by each frame's hold (60 a second)
+  const A = meta.facings[fac].anims[name]; let s = 0;
+  for (let i = 0; i < A.length; i++) { s += (A[i].hold || 2) / 60; if (t < s) return i; }
+  return A.length - 1;
+}
 function frameFor() {
-  const bare = hook.state !== 'home';
-  if (P.sewing) return ['sew', Math.floor(P.sewT * 4) % 2];
-  if (P.atk > 0) return ['attack', Math.min(3, Math.floor((0.32 - P.atk) / 0.08))];
-  if (hook.state === 'stuck' && hook.mode === 'swing') return ['swing', 0];
-  if (hook.state === 'stuck' && hook.mode === 'yank') return ['zip', 0];
-  if (P.throwT > 0 && P.ground) return ['throw', P.throwT > 0.09 ? 0 : 1];
-  if (!P.ground) return [bare ? 'air_bare' : 'air', 0];
-  if (P.land > 0) return ['land', 0];
-  if (Math.abs(P.vx) > 20) return [bare ? 'run_bare' : 'run', Math.floor(P.anim * 13) % 8];
-  return ['idle', Math.floor(P.anim * 6) % 12];
+  const fac = P.f > 0 ? 'right' : 'left', other = P.f > 0 ? 'left' : 'right', bare = hook.state !== 'home';
+  const has = n => !!meta.facings[fac].anims[n];
+  const C = (n, t, f = fac) => has(n) ? [n, clipAt(f, n, t), f] : null;
+  let r = null;
+  if (P.sewing) r = P.sewT < 0.12 && has('sit_to_sew') ? C('sit_to_sew', P.sewT) : ['sew', Math.floor(P.sewT * 4) % 2, fac];
+  else if (marked('rise')) r = C('rise_from_sewing', markT('rise'));
+  else if (marked('hit')) r = C('hit', markT('hit'));
+  else if (!P.ground && P.vy > 450 && P.y > (H - 7) * T) r = C('fall_tumble', (performance.now() / 1000) % 0.25);
+  else if (P.atk > 0) r = C('combo_thrust', 0.26 - P.atk);
+  else if (hook.state === 'stuck' && hook.mode === 'swing') {
+    const ang = Math.atan2(P.x - hook.x, (P.y - 30) - hook.y) * P.f;         // (behind the knot, under it, or ahead of it, the way she's facing)
+    r = ['line_swing', ang < -0.35 ? 0 : ang > 0.35 ? 2 : 1, fac];
+  }
+  else if (hook.state === 'stuck' && hook.mode === 'yank') r = ['yank', hook.yankT < 0.08 ? 0 : 1, fac];
+  else if (marked('fling')) r = C('over_knot', markT('fling'));
+  else if (marked('release')) r = C('swing_release', 0);
+  else if (marked('mantle')) r = ['ledge_pullup', 1 + Math.min(2, Math.floor(markT('mantle') / 0.07)), fac];
+  else if (marked('kick')) r = ['wall_kick', markT('kick') < 0.08 ? 1 : 2, P.f > 0 ? 'left' : 'right'];   // (the clip faces the trunk; these frames face away from it)
+  else if (P.wall) r = P.vy < 0 ? ['trunk_scamper', Math.floor(performance.now() / 70) % 4, P.wall > 0 ? 'right' : 'left'] : ['trunk_slide', Math.floor(performance.now() / 160) % 2, P.wall > 0 ? 'right' : 'left'];
+  else if (marked('throw')) r = P.ground ? ['throw_running', Math.min(2, Math.floor(markT('throw') / 0.06)), fac] : ['throw_air', Math.min(2, Math.floor(markT('throw') / 0.06)), fac];
+  else if (marked('drop')) r = ['drop_through', markT('drop') < 0.06 ? 0 : 1, fac];
+  else if (!P.ground) {
+    if (bare) r = ['air_bare', 0, fac];
+    else if (marked('spring')) r = ['jump', 1, fac];
+    else r = ['jump', P.vy < -230 ? 2 : P.vy < 230 ? 3 : 4, fac];
+  }
+  else if (marked('landrun')) r = C('land_run', markT('landrun'));
+  else if (marked('landing')) r = ['jump', 5, fac];
+  else if (P.land > 0) r = ['land', 0, fac];
+  else if (marked('turn')) r = ['snap_turn', Math.min(3, Math.floor(markT('turn') / 0.05)), P.turnFrom > 0 ? 'right' : 'left'];   // (the clip of the way she was going: its last frame faces the new way)
+  else if (marked('skid')) r = ['skid', markT('skid') < 0.1 ? 0 : 1, Math.abs(P.vx) > 5 ? (P.vx > 0 ? 'right' : 'left') : fac];
+  else if (marked('start')) r = ['start_bound', markT('start') < 0.05 ? 0 : 1, fac];
+  else if (marked('catch') && Math.abs(P.vx) > 20) r = ['yarn_return', markT('catch') < 0.06 ? 0 : 1, fac];
+  else if (Math.abs(P.vx) > 20) r = [bare ? 'run_bare' : 'run', Math.floor(P.anim * 13) % 8, fac];
+  else r = ['idle', Math.floor(P.anim * 6) % 12, fac];
+  if (!r || !meta.facings[r[2]].anims[r[0]]) r = [P.ground ? 'idle' : 'air', 0, fac];
+  return r;
 }
 function drawPurl() {
   if (!meta || !sheet.complete) { ctx.fillStyle = '#c87a40'; ctx.fillRect(P.x - cam.x - 8, P.y - cam.y - 60, 16, 60); return null; }
-  const fac = P.f > 0 ? 'right' : 'left', fm = meta.facings[fac], [name, k] = frameFor();
+  const [name, k, fac] = frameFor(), fm = meta.facings[fac];
   const fr = fm.anims[name][Math.min(k, fm.anims[name].length - 1)];
   const [cw, ch] = meta.cell, sx = (fr.i % meta.cols) * cw, sy = Math.floor(fr.i / meta.cols) * ch;
-  const dx = Math.round(P.x - fm.feet_x - cam.x), dy = Math.round(P.y - meta.floor - cam.y);
+  const dx = Math.round(P.x - (fr.fx ?? fm.feet_x) - cam.x), dy = Math.round(P.y - (fr.fy ?? meta.floor) - cam.y);
+  P.frameNow = name + ' ' + k + ' ' + fac;
   if (P.inv > 0 && Math.floor(P.inv * 20) % 2) ctx.globalAlpha = 0.5;
   ctx.drawImage(sheet, sx, sy, cw, ch, dx, dy, cw, ch); ctx.globalAlpha = 1;
   return fr.tail ? { x: dx + fr.tail[0] + cam.x, y: dy + fr.tail[1] + cam.y } : tailPoint();
@@ -493,6 +546,8 @@ function render() {
   cam.x = Math.max(0, Math.min(W * T - VW, cam.x)); cam.y = Math.max(-80, Math.min(H * T - VH + 40, cam.y));
   ctx.setTransform(S, 0, 0, S, 0, 0); ctx.imageSmoothingEnabled = false;
   drawWorld();
+  for (const c of scratches) { ctx.globalAlpha = Math.min(1, c.t * 2); ctx.fillStyle = '#2a1a10'; ctx.fillRect(Math.round(c.x - cam.x), Math.round(c.y - cam.y), 1, 5); ctx.fillRect(Math.round(c.x - cam.x) + 2, Math.round(c.y - cam.y) + 1, 1, 4); ctx.globalAlpha = 1; }
+  for (const d of dusts) { ctx.globalAlpha = Math.min(0.8, d.t * 2); ctx.fillStyle = '#d8c39a'; const z = d.t > 0.25 ? 3 : 2; ctx.fillRect(Math.round(d.x - cam.x), Math.round(d.y - cam.y), z, z); ctx.globalAlpha = 1; }
   const tail = drawPurl() || tailPoint();
   if (hook.state !== 'home') {
     const ang = hook.state === 'reel' ? 180 + Math.atan2(tail.x - hook.x, -(tail.y - hook.y)) * 180 / Math.PI : Math.atan2(hook.x - tail.x, -(hook.y - tail.y)) * 180 / Math.PI;
