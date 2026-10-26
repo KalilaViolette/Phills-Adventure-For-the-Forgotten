@@ -852,6 +852,15 @@ function rampGrab(dir, edge) {
   }
   return false;
 }
+// in a room with pixel ground (the painted rooms), a ledge the tiles see has to be a ledge in the pixels too: a top at
+// the tile's top edge just inside the wall, and still about that high 12 px further in. A curved wall is a staircase in
+// tiles, and he was catching the corners of the steps and hanging on air (the hollow's block, 10/26/2026)
+function realLedge(dir, cx, cy) {
+  if (!room.detail) return true;
+  const topAt = x => { for (let yy = cy - 4; yy <= cy + 6; yy++) if (solidPx(x, yy)) return yy; return null; };
+  const near = topAt(cx + dir * 2), deep = topAt(cx + dir * 12);
+  return near !== null && deep !== null && Math.abs(near - cy) <= 3 && Math.abs(deep - near) <= 4;
+}
 function grabAt(dir, col, edge) {
   const cx = dir > 0 ? col * T : (col + 1) * T;
   if ((cx - edge) * dir < -1 || Math.abs(cx - edge) > GRAB_REACH) return false;
@@ -861,6 +870,7 @@ function grabAt(dir, col, edge) {
     if (cy < handY - GRAB_ABOVE || cy > handY + GRAB_BELOW) continue;
     const t = tile(col, row), above = tile(col, row - 1);
     if ((t !== 1 && t !== 2) || above === 1 || above === 2) continue;
+    if (t === 1 && !realLedge(dir, cx, cy)) continue;
     const l = dir > 0 ? cx - 2 * HW : cx, r = dir > 0 ? cx : cx + 2 * HW;
     // his hands and body need clear ground (to the pixel), but whether the drop's too short to bother is judged by
     // the tiles like always, so a lump of packed dirt at the bottom of the wall doesn't stop the grab (10/15/2026)
