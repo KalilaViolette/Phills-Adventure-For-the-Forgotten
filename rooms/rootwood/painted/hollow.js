@@ -85,7 +85,7 @@ ROOM({
    "to": "roots",
    "toDoor": "hollow",
    "x": 24.0,
-   "y": 281,
+   "y": 271,
    "f": 1
   },
   {
