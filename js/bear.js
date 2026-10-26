@@ -121,7 +121,7 @@ function setupBearRoom() {
   if (id === iv.room && world.flags.bearInvited && !world.flags.bearVisited)           // asked him in: still peeking out, waiting for him to come up
     addActor('bear', { kind: 'bear', peek: true, x: 0, y: 0, face: 'L', layer: 'back' });
   if (id === BEAR_AT.home.room) {                                                      // he's home whenever Phill comes up (10/20/2026)
-    const hm = BEAR_AT.home;
+    const hm = homeSpots(room.def);
     addActor('bear', { kind: 'bear', x: hm.x, y: hm.y, face: 'L', layer: 'back' });
     if (!world.flags.bearVisited) playScene(SCENES.bearHome(room.def));                 // the first time
     return;
@@ -129,6 +129,8 @@ function setupBearRoom() {
   if (id !== m.room || !bearWaiting()) return;
   addActor('bear', { kind: 'bear', x: m.x, y: m.y, face: 'R', layer: 'back' });   // facing away, busy with nothing much
 }
+// where things are in his home: the room file says (the painted home, 10/26/2026: bear = {x, y, seat, tally}), else the drawn room's spots
+const homeSpots = def => Object.assign({ x: BEAR_AT.home.x, y: BEAR_AT.home.y, seat: 23.5 * 16, tally: 11 * 16 }, (def && def.bear) || {});
 const _setupPondRoomBear = setupPondRoom;
 setupPondRoom = () => { _setupPondRoomBear(); setupBearRoom(); };
 const bearClear = () => { const m = BEAR_AT.meet; return !foes.some(f => f.hp > 0 && f.state !== 'down' && Math.abs(f.x - m.x) < m.clear[0] && Math.abs(f.y - m.y) < m.clear[1]); };
@@ -329,16 +331,16 @@ SCENES.bearInvite = def => {
 
 // ---- Phill's first time in his home (10/20/2026, the lines are a first draft). Proud of it, nervous, glad of the company
 SCENES.bearHome = def => {
-  const hm = BEAR_AT.home, T_ = 16;
+  const hm = homeSpots(def), T_ = 16;
   return [
     bars(true), run(() => { P.vx = 0; }), wait(0.6),
     say('bear', 'Welcome in.', "It's not much. I dug it all out myself, a pawful at a time."),
     say('bear', "Sorry, it's a bit of a mess."),
     ...shakeNo(),                                                                       // it isn't
     say('bear', 'No? You think so?'),
-    wait(0.3), walkTo(21.5 * T_), faceTo(23.5 * T_), wait(0.3),
+    wait(0.3), walkTo(hm.seat - 2 * T_), faceTo(hm.seat), wait(0.3),
     say('bear', 'I made that seat for company.', "You're the first one to sit in it."),
-    faceTo(11 * T_), wait(0.4),                                                       // the days on the wall
+    faceTo(hm.tally), wait(0.4),                                                      // the days on the wall
     run(() => { popup(P.x, P.y - 54, '?', '#e8e6f0', true); sfx.tick(); }), wait(0.9),
     say('bear', 'Those? Those are the days.', 'Since I got left out here.'),
     say('bear', "I keep thinking I'll stop counting. I never do."),
