@@ -142,22 +142,22 @@ ROOM({
   "############################....############",
   "############################....############",
   "############################....######......",
-  "############################....#####.......",
+  "############################....####........",
   "###########################.....###.........",
-  "###############.................##......####",
-  "###########..........................#######",
-  "########............................########",
-  "######............................##########",
+  "########################........##......####",
+  "#######################..............#######",
+  "######################..............########",
+  "#####################.............##########",
   "###..............................###########",
   "...............................#############",
-  ".............................####..#########",
-  "............................###.....########",
+  ".............................###############",
+  "............................#####..#########",
   "#######.............................########",
-  "##########............###............#######",
-  "#############......#####.............#######",
-  "#######################..............#######",
-  "###......############................#######",
-  "###.........######....................######",
+  "##########............###...........########",
+  "#############......#####............########",
+  "######################...............#######",
+  "###.......##########.................#######",
+  "###..................................#######",
   "###...................................######",
   "###...................................######",
   "###...................................######",
@@ -208,153 +208,169 @@ ROOM({
   [
    [
     478,
-    76
+    66
    ],
    [
     479,
-    76
+    66
    ],
    [
     480,
-    75
+    68
    ],
    [
     481,
-    75
+    68
    ],
    [
     482,
-    75
+    69
    ],
    [
     483,
-    74
+    69
    ],
    [
     484,
-    74
+    67
    ],
    [
     485,
-    74
+    67
    ],
    [
     486,
-    74
+    67
    ],
    [
     487,
-    73
+    68
    ],
    [
     488,
-    73
+    68
    ],
    [
     489,
-    73
+    68
    ],
    [
     490,
-    73
+    68
    ],
    [
     491,
-    73
+    68
    ],
    [
     492,
-    72
+    59
    ],
    [
     493,
-    72
+    60
    ],
    [
     494,
-    72
+    60
    ],
    [
     495,
-    72
+    60
    ],
    [
     496,
-    72
+    60
    ],
    [
     497,
-    72
+    60
    ],
    [
     498,
-    72
+    60
    ],
    [
     499,
-    72
+    60
    ],
    [
     500,
-    72
+    61
    ],
    [
     501,
-    72
+    70
    ],
    [
     502,
-    72
+    70
    ],
    [
     503,
-    72
+    70
    ],
    [
     504,
-    72
+    70
    ],
    [
     505,
-    72
+    70
    ],
    [
     506,
-    72
+    71
    ],
    [
     507,
-    72
+    71
    ],
    [
     508,
-    72
+    71
    ],
    [
     509,
-    72
+    71
    ],
    [
     510,
-    72
+    71
    ],
    [
     511,
     72
+   ],
+   [
+    512,
+    72
+   ],
+   [
+    513,
+    84
    ]
   ],
   [
    [
+    444,
+    132
+   ],
+   [
+    445,
+    132
+   ],
+   [
     446,
-    133
+    132
    ],
    [
     447,
-    133
+    132
    ],
    [
     448,
-    133
+    132
    ],
    [
     449,
@@ -422,19 +438,19 @@ ROOM({
    ],
    [
     465,
-    132
+    133
    ],
    [
     466,
-    132
+    133
    ],
    [
     467,
-    132
+    133
    ],
    [
     468,
-    132
+    133
    ],
    [
     469,
@@ -458,43 +474,47 @@ ROOM({
    ],
    [
     474,
-    134
+    133
    ],
    [
     475,
-    134
+    133
    ],
    [
     476,
-    134
+    133
    ],
    [
     477,
-    134
+    133
    ],
    [
     478,
-    135
+    133
    ],
    [
     479,
-    135
+    134
    ],
    [
     480,
-    135
+    134
    ],
    [
     481,
-    136
+    134
    ],
    [
     482,
-    136
+    134
    ],
    [
     483,
-    137
+    134
+   ],
+   [
+    484,
+    134
    ]
   ],
   [
@@ -799,336 +819,352 @@ ROOM({
   ],
   [
    [
+    190,
+    467
+   ],
+   [
+    191,
+    467
+   ],
+   [
+    192,
+    466
+   ],
+   [
+    193,
+    465
+   ],
+   [
     194,
-    468
+    465
    ],
    [
     195,
-    468
+    464
    ],
    [
     196,
-    468
+    463
    ],
    [
     197,
-    467
+    463
    ],
    [
     198,
-    467
+    462
    ],
    [
     199,
-    466
+    461
    ],
    [
     200,
-    466
+    461
    ],
    [
     201,
-    466
+    460
    ],
    [
     202,
-    465
+    459
    ],
    [
     203,
-    465
+    458
    ],
    [
     204,
-    464
+    458
    ],
    [
     205,
-    464
+    457
    ],
    [
     206,
-    464
+    457
    ],
    [
     207,
-    463
+    456
    ],
    [
     208,
-    463
+    455
    ],
    [
     209,
-    462
+    455
    ],
    [
     210,
-    462
+    454
    ],
    [
     211,
-    462
+    453
    ],
    [
     212,
-    461
+    453
    ],
    [
     213,
-    461
+    452
    ],
    [
     214,
-    461
+    452
    ],
    [
     215,
-    460
+    451
    ],
    [
     216,
-    460
+    451
    ],
    [
     217,
-    459
+    450
    ],
    [
     218,
-    459
+    450
    ],
    [
     219,
-    459
+    449
    ],
    [
     220,
-    458
+    449
    ],
    [
     221,
-    458
+    448
    ],
    [
     222,
-    458
+    448
    ],
    [
     223,
-    457
+    447
    ],
    [
     224,
-    457
+    447
    ],
    [
     225,
-    457
+    447
    ],
    [
     226,
-    456
+    446
    ],
    [
     227,
-    456
+    446
    ],
    [
     228,
-    456
+    446
    ],
    [
     229,
-    455
+    446
    ],
    [
     230,
-    455
+    445
    ],
    [
     231,
-    455
+    445
    ],
    [
     232,
-    455
+    445
    ],
    [
     233,
-    454
+    444
    ],
    [
     234,
-    454
+    444
    ],
    [
     235,
-    454
+    444
    ],
    [
     236,
-    454
+    444
    ],
    [
     237,
-    453
+    444
    ],
    [
     238,
-    453
+    444
    ],
    [
     239,
-    453
+    443
    ],
    [
     240,
-    453
+    443
    ],
    [
     241,
-    452
+    443
    ],
    [
     242,
-    452
+    443
    ],
    [
     243,
-    452
+    443
    ],
    [
     244,
-    451
+    443
    ],
    [
     245,
-    451
+    443
    ],
    [
     246,
-    451
+    442
    ],
    [
     247,
-    451
+    442
    ],
    [
     248,
-    450
+    442
    ],
    [
     249,
-    450
+    442
    ],
    [
     250,
-    450
+    442
    ],
    [
     251,
-    449
+    442
    ],
    [
     252,
-    449
+    442
    ],
    [
     253,
-    449
+    442
    ],
    [
     254,
-    448
+    442
    ],
    [
     255,
-    448
+    441
    ],
    [
     256,
-    448
+    441
    ],
    [
     257,
-    447
+    441
    ],
    [
     258,
-    447
+    441
    ],
    [
     259,
-    447
+    441
    ],
    [
     260,
-    446
+    441
    ],
    [
     261,
-    446
+    441
    ],
    [
     262,
-    445
+    441
    ],
    [
     263,
-    445
+    440
    ],
    [
     264,
-    445
+    440
    ],
    [
     265,
-    444
+    440
    ],
    [
     266,
-    444
+    440
    ],
    [
     267,
-    443
+    440
    ],
    [
     268,
-    443
+    440
    ],
    [
     269,
-    442
+    439
    ],
    [
     270,
-    442
+    439
    ],
    [
     271,
-    441
+    439
    ],
    [
     272,
-    441
+    439
    ],
    [
     273,
-    440
+    439
    ],
    [
     274,
-    440
+    438
    ],
    [
     275,
-    439
+    438
    ],
    [
     276,
-    439
+    438
    ],
    [
     277,
@@ -1148,619 +1184,619 @@ ROOM({
    ],
    [
     281,
-    436
+    437
    ],
    [
     282,
-    436
+    437
    ],
    [
     283,
-    435
+    437
    ],
    [
     284,
-    435
+    436
    ],
    [
     285,
-    434
+    436
    ],
    [
     286,
-    433
+    436
    ],
    [
     287,
-    433
+    436
    ],
    [
     288,
-    432
+    435
    ],
    [
     289,
-    432
+    435
    ],
    [
     290,
-    431
+    435
    ],
    [
     291,
-    431
+    434
    ],
    [
     292,
-    430
+    434
    ],
    [
     293,
-    429
+    434
    ],
    [
     294,
-    429
+    434
    ],
    [
     295,
-    428
+    433
    ],
    [
     296,
-    428
+    433
    ],
    [
     297,
-    427
+    433
    ],
    [
     298,
-    427
+    432
    ],
    [
     299,
-    426
+    432
    ],
    [
     300,
-    426
+    432
    ],
    [
     301,
-    425
+    432
    ],
    [
     302,
-    425
+    431
    ],
    [
     303,
-    424
+    431
    ],
    [
     304,
-    424
+    431
    ],
    [
     305,
-    423
+    430
    ],
    [
     306,
-    423
+    430
    ],
    [
     307,
-    422
+    430
    ],
    [
     308,
-    422
+    430
    ],
    [
     309,
-    421
+    429
    ],
    [
     310,
-    421
+    429
    ],
    [
     311,
-    420
+    429
    ],
    [
     312,
-    420
+    428
    ],
    [
     313,
-    419
+    428
    ],
    [
     314,
-    419
+    428
    ],
    [
     315,
-    419
+    428
    ],
    [
     316,
-    418
+    427
    ],
    [
     317,
-    418
+    427
    ],
    [
     318,
-    417
+    427
    ],
    [
     319,
-    417
+    426
    ],
    [
     320,
-    416
+    426
    ],
    [
     321,
-    416
+    426
    ],
    [
     322,
-    416
+    426
    ],
    [
     323,
-    415
+    425
    ],
    [
     324,
-    415
+    425
    ],
    [
     325,
-    414
+    425
    ],
    [
     326,
-    414
+    424
    ],
    [
     327,
-    414
+    424
    ],
    [
     328,
-    413
+    424
    ],
    [
     329,
-    413
+    423
    ],
    [
     330,
-    412
+    423
    ],
    [
     331,
-    412
+    423
    ],
    [
     332,
-    411
+    422
    ],
    [
     333,
-    411
+    422
    ],
    [
     334,
-    411
+    422
    ],
    [
     335,
-    410
+    421
    ],
    [
     336,
-    410
+    421
    ],
    [
     337,
-    409
+    420
    ],
    [
     338,
-    409
+    420
    ],
    [
     339,
-    409
+    420
    ],
    [
     340,
-    408
+    419
    ],
    [
     341,
-    408
+    419
    ],
    [
     342,
-    407
+    418
    ],
    [
     343,
-    407
+    418
    ],
    [
     344,
-    406
+    417
    ],
    [
     345,
-    406
+    417
    ],
    [
     346,
-    405
+    416
    ],
    [
     347,
-    405
+    416
    ],
    [
     348,
-    404
+    415
    ],
    [
     349,
-    404
+    415
    ],
    [
     350,
-    403
+    414
    ],
    [
     351,
-    403
+    413
    ],
    [
     352,
-    402
+    413
    ],
    [
     353,
-    402
+    412
    ],
    [
     354,
-    401
+    412
    ],
    [
     355,
-    401
+    411
    ],
    [
     356,
-    400
+    410
    ],
    [
     357,
-    400
+    410
    ],
    [
     358,
-    399
+    409
    ],
    [
     359,
-    399
+    408
    ],
    [
     360,
-    398
+    408
    ],
    [
     361,
-    398
+    407
    ],
    [
     362,
-    397
+    406
    ],
    [
     363,
-    397
+    406
    ],
    [
     364,
-    396
+    405
    ],
    [
     365,
-    396
+    404
    ],
    [
     366,
-    395
+    404
    ],
    [
     367,
-    394
+    403
    ],
    [
     368,
-    394
+    403
    ],
    [
     369,
-    393
+    402
    ],
    [
     370,
-    393
+    401
    ],
    [
     371,
-    392
+    401
    ],
    [
     372,
-    392
+    400
    ],
    [
     373,
-    391
+    399
    ],
    [
     374,
-    391
+    399
    ],
    [
     375,
-    390
+    398
    ],
    [
     376,
-    390
+    398
    ],
    [
     377,
-    389
+    397
    ],
    [
     378,
-    389
+    396
    ],
    [
     379,
-    388
+    396
    ],
    [
     380,
-    388
+    395
    ],
    [
     381,
-    387
+    395
    ],
    [
     382,
-    387
+    394
    ],
    [
     383,
-    386
+    393
    ],
    [
     384,
-    386
+    393
    ],
    [
     385,
-    385
+    392
    ],
    [
     386,
-    385
+    392
    ],
    [
     387,
-    385
+    391
    ],
    [
     388,
-    384
+    391
    ],
    [
     389,
-    384
+    390
    ],
    [
     390,
-    383
+    390
    ],
    [
     391,
-    383
+    389
    ],
    [
     392,
-    383
+    389
    ],
    [
     393,
-    382
+    388
    ],
    [
     394,
-    382
+    388
    ],
    [
     395,
-    382
+    387
    ],
    [
     396,
-    381
+    387
    ],
    [
     397,
-    381
+    387
    ],
    [
     398,
-    381
+    386
    ],
    [
     399,
-    380
+    386
    ],
    [
     400,
-    380
+    385
    ],
    [
     401,
-    380
+    385
    ],
    [
     402,
-    379
+    384
    ],
    [
     403,
-    379
+    384
    ],
    [
     404,
-    379
+    384
    ],
    [
     405,
-    379
+    383
    ],
    [
     406,
-    378
+    383
    ],
    [
     407,
-    378
+    382
    ],
    [
     408,
-    378
+    382
    ],
    [
     409,
-    378
+    381
    ],
    [
     410,
-    377
+    381
    ],
    [
     411,
-    377
+    381
    ],
    [
     412,
-    377
+    380
    ],
    [
     413,
-    377
+    380
    ],
    [
     414,
-    376
+    379
    ],
    [
     415,
-    376
+    379
    ],
    [
     416,
-    376
+    378
    ],
    [
     417,
-    375
+    378
    ],
    [
     418,
-    375
+    377
    ],
    [
     419,
-    375
+    377
    ],
    [
     420,
-    374
+    376
    ],
    [
     421,
-    374
+    376
    ],
    [
     422,
-    374
+    376
    ],
    [
     423,
-    373
+    375
    ],
    [
     424,
-    373
+    375
    ],
    [
     425,
-    373
+    374
    ],
    [
     426,
-    372
+    373
    ],
    [
     427,
-    372
+    373
    ],
    [
     428,
-    371
+    372
    ],
    [
     429,
-    371
+    372
    ],
    [
     430,
-    370
+    371
    ],
    [
     431,
-    370
+    371
    ],
    [
     432,
-    369
+    370
    ],
    [
     433,
-    369
+    370
    ],
    [
     434,
-    368
+    369
    ],
    [
     435,
@@ -1768,7 +1804,7 @@ ROOM({
    ],
    [
     436,
-    367
+    368
    ],
    [
     437,
@@ -1776,7 +1812,7 @@ ROOM({
    ],
    [
     438,
-    366
+    367
    ],
    [
     439,
@@ -1788,7 +1824,7 @@ ROOM({
    ],
    [
     441,
-    364
+    365
    ],
    [
     442,
@@ -1832,7 +1868,7 @@ ROOM({
    ],
    [
     452,
-    358
+    357
    ],
    [
     453,
@@ -1844,7 +1880,7 @@ ROOM({
    ],
    [
     455,
-    356
+    355
    ],
    [
     456,
@@ -1856,11 +1892,11 @@ ROOM({
    ],
    [
     458,
-    354
+    353
    ],
    [
     459,
-    353
+    352
    ],
    [
     460,
@@ -1868,11 +1904,11 @@ ROOM({
    ],
    [
     461,
-    352
+    351
    ],
    [
     462,
-    351
+    350
    ],
    [
     463,
@@ -1880,11 +1916,11 @@ ROOM({
    ],
    [
     464,
-    350
+    349
    ],
    [
     465,
-    349
+    348
    ],
    [
     466,
@@ -1892,7 +1928,7 @@ ROOM({
    ],
    [
     467,
-    348
+    347
    ],
    [
     468,
@@ -1900,11 +1936,11 @@ ROOM({
    ],
    [
     469,
-    347
+    346
    ],
    [
     470,
-    346
+    345
    ],
    [
     471,
@@ -1912,7 +1948,15 @@ ROOM({
    ],
    [
     472,
-    345
+    344
+   ],
+   [
+    473,
+    343
+   ],
+   [
+    474,
+    343
    ]
   ],
   [
@@ -2426,6 +2470,7 @@ ROOM({
    252,
    291,
    296,
+   300,
    301,
    302,
    303,
@@ -2434,24 +2479,13 @@ ROOM({
    306,
    335,
    340,
+   343,
    344,
-   345,
-   369,
-   370,
-   371,
-   372,
-   373,
+   378,
    379,
    384,
    386,
    387,
-   388,
-   408,
-   409,
-   410,
-   411,
-   412,
-   418,
    419,
    420,
    421,
@@ -2465,24 +2499,26 @@ ROOM({
    437,
    438,
    439,
-   449,
-   450,
-   451,
-   452,
+   462,
+   463,
    472,
    473,
    476,
    477,
    478,
-   491,
-   492,
-   493,
+   505,
+   506,
    519,
    520,
-   532,
    533,
    534,
    535,
+   536,
+   537,
+   538,
+   547,
+   548,
+   549,
    561,
    562,
    572,
@@ -2490,27 +2526,33 @@ ROOM({
    574,
    575,
    576,
+   577,
+   583,
+   584,
+   585,
+   586,
+   587,
+   588,
+   589,
+   590,
+   591,
    604,
    605,
    646,
    647,
-   649,
-   650,
    688,
    689,
    690,
-   692,
-   693,
-   695,
    704,
    705,
    706,
    732,
-   733,
    734,
    735,
+   736,
+   737,
+   738,
    739,
-   740,
    751,
    752,
    753,
@@ -2521,13 +2563,14 @@ ROOM({
    772,
    776,
    777,
-   784,
+   783,
    800,
    801,
    802,
    813,
    814,
    816,
+   827,
    828,
    846,
    847,
@@ -2543,28 +2586,29 @@ ROOM({
    859,
    860,
    872,
-   873,
-   882,
    883,
    884,
    885,
    886,
+   887,
+   888,
+   901,
    902,
-   903,
-   917,
+   916,
    926,
-   931,
-   932,
    933,
+   934,
+   935,
+   936,
+   937,
+   939,
+   940,
    943,
    944,
    945,
-   946,
+   960,
    961,
    970,
-   978,
-   979,
-   980,
    981,
    982,
    983,
@@ -2576,6 +2620,7 @@ ROOM({
    1014,
    1049,
    1058,
+   1093,
    1094,
    1102,
    1138,
@@ -2635,6 +2680,6 @@ ROOM({
    1358,
    1359
   ],
-  "bits": "////////////////////////////////f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/////////////////////////+//7//v/+//7//v/+//5//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9////+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f////v/+//7//v/+//7//v/+//7//v/+//7//v/8//z//H//f/9//3//P/8//z//P/8//z//P/8//z//P/8//z////z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//g//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8///////////////////////////////z/8P/A/wD8APgA///////////////w/wD4AMAAAAAAAAAAAAAAAAAAAAD////////+AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/4//j/+P/4//j/+P/4//j/8P/w//D/8P/g/+D/4P/AH/8f/x//H/8f/x//H/8f/x//H/8f/x//H/8f/w//D//////////////+//z/+P/w/+D/wP+A/wD8APgA8ADgAOAAwACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////////////////////////////g8AD///////////////////////////////////wAAAAAAP//////////////////////////////////AAAAAAAA//////////////////////////////////8AfwAAAAD/////////////////////////////////////A/8AAf/A/8D/gP+A/wD/AP4A/AD8APgA8ADwAOAAwACAAAAAD/8P/w//D/8P/w//D/8P/w//B/8H/wf/B/8H/wf/B//////////////////////////////8/+D/gP4A/ADwAP///////v/4//D/wP8A+ADgAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////7/8P////////////////////////////z/4P4A4AAAAAAA//////////////////7/4PwAwAAAAAAAAAAAAAAAAAD/////////+P8A4AAAAAAAAAAAAAAAAAAAAAAAAAAAAP/4/gDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/8AfwADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////8P/wA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////8P/wAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAD//P/w/8D/AOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/A/8D/wP/A/8D/wP/Af8B/wH/Af8A/wD/AP8AfwB//////////////v/8//j/8P/g/+D/wP+A/wD/AP4A/gDgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAABAAcAHwB/A/8P/3////8AAAAAAAAAAAA/B/9//////////////////////////wAAAAAAf3//////////////////////////////////AAAA//////////////////////////////////////8AAP//////////////////////////////////////////////////////////////////////////////+P/A///////////////////////+//D/gPwA4AAAAAAAAAD//////////P/g/wD4AMAAAAAAAAAAAAAAAAAAAAAAAP8A+ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8APwAfAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8APgA8ADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAAAAAAAAAAAAAAAHAB8A/wP/B/8f/3////////////8ADwB/B/8///////////////////////////////////////////////////////////////z/8P/A/wD4AOAA////////////+P/g/wD8AOAAgAAAAAAAAAAAAAAAAAD/APgAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABwAPAD8A/wP/D/8/////AH8A/wP/B/8P/z//f/////////////////////////////////////////////////////////////////z/8P//////////////////////+P/g/wD8AOAAgAAAAAAA/////P/w/4D+APgAwAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQADAA8AHwB/AP8B/wP/AAMADwA/AP8D/w//P/9/////////////////////////////////////////////////////////////////8P////////////////////////////////////jwAAAA//////////////////////////7/4P4A4AAAAAAAAAD////////////+//D/gPwA4AAAAAAAAAAAAAAAAAAAAP+A/gDwAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAcADwAfAH8A/wH/B/8P/z//f/8P/x//P/9//////////////////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAADAA8APwD/Af8H/x//AAEAAwAPAD8A/wP/D/8////////////////////////////////////////////////////////////+//j/4P/////////////////////////////7/4A/AA8AAwABAAAAAAAAAAAAAAAAAAAAAAAAAAEADwA/AP8D/w//H/8AAAAAAAEABwAPAD8AfwH/A/8P/z//f////////////z///////////////////////////////////////////////////////////////P/4/+D/wP8A/AD4AOAAgAD/gP4A/ADwAOAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//f/8//z//H/8P/wf/B/8D/wH/Af8A/wD/AH8APwA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//H/8f/x//H/8f/x//H/8f/x//H/8f/x//H/8f/x//H////////////////////////////////////v/4/+D/gP/////////////////8/+D/APwA4ACAAAAAAAAAAAAA//z/8P/A/gDwAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHwAfAA8ADwAHAAcAAwADAAEAAQABAAAAAAAAAAAAAP//////////////////////////////////f/9//z////j///////////////////////////////////////8AAPgA/n///////////////////////////////////wAAAAD/4P//////////////////////////////////AAAAAAAAAADgAPwA/4D/8P/8//////////////////8AAAAAAAAAAAAAAAAAAAAAAACAAOAA/AD/gP/4/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA+AP8H/x//f/8AAAAAAAAAAAAAAAAAAAAAAAABgAeAP4D/gP+A/4D/gB//H/8f/x/+H+AfgB8AHgAcABgAEAAAAAAAAAAAAAAA/gD4AOAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//z//H/8f/w//D/8P/wf/B/8H/wP/A/8D/wH/Af8B//8A/+D//P//////////////////////////////////AAAAAAAAgADgAPgA/gD/gP/g//j//v////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgADgAPgA/gD/gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMADwA/AP8H/z//AAEABwAPAD8A/wH/B/8P/z//////////////////////gP+A/4D/gP+A/4D/gP+A/4D/gP+A/4D/gP+A/4D/gAD/AP8A/wB/AH8AfwA/AD8APwAfAB8AHwAPAA8ADwAH/+D/+P////////////////////////////////////8AAAAAAADwAP/A/////////////////////////////wAAAAAAAAAAAADgAP/g////////////////////////AAAAAAAAAAAAAAAAAACAAPgA/8D//P////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AH//////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////AAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAA/4D//////////wAAAAAAAAAAAAAAAAAAAAAAAwAfAf//////////////AAAAAAAAAAEAHwD/B/8///////////////////////8AAwB/D/////////////////////////////////////////////////////////////////j/4P/A/4D/AP4A/4D/AP4A/AD4APAA4ADAAIAAAAAAAAAAAAAAAAAAAAAABwAHAAcAAwADAAMAAQABAAEAAQAAAAAAAAAAAAAAAP////////////////////////////////////9//3////////////////////////////////////7/+P/w/+D////////////////////////////P4AAAAAAAAAAAAP////////////////////////////8B+AAAAAAAAAAA/////////////////////////////wABAAAAAAAAAAD///////////////////////////////8f/wH/AD8AB////////////////////////v/4/+D/wP8A/gD8APAA/AD4APAA4ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAAB//z//P/8//z//H/8f/x//H/8P/w//D/8P/wf/B/8H///A/4D/gP8A/wD/AP8A/gD+AP4A/gD/AP8A/wD/AP8A//8P/wH/AB8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////B/8AfwAHAAAAAAAAAAAAAAAAAAAAAP///////////////////////x//A/8A/wA/AA8AAwAA///////////////////////////////////////8/+D////////////////////////////4/4D4AIAAAAAAAP///////v/8//D/wP8A/ADgAAAAAAAAAAAAAAAAAAAA4ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/wP/A/8D/wP/Af8B/wH/Af8A/wD/AP8A/wB/AH8Af/8A/wD/AP8A/wD/AP4A/gD+AP8A/wD/AP8A/4D/gP/AP/8H/wH/AH8ADwABAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////8P/wABAAAAAAAAAAAAAAAAAAAAAP////////////////////8AAQAAAAAAAAAAAAAAAAAA////////////////////////B/8AHwAAAAAAAAAAAAD/////////////////////////////D4AAAAAAAAAAAP//////////////////////+P4AwAAAAAAAAAAAAAAA/////////////////////wAAAAAAAAAAAAAAAAAAAAD/////////////////////AAAAAAAAAAAAAAAAAAAAAP////////////j/wP4A4AAAAAAAAAAAAAAAAAAAAAAA/wD4AOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfwB/AD8APwA/AD8AHwAfAB8AHwAPAA8ADwAPAA8AB//A/8D/4P/g/+D/8P/w//j/+P/4//z//P/8//z//v/+AAcABwAHAAMAAwADAAMAAwABAAEAAQABAAAAAAAAAAD//v/+////////////////////////////////////////f/9//3//f/8//z//P/8//z//H/8f/x//H/8f/w/////////////////+//7//v/+//z//P/8//z/+P/4//gP/w//D/8H/wf/B/8H/wf/A/8D/wP/A/8D/wH/Af8B///w//D/4P/g/+D/wP/A/8D/gP+A/wD/AP8A/gD+AP4AAf8B/wD/AP8A/wD/AH8AfwB/AH8AfwA/AD8APwA/AD/8APwA+AD4APgA8ADwAPAA8ADgAOAA4ADgAMAAwADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+ADAAIAAgACAAIAAgACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAwAHAA8AHwA/AH8A/wH/AH8B/wP/D/8f/3//////////////////////////////AP/A//D/+P/8/////////////////////////////wAAAAAAAAAAAAAAAIAAwADgAPAA+AD8AP4A/wD/gP/A//7//v/+//7//v/+//7//v/+//7//v////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAEABwAfAH8B/wP/D/8///////8AAAAAAAAAAAf+f////////////////////////////wAAAAAAAAAAAADAAPgA/gD/gP/A//D//P/+////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAMAA8AAAAAAAAAAAAAAAAAAAAAABAAMABwAfAD8AfwD/A/8H/wP/B/8P/x//P/9//////////////////////////////+D/8P/4//z//v////////////////////////////8AAAAAAAAAAAAAAADAAOAA8AD4APwA/gD/gP/A//D//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/z//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////gADAAOAA8AD4AP4A/4D/+P////////////////////8AAAAAAAAAAAAAAAAAAAAAwAD/wP///////////////wAAAAAAAAAAAAAAAAAAAAMAPx//////////////////AAAAAAAAAAEAPwP/P/////////////////////////8AAAAAAAD//////////////////////////////////wAAAAAAAP4A////////////////////////////////AAAAAAAAAAP///////////////////////////////8ADwB/B/////////////////////////////////////wA/wD/wP/w//z/////////////////////////////AAAAAAAAAAAAAMAA//////////////////////////8AAAAAAAAAAAAAAAD8AP/4/////////////////////wAAAAAAAAAAAAAAAAAAAADwAP//////////////////AAAAAAAAAAAAAAAAAAcAfx////////////////////8AAAAAAAcA/w//f////////////////////////////wAAA8D/////////////////////////////////////AAAAAPAA//D///////////////////////////////8AAAAAAAAAA////////////////////////////////wAAAAAD////////////////////////////////////AAB4AP/8//////////////////////////////////8AAAAAAADAAPwA/8D//P///////////////////////wAAAAAAAAAAAAAAAAAAwAD+AP//////////////////AAAAAAAAAAAAAAAAAAAAAwH///////////////////8AAAAAAAAAAAAAAAAH/////////////////////////wAAAAAAAAADAB8B////////////////////////////H/8///////////////////////////////////////8AAOAA/gD//////////////////////////////////wAAAAAAAP/w////////////////////////////////AAAAAAAAAACAAPgA/4D/+/////////////////////8AAAAAAAAABwH/D/8//////////////////////////wAHAP8/////////////////////////////////////"
+  "bits": "////////////////////////////////f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/////////////////////////+//7//v/+//7//v/+//5//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9////+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f////v/+//7//v/+//7//v/+//7//v/+//7//v/8//z//H//f/9//3//P/8//z//P/8//z//P/8//z//P/8//z////z//P/8//z//P/8//z//P/8//z//P/8//z//P/4//g//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8////////////////////////////////////////////+///////////////////////8/+D/gPwA8ADAAIAAAAD////////////8/4D4AIAAAAAAAAAAAAAAAAAAAAAAAP///////PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//j/+P/4//j/+P/4//j/8P/w//D/8P/g/+D/4P/A/8Af/x//H/8f/x//H/8f/x//H/8f/x//H/8f/x//D/8P//////////////////////////////z/+P/g/8D/APwA//j/8P/A/4D+APwA8ADgAIAAAAAAAAAAAAAAAAAAAAD////////////////////////////////////+//j/4P+A/4D/AP8A/gD+APwA+AD4APAA4ADAAIAAAAAAAAAAD/8P/w//D/8P/w//D/8P/w//B/8H/wf/B/8H/wf/B//////////////+//j/8P/g/4D/AP4A/AD4APAA4ADAAPgA4ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////////////////////8//j/8P/A/4D//////////v/g/4D8APAA4ACAAAAAAAAAAAAAAAAAAP/////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/wP/A/8D/wP/A/8D/wH/Af8B/wH/AP8A/wD/AH8Af//////////+//z/+P/4//D/4P/A/8D/gP8A/wD+AP4AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAQAHAB8AfwP/D/9/////AAAAAAAAAAAAPwf/f/////////////////////////8AAAAAAH9//////////////////////////////////wAAAP//////////////////////////////////////AAD//////////////////////////////////////////////////////////////////v/8//j/8P/g/8D/gP8A/gD8APgA8ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAD8APwAfAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8APgA8ADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAAAAAAAAAAAAAAAHAB8A/wP/B/8f/3////////////8ADwB/B/8//////////////////////////////////////////////////////////v/8//D/4P/A/4D/APwA/gD8APgA8ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAcADwA/AP8D/w//P////wB/AP8D/wf/D/8//3////////////////////////////////////////////////////////////////////z////////////////////////////////////4+AAAAP/////////////////////////////////AAAAAAAAA////////////////////////////////AAAAAAAAAAD///////////////////////////////8//wAAAAAAAP////////////////////////////////////8A/wAA//////////////////////////////////z/8P+A/AD////////////+//j/4P+A/gD4AOAAgAAAAAAAAAAAAPgA4ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAH8A/wH/A/8AAwAPAD8A/wP/D/8//3///////////////////////////////////////////////////////////////v/g////////////////////////////////////wAAAAAD////////////////////////////w/AAAAAAAAAAAAP/////////////////8/8D4AIAAAAAAAAAAAAAAAAAA///////8/4D4AMAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wH/AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////wf/AA8AAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////w//AAAAAAAAAAAAAAAAAAAAAAAA//////////////////9//wAAAAAAAAAAAAAAAAAAAAD///////////////////8AAAAAAAAAAAAAAAAAAAAAAP//////////////8PgAAAAAAAAAAAAAAAAAAAAAAAAA/////v/w/gDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAHAA8AHwB/AP8B/wf/D/8//3//D/8f/z//f/////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAwAPAD8A/wH/B/8f/wABAAMADwA/AP8D/w//P///////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAEADwA/AP8D/w//H/8AAAAAAAEABwAPAD8AfwH/A/8P/z//f////////////z//////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//H/8f/x//H/8f/x//H/8f/x//H/8f/x//H/8f/x//H//////////////////////////////////////g+ACAAP////////////////////////////////8AAAAAAAAA/////////////////////v/w/wD4AAAAAAAAAAAAAAD/////////8P8A+ADAAAAAAAAAAAAAAAAAAAAAAAAAAP///////w//AP8APwAfAA8ABwADAAEAAAAAAAAAAAAA////////////////////////////////f/9//z//H///+P///////////////////////////////////////wAA+AD+f///////////////////////////////////AAAAAP/g//////////////////////////////////8AAAAAAAAAAOAA/AD/gP/w//z//////////////////wAAAAAAAAAAAAAAAAAAAAAAAIAA4AD8AP+A//j/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAD4A/wf/H/9//wAAAAAAAAAAAAAAAAAAAAAAAAGAB4A/gP+A/4D/gP+AH/8f/xgPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/+P+A/ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//D/8H/wP/A/8B/wH/AP8A/wB/AD8APwAfAB8ADwAP/wD/4P/8//////////////////////////////////8AAAAAAACAAOAA+AD+AP+A/+D/+P/+/////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAOAA+AD+AP+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAPAD8A/wf/P/8AAQAHAA8APwD/Af8H/w//P/////////////////////+A/4D/gP+A/4D/gP+A/4D/gP+A/4D/gP+A/wD+APwAAAcABwADAAMAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////9//3//P/8//x//H/8f///g//j/////////////////////////////////////AAAAAAAA8AD/wP////////////////////////////8AAAAAAAAAAAAA4AD/4P///////////////////////wAAAAAAAAAAAAAAAAAAgAD4AP/A//z/////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgB//////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////wAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+A//////////8AAAAAAAAAAAAAAAAAAAAAAAMAHwH//////////////wAAAAAAAAABAB8A/wf/P///////////////////////AAMAfw////////////////////////////////////////////////////j/4P/A/4D/APwA+ADwAOAAwACAAPgA8ADgAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/8P/wf/B/8H/wP/A/8B/wH/Af8A/wD/AP8AfwB/AD/////////////////////////////////////A/ADgAP////////////////////////////j/wAAAAAAAAAAA//////////////////////gAgAAAAAAAAAAAAAAAAAD/////////////////////A/8AHwABAAAAAAAAAAAAAP////////////////////////////8P/wB/AAAAAAAA//////////////////////////////////9//wD/AAf////////////////////////////////////+//j/4P////7//P/8//j/8P/A/4D+APgA8ADAAIAAAAAAAAAAAD8APwAfAB8AHwAPAA8ADwAHAAcABwADAAMAAwABAAH////8//j/8P/g/8D/wP+A/4D/gP+A/wD/AP8A/wD/AH//D/8B/wB/AA8AAwAAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////8f/wf/Af8APwAHAAAAAAAAAAD///////////////////////////////9//wD/AAAAAP////////////////////////////////////8ADwAA////////////////////////////////////////D///////////////////////////////////////////+P///////////////////////////////////////wB////////////////////////////////+//z/8P/g/4D////////////+//D/wP4A+ADgAIAAAAAAAAAAAAAAAP+A/gDwAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////3//f/9//z//P/8//z//H/8f/x//D/8P//8A/wD/AP8A/wD/AP4A/gD+AP8A/wD/AP8A/4D/gP/AAH8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//3//D/8B/wA/AAcAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////P/gAAAAAAAAAAAAAAAAAAAAAAAA/wD8APAA4ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/wf/B/8H/wf/A/8D/wP/Af8B/wH/AP8A/wD/AP8Af//A/8D/4P/g/+D/8P/w//j/+P/4//z//P/8//z//v/+AH8AfwA/AD8APwA/AB8AHwAfAB8ADwAPAA8ABwAHAAf//v/+/////////////////////////////////////wAHAAMAAwADAAEAAQABAAEAAAAAAAAAAAAAAAAAAAAA////////////////////////////////f/9//3//P/////////////////7//v/+//7//P/8//z//P/4//j/+D//P/8//x//H/8f/x//D/8P/w//B/8H/wf/B/8D/wP///D/8P/g/+D/4P/A/8D/wP+A/4D/AP8A/wD+AP4A/gAD/wP/Af8B/wH/AP8A/wD/AP8AfwB/AH8APwA/AD8AP/wA/AD4APgA+ADwAPAA8ADwAOAA4ADgAOAAwADAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4AMAAgACAAIAAgACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQADAAcADwAfAD8AfwD/Af8AfwH/A/8P/x//f/////////////////////////////8A/8D/8P/4//z/////////////////////////////AAAAAAAAAAAAAAAAgADAAOAA8AD4APwA/gD/AP+A/8D//v/+//7//v/+//7//v/+//7//v/+/////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAQAHAB8AfwH/A/8P/z///////wAAAAAAAAAAB/5/////////////////////////////AAAAAAAAAAAAAMAA+AD+AP+A/8D/8P/8//7///////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAwADwAAAAAAAAAAAAAAAAAAAAAAEAAwAHAB8APwB/AP8D/wf/A/8H/w//H/8//3//////////////////////////////4P/w//j//P/+/////////////////////////////wAAAAAAAAAAAAAAAMAA4ADwAPgA/AD+AP+A/8D/8P/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/P/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////+AAMAA4ADwAPgA/gD/gP/4/////////////////////wAAAAAAAAAAAAAAAAAAAADAAP/A////////////////AAAAAAAAAAAAAAAAAAAAAwA/H/////////////////8AAAAAAAAAAQA/A/8//////////////////////////wAAAAAAAP//////////////////////////////////AAAAAAAA/gD///////////////////////////////8AAAAAAAAAA////////////////////////////////wAPAH8H/////////////////////////////////////AD/AP/A//D//P////////////////////////////8AAAAAAAAAAAAAwAD//////////////////////////wAAAAAAAAAAAAAAAPwA//j/////////////////////AAAAAAAAAAAAAAAAAAAAAPAA//////////////////8AAAAAAAAAAAAAAAAABwB/H////////////////////wAAAAAABwD/D/9/////////////////////////////AAADwP////////////////////////////////////8AAAAA8AD/8P///////////////////////////////wAAAAAAAAAD////////////////////////////////AAAAAAP///////////////////////////////////8AAHgA//z//////////////////////////////////wAAAAAAAMAA/AD/wP/8////////////////////////AAAAAAAAAAAAAAAAAADAAP4A//////////////////8AAAAAAAAAAAAAAAAAAAADAf///////////////////wAAAAAAAAAAAAAAAAf/////////////////////////AAAAAAAAAAMAHwH///////////////////////////8f/z///////////////////////////////////////wAA4AD+AP//////////////////////////////////AAAAAAAA//D///////////////////////////////8AAAAAAAAAAIAA+AD/gP/7/////////////////////wAAAAAAAAAHAf8P/z//////////////////////////AAcA/z////////////////////////////////////8="
  }
 });
