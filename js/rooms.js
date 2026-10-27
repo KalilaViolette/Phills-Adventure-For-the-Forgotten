@@ -77,14 +77,17 @@ function buildRoom(def) {
   }
   // one-way slopes (10/15/2026): a line along the top of something drawn, like the squirrel's root. He walks up and
   // down it, jumps up through it from underneath, and drops through it with down and jump, same as a shelf
-  r.ramps = (def.ramps || []).filter(p => p.length > 1).map(pts => {
+  // (a side way, 10/27/2026: a slope the room marks in rampsUp is one he only walks onto holding up, so walking along
+  // the main way he passes where it branches off. Landing on it or already on it, it's like any other)
+  const sideWays = new Set(def.rampsUp || []);
+  r.ramps = (def.ramps || []).map((pts, i) => [pts, sideWays.has(i)]).filter(([p]) => p.length > 1).map(([pts, up]) => {
     const x0 = pts[0][0], x1 = pts[pts.length - 1][0], ys = new Float32Array(x1 - x0 + 1); let k = 0;
     for (let x = x0; x <= x1; x++) {
       while (k < pts.length - 2 && pts[k + 1][0] < x) k++;
       const [ax, ay] = pts[k], [bx, by] = pts[k + 1];
       ys[x - x0] = bx === ax ? ay : ay + (by - ay) * (x - ax) / (bx - ax);
     }
-    return { x0, x1, ys };
+    return { x0, x1, ys, up };
   });
   r.grip = new Set();                                         // rough walls the velcro grip catches on (bark, old wood)
   for (const [x0, y0, x1, y1] of def.grip || []) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) r.grip.add(x + ',' + y);
@@ -152,11 +155,11 @@ function groundY(x, y, down = 24, up = 8) {
   return null;
 }
 // the top of a one-way slope at x, if there's one between y - above and y + below (the nearest one to y)
-function rampY(x, y, below = 0.5, above = 0.5) {
+function rampY(x, y, below = 0.5, above = 0.5, mainOnly = false) {
   if (!room || !room.ramps || !room.ramps.length) return null;
   const xi = Math.round(x); let best = null;
   for (const rp of room.ramps) {
-    if (xi < rp.x0 || xi > rp.x1) continue;
+    if (xi < rp.x0 || xi > rp.x1 || (mainOnly && rp.up)) continue;   // (mainOnly: not the side ways, see rampsUp)
     const sy = rp.ys[xi - rp.x0];
     if (sy >= y - above && sy <= y + below && (best === null || Math.abs(sy - y) < Math.abs(best - y))) best = sy;
   }
@@ -165,12 +168,12 @@ function rampY(x, y, below = 0.5, above = 0.5) {
 // moving sideways from x0 to x1 with his feet at y: if they were on or above a one-way slope at x0 and would be
 // under it at x1, the slope's top at x1 (so he rides up onto it instead of passing through). null if not. A slope
 // rising more than 8 px in one step is more like a wall, and he goes on through that
-function rampCross(x0, x1, y) {
+function rampCross(x0, x1, y, mainOnly = false) {
   if (!room || !room.ramps || !room.ramps.length) return null;
   const a = Math.round(x0), b = Math.round(x1); if (a === b) return null;
   let best = null;
   for (const rp of room.ramps) {
-    if (a < rp.x0 || a > rp.x1 || b < rp.x0 || b > rp.x1) continue;
+    if (a < rp.x0 || a > rp.x1 || b < rp.x0 || b > rp.x1 || (mainOnly && rp.up)) continue;
     const ya = rp.ys[a - rp.x0], yb = rp.ys[b - rp.x0];
     if (y <= ya + 0.5 && y > yb && y - yb <= 8 && (best === null || yb > best)) best = yb;
   }

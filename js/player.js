@@ -119,6 +119,10 @@ function nubAt(x, y) {
   return -s;
 }
 const onRamp = () => P.dropT <= 0 && rampY(P.x, P.y, 0.6, 0.6) !== null;   // standing on a one-way slope
+// walking onto a side way (a slope the room marks as one, rampsUp) takes holding up, unless he's on one already: the main way goes on past it (10/27/2026)
+const sideOk = () => inp.up || (P.dropT <= 0 && rampY(P.x, P.y, 0.6, 0.6) !== null && rampY(P.x, P.y, 3.5, 0.6, true) === null && !boxSolid(restL(P.x), P.y, restR(P.x), P.y + 3.5));   // (on it, and not where it comes down onto the main way's ground, a few px under his feet)
+// only the main way catches him for a moment after he walks off an edge (a dip in the root's back put him down onto a side way's end)
+const mainCatch = () => !P.ground && P.coyoteT > 0 && P.vy >= 0 && !sideOk();
 // walking with down held: he keeps to the lower way where the ground forks (10/27/2026)
 const keepLow = () => inp.down && !P.crawl && !P.swim && !P.atk && P.roll <= 0 && P.dash <= 0 && (inp.left || inp.right) && !(inp.left && inp.right);
 // ground (solid or another slope) 2 to 14 px under where he stands on a one-way slope, with room for him there: the lower way at a fork
@@ -164,7 +168,7 @@ function moveX(dx) {
     const d = Math.min(1, left) * s; left -= Math.abs(d);
     const nx = P.x + d;
     if (P.ground && P.dropT <= 0 && room.ramps.length) {                     // along a one-way slope, or stepping up onto one
-      const on = onRamp(), sy = on || !keepLow() ? rampY(nx, P.y, on ? 4 : 0.5, STEP_UP) : null;   // (down held: walking on past where one starts, 10/27/2026)
+      const on = onRamp(), sy = on || !keepLow() ? rampY(nx, P.y, on ? 4 : 0.5, STEP_UP, !sideOk()) : null;   // (down held: walking on past where one starts, 10/27/2026)
       if (sy !== null) {
         if (!bodyHit(nx, sy - P.h, sy)) { P.x = nx; P.y = sy; continue; }
         // the slope runs up under something too low to stand: he gets down and crawls on up it (10/15/2026),
@@ -174,7 +178,7 @@ function moveX(dx) {
       }
     }
     if (!P.ground && P.dropT <= 0 && room.ramps.length) {                    // in the air (a hop, a dash, falling at a slant): his feet crossing
-      const sy = rampCross(P.x, nx, P.y);                                     // down through a one-way slope from above put him back on top of it
+      const sy = rampCross(P.x, nx, P.y, mainCatch());                        // down through a one-way slope from above put him back on top of it
       if (sy !== null) {
         if (!bodyHit(nx, sy - P.h, sy)) { P.x = nx; P.y = sy; continue; }
         P.vx = 0; return;                                                     // no room over it (the roof comes down low): it stops him like a wall
@@ -228,7 +232,7 @@ function moveY(dy) {
         P.y = Math.max(y, Math.min(P.y, y)); return true;
       }
       if (P.dropT <= 0 && room.ramps.length) {                                 // landing on a one-way slope
-        const sy = rampY(P.x, P.y, ny - P.y + 0.01, 0.5);                     // (half a pixel of give above: he can be a hair under it from rounding)
+        const sy = rampY(P.x, P.y, ny - P.y + 0.01, 0.5, mainCatch());        // (half a pixel of give above: he can be a hair under it from rounding)
         if (sy !== null && ny >= sy) { P.y = sy; return true; }
       }
       const row = Math.floor((ny - 0.001) / T);
