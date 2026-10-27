@@ -32,7 +32,8 @@ let restNote = null;
 // doodle on his paper, a stretch and a rub of his eyes, his map or his book, and now and then nodding off for a short nap. 7 seconds of
 // nothing before each (REST_WAIT; standing it's 20 and then 12), never the same one twice in a row, anything pressed stops it. The ones that need
 // new pictures (leaning back on his hands, kicking his feet, looking round) are on the to do list
-const RS = (f, d, go) => ({ f, d, go });
+const HUH = 'huh';                       // (in place of go: the ? over his head for that step, the same one as standing, idle.js)
+const RS = (f, d, go) => go === HUH ? { f, d, huh: true } : { f, d, go };
 const REST_BITS = {
   doodle: () => {
     const cols = ['#e2604a', ...Object.keys(IDLE_CRAYONS).filter(k => world.has[k]).map(k => IDLE_CRAYONS[k])], col = cols[Math.floor(Math.random() * cols.length)];
@@ -57,8 +58,7 @@ const REST_BITS = {
 // his map and his picture book, read sitting there (10/27/2026): the same as the standing ones, but from the sitting
 // pictures with his sword and shield laid down beside him (rs_), and the map goes flat on the floor in front of him
 // and he traces round it facing us instead of turning side on
-const huh = () => popup(P.x + 6, P.y - 52, '?', '#ffffff');
-const restTurnOver = (s, kind) => s.push(RS(`rs_${kind}_turn_1`, 0.14, () => sfx.rustle(0.3)), RS(`rs_${kind}_turn_2`, 0.14), RS(`rs_${kind}_up_1`, 0.9), RS(`rs_${kind}_up_2`, 1.3, huh),
+const restTurnOver = (s, kind) => s.push(RS(`rs_${kind}_turn_1`, 0.14, () => sfx.rustle(0.3)), RS(`rs_${kind}_turn_2`, 0.14), RS(`rs_${kind}_up_1`, 0.9), RS(`rs_${kind}_up_2`, 1.3, HUH),
   RS(`rs_${kind}_up_1`, 0.35), RS(`rs_${kind}_turn_2`, 0.14, () => sfx.rustle(0.3)), RS(`rs_${kind}_turn_1`, 0.14), RS(`rs_${kind}_1`, 0.5));
 const restHold = (s, kind, d) => { for (let t = 0, k = 0; t < d; t += 0.6, k++) s.push(RS(`rs_${kind}_${k % 2 ? 2 : 1}`, 0.6)); };
 const restGetOut = kind => [RS('rs_sit', 0.25), RS('rs_reach', 0.3, () => sfx.rustle(0.4)), RS('rs_pull_' + kind, 0.25)];
@@ -66,12 +66,12 @@ const restPutAway = () => [RS('rs_reach', 0.3, () => sfx.rustle(0.3)), RS('rs_si
 REST_BITS.map = () => {
   const s = restGetOut('map');
   restHold(s, 'map', 2.2);
-  s.push(RS('rs_map_puzzled', 1.3, huh), RS('rs_map_1', 0.35));
+  s.push(RS('rs_map_puzzled', 1.3, HUH), RS('rs_map_1', 0.35));
   restTurnOver(s, 'map');
   s.push(RS('rs_map_lay', 0.45, () => sfx.rustle(0.4)), RS('rs_map_lay', 0.25));
   const trace = n => { for (let k = 0; k < n; k++) for (let i = 1; i <= 4; i++) s.push(RS('rs_mtrace_' + i, rndIn(0.2, 0.28), i === 1 && k % 2 === 0 ? () => sfx.rustle(0.15) : null)); };
   trace(4);
-  s.push(RS('rs_map_lay', 0.4), RS('rs_mthink', 1.6, huh), RS('rs_map_lay', 0.35));
+  s.push(RS('rs_map_lay', 0.4), RS('rs_mthink', 1.6, HUH), RS('rs_map_lay', 0.35));
   trace(5);
   s.push(RS('rs_map_lay', 0.35), RS('rs_mnod_1', 0.18), RS('rs_mnod_2', 0.22), RS('rs_mnod_1', 0.18), RS('rs_mnod_2', 0.5),
     RS('rs_map_lay', 0.35, () => sfx.rustle(0.4)), RS('rs_map_1', 0.3), ...restPutAway());
@@ -80,7 +80,7 @@ REST_BITS.map = () => {
 REST_BITS.book = () => {
   const s = restGetOut('book');
   restHold(s, 'book', 1.8);
-  s.push(RS('rs_book_puzzled', 1.2, huh), RS('rs_book_1', 0.35));
+  s.push(RS('rs_book_puzzled', 1.2, HUH), RS('rs_book_1', 0.35));
   restTurnOver(s, 'book');
   s.push(RS('rs_lap_closed', 0.4, () => sfx.bump()), RS('rs_lap_1', 0.5, () => sfx.rustle(0.3)));
   const look = d => { for (let t = 0, k = 0; t < d; t += 0.7, k++) s.push(RS(k % 2 ? 'rs_lap_2' : 'rs_lap_1', 0.7)); };
@@ -94,7 +94,7 @@ const restPick = () => ['doodle', 'doodle', 'stretch', 'stretch', 'nap', ...(wor
 const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after (10/27/2026)
 const restSit = () => {
   let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;
-  const stopBit = () => { if (!bit) return; bit = null; P.paper = null; P.crayon = null; P.story = { kind: 'scene', frame: 'sit_3', t: 0 }; };
+  const stopBit = () => { if (!bit) return; bit = null; P.paper = null; P.crayon = null; P.restHuh = false; P.story = { kind: 'scene', frame: 'sit_3', t: 0 }; };
   return (t, dt) => {
     if (t === 0) {
       talkIn.move = 0; sub = null; bit = null; still = 0; wait = REST_WAIT[0];
@@ -108,7 +108,7 @@ const restSit = () => {
     if (bit) {                                                                    // one of the little things he does sitting there
       bit.st += dt;
       while (bit && bit.st >= bit.steps[bit.i].d) { bit.st -= bit.steps[bit.i].d; bit.i++; if (bit.i >= bit.steps.length) { stopBit(); still = 0; wait = REST_WAIT[1]; } else if (bit.steps[bit.i].go) bit.steps[bit.i].go(); }
-      if (bit) P.story = { kind: 'scene', frame: bit.steps[bit.i].f, t };
+      if (bit) { P.story = { kind: 'scene', frame: bit.steps[bit.i].f, t }; P.restHuh = !!bit.steps[bit.i].huh; }
       return false;
     }
     if (t > 0.3 && !anyInput() && !talkIn.move && (still += dt) >= wait) {
@@ -116,7 +116,7 @@ const restSit = () => {
       last = names[Math.floor(Math.random() * names.length)];
       bit = { steps: REST_BITS[last](), i: 0, st: 0 };
       if (bit.steps[0].go) bit.steps[0].go();
-      P.story = { kind: 'scene', frame: bit.steps[0].f, t };
+      P.story = { kind: 'scene', frame: bit.steps[0].f, t }; P.restHuh = !!bit.steps[0].huh;
       return false;
     }
     if (anyInput()) still = 0;

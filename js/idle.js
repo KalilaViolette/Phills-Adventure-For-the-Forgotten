@@ -388,8 +388,16 @@ function drawIdleGround(q) {
   ctx.globalAlpha = 1;
 }
 // everything else goes over him
+// a little ? over his head while he can't make it out (sat: lower, over his sitting head). The rest spot's map and
+// book use it too (P.restHuh, scenes/rootwood.js)
+function drawHuh(px, t, sat) {
+  const y0 = P.y + (sat ? -46 : -54) + Math.round(Math.sin(t * 3) * 1.2), x0 = P.x - 2;
+  const Q = ['.###.', '#...#', '....#', '...#.', '..#..', '.....', '..#..'];
+  Q.forEach((r, y) => [...r].forEach((c, x) => { if (c === '#') { px(x0 + x + 1, y0 + y + 1, '#2a2030', 0.6); px(x0 + x, y0 + y, '#fff4d8', 0.95); } }));
+}
 function drawIdleBits(q) {
-  const b = P.idleBit; if (!b) return;
+  const b = P.idleBit;
+  if (!b) { if (P.restHuh && P.story) drawHuh(idlePx(q), P.story.t || performance.now() / 1000, true); return; }
   const px = idlePx(q);
   if (b.coinKind && b.coinAt) spr(COIN_SPR[b.coinKind] || 'acorn_small', P.x + P.facing * b.coinAt[0], P.y + b.dy + b.coinAt[1] + 3, false);
   if (b.moth) drawCritter(b.moth, px);
@@ -406,11 +414,7 @@ function drawIdleBits(q) {
     const r = 5 + b.ring * 40, a = Math.max(0, 1 - b.ring / 0.4) * 0.7;
     for (let i = 0; i < 18; i++) { const an = i / 18 * Math.PI * 2; px(P.x + Math.cos(an) * r, P.y - 15 + Math.sin(an) * r * 0.8, '#ffffff', a); }
   }
-  if (b.huh) {                           // a little ? over his head while he can't make it out
-    const sat = /^(rf_|mp_)/.test(b.steps[b.i] && b.steps[b.i].f || ''), y0 = P.y + (sat ? -46 : -54) + Math.round(Math.sin(b.t * 3) * 1.2), x0 = P.x - 2;
-    const Q = ['.###.', '#...#', '....#', '...#.', '..#..', '.....', '..#..'];
-    Q.forEach((r, y) => [...r].forEach((c, x) => { if (c === '#') { px(x0 + x + 1, y0 + y + 1, '#2a2030', 0.6); px(x0 + x, y0 + y, '#fff4d8', 0.95); } }));
-  }
+  if (b.huh) drawHuh(px, b.t, /^(rf_|mp_)/.test(b.steps[b.i] && b.steps[b.i].f || ''));
   if (b.stars > 0) for (let i = 0; i < 3; i++) {   // seeing stars after the bonk
     const an = b.t * 8 + i * 2.1; ctx.globalAlpha = Math.min(1, b.stars * 2); ctx.fillStyle = '#ffd36b';
     ctx.fillRect(q(P.x + P.facing * 3 + Math.cos(an) * 9) - 1, q(P.y - 45 + Math.sin(an) * 2.5), 2, 2);
