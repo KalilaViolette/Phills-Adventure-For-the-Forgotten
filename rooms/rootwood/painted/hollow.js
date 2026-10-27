@@ -64,33 +64,99 @@ ROOM({
     64,
     32
    ],
-   "piece_glow_0": [
+   "piece_plant_living_nook_left": [
     0,
     3692,
+    23,
+    22
+   ],
+   "piece_plant_living_nook_right": [
+    0,
+    3714,
+    24,
+    24
+   ],
+   "piece_plant_living_lower_floor": [
+    0,
+    3738,
+    25,
+    23
+   ],
+   "piece_plant_living_entry_hair": [
+    0,
+    3761,
+    12,
+    55
+   ],
+   "piece_plant_living_bowl_approach_hair": [
+    0,
+    3816,
+    13,
+    83
+   ],
+   "piece_plant_bowl_seedling": [
+    0,
+    3899,
+    25,
+    23
+   ],
+   "piece_plant_sweep_seedling": [
+    0,
+    3922,
+    27,
+    24
+   ],
+   "piece_plant_sweep_small_tuft": [
+    0,
+    3946,
+    11,
+    13
+   ],
+   "piece_plant_floor_seedling": [
+    0,
+    3959,
+    25,
+    25
+   ],
+   "piece_plant_under_root_vine": [
+    0,
+    3984,
+    9,
+    68
+   ],
+   "piece_plant_nook_rear_frond": [
+    0,
+    4052,
+    17,
+    18
+   ],
+   "piece_glow_0": [
+    0,
+    4070,
     147,
     73
    ],
    "piece_glow_1": [
     0,
-    3765,
+    4143,
     389,
     79
    ],
    "piece_glow_2": [
     0,
-    3844,
+    4222,
     248,
     461
    ],
    "piece_glow_3": [
     0,
-    4305,
+    4683,
     60,
     39
    ],
    "piece_glow_4": [
     0,
-    4344,
+    4722,
     49,
     92
    ]
@@ -136,6 +202,72 @@ ROOM({
     0,
     64,
     32
+   ],
+   "plant_living_nook_left": [
+    66,
+    469,
+    23,
+    22
+   ],
+   "plant_living_nook_right": [
+    157,
+    454,
+    24,
+    24
+   ],
+   "plant_living_lower_floor": [
+    232,
+    466,
+    25,
+    23
+   ],
+   "plant_living_entry_hair": [
+    89,
+    205,
+    12,
+    55
+   ],
+   "plant_living_bowl_approach_hair": [
+    174,
+    206,
+    13,
+    83
+   ],
+   "plant_bowl_seedling": [
+    211,
+    293,
+    25,
+    23
+   ],
+   "plant_sweep_seedling": [
+    555,
+    158,
+    27,
+    24
+   ],
+   "plant_sweep_small_tuft": [
+    590,
+    156,
+    11,
+    13
+   ],
+   "plant_floor_seedling": [
+    558,
+    460,
+    25,
+    25
+   ],
+   "plant_under_root_vine": [
+    263,
+    352,
+    9,
+    68
+   ],
+   "plant_nook_rear_frond": [
+    83,
+    469,
+    17,
+    18
    ],
    "glow_0": [
     27,
@@ -282,15 +414,15 @@ ROOM({
   ".............................###############",
   "............................#####..#########",
   "#######.............................########",
-  "##########............###...........########",
-  "#############......#####............########",
-  "######################...............#######",
-  "###.......##########.................#######",
-  "###..................................#######",
-  "###...................................######",
-  "###...................................######",
+  "##########............##.............#######",
+  "#############......#####.............#######",
+  "######################................######",
+  "###.......##########..................######",
   "###...................................######",
   "###....................................#####",
+  "###....................................#####",
+  "###....................................#####",
+  "###....................................#.###",
   "##..........................................",
   "##.............................##...........",
   "##.........#..................####..........",
@@ -2458,6 +2590,118 @@ ROOM({
   "hollow_web": "skin_web",
   "hollow_foam": "skin_foam"
  },
+ "plants": [
+  [
+   "plant_living_nook_left",
+   -1,
+   77,
+   488,
+   1.0,
+   0.68,
+   4.0,
+   0.0
+  ],
+  [
+   "plant_living_nook_right",
+   -1,
+   169,
+   475,
+   1.0,
+   0.79,
+   4.0,
+   1.7
+  ],
+  [
+   "plant_living_lower_floor",
+   -1,
+   244,
+   486,
+   1.0,
+   0.9,
+   4.0,
+   3.4
+  ],
+  [
+   "plant_living_entry_hair",
+   -1,
+   95,
+   206,
+   1.0,
+   1.23,
+   2.0,
+   5.1
+  ],
+  [
+   "plant_living_bowl_approach_hair",
+   -1,
+   180,
+   207,
+   1.0,
+   1.34,
+   2.0,
+   0.52
+  ],
+  [
+   "plant_bowl_seedling",
+   -1,
+   223,
+   314,
+   1.0,
+   0.76,
+   5.0,
+   2.22
+  ],
+  [
+   "plant_sweep_seedling",
+   -1,
+   568,
+   180,
+   1.0,
+   1.07,
+   4.0,
+   3.92
+  ],
+  [
+   "plant_sweep_small_tuft",
+   -1,
+   595,
+   167,
+   1.0,
+   1.32,
+   2.0,
+   5.62
+  ],
+  [
+   "plant_floor_seedling",
+   -1,
+   570,
+   483,
+   1.0,
+   0.88,
+   4.0,
+   1.04
+  ],
+  [
+   "plant_under_root_vine",
+   -1,
+   267,
+   352,
+   1.0,
+   0.63,
+   4.0,
+   2.74
+  ],
+  [
+   "plant_nook_rear_frond",
+   1,
+   91,
+   485,
+   1.0,
+   1.17,
+   2.0,
+   4.44
+  ]
+ ],
  "glow": [
   [
    "glow_0",
@@ -2603,14 +2847,15 @@ ROOM({
    776,
    777,
    783,
+   784,
    800,
    801,
    802,
    813,
    814,
    816,
-   827,
    828,
+   829,
    846,
    847,
    848,
@@ -2624,7 +2869,7 @@ ROOM({
    856,
    859,
    860,
-   872,
+   873,
    883,
    884,
    885,
@@ -2633,7 +2878,7 @@ ROOM({
    888,
    901,
    902,
-   916,
+   917,
    926,
    933,
    934,
@@ -2645,8 +2890,8 @@ ROOM({
    943,
    944,
    945,
-   960,
    961,
+   962,
    970,
    981,
    982,
@@ -2655,16 +2900,24 @@ ROOM({
    985,
    986,
    987,
-   1005,
+   1006,
    1014,
-   1049,
+   1050,
+   1051,
    1058,
-   1093,
    1094,
+   1095,
+   1096,
    1102,
    1138,
+   1139,
+   1140,
    1146,
    1182,
+   1183,
+   1184,
+   1185,
+   1186,
    1190,
    1219,
    1220,
@@ -2719,6 +2972,6 @@ ROOM({
    1358,
    1359
   ],
-  "bits": "////////////////////////////////f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/////////////////////////+//7//v/+//7//v/+//5//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9////+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f////v/+//7//v/+//7//v/+//7//v/+//7//v/8//z//H//f/9//3//P/8//z//P/8//z//P/8//z//P/8//z////z//P/8//z//P/8//z//P/8//z//P/8//z//P/4//g//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8////////////////////////////////////////////+///////////////////////8/+D/gPwA8ADAAIAAAAD////////////8/4D4AIAAAAAAAAAAAAAAAAAAAAAAAP///////PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//j/+P/4//j/+P/4//j/8P/w//D/8P/g/+D/4P/A/8Af/x//H/8f/x//H/8f/x//H/8f/x//H/8f/x//D/8P//////////////////////////////z/+P/g/8D/APwA//j/8P/A/4D+APwA8ADgAIAAAAAAAAAAAAAAAAAAAAD////////////////////////////////////+//j/4P+A/4D/AP8A/gD+APwA+AD4APAA4ADAAIAAAAAAAAAAD/8P/w//D/8P/w//D/8P/w//B/8H/wf/B/8H/wf/B//////////////+//j/8P/g/4D/AP4A/AD4APAA4ADAAPgA4ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////////////////////8//j/8P/A/4D//////////v/g/4D8APAA4ACAAAAAAAAAAAAAAAAAAP/////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/wP/A/8D/wP/A/8D/wH/Af8B/wH/AP8A/wD/AH8Af//////////+//z/+P/4//D/4P/A/8D/gP8A/wD+AP4AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAQAHAB8AfwP/D/9/////AAAAAAAAAAAAPwf/f/////////////////////////8AAAAAAH9//////////////////////////////////wAAAP//////////////////////////////////////AAD//////////////////////////////////////////////////////////////////v/8//j/8P/g/8D/gP8A/gD8APgA8ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAD8APwAfAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8APgA8ADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAAAAAAAAAAAAAAAHAB8A/wP/B/8f/3////////////8ADwB/B/8//////////////////////////////////////////////////////////v/8//D/4P/A/4D/APwA/gD8APgA8ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAcADwA/AP8D/w//P////wB/AP8D/wf/D/8//3////////////////////////////////////////////////////////////////////z////////////////////////////////////4+AAAAP/////////////////////////////////AAAAAAAAA////////////////////////////////AAAAAAAAAAD///////////////////////////////8//wAAAAAAAP////////////////////////////////////8A/wAA//////////////////////////////////z/8P+A/AD////////////+//j/4P+A/gD4AOAAgAAAAAAAAAAAAPgA4ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAH8A/wH/A/8AAwAPAD8A/wP/D/8//3///////////////////////////////////////////////////////////////v/g////////////////////////////////////wAAAAAD////////////////////////////w/AAAAAAAAAAAAP/////////////////8/8D4AIAAAAAAAAAAAAAAAAAA///////8/4D4AMAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wH/AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////wf/AA8AAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////w//AAAAAAAAAAAAAAAAAAAAAAAA//////////////////9//wAAAAAAAAAAAAAAAAAAAAD///////////////////8AAAAAAAAAAAAAAAAAAAAAAP//////////////8PgAAAAAAAAAAAAAAAAAAAAAAAAA/////v/w/gDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAHAA8AHwB/AP8B/wf/D/8//3//D/8f/z//f/////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAwAPAD8A/wH/B/8f/wABAAMADwA/AP8D/w//P///////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAEADwA/AP8D/w//H/8AAAAAAAEABwAPAD8AfwH/A/8P/z//f////////////z//////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//H/8f/x//H/8f/x//H/8f/x//H/8f/x//H/8f/x//H//////////////////////////////////////g+ACAAP////////////////////////////////8AAAAAAAAA/////////////////////v/w/wD4AAAAAAAAAAAAAAD/////////8P8A+ADAAAAAAAAAAAAAAAAAAAAAAAAAAP///////w//AP8APwAfAA8ABwADAAEAAAAAAAAAAAAA////////////////////////////////f/9//z//H///+P///////////////////////////////////////wAA+AD+f///////////////////////////////////AAAAAP/g//////////////////////////////////8AAAAAAAAAAOAA/AD/gP/w//z//////////////////wAAAAAAAAAAAAAAAAAAAAAAAIAA4AD8AP+A//j/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAD4A/wf/H/9//wAAAAAAAAAAAAAAAAAAAAAAAAGAB4A/gP+A/4D/gP+AH/8f/xgPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/+P+A/ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//D/8H/wP/A/8B/wH/AP8A/wB/AD8APwAfAB8ADwAP/wD/4P/8//////////////////////////////////8AAAAAAACAAOAA+AD+AP+A/+D/+P/+/////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAOAA+AD+AP+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAPAD8A/wf/P/8AAQAHAA8APwD/Af8H/w//P/////////////////////+A/4D/gP+A/4D/gP+A/4D/gP+A/4D/gP+A/wD+APwAAAcABwADAAMAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////9//3//P/8//x//H/8f///g//j/////////////////////////////////////AAAAAAAA8AD/wP////////////////////////////8AAAAAAAAAAAAA4AD/4P///////////////////////wAAAAAAAAAAAAAAAAAAgAD4AP/A//z/////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgB//////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////wAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+A//////////8AAAAAAAAAAAAAAAAAAAAAAAMAHwH//////////////wAAAAAAAAABAB8A/wf/P///////////////////////AAMAfw////////////////////////////////////////////////////j/4P/A/4D/APwA+ADwAOAAwACAAPgA8ADgAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/8P/wf/B/8H/wP/A/8B/wH/Af8A/wD/AP8AfwB/AD/////////////////////////////////////A/ADgAP////////////////////////////j/wAAAAAAAAAAA//////////////////////gAgAAAAAAAAAAAAAAAAAD/////////////////////A/8AHwABAAAAAAAAAAAAAP////////////////////////////8P/wB/AAAAAAAA//////////////////////////////////9//wD/AAf////////////////////////////////////+//j/4P////7//P/8//j/8P/A/4D+APgA8ADAAIAAAAAAAAAAAD8APwAfAB8AHwAPAA8ADwAHAAcABwADAAMAAwABAAH////8//j/8P/g/8D/wP+A/4D/gP+A/wD/AP8A/wD/AH//D/8B/wB/AA8AAwAAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////8f/wf/Af8APwAHAAAAAAAAAAD///////////////////////////////9//wD/AAAAAP////////////////////////////////////8ADwAA////////////////////////////////////////D///////////////////////////////////////////+P///////////////////////////////////////wB////////////////////////////////+//z/8P/g/4D////////////+//D/wP4A+ADgAIAAAAAAAAAAAAAAAP+A/gDwAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////3//f/9//z//P/8//z//H/8f/x//D/8P//8A/wD/AP8A/wD/AP4A/gD+AP8A/wD/AP8A/4D/gP/AAH8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//3//D/8B/wA/AAcAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////P/gAAAAAAAAAAAAAAAAAAAAAAAA/wD8APAA4ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/wf/B/8H/wf/A/8D/wP/Af8B/wH/AP8A/wD/AP8Af//A/8D/4P/g/+D/8P/w//j/+P/4//z//P/8//z//v/+AH8AfwA/AD8APwA/AB8AHwAfAB8ADwAPAA8ABwAHAAf//v/+/////////////////////////////////////wAHAAMAAwADAAEAAQABAAEAAAAAAAAAAAAAAAAAAAAA////////////////////////////////f/9//3//P/////////////////7//v/+//7//P/8//z//P/4//j/+D//P/8//x//H/8f/x//D/8P/w//B/8H/wf/B/8D/wP///D/8P/g/+D/4P/A/8D/wP+A/4D/AP8A/wD+AP4A/gAD/wP/Af8B/wH/AP8A/wD/AP8AfwB/AH8APwA/AD8AP/wA/AD4APgA+ADwAPAA8ADwAOAA4ADgAOAAwADAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4AMAAgACAAIAAgACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQADAAcADwAfAD8AfwD/Af8AfwH/A/8P/x//f/////////////////////////////8A/8D/8P/4//z/////////////////////////////AAAAAAAAAAAAAAAAgADAAOAA8AD4APwA/gD/AP+A/8D//v/+//7//v/+//7//v/+//7//v/+/////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAQAHAB8AfwH/A/8P/z///////wAAAAAAAAAAB/5/////////////////////////////AAAAAAAAAAAAAMAA+AD+AP+A/8D/8P/8//7///////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAwADwAAAAAAAAAAAAAAAAAAAAAAEAAwAHAB8APwB/AP8D/wf/A/8H/w//H/8//3//////////////////////////////4P/w//j//P/+/////////////////////////////wAAAAAAAAAAAAAAAMAA4ADwAPgA/AD+AP+A/8D/8P/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/P/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////+AAMAA4ADwAPgA/gD/gP/4/////////////////////wAAAAAAAAAAAAAAAAAAAADAAP/A////////////////AAAAAAAAAAAAAAAAAAAAAwA/H/////////////////8AAAAAAAAAAQA/A/8//////////////////////////wAAAAAAAP//////////////////////////////////AAAAAAAA/gD///////////////////////////////8AAAAAAAAAA////////////////////////////////wAPAH8H/////////////////////////////////////AD/AP/A//D//P////////////////////////////8AAAAAAAAAAAAAwAD//////////////////////////wAAAAAAAAAAAAAAAPwA//j/////////////////////AAAAAAAAAAAAAAAAAAAAAPAA//////////////////8AAAAAAAAAAAAAAAAABwB/H////////////////////wAAAAAABwD/D/9/////////////////////////////AAADwP////////////////////////////////////8AAAAA8AD/8P///////////////////////////////wAAAAAAAAAD////////////////////////////////AAAAAAP///////////////////////////////////8AAHgA//z//////////////////////////////////wAAAAAAAMAA/AD/wP/8////////////////////////AAAAAAAAAAAAAAAAAADAAP4A//////////////////8AAAAAAAAAAAAAAAAAAAADAf///////////////////wAAAAAAAAAAAAAAAAf/////////////////////////AAAAAAAAAAMAHwH///////////////////////////8f/z///////////////////////////////////////wAA4AD+AP//////////////////////////////////AAAAAAAA//D///////////////////////////////8AAAAAAAAAAIAA+AD/gP/7/////////////////////wAAAAAAAAAHAf8P/z//////////////////////////AAcA/z////////////////////////////////////8="
+  "bits": "////////////////////////////////f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/////////////////////////+//7//v/+//7//v/+//5//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9////+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f////v/+//7//v/+//7//v/+//7//v/+//7//v/8//z//H//f/9//3//P/8//z//P/8//z//P/8//z//P/8//z////z//P/8//z//P/8//z//P/8//z//P/8//z//P/4//g//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8////////////////////////////////////////////+///////////////////////8/+D/gPwA8ADAAIAAAAD////////////8/4D4AIAAAAAAAAAAAAAAAAAAAAAAAP///////PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//j/+P/4//j/+P/4//j/8P/w//D/8P/g/+D/4P/A/8Af/x//H/8f/x//H/8f/x//H/8f/x//H/8f/x//D/8P//////////////////////////////z/+P/g/8D/APwA//j/8P/A/4D+APwA8ADgAIAAAAAAAAAAAAAAAAAAAAD////////////////////////////////////+//j/4P+A/4D/AP8A/gD+APwA+AD4APAA4ADAAIAAAAAAAAAAD/8P/w//D/8P/w//D/8P/w//B/8H/wf/B/8H/wf/B//////////////+//j/8P/g/4D/AP4A/AD4APAA4ADAAPgA4ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////////////////////8//j/8P/A/4D//////////v/g/4D8APAA4ACAAAAAAAAAAAAAAAAAAP/////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/wP/A/8D/wP/A/8D/wH/Af8B/wH/AP8A/wD/AH8Af//////////+//z/+P/4//D/4P/A/8D/gP8A/wD+AP4AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAQAHAB8AfwP/D/9/////AAAAAAAAAAAAPwf/f/////////////////////////8AAAAAAH9//////////////////////////////////wAAAP//////////////////////////////////////AAD//////////////////////////////////////////////////////////////////v/8//j/8P/g/8D/gP8A/gD8APgA8ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAD8APwAfAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8APgA8ADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAAAAAAAAAAAAAAAHAB8A/wP/B/8f/3////////////8ADwB/B/8//////////////////////////////////////////////////////////v/8//D/4P/A/4D/APwA/gD8APgA8ADgAMAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAcADwA/AP8D/w//P////wB/AP8D/wf/D/8//3////////////////////////////////////////////////////////////////////z////////////////////////////////////4+AAAAP/////////////////////////////////AAAAAAAAA////////////////////////////////AAAAAAAAAAD///////////////////////////////8//wAAAAAAAP////////////////////////////////////8A/wAA//////////////////////////////////z/8P+A/AD////////////+//j/4P+A/gD4AOAAgAAAAAAAAAAAAPgA4ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMADwAfAH8A/wH/A/8AAwAPAD8A/wP/D/8//3///////////////////////////////////////////////////////////////v/g////////////////////////////////////wAAAAAD////////////////////////////w/AAAAAAAAAAAAP/////////////////8/8D4AIAAAAAAAAAAAAAAAAAA///////8/4D4AMAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wH/AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////wf/AA8AAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////w//AAAAAAAAAAAAAAAAAAAAAAAA//////////////////9//wAAAAAAAAAAAAAAAAAAAAD///////////////////8AAAAAAAAAAAAAAAAAAAAAAP//////////////8PgAAAAAAAAAAAAAAAAAAAAAAAAA/////v/w/gDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAHAA8AHwB/AP8B/wf/D/8//3//D/8f/z//f/////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAwAPAD8A/wH/B/8f/wABAAMADwA/AP8D/w//P///////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAEADwA/AP8D/w//H/8AAAAAAAEABwAPAD8AfwH/A/8P/z//f////////////z//////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//D/8P/w//D/8H/wP/A/8H/wP/A/8D/wP/AP8A/wH/Af/////////////////////////////////////g+ACAAP////////////////////////////////8AAAAAAAAA/////////////////////v/w/wD4AAAAAAAAAAAAAAD/////////8P8A+ADAAAAAAAAAAAAAAAAAAAAAAAAAAP///////w//AP8APAAAAAAAAAAAAAAAAAAAAAAAAAAA////////z/8H/wP/Af8B/wH/Af8A/wBfAA8ADwADAAP/+P///////////////////////////////////////wAA+AD+f///////////////////////////////////AAAAAP/g//////////////////////////////////8AAAAAAAAAAOAA/AD/gP/w//z//////////////////wAAAAAAAAAAAAAAAAAAAAAAAIAA4AD8AP+A//j/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAD4A/wf/H/9//wAAAAAAAAAAAAAAAAAAAAAAAAGAB4A/gP+A/4D/gP+AAP8A/wAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/+P+A/ADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbABsADwAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//////////9//w//B/8H/wP/Af8B/wH/AP8AfwA/AB//AP/g//z//////////////////////////////////wAAAAAAAIAA4AD4AP4A/4D/4P/4//7/////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA4AD4AP4A/4AAAAAAAAAAAAAAAAAAAAAAAAAAAAADAA8APwD/B/8//wABAAcADwA/AP8B/wf/D/8//////////////////////4D/gP8A/wD/AP4A/gD8APgA/AD8APgA+ADwAPAA8AAAHwAPAA8ACQAZABgAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////9//3//f/9//z//P/8f/x//D/8P/w///+D/+P////////////////////////////////////8AAAAAAADwAP/A/////////////////////////////wAAAAAAAAAAAADgAP/g////////////////////////AAAAAAAAAAAAAAAAAACAAPgA/8D//P////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AH//////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////AAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAA/4D//////////wAAAAAAAAAAAAAAAAAAAAAAAwAfAf//////////////AAAAAAAAAAEAHwD/B/8///////////////////////8AAwB/D///////////////////////////////////////////////////+P/g/8D/gP8A/AD4APAA4ADAAIAA+ADwAOAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/wf/B/8H/wf/A/8D/wP/A/8B/wH/Af8B/wH/AP8A/////////////////////////////////////8D8AOAA////////////////////////////+P/AAAAAAAAAAAD/////////////////////+ACAAAAAAAAAAAAAAAAAAP////////////////////8D/wAfAAEAAAAAAAAAAAAA/////////////////////////////w//AH8AAAAAAAD//////////////////////////////////3//AP8AB/////////////////////////////////////7/+P/g/////v/8//z/+P/w/8D/gP4A+ADwAMAAgAAAAAAAAAAA/wB/AH8APwA/AD8AHwAfAB8AHwAfAB8AHwAPAA8AD/////z/+P/w/+D/wP/A/4D/gP+A/4D/AP8A/wD/AP8Af/8P/wH/AH8ADwADAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////////x//B/8B/wA/AAcAAAAAAAAAAP///////////////////////////////3//AP8AAAAA/////////////////////////////////////wAPAAD///////////////////////////////////////8P///////////////////////////////////////////4////////////////////////////////////////AH////////////////////////////////7//P/w/+D/gP////////////7/8P/A/gD4AOAAgAAAAAAAAAAAAAAA/4D+APAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAHAAcABwAHAAcAAwADAAEAAQAAAAAAAAAAAAAAAP////////////////////////////9//z//P/8f/x///wD/AP8A/wD/AP8A/gD+AP4A/wD/AP8A/wD/gP+A/8AAfwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//f/8P/wH/AD8ABwAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////8/+AAAAAAAAAAAAAAAAAAAAAAAAD/APwA8ADgAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//D/8P/x//H/8f/wP/Af8B/wH/AP8A/wD/AH8APwAf/8D/wP/g/+D/4P/w//D/+P/4//j//P/8//z//P/+//4AHwAfAB8AHwAfAA8ADgAMABgAEAAQAAAAAQADAAMAAf///////////////3//f/9//z//f/////////8//x////7//v////////////////////////////////////8AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//H/8f/x//H/8f/x//D/8H/wf/B/8P/w//H/8//z/////////////////////////////3/+f/w//D/4D/gf////////////////7//v/+//7//P/8//z//P/4//j/+AAAAAAAAAAAAAAAAAAAAAAAAAABAAEAAQABAAMAAwAHP/8//z//f/5//n/+f/7//v/+//7//v//////////5/8A/wD/Af8B/wH/D/8P/w//H/8f/x5/GA+ADcAMQAxADP/w//D/4P/g/+D/wP/A/8D/gP+A/wD/AP8A/gD+AP4AAAcADwAPAB8AHwAcAPgA8AA4ACwAIABwADkAMQAgADGH/4f/h/+H/4f/h/8H/wf/D/8P/wf/D////////////wAYABgAGAAYABgACAAMgASABoAGgAbgA8AD8AH7Af8Bf/9//3//f/9//3//3/+f/w//Dg8GBwYHBgODAIAAgAD/////////////////////////////////////f/9n//wA/AD4APgA+ADwAPAA8ADwAOAA4ADgAOAAwADAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4AMAAgACAAIAAgACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQADAAcADwAfAD8AfwD/Af8AfwH/A/8P/x//f/////////////////////////////8A/8D/8P/4//z/////////////////////////////AAAAAAAAAAAAAAAAgADAAOAA8AD4APwA/gD/AP+A/8D//v/+//7//v/+//7//v/+//7//v/+/////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAQAHAB8AfwH/A/8P/z///////wAAAAAAAAAAB/5/////////////////////////////AAAAAAAAAAAAAMAA+AD+AP+A/8D/8P/8//7///////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAwADwAAAAAAAAAAAAAAAAAAAAAAEAAwAHAB8APwB/AP8D/wf/A/8H/w//H/8//3//////////////////////////////4P/w//j//P/+/////////////////////////////wAAAAAAAAAAAAAAAMAA4ADwAPgA/AD+AP+A/8D/8P/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/P/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////+AAMAA4ADwAPgA/gD/gP/4/////////////////////wAAAAAAAAAAAAAAAAAAAADAAP/A////////////////AAAAAAAAAAAAAAAAAAAAAwA/H/////////////////8AAAAAAAAAAQA/A/8//////////////////////////wAAAAAAAP//////////////////////////////////AAAAAAAA/gD///////////////////////////////8AAAAAAAAAA////////////////////////////////wAPAH8H/////////////////////////////////////AD/AP/A//D//P////////////////////////////8AAAAAAAAAAAAAwAD//////////////////////////wAAAAAAAAAAAAAAAPwA//j/////////////////////AAAAAAAAAAAAAAAAAAAAAPAA//////////////////8AAAAAAAAAAAAAAAAABwB/H////////////////////wAAAAAABwD/D/9/////////////////////////////AAADwP////////////////////////////////////8AAAAA8AD/8P///////////////////////////////wAAAAAAAAAD////////////////////////////////AAAAAAP///////////////////////////////////8AAHgA//z//////////////////////////////////wAAAAAAAMAA/AD/wP/8////////////////////////AAAAAAAAAAAAAAAAAADAAP4A//////////////////8AAAAAAAAAAAAAAAAAAAADAf///////////////////wAAAAAAAAAAAAAAAAf/////////////////////////AAAAAAAAAAMAHwH///////////////////////////8f/z///////////////////////////////////////wAA4AD+AP//////////////////////////////////AAAAAAAA//D///////////////////////////////8AAAAAAAAAAIAA+AD/gP/7/////////////////////wAAAAAAAAAHAf8P/z//////////////////////////AAcA/z////////////////////////////////////8="
  }
 });

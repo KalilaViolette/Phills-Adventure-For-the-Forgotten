@@ -72,6 +72,7 @@ function render(alpha) {
   drawCovers();
   if (typeof drawWildlife === 'function') drawWildlife('back', camX, camY);   // animals in the room itself, behind everything that moves
   drawGlowLayers(ctx, 0, 0, false, 'lighter', camX, camY);                    // the room's own light, behind him
+  drawPlants(1, camX, camY);                                                   // plants behind him, swaying
 
   // items waiting to be picked up: bobbing a little, with a glint now and then
   const items = room.def.art.items ? Assets.get(room.def.art.items) : null;   // the region's item sheet
@@ -129,6 +130,7 @@ function render(alpha) {
   ctx.setTransform(S, 0, 0, S, offX, offY);
   ctx.translate(-camX, -camY);
   if (front) { const at = room.def.art.frontAt || [0, 0]; if (room.def.frontFade) drawFrontFaded(front, at, camX, camY, px2, py2); else ctx.drawImage(front, at[0], at[1]); }   // things in front of him
+  drawPlants(-1, camX, camY);                                                  // and the plants in front of him, swaying, parting as he goes through
   if (typeof drawPondFx === 'function') drawPondFx();                              // the water's surface moving, squeaks, the cape
   drawActors('front');
   if (layers.some(L => L.f > 1)) {                // close to the camera, sliding past faster than the room
@@ -658,6 +660,35 @@ function drawUnderground(camX, camY) {
     if (d.ring > 0) {
       d.ring -= dt; const w = Math.round((0.45 - d.ring) * 26), a = d.ring / 0.45 * 0.6;
       ctx.fillStyle = `rgba(200,232,240,${a})`; ctx.fillRect(sx - w, Math.round(bottom - camY), 2, 1); ctx.fillRect(sx + w - 1, Math.round(bottom - camY), 2, 1);
+    }
+  });
+}
+// a painted room's plants (10/27/2026): each row of the picture slides sideways by whole pixels, nothing at the anchor
+// row (where it grows from, or hangs from) and the most at the far end, so the pixels stay crisp. It sways on its own,
+// and when he walks through it it's pushed aside and springs back. [piece, layer, anchor x, anchor y, sway px, speed, part px, phase]
+const plantState = new Map();
+let plantT = performance.now(), plantDt = 0;
+function drawPlants(layer, camX, camY) {
+  const list = room.def.plants;
+  if (!list) return;
+  if (layer === 1) { plantDt = Math.min(0.05, Math.max(0, (performance.now() - plantT) / 1000)); plantT = performance.now(); }   // (once a frame: the pass behind him comes first)
+  const now = performance.now() / 1000, dt = plantDt, pcs = room.def.art.pieces || {};
+  list.forEach(([n, lay, ax, ay, sway, speed, part, ph], i) => {
+    if (lay !== layer) return;
+    const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
+    if (!im || r[0] - camX > VW + 12 || r[1] - camY > VH || r[0] + r[2] - camX < -12 || r[1] + r[3] - camY < 0) return;
+    const key = room.id + ':' + i;
+    let st = plantState.get(key); if (!st) { st = { o: 0, v: 0 }; plantState.set(key, st); }
+    let target = 0;                                                  // he's in it: pushed away from him, the closer the more
+    if (part > 0 && P.x + HW > r[0] - 4 && P.x - HW < r[0] + r[2] + 4 && P.y > r[1] && P.y - P.h < r[1] + r[3]) {
+      const dx = ax - P.x, w = r[2] / 2 + HW;
+      target = part * (dx === 0 ? -P.facing : Math.sign(dx)) * Math.max(0.35, 1 - Math.abs(dx) / w);
+    }
+    st.v += ((target - st.o) * 70 - st.v * 9) * dt; st.o += st.v * dt;   // a spring: a little wobble when he's gone
+    const sw = sway * Math.sin(now * speed * 2.4 + ph), far = Math.max(Math.abs(r[1] - ay), Math.abs(r[1] + r[3] - 1 - ay), 1);
+    for (let yy = 0; yy < r[3]; yy++) {
+      const k = Math.abs(r[1] + yy - ay) / far, dx = Math.round((sw + st.o) * k);
+      ctx.drawImage(im, 0, yy, r[2], 1, r[0] + dx, r[1] + yy, r[2], 1);
     }
   });
 }
