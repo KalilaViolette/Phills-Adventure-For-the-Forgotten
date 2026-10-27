@@ -71,6 +71,7 @@ function render(alpha) {
   ctx.translate(-camX, -camY);
   drawCovers();
   if (typeof drawWildlife === 'function') drawWildlife('back', camX, camY);   // animals in the room itself, behind everything that moves
+  drawGlowLayers(ctx, 0, 0, false, 'lighter', camX, camY);                    // the room's own light, behind him
 
   // items waiting to be picked up: bobbing a little, with a glint now and then
   const items = room.def.art.items ? Assets.get(room.def.art.items) : null;   // the region's item sheet
@@ -660,19 +661,39 @@ function drawUnderground(camX, camY) {
     }
   });
 }
+// a painted room's light layers (10/27/2026), each breathing slowly at its own pace. Most are part of the room, so
+// they're drawn behind him (and cut out of the dark, so they still shine through it); one marked front is drawn
+// over everything, him too. g is where to draw, ox/oy what's taken off the room's x/y there, op how, cam the camera
+function glowEach(camX, camY, front, fn) {
+  if (!room.def.glow) return;
+  const now = performance.now() / 1000, pcs = room.def.art.pieces || {};
+  for (const [n, pulse, speed, phase, depth] of room.def.glow) {
+    if ((depth === 'front') !== front) continue;
+    const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
+    if (!im || r[0] - camX > VW || r[1] - camY > VH || r[0] + r[2] - camX < 0 || r[1] + r[3] - camY < 0) continue;
+    fn(im, r, 1 - pulse * (0.5 + 0.5 * Math.sin(now * speed + phase)));
+  }
+}
+function drawGlowLayers(g, ox, oy, front, op, camX = ox, camY = oy) {
+  glowEach(camX, camY, front, (im, r, a) => {
+    g.globalCompositeOperation = op; g.globalAlpha = a;
+    g.drawImage(op === 'destination-out' ? glowMask(im) : im, r[0] - ox, r[1] - oy);   // (not rounded: the camera moves in fractions of a pixel, and the room with it)
+  });
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+}
+const glowMasks = new WeakMap();
+function glowMask(im) {                              // how bright each pixel of a light layer is, as its alpha: how much it opens the dark
+  let m = glowMasks.get(im);
+  if (m) return m;
+  m = document.createElement('canvas'); m.width = im.width; m.height = im.height;
+  const g = m.getContext('2d'); g.drawImage(im, 0, 0);
+  const d = g.getImageData(0, 0, m.width, m.height), p = d.data;
+  for (let i = 0; i < p.length; i += 4) { p[i + 3] = Math.round(Math.max(p[i], p[i + 1], p[i + 2]) * p[i + 3] / 255); p[i] = p[i + 1] = p[i + 2] = 0; }
+  g.putImageData(d, 0, 0); glowMasks.set(im, m); return m;
+}
 // things that glow are drawn after the room gets dark, so they shine through it
 function drawGlow(camX, camY) {
-  if (room.def.glow) {                               // a painted room's light layers (10/27/2026): added over the dark, each breathing slowly at its own pace
-    const now = performance.now() / 1000, pcs = room.def.art.pieces || {};
-    ctx.globalCompositeOperation = 'lighter';
-    for (const [n, pulse, speed, phase] of room.def.glow) {
-      const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
-      if (!im || r[0] - camX > VW || r[1] - camY > VH || r[0] + r[2] - camX < 0 || r[1] + r[3] - camY < 0) continue;
-      ctx.globalAlpha = 1 - pulse * (0.5 + 0.5 * Math.sin(now * speed + phase));
-      ctx.drawImage(im, Math.round(r[0] - camX), Math.round(r[1] - camY));
-    }
-    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-  }
+  drawGlowLayers(ctx, camX, camY, true, 'lighter');
   if (room.def.glowworms || room.def.drips || room.def.frontglow) drawUnderground(camX, camY);
   for (const m of motes) {
     if (m.k === 'spore') { const a = 0.35 + 0.35 * Math.sin(m.ph * 2.3); ctx.fillStyle = `rgba(${m.c},${a})`; ctx.fillRect(Math.round(m.x), Math.round(m.y), 1, 1); continue; }
@@ -706,6 +727,7 @@ function drawShade(px, py, camX, camY) {
   };
   hole(px - camX, py - 18 - camY, 110, 0.75);
   for (const [x, y, r, k] of sh.lights) hole(x - camX, y - camY, r, Math.min(1, k * (0.93 + 0.07 * Math.sin(now * 1.7 + x * 0.01))));
+  drawGlowLayers(g, camX, camY, false, 'destination-out');                   // the room's light behind him isn't darkened
   ctx.drawImage(shadeC, 0, 0);
 }
 
