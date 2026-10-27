@@ -29,8 +29,8 @@ SCENES.blackCrayon = () => [
 // gone in a second, so a friend couldn't find how to put pins on (playtest, 10/14/2026)
 let restNote = null;
 // little things he does sitting there when nothing's pressed (10/27/2026), made from the sitting pictures he has: a
-// doodle on his paper, a stretch and a rub of his eyes, and now and then nodding off for a short nap. The same waits
-// as standing (IDLE_WAIT in idle.js), never the same one twice in a row, anything pressed stops it. The ones that need
+// doodle on his paper, a stretch and a rub of his eyes, and now and then nodding off for a short nap. 7 seconds of
+// nothing before each (REST_WAIT; standing it's 20 and then 12), never the same one twice in a row, anything pressed stops it. The ones that need
 // new pictures (leaning back on his hands, kicking his feet, looking round, his map and book read sitting there) are
 // on the to do list
 const RS = (f, d, go) => ({ f, d, go });
@@ -56,22 +56,23 @@ const REST_BITS = {
   },
 };
 const REST_PICK = ['doodle', 'doodle', 'stretch', 'stretch', 'nap'];   // (the nap less often)
+const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after (10/27/2026)
 const restSit = () => {
-  let sub = null, st = 0, bit = null, still = 0, wait = IDLE_WAIT[0], last = null;
+  let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;
   const stopBit = () => { if (!bit) return; bit = null; P.paper = null; P.crayon = null; P.story = { kind: 'scene', frame: 'sit_3', t: 0 }; };
   return (t, dt) => {
     if (t === 0) {
-      talkIn.move = 0; sub = null; bit = null; still = 0; wait = IDLE_WAIT[0];
+      talkIn.move = 0; sub = null; bit = null; still = 0; wait = REST_WAIT[0];
       const bits = [canMap() ? '{map}: map' : '', ownedPins().length ? '{guard}: pins' : '', 'move to get up'].filter(Boolean);
       restNote = { text: bits.join('   '), l: 0, t: 0, r: room.pxW, b: room.pxH + 40, x: P.x, y: P.y - 70, a: 0, sit: true };
       room.hints.push(restNote);
     }
     if (restNote) restNote.show = !sub && !bit && t > 0.9;
     if (sub) { if (sub(st, dt)) { sub = null; talkIn.move = 0; still = 0; } else st += dt; return false; }
-    if (bit && (anyInput() || talkIn.move || mapWant || pinWant)) { stopBit(); still = 0; wait = IDLE_WAIT[0]; }
+    if (bit && (anyInput() || talkIn.move || mapWant || pinWant)) { stopBit(); still = 0; wait = REST_WAIT[0]; }
     if (bit) {                                                                    // one of the little things he does sitting there
       bit.st += dt;
-      while (bit && bit.st >= bit.steps[bit.i].d) { bit.st -= bit.steps[bit.i].d; bit.i++; if (bit.i >= bit.steps.length) { stopBit(); still = 0; wait = IDLE_WAIT[1]; } else if (bit.steps[bit.i].go) bit.steps[bit.i].go(); }
+      while (bit && bit.st >= bit.steps[bit.i].d) { bit.st -= bit.steps[bit.i].d; bit.i++; if (bit.i >= bit.steps.length) { stopBit(); still = 0; wait = REST_WAIT[1]; } else if (bit.steps[bit.i].go) bit.steps[bit.i].go(); }
       if (bit) P.story = { kind: 'scene', frame: bit.steps[bit.i].f, t };
       return false;
     }
