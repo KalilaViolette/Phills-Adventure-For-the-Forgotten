@@ -43,7 +43,7 @@ ROOM({
    "piece_plant_toe_fern": [
     0,
     2036,
-    25,
+    24,
     15
    ],
    "piece_plant_root_fern": [
@@ -255,19 +255,19 @@ ROOM({
   "pieces": {
    "plant_toe_fern": [
     289,
-    269,
-    25,
+    273,
+    24,
     15
    ],
    "plant_root_fern": [
     598,
-    206,
+    208,
     25,
     15
    ],
    "plant_cave_tuft": [
     708,
-    345,
+    347,
     23,
     18
    ],
@@ -291,7 +291,7 @@ ROOM({
    ],
    "plant_toe_earth_tuft": [
     224,
-    312,
+    316,
     23,
     18
    ],
@@ -339,7 +339,7 @@ ROOM({
    ],
    "plant_touch_toe_fiddlehead": [
     331,
-    250,
+    252,
     20,
     14
    ],
@@ -351,19 +351,19 @@ ROOM({
    ],
    "plant_touch_root_dip": [
     474,
-    236,
+    238,
     26,
     14
    ],
    "plant_touch_root_high": [
     694,
-    183,
+    184,
     24,
     14
    ],
    "plant_touch_root_right": [
     860,
-    152,
+    153,
     20,
     14
    ],
@@ -2441,7 +2441,7 @@ ROOM({
    "plant_toe_fern",
    -1,
    301,
-   283,
+   287,
    1.0,
    0.8,
    3.0,
@@ -2451,7 +2451,7 @@ ROOM({
    "plant_root_fern",
    -1,
    610,
-   220,
+   222,
    1.0,
    1.1,
    4.0,
@@ -2461,7 +2461,7 @@ ROOM({
    "plant_cave_tuft",
    -1,
    719,
-   362,
+   364,
    1.0,
    0.7,
    3.0,
@@ -2501,7 +2501,7 @@ ROOM({
    "plant_toe_earth_tuft",
    -1,
    235,
-   329,
+   333,
    1.0,
    0.7,
    4.0,
@@ -2581,7 +2581,7 @@ ROOM({
    "plant_touch_toe_fiddlehead",
    -1,
    341,
-   263,
+   265,
    1.0,
    0.67,
    4.0,
@@ -2601,7 +2601,7 @@ ROOM({
    "plant_touch_root_dip",
    -1,
    487,
-   249,
+   251,
    1.0,
    0.91,
    5.0,
@@ -2611,7 +2611,7 @@ ROOM({
    "plant_touch_root_high",
    -1,
    706,
-   196,
+   197,
    1.0,
    1.03,
    4.0,
@@ -2621,7 +2621,7 @@ ROOM({
    "plant_touch_root_right",
    -1,
    870,
-   165,
+   166,
    1.0,
    0.55,
    3.0,
