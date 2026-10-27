@@ -34,65 +34,125 @@ ROOM({
     1130,
     461
    ],
-   "piece_plant_toe_fern": [
+   "front": [
     0,
     1809,
+    797,
+    229
+   ],
+   "piece_plant_toe_fern": [
+    0,
+    2038,
     25,
     15
    ],
    "piece_plant_root_fern": [
     0,
-    1824,
+    2053,
     25,
     15
    ],
    "piece_plant_cave_tuft": [
     0,
-    1839,
+    2068,
     23,
     18
    ],
    "piece_plant_root_hair": [
     0,
-    1857,
+    2086,
     13,
     44
    ],
+   "piece_plant_clearing_edge_fern": [
+    0,
+    2130,
+    25,
+    15
+   ],
+   "piece_plant_low_bank_fern": [
+    0,
+    2145,
+    25,
+    15
+   ],
+   "piece_plant_toe_earth_tuft": [
+    0,
+    2160,
+    23,
+    18
+   ],
+   "piece_plant_cave_bank_tuft": [
+    0,
+    2178,
+    23,
+    18
+   ],
+   "piece_plant_root_back_fern": [
+    0,
+    2196,
+    25,
+    15
+   ],
+   "piece_plant_upper_root_tuft": [
+    0,
+    2211,
+    23,
+    18
+   ],
+   "piece_plant_cave_hanging_vine": [
+    0,
+    2229,
+    13,
+    44
+   ],
+   "piece_plant_ceiling_vine_left": [
+    0,
+    2273,
+    13,
+    44
+   ],
+   "piece_plant_ceiling_root_hairs": [
+    0,
+    2317,
+    24,
+    64
+   ],
    "piece_glow_0": [
     0,
-    1901,
+    2381,
     198,
     152
    ],
    "piece_glow_1": [
     0,
-    2053,
+    2533,
     65,
     57
    ],
    "piece_glow_2": [
     0,
-    2110,
+    2590,
     62,
     197
    ],
    "piece_glow_3": [
     0,
-    2307,
+    2787,
     132,
     74
    ],
    "piece_glow_4": [
     0,
-    2381,
+    2861,
     88,
     44
    ],
    "piece_glow_5": [
     0,
-    2425,
-    214,
-    30
+    2905,
+    425,
+    23
    ]
   },
   "layers": [
@@ -108,6 +168,11 @@ ROOM({
     "src": "art/rootwood/painted/roots.png#L2",
     "f": 1.1
    }
+  ],
+  "front": "art/rootwood/painted/roots.png#front",
+  "frontAt": [
+   180,
+   142
   ],
   "pieces": {
    "plant_toe_fern": [
@@ -133,6 +198,60 @@ ROOM({
     110,
     13,
     44
+   ],
+   "plant_clearing_edge_fern": [
+    52,
+    338,
+    25,
+    15
+   ],
+   "plant_low_bank_fern": [
+    373,
+    357,
+    25,
+    15
+   ],
+   "plant_toe_earth_tuft": [
+    256,
+    344,
+    23,
+    18
+   ],
+   "plant_cave_bank_tuft": [
+    759,
+    335,
+    23,
+    18
+   ],
+   "plant_root_back_fern": [
+    800,
+    161,
+    25,
+    15
+   ],
+   "plant_upper_root_tuft": [
+    904,
+    140,
+    23,
+    18
+   ],
+   "plant_cave_hanging_vine": [
+    721,
+    296,
+    13,
+    44
+   ],
+   "plant_ceiling_vine_left": [
+    415,
+    105,
+    13,
+    44
+   ],
+   "plant_ceiling_root_hairs": [
+    703,
+    84,
+    24,
+    64
    ],
    "glow_0": [
     563,
@@ -165,10 +284,10 @@ ROOM({
     44
    ],
    "glow_5": [
-    539,
-    259,
-    214,
-    30
+    335,
+    346,
+    425,
+    23
    ]
   },
   "uses": [
@@ -308,16 +427,22 @@ ROOM({
     0.7
    ],
    [
-    543,
-    285,
+    339,
+    365,
     30,
     0.45
    ],
    [
-    747,
-    263,
+    754,
+    350,
     32,
     0.45
+   ],
+   [
+    645,
+    366,
+    80,
+    0.8
    ]
   ]
  },
@@ -2177,6 +2302,96 @@ ROOM({
    0.6,
    0.0,
    5.1
+  ],
+  [
+   "plant_clearing_edge_fern",
+   -1,
+   64,
+   352,
+   1.0,
+   0.7,
+   3.0,
+   0.52
+  ],
+  [
+   "plant_low_bank_fern",
+   1,
+   385,
+   371,
+   1.0,
+   0.7,
+   3.0,
+   2.22
+  ],
+  [
+   "plant_toe_earth_tuft",
+   1,
+   267,
+   361,
+   1.0,
+   0.7,
+   3.0,
+   3.92
+  ],
+  [
+   "plant_cave_bank_tuft",
+   1,
+   770,
+   352,
+   1.0,
+   0.7,
+   3.0,
+   5.62
+  ],
+  [
+   "plant_root_back_fern",
+   1,
+   812,
+   175,
+   1.0,
+   0.7,
+   3.0,
+   1.04
+  ],
+  [
+   "plant_upper_root_tuft",
+   1,
+   915,
+   157,
+   1.0,
+   0.7,
+   3.0,
+   2.74
+  ],
+  [
+   "plant_cave_hanging_vine",
+   1,
+   727,
+   296,
+   1.0,
+   0.55,
+   0.0,
+   4.44
+  ],
+  [
+   "plant_ceiling_vine_left",
+   1,
+   421,
+   105,
+   1.0,
+   0.45,
+   0.0,
+   6.14
+  ],
+  [
+   "plant_ceiling_root_hairs",
+   1,
+   715,
+   84,
+   1.0,
+   0.4,
+   0.0,
+   1.56
   ]
  ],
  "rampsUp": [
@@ -2228,20 +2443,20 @@ ROOM({
  ],
  "glowworms": [
   [
-   543,
-   285
+   339,
+   365
   ],
   [
-   550,
-   288
+   345,
+   364
   ],
   [
-   747,
-   263
+   754,
+   350
   ],
   [
-   753,
-   268
+   759,
+   352
   ]
  ],
  "grip": [
