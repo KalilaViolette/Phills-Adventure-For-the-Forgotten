@@ -29,10 +29,9 @@ SCENES.blackCrayon = () => [
 // gone in a second, so a friend couldn't find how to put pins on (playtest, 10/14/2026)
 let restNote = null;
 // little things he does sitting there when nothing's pressed (10/27/2026), made from the sitting pictures he has: a
-// doodle on his paper, a stretch and a rub of his eyes, and now and then nodding off for a short nap. 7 seconds of
+// doodle on his paper, a stretch and a rub of his eyes, his map or his book, and now and then nodding off for a short nap. 7 seconds of
 // nothing before each (REST_WAIT; standing it's 20 and then 12), never the same one twice in a row, anything pressed stops it. The ones that need
-// new pictures (leaning back on his hands, kicking his feet, looking round, his map and book read sitting there) are
-// on the to do list
+// new pictures (leaning back on his hands, kicking his feet, looking round) are on the to do list
 const RS = (f, d, go) => ({ f, d, go });
 const REST_BITS = {
   doodle: () => {
@@ -55,7 +54,43 @@ const REST_BITS = {
     return s;
   },
 };
-const REST_PICK = ['doodle', 'doodle', 'stretch', 'stretch', 'nap'];   // (the nap less often)
+// his map and his picture book, read sitting there (10/27/2026): the same as the standing ones, but from the sitting
+// pictures with his sword and shield laid down beside him (rs_), and the map goes flat on the floor in front of him
+// and he traces round it facing us instead of turning side on
+const huh = () => popup(P.x + 6, P.y - 52, '?', '#ffffff');
+const restTurnOver = (s, kind) => s.push(RS(`rs_${kind}_turn_1`, 0.14, () => sfx.rustle(0.3)), RS(`rs_${kind}_turn_2`, 0.14), RS(`rs_${kind}_up_1`, 0.9), RS(`rs_${kind}_up_2`, 1.3, huh),
+  RS(`rs_${kind}_up_1`, 0.35), RS(`rs_${kind}_turn_2`, 0.14, () => sfx.rustle(0.3)), RS(`rs_${kind}_turn_1`, 0.14), RS(`rs_${kind}_1`, 0.5));
+const restHold = (s, kind, d) => { for (let t = 0, k = 0; t < d; t += 0.6, k++) s.push(RS(`rs_${kind}_${k % 2 ? 2 : 1}`, 0.6)); };
+const restGetOut = kind => [RS('rs_sit', 0.25), RS('rs_reach', 0.3, () => sfx.rustle(0.4)), RS('rs_pull_' + kind, 0.25)];
+const restPutAway = () => [RS('rs_reach', 0.3, () => sfx.rustle(0.3)), RS('rs_sit', 0.3), RS('sit_3', 0.3)];
+REST_BITS.map = () => {
+  const s = restGetOut('map');
+  restHold(s, 'map', 2.2);
+  s.push(RS('rs_map_puzzled', 1.3, huh), RS('rs_map_1', 0.35));
+  restTurnOver(s, 'map');
+  s.push(RS('rs_map_lay', 0.45, () => sfx.rustle(0.4)), RS('rs_map_lay', 0.25));
+  const trace = n => { for (let k = 0; k < n; k++) for (let i = 1; i <= 4; i++) s.push(RS('rs_mtrace_' + i, rndIn(0.2, 0.28), i === 1 && k % 2 === 0 ? () => sfx.rustle(0.15) : null)); };
+  trace(4);
+  s.push(RS('rs_map_lay', 0.4), RS('rs_mthink', 1.6, huh), RS('rs_map_lay', 0.35));
+  trace(5);
+  s.push(RS('rs_map_lay', 0.35), RS('rs_mnod_1', 0.18), RS('rs_mnod_2', 0.22), RS('rs_mnod_1', 0.18), RS('rs_mnod_2', 0.5),
+    RS('rs_map_lay', 0.35, () => sfx.rustle(0.4)), RS('rs_map_1', 0.3), ...restPutAway());
+  return s;
+};
+REST_BITS.book = () => {
+  const s = restGetOut('book');
+  restHold(s, 'book', 1.8);
+  s.push(RS('rs_book_puzzled', 1.2, huh), RS('rs_book_1', 0.35));
+  restTurnOver(s, 'book');
+  s.push(RS('rs_lap_closed', 0.4, () => sfx.bump()), RS('rs_lap_1', 0.5, () => sfx.rustle(0.3)));
+  const look = d => { for (let t = 0, k = 0; t < d; t += 0.7, k++) s.push(RS(k % 2 ? 'rs_lap_2' : 'rs_lap_1', 0.7)); };
+  const flip = () => s.push(RS('rs_flip_1', 0.13), RS('rs_flip_2', 0.13, () => sfx.rustle(0.25)), RS('rs_flip_3', 0.13), RS('rs_lap_1', 0.2));
+  const happy = () => { for (let k = 0; k < 4; k++) s.push(RS(k % 2 ? 'rs_happy_2' : 'rs_happy_1', 0.18, k === 0 ? () => sfx.pickup() : null)); s.push(RS('rs_lap_1', 0.3)); };
+  look(1.4); flip(); look(1.6); flip(); look(1.0); happy(); look(1.2); flip(); look(1.4); flip(); look(0.8); happy(); look(1.0);
+  s.push(RS('rs_lap_closed', 0.5, () => sfx.bump()), ...restPutAway());
+  return s;
+};
+const restPick = () => ['doodle', 'doodle', 'stretch', 'stretch', 'nap', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
 const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after (10/27/2026)
 const restSit = () => {
   let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;
@@ -77,7 +112,7 @@ const restSit = () => {
       return false;
     }
     if (t > 0.3 && !anyInput() && !talkIn.move && (still += dt) >= wait) {
-      const names = REST_PICK.filter(n => n !== last);
+      const names = restPick().filter(n => n !== last);
       last = names[Math.floor(Math.random() * names.length)];
       bit = { steps: REST_BITS[last](), i: 0, st: 0 };
       if (bit.steps[0].go) bit.steps[0].go();
