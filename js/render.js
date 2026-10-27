@@ -662,6 +662,17 @@ function drawUnderground(camX, camY) {
 }
 // things that glow are drawn after the room gets dark, so they shine through it
 function drawGlow(camX, camY) {
+  if (room.def.glow) {                               // a painted room's light layers (10/27/2026): added over the dark, each breathing slowly at its own pace
+    const now = performance.now() / 1000, pcs = room.def.art.pieces || {};
+    ctx.globalCompositeOperation = 'lighter';
+    for (const [n, pulse, speed, phase] of room.def.glow) {
+      const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
+      if (!im || r[0] - camX > VW || r[1] - camY > VH || r[0] + r[2] - camX < 0 || r[1] + r[3] - camY < 0) continue;
+      ctx.globalAlpha = 1 - pulse * (0.5 + 0.5 * Math.sin(now * speed + phase));
+      ctx.drawImage(im, Math.round(r[0] - camX), Math.round(r[1] - camY));
+    }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  }
   if (room.def.glowworms || room.def.drips || room.def.frontglow) drawUnderground(camX, camY);
   for (const m of motes) {
     if (m.k === 'spore') { const a = 0.35 + 0.35 * Math.sin(m.ph * 2.3); ctx.fillStyle = `rgba(${m.c},${a})`; ctx.fillRect(Math.round(m.x), Math.round(m.y), 1, 1); continue; }
