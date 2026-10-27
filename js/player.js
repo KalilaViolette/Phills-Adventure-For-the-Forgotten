@@ -829,9 +829,35 @@ const GRAB_REACH = 14, GRAB_ABOVE = 9, GRAB_BELOW = 13;   // how far from a ledg
 function tryGrab(dir) {
   if (P.ground || P.vy < -30 || P.atk || P.hurtT > 0 || P.roll > 0 || P.dash > 0 || P.regrabT > 0 || !dir || dir !== P.facing || inp.down || inp.guardH) return false;
   const edge = dir > 0 ? P.x + HW : P.x - HW;
+  if (room.detail && pixelGrab(dir, edge)) return true;
   const cols = [...new Set([1, 7, GRAB_REACH].map(d => Math.floor((edge + dir * d) / T)))];
   for (const col of cols) if (grabAt(dir, col, edge)) return true;
   return rampGrab(dir, edge);
+}
+// a ledge in a room with pixel ground, found where the painted edge really is (10/27/2026): the tiles' edges almost
+// never line up with a painted root's broken end, so the tile grab refused real ledges there. A ledge is a top with
+// wood or earth under it (a face, not a thin piece), still about that high 12 px in, open air on his side of it
+function pixelGrab(dir, edge) {
+  const handY = P.y - HANG_FEET;
+  for (let d = -1; d <= GRAB_REACH; d++) {
+    const cx = Math.round(edge + dir * d), sx = dir > 0 ? cx : cx - 1, ox = dir > 0 ? cx - 1 : cx;
+    if (!solidPx(sx, handY + GRAB_BELOW + 8) && !solidPx(sx, handY)) { if (!solidPx(sx, handY - GRAB_ABOVE)) continue; }
+    for (let cy = Math.round(handY - GRAB_ABOVE); cy <= Math.round(handY + GRAB_BELOW); cy++) {
+      if (!solidPx(sx, cy) || solidPx(sx, cy - 1) || solidPx(ox, cy) || solidPx(ox, cy - 1)) continue;   // a top at cy, with the edge right there
+      if (!solidPx(sx, cy + 6)) continue;                                                             // a face under it
+      let deep = null; for (let yy = cy - 4; yy <= cy + 6; yy++) if (solidPx(sx + dir * 12, yy)) { deep = yy; break; }
+      if (deep === null) continue;                                                                    // and it carries on in
+      const l = dir > 0 ? cx - 2 * HW : cx, r = dir > 0 ? cx : cx + 2 * HW;
+      if (boxSolid(l, cy - 12, r, cy + HANG_FEET + 6)) continue;                                      // room to hang there, and not a floor right under his feet (then it's a step, not a ledge)
+      if (can('velcro') && room.grip && room.grip.size && gripAt(Math.floor(sx / T), Math.floor((cy + 8) / T))) continue;   // bark under it: that's the velcro's, he clings instead
+      const tx = cx - dir * HW, ty = cy + HANG_FEET, pl = Math.min(P.x, tx) - HW, pr = Math.max(P.x, tx) + HW;
+      if (boxSolid(pl, Math.min(P.y, ty) - STAND_H + 6, pr, Math.max(P.y, ty) - 2)) continue;          // and the way to it
+      P.vx = P.vy = 0; P.facing = dir; P.atk = null;
+      startHang(dir, cx, cy);
+      return true;
+    }
+  }
+  return false;
 }
 // the end of a one-way slope is a ledge too (10/15/2026): the squirrel's root's curl, the tip of the grime pool's
 // root. Facing right he can catch a slope's left end, facing left its right end, the same reach and room as a tile ledge
