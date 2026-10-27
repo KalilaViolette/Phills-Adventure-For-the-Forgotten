@@ -28,17 +28,62 @@ SCENES.blackCrayon = () => [
 // A note stays up over him the whole time he's sitting saying what each button does. It used to be a popup that was
 // gone in a second, so a friend couldn't find how to put pins on (playtest, 10/14/2026)
 let restNote = null;
+// little things he does sitting there when nothing's pressed (10/27/2026), made from the sitting pictures he has: a
+// doodle on his paper, a stretch and a rub of his eyes, and now and then nodding off for a short nap. The same waits
+// as standing (IDLE_WAIT in idle.js), never the same one twice in a row, anything pressed stops it. The ones that need
+// new pictures (leaning back on his hands, kicking his feet, looking round, his map and book read sitting there) are
+// on the to do list
+const RS = (f, d, go) => ({ f, d, go });
+const REST_BITS = {
+  doodle: () => {
+    const cols = ['#e2604a', ...Object.keys(IDLE_CRAYONS).filter(k => world.has[k]).map(k => IDLE_CRAYONS[k])], col = cols[Math.floor(Math.random() * cols.length)];
+    const s = [RS('paper_1', 0.28), RS('paper_1b', 0.2, () => sfx.pickup()), RS('paper_2', 0.35), RS('paper_3', 0.55), RS('paper_4', 0.12, () => { P.paper = { marks: {} }; }),
+      RS('paper_4', 0.3), RS('paper_1', 0.25, () => { P.crayon = col; })];
+    const n = Math.round(rndIn(40, 64));
+    for (let i = 0; i < n; i++) { s.push(RS('draw_' + ((i % 8) + 1), 0.125)); if (i === 24) s.push(RS('sit_look', 1.2)); }
+    s.push(RS('sit_look', 1.0), RS('sit_3', 0.5), RS('paper_1', 0.2, () => { P.crayon = null; }), RS('paper_4', 0.25), RS('paper_3', 0.3, () => { P.paper = null; }),
+      RS('paper_2', 0.25), RS('paper_1b', 0.15), RS('paper_1', 0.18), RS('sit_3', 0.3));
+    return s;
+  },
+  stretch: () => [RS('stretch', 0.7, () => sfx.yawn()), RS('stretch_down', 0.25), RS('sit_3', 0.3), RS('rub_1', 0.1), RS('rub_2', 0.1), RS('rub_1', 0.1), RS('rub_2', 0.1), RS('rub_1', 0.1), RS('rub_2', 0.1), RS('sit_3', 0.5)],
+  nap: () => {
+    const s = [RS('stretch', 0.6, () => sfx.yawn()), RS('stretch_down', 0.2), RS('sit_3', 0.5), RS('wake_up', 0.25), RS('wake_lift', 0.2), RS('lie_bleary', 0.4), RS('lie_bleary_2', 0.4),
+      RS('lie_open', 0.3), RS('lie_bleary', 0.3), RS('lie_bleary_2', 0.3)];
+    for (let k = 0; k < 10; k++) s.push(RS(k % 2 ? 'lie_1' : 'lie_2', 1.3, () => { sfx.snore(k % 2 === 1); if (k % 2) popup(P.x - 17, P.y - 24, 'z', '#cfe0ff'); }));
+    s.push(RS('lie_open', 0.15), RS('lie_1', 0.1), RS('lie_open', 0.2), RS('lie_bleary', 0.3), RS('wake_lift', 0.2), RS('wake_up', 0.3), RS('sit_3', 0.2),
+      RS('stretch', 0.6), RS('stretch_down', 0.2), RS('rub_1', 0.1), RS('rub_2', 0.1), RS('rub_1', 0.1), RS('rub_2', 0.1), RS('sit_3', 0.4));
+    return s;
+  },
+};
+const REST_PICK = ['doodle', 'doodle', 'stretch', 'stretch', 'nap'];   // (the nap less often)
 const restSit = () => {
-  let sub = null, st = 0;
+  let sub = null, st = 0, bit = null, still = 0, wait = IDLE_WAIT[0], last = null;
+  const stopBit = () => { if (!bit) return; bit = null; P.paper = null; P.crayon = null; P.story = { kind: 'scene', frame: 'sit_3', t: 0 }; };
   return (t, dt) => {
     if (t === 0) {
-      talkIn.move = 0; sub = null;
+      talkIn.move = 0; sub = null; bit = null; still = 0; wait = IDLE_WAIT[0];
       const bits = [canMap() ? '{map}: map' : '', ownedPins().length ? '{guard}: pins' : '', 'move to get up'].filter(Boolean);
       restNote = { text: bits.join('   '), l: 0, t: 0, r: room.pxW, b: room.pxH + 40, x: P.x, y: P.y - 70, a: 0, sit: true };
       room.hints.push(restNote);
     }
-    if (restNote) restNote.show = !sub && t > 0.9;
-    if (sub) { if (sub(st, dt)) { sub = null; talkIn.move = 0; } else st += dt; return false; }
+    if (restNote) restNote.show = !sub && !bit && t > 0.9;
+    if (sub) { if (sub(st, dt)) { sub = null; talkIn.move = 0; still = 0; } else st += dt; return false; }
+    if (bit && (anyInput() || talkIn.move || mapWant || pinWant)) { stopBit(); still = 0; wait = IDLE_WAIT[0]; }
+    if (bit) {                                                                    // one of the little things he does sitting there
+      bit.st += dt;
+      while (bit && bit.st >= bit.steps[bit.i].d) { bit.st -= bit.steps[bit.i].d; bit.i++; if (bit.i >= bit.steps.length) { stopBit(); still = 0; wait = IDLE_WAIT[1]; } else if (bit.steps[bit.i].go) bit.steps[bit.i].go(); }
+      if (bit) P.story = { kind: 'scene', frame: bit.steps[bit.i].f, t };
+      return false;
+    }
+    if (t > 0.3 && !anyInput() && !talkIn.move && (still += dt) >= wait) {
+      const names = REST_PICK.filter(n => n !== last);
+      last = names[Math.floor(Math.random() * names.length)];
+      bit = { steps: REST_BITS[last](), i: 0, st: 0 };
+      if (bit.steps[0].go) bit.steps[0].go();
+      P.story = { kind: 'scene', frame: bit.steps[0].f, t };
+      return false;
+    }
+    if (anyInput()) still = 0;
     if (mapWant && canMap()) { sub = seq(mapFromSitting()); st = 0; return false; }
     if (pinWant && ownedPins().length) { sub = seq(pinsFromSitting()); st = 0; return false; }
     const up = t > 0.3 && talkIn.move;
