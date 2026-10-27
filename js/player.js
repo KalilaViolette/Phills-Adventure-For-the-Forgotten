@@ -119,6 +119,18 @@ function nubAt(x, y) {
   return -s;
 }
 const onRamp = () => P.dropT <= 0 && rampY(P.x, P.y, 0.6, 0.6) !== null;   // standing on a one-way slope
+// walking with down held: he keeps to the lower way where the ground forks (10/27/2026)
+const keepLow = () => inp.down && !P.crawl && !P.swim && !P.atk && P.roll <= 0 && P.dash <= 0 && (inp.left || inp.right) && !(inp.left && inp.right);
+// ground (solid or another slope) 2 to 14 px under where he stands on a one-way slope, with room for him there: the lower way at a fork
+function lowerWay() {
+  for (let k = 2; k <= 14; k++) {
+    const y = P.y + k;
+    if (bodyHit(P.x, y - P.h, y)) return false;
+    if (boxSolid(P.x - HW, y, P.x + HW, y + 1)) return true;
+    for (const rp of room.ramps) { const xi = Math.round(P.x); if (xi >= rp.x0 && xi <= rp.x1 && Math.abs(rp.ys[xi - rp.x0] - y) < 0.6) return true; }
+  }
+  return false;
+}
 function onShelf() {   // standing right on top of a shelf
   if (onRamp() && !boxSolid(restL(P.x), P.y, restR(P.x), P.y + 1)) return true;
   if (P.y % T > 0.01) return false;
@@ -152,7 +164,7 @@ function moveX(dx) {
     const d = Math.min(1, left) * s; left -= Math.abs(d);
     const nx = P.x + d;
     if (P.ground && P.dropT <= 0 && room.ramps.length) {                     // along a one-way slope, or stepping up onto one
-      const on = onRamp(), sy = rampY(nx, P.y, on ? 4 : 0.5, STEP_UP);
+      const on = onRamp(), sy = on || !keepLow() ? rampY(nx, P.y, on ? 4 : 0.5, STEP_UP) : null;   // (down held: walking on past where one starts, 10/27/2026)
       if (sy !== null) {
         if (!bodyHit(nx, sy - P.h, sy)) { P.x = nx; P.y = sy; continue; }
         // the slope runs up under something too low to stand: he gets down and crawls on up it (10/15/2026),
@@ -656,6 +668,9 @@ function update(dt) {
         P.crawl = true; P.h = ROLL_H; P.crawlDist = 0; P.vx *= 0.4; puff(P.x, P.y, 3, 20); sfx.land();
       }
     }
+    // a fork (10/27/2026): with down held walking on, he takes the lower way. On a one-way slope with ground just under
+    // it (where it branches off the floor or another slope), he steps down off it onto that
+    if (keepLow() && P.ground && P.dropT <= 0 && P.jumpBufT <= 0 && onRamp() && lowerWay()) { P.dropT = 0.12; P.y += 1; P.ground = false; P.coyoteT = 0; }
     if (P.jumpBufT > 0 && (P.ground || P.coyoteT > 0) && !P.crawl) {
       if (inp.down && P.ground && onShelf()) { P.dropT = 0.22; P.y += 1; P.ground = false; P.jumpBufT = 0; P.coyoteT = 0; }
       else doJump();
