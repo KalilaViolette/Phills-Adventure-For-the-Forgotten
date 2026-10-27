@@ -740,15 +740,24 @@ function hiddenByCover(x, y) {
   }
   return false;
 }
+// a painted room's own picture for a wall that breaks or a gate (10/27/2026): the room file names it under skins by
+// the flag that opens it, and it's drawn where it was painted till then, in place of the game's own drawing
+function drawSkin(key, jx) {
+  const n = room.def.skins && room.def.skins[key], r = n && room.def.art.pieces && room.def.art.pieces[n];
+  const im = r && Assets.get(room.def.art.pack + '#piece_' + n);
+  if (!im) return false;
+  ctx.drawImage(im, r[0] + jx, r[1]); return true;
+}
 function drawBreaks() {
   for (const b of room.breaks) {
     if (b.broken) continue;
     const jx = b.shake > 0 ? Math.round((Math.random() * 2 - 1) * 2) : 0;
     if (b.cover) { drawCrack(b, jx); continue; }
+    if (drawSkin(b.flag || b.id, jx)) continue;
     if (b.look === 'foam' || b.look === 'mud' || b.look === 'balloons' || b.look === 'sand' || b.look === 'web' || b.look === 'leaves' || b.look === 'bramble' || b.look === 'rot' || b.look === 'hardroot' || b.look === 'latch' || b.look === 'crust') { drawSoftWall(b, jx); continue; }
     spr('break_' + (b.look || 'roots'), b.x0 * T + jx, (b.y1 + 1) * T, false);
   }
-  for (const gt of room.gates) if (!gt.open && gt.flag && gt.look !== 'none') { if (gt.look && typeof drawGateLook === 'function') drawGateLook(gt); else spr('break_curtain', gt.x0 * T, (gt.y1 + 1) * T, false); }
+  for (const gt of room.gates) if (!gt.open && gt.flag && gt.look !== 'none') { if (drawSkin(gt.flag, 0)) continue; if (gt.look && typeof drawGateLook === 'function') drawGateLook(gt); else spr('break_curtain', gt.x0 * T, (gt.y1 + 1) * T, false); }
 }
 function drawPiles() {
   for (const p of world.piles) {

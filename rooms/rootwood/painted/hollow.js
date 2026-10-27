@@ -27,6 +27,24 @@ ROOM({
     1156,
     840,
     580
+   ],
+   "piece_skin_curtain": [
+    0,
+    1736,
+    32,
+    64
+   ],
+   "piece_skin_web": [
+    0,
+    1800,
+    64,
+    32
+   ],
+   "piece_skin_foam": [
+    0,
+    1832,
+    64,
+    32
    ]
   },
   "layers": [
@@ -39,6 +57,26 @@ ROOM({
     "f": 0.82
    }
   ],
+  "pieces": {
+   "skin_curtain": [
+    672,
+    432,
+    32,
+    64
+   ],
+   "skin_web": [
+    448,
+    64,
+    64,
+    32
+   ],
+   "skin_foam": [
+    448,
+    0,
+    64,
+    32
+   ]
+  },
   "uses": [
    "art/rootwood/rootwood_sprites.png",
    "art/rootwood/rootwood_items.png",
@@ -2456,6 +2494,11 @@ ROOM({
    ]
   }
  ],
+ "skins": {
+  "curtainOpen": "skin_curtain",
+  "hollow_web": "skin_web",
+  "hollow_foam": "skin_foam"
+ },
  "foes": [],
  "detail": {
   "tiles": [
