@@ -69,10 +69,10 @@ REST_BITS.map = () => {
   s.push(RS('rs_map_puzzled', 1.3, HUH), RS('rs_map_1', 0.35));
   restTurnOver(s, 'map');
   s.push(RS('rs_map_lay', 0.45, () => sfx.rustle(0.4)), RS('rs_map_lay', 0.25));
-  const trace = n => { for (let k = 0; k < n; k++) for (let i = 1; i <= 4; i++) s.push(RS('rs_mtrace_' + i, rndIn(0.2, 0.28), i === 1 && k % 2 === 0 ? () => sfx.rustle(0.15) : null)); };
-  trace(4);
+  const trace = n => { for (let k = 0; k < n; k++) for (let i = 1; i <= 8; i++) s.push(RS('rs_mtrace_' + i, 0.15, i === 1 && k % 2 === 0 ? () => sfx.rustle(0.15) : null)); };   // (small circles, 10/27/2026)
+  trace(3);
   s.push(RS('rs_map_lay', 0.4), RS('rs_mthink', 1.6, HUH), RS('rs_map_lay', 0.35));
-  trace(5);
+  trace(4);
   s.push(RS('rs_map_lay', 0.35), RS('rs_mnod_1', 0.18), RS('rs_mnod_2', 0.22), RS('rs_mnod_1', 0.18), RS('rs_mnod_2', 0.5),
     RS('rs_map_lay', 0.35, () => sfx.rustle(0.4)), RS('rs_map_1', 0.3), ...restPutAway());
   return s;
