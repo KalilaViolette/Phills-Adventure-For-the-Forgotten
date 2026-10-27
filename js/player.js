@@ -856,6 +856,13 @@ function update(dt) {
   stepWorld(dt);
 }
 
+// a room can say a spot isn't a ledge, when it looks like one to the grab but isn't one in the picture (10/27/2026: under
+// the oak, the big root's face where the root toe joins it, which is inside the toe's walk-through body). noGrab: boxes
+// [x0, y0, x1, y1] the corner he'd hang from can't be in
+function noGrab(cx, cy) {
+  for (const b of room.def.noGrab || []) if (cx >= b[0] && cx <= b[2] && cy >= b[1] && cy <= b[3]) return true;
+  return false;
+}
 // ledge grab: falling, holding toward a ledge that's right at his hand. His whole hanging body has to fit
 // above whatever's below, so a short drop doesn't count.
 const GRAB_REACH = 14, GRAB_ABOVE = 9, GRAB_BELOW = 13;   // how far from a ledge he can still snap onto it   // how forgiving the grab is (px)
@@ -883,6 +890,7 @@ function pixelGrab(dir, edge) {
       const l = dir > 0 ? cx - 2 * HW : cx, r = dir > 0 ? cx : cx + 2 * HW;
       if (boxSolid(l, cy - 12, r, cy + HANG_FEET + 6)) continue;                                      // room to hang there, and not a floor right under his feet (then it's a step, not a ledge)
       if (can('velcro') && room.grip && room.grip.size && gripAt(Math.floor(sx / T), Math.floor((cy + 8) / T))) continue;   // bark under it: that's the velcro's, he clings instead
+      if (noGrab(cx, cy)) continue;
       const tx = cx - dir * HW, ty = cy + HANG_FEET, pl = Math.min(P.x, tx) - HW, pr = Math.max(P.x, tx) + HW;
       if (boxSolid(pl, Math.min(P.y, ty) - STAND_H + 6, pr, Math.max(P.y, ty) - 2)) continue;          // and the way to it
       P.vx = P.vy = 0; P.facing = dir; P.atk = null;
@@ -903,6 +911,7 @@ function rampGrab(dir, edge) {
     if (cy < handY - GRAB_ABOVE || cy > handY + GRAB_BELOW) continue;
     const l = dir > 0 ? cx - 2 * HW : cx, r = dir > 0 ? cx : cx + 2 * HW;
     if (boxSolid(l, cy - 12, r, cy + HANG_FEET - 12) || boxHas(l, cy + 1, r, cy + HANG_FEET + 6, 2)) continue;   // room to hang there
+    if (noGrab(cx, cy)) continue;
     const tx = cx - dir * HW, ty = cy + HANG_FEET, pl = Math.min(P.x, tx) - HW, pr = Math.max(P.x, tx) + HW;
     if (boxSolid(pl, Math.min(P.y, ty) - STAND_H + 6, pr, Math.max(P.y, ty) - 2)) continue;
     P.vx = P.vy = 0; P.facing = dir; P.atk = null;
@@ -930,6 +939,7 @@ function grabAt(dir, col, edge) {
     const t = tile(col, row), above = tile(col, row - 1);
     if ((t !== 1 && t !== 2) || above === 1 || above === 2) continue;
     if (t === 1 && !realLedge(dir, cx, cy)) continue;
+    if (noGrab(cx, cy)) continue;
     const l = dir > 0 ? cx - 2 * HW : cx, r = dir > 0 ? cx : cx + 2 * HW;
     // his hands and body need clear ground (to the pixel), but whether the drop's too short to bother is judged by
     // the tiles like always, so a lump of packed dirt at the bottom of the wall doesn't stop the grab (10/15/2026)
