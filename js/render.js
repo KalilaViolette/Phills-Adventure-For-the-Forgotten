@@ -687,9 +687,12 @@ function glowMask(im) {                              // how bright each pixel of
   if (m) return m;
   m = document.createElement('canvas'); m.width = im.width; m.height = im.height;
   const g = m.getContext('2d'); g.drawImage(im, 0, 0);
-  const d = g.getImageData(0, 0, m.width, m.height), p = d.data;
-  for (let i = 0; i < p.length; i += 4) { p[i + 3] = Math.round(Math.max(p[i], p[i + 1], p[i + 2]) * p[i + 3] / 255); p[i] = p[i + 1] = p[i + 2] = 0; }
-  g.putImageData(d, 0, 0); glowMasks.set(im, m); return m;
+  try {
+    const d = g.getImageData(0, 0, m.width, m.height), p = d.data;
+    for (let i = 0; i < p.length; i += 4) { p[i + 3] = Math.round(Math.max(p[i], p[i + 1], p[i + 2]) * p[i + 3] / 255); p[i] = p[i + 1] = p[i + 2] = 0; }
+    g.putImageData(d, 0, 0);
+  } catch (e) { m = im; }                            // (opened from a file, the browser won't let the game read pixels back: the picture's own alpha does instead)
+  glowMasks.set(im, m); return m;
 }
 // things that glow are drawn after the room gets dark, so they shine through it
 function drawGlow(camX, camY) {
