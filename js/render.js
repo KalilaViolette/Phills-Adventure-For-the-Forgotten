@@ -583,6 +583,16 @@ function drawDebug() {
 // dust: specks floating in the light indoors. yard: pollen and butterflies. leaves: leaves drifting down.
 // fireflies: blinking lights in the dark at the bottom of the oak. All of it is just drawing, nothing to bump into.
 let ambT = performance.now();
+function glowGroups() {                                // the room's glowworms in groups: a gap of 30 px or more across starts a new one
+  const pts = [...room.def.glowworms].sort((a, b) => a[0] - b[0]), out = [];
+  for (const [x, y] of pts) {
+    const g = out[out.length - 1];
+    if (g && x - g.x1 < 30) { g.x1 = x; g.ys.push(y); g.n++; }
+    else out.push({ x0: x, x1: x, ys: [y], n: 1 });
+  }
+  for (const g of out) { g.ys.sort((a, b) => a - b); g.y0 = g.ys[0]; g.y1 = g.ys[Math.floor(g.ys.length * 0.85)]; }   // (the bottom few, like glowing fungus on the floor nearby, left out)
+  return out.filter(g => g.n >= 8);                  // (a few loose points on their own aren't a group)
+}
 function drawAmbient(camX, camY, glowPass) {
   if (glowPass) { drawGlow(camX, camY); return; }
   const now = performance.now(), dt = Math.min(0.05, (now - ambT) / 1000); ambT = now;
@@ -599,6 +609,8 @@ function drawAmbient(camX, camY, glowPass) {
   if (kinds.includes('bubbles') && count('bub') < 18) motes.push({ k: 'bub', x: rnd(0, VW), y: VH + rnd(0, 40), vy: rnd(-26, -12), ph: rnd(0, 6), s: Math.random() < 0.3 ? 2 : 1 });
   if (kinds.includes('leaves') && count('leaf') < 10) motes.push({ k: 'leaf', x: rnd(-20, VW), y: rnd(-60, -4), vy: rnd(14, 26), ph: rnd(0, 6), col: ['#5aa84a', '#8fd06a', '#c8b04a', '#3f8a48'][Math.floor(rnd(0, 4))] });
   if (kinds.includes('spores') && count('spore') < 22) motes.push({ k: 'spore', x: rnd(0, VW), y: rnd(0, VH), vx: rnd(-2, 2), vy: rnd(-5, -2), ph: rnd(0, 6), c: Math.random() < 0.7 ? '170,240,200' : '230,220,160' });
+  if (kinds.includes('moths') && room.def.glowworms && !count('moth'))   // a moth or two round each group of glowworms (10/27/2026)
+    for (const gr of glowGroups()) for (let j = 0; j < (gr.n > 40 ? 2 : 1); j++) motes.push({ k: 'moth', g: gr, x: rnd(gr.x0, gr.x1), y: rnd(gr.y0, gr.y1), tx: 0, ty: 0, t: 0, ph: rnd(0, 6) });
   if (kinds.includes('fireflies') && count('ff') < 14) {
     const fy0 = room.pxH - 340;
     motes.push({ k: 'ff', x: rnd(0, room.pxW), y: rnd(fy0, room.pxH - 30), ph: rnd(0, 6), sp: rnd(0.6, 1.4), ox: 0, oy: 0 });
@@ -622,6 +634,15 @@ function drawAmbient(camX, camY, glowPass) {
       if (sx < -10 || sx > VW + 10) { m.x = camX + rnd(0, VW); continue; }
       ctx.fillStyle = '#2a2030'; ctx.fillRect(sx, sy, 1, 2);
       ctx.fillStyle = m.col; if (up) { ctx.fillRect(sx - 2, sy - 2, 2, 2); ctx.fillRect(sx + 1, sy - 2, 2, 2); } else { ctx.fillRect(sx - 2, sy, 2, 1); ctx.fillRect(sx + 1, sy, 2, 1); }
+    } else if (m.k === 'moth') {                       // fluttering round the glowworms, in the room (not the screen)
+      m.t -= dt;
+      if (m.t <= 0) { m.tx = rnd(m.g.x0 - 16, m.g.x1 + 16); m.ty = rnd(m.g.y0 - 6, m.g.y1 + 12); m.t = rnd(0.6, 1.8); }
+      m.x += (m.tx - m.x) * dt * 1.6 + Math.sin(m.ph * 11) * 0.35; m.y += (m.ty - m.y) * dt * 1.6 + Math.sin(m.ph * 7) * 0.45;
+      const sx = Math.round(m.x - camX), sy = Math.round(m.y - camY), up = Math.sin(m.ph * 30) > 0;
+      if (sx < -6 || sx > VW + 6 || sy < -6 || sy > VH + 6) continue;
+      ctx.fillStyle = '#3a3428'; ctx.fillRect(sx, sy, 1, 2);
+      ctx.fillStyle = 'rgba(232,244,236,0.95)';                // (pale, catching the glowworms' light)
+      if (up) { ctx.fillRect(sx - 3, sy - 2, 3, 2); ctx.fillRect(sx + 1, sy - 2, 3, 2); } else { ctx.fillRect(sx - 3, sy + 1, 3, 1); ctx.fillRect(sx + 1, sy + 1, 3, 1); }
     } else if (m.k === 'midge') {                     // a little cloud of midges over the water
       m.life -= dt; if (m.life <= 0) { motes.splice(i, 1); continue; }
       const x = m.cx + Math.sin(m.ph * m.sp) * m.r + Math.sin(m.ph * 0.3) * 10, y = m.cy + Math.cos(m.ph * m.sp * 1.3) * m.r * 0.6;

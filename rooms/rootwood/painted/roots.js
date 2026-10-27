@@ -633,7 +633,8 @@ ROOM({
  },
  "ambient": [
   "fireflies",
-  "spores"
+  "spores",
+  "moths"
  ],
  "ramps": [
   [
