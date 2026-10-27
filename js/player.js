@@ -463,6 +463,7 @@ function update(dt) {
     P.vx = P.vy = 0; P.fallTop = P.y; P.atk = null;
     updateStory(dt); stepWorld(dt); return;
   }
+  if (P.walkIn) { updateWalkIn(dt); stepWorld(dt); return; }   // walking into or out of a hole in the back wall: nothing pressed counts
   updateIdle(dt);                                    // left standing around a while: one of his little idle bits (anything pressed stops it)
   updateSheathe(dt);                                 // his sword and shield going away on his back, or coming back out
   // presses become short buffers, so an early press still counts
@@ -1139,6 +1140,7 @@ function sheathedFrame(n) {
 function frameName() {
   const f = P.facing > 0 ? 'R' : 'L';
   if (P.story) { const sf = storyFrame(f); if (sf) return sf; }
+  if (P.walkIn) return (P.walkIn.out ? 'walkto_' : 'walkaway_') + (P.walkIn.t < WALKIN_TURN && !P.walkIn.out ? 2 : Math.floor(P.walkIn.t * 7) % 4 + 1) + '_R';
   if (P.chute) return (Math.floor(P.chute.k * 6) % 2 ? 'slide_2_' : 'slide_1_') + f;
   if (P.idleBit) { const fb = idleFrame(f); if (fb) return fb; }
   if (P.gbreak > 0) return 'hurt_' + f;

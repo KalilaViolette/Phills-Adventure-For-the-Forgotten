@@ -205,6 +205,30 @@ function updateTrans(dt) {
     if (Rooms.ready(trans.to)) { enterRoom(trans.to, trans.door); trans.state = 'in'; trans.t = 0; }
   } else if (trans.state === 'in') { trans.t += dt; if (trans.t >= FADE) trans.state = 'none'; }
 }
+// ---------- a doorway that's a hole in the back wall (10/27/2026) ----------
+// Walking at one, he turns his back to us and walks up into it, smaller as he goes and lost in the dark, then the room
+// changes. Coming in through one he walks out of it toward us, then turns the way the door faces. The door's walkIn
+// (from the room builder): turn, the spot on the floor in front of it; into, where he's gone; scale, his size there
+const WALKIN_SPEED = 38, WALKIN_TURN = 0.15;         // px a second along the way in, and the moment he stands turned first
+function startWalkIn(d, out) {
+  const w = d.walkIn, len = Math.hypot(w.into[0] - w.turn[0], w.into[1] - w.turn[1]);
+  P.walkIn = { d, out, t: 0, dur: len / WALKIN_SPEED + WALKIN_TURN };
+  P.vx = P.vy = 0; P.atk = null; P.roll = 0; P.dash = 0; P.charge = 0; P.idleBit = null; P.ground = true;
+  const at = out ? w.into : w.turn; P.x = P.px = at[0]; P.y = P.py = at[1]; P.fallTop = P.y;
+}
+function walkInK() {                                 // how far along: 0 at the turn spot, 1 at the far end (going in, after the turn)
+  const wi = P.walkIn, k = Math.max(0, Math.min(1, (wi.out ? wi.t : wi.t - WALKIN_TURN) / (wi.dur - WALKIN_TURN)));
+  return wi.out ? 1 - k : k;
+}
+function updateWalkIn(dt) {
+  const wi = P.walkIn, w = wi.d.walkIn;
+  wi.t += dt; P.px = P.x; P.py = P.y;
+  const k = walkInK();
+  P.x = w.turn[0] + (w.into[0] - w.turn[0]) * k; P.y = w.turn[1] + (w.into[1] - w.turn[1]) * k; P.fallTop = P.y;
+  if (wi.t < wi.dur) return;
+  if (wi.out) { P.walkIn = null; P.facing = wi.d.f || P.facing; }
+  else if (trans.state === 'none') goTo(wi.d.to, wi.d.toDoor);
+}
 const transDark = () => trans.state === 'out' ? trans.t / FADE : trans.state === 'wait' ? 1 : trans.state === 'in' ? 1 - trans.t / FADE : 0;
 
 function enterRoom(id, doorId) {
@@ -217,6 +241,7 @@ function enterRoom(id, doorId) {
   const at = doorId === '@rest' && def.rest ? { x: def.rest.x - 12, y: def.rest.y, f: 1 } : doorId === '@perch' && def.perch ? { x: def.perch.x - 36, y: def.perch.y, f: 1 } : d ? { x: d.keepX && P.x != null ? Math.max(d.a + 8, Math.min(d.b - 8, P.x)) : d.x, y: d.y, f: d.keepX && P.facing ? P.facing : d.f } : def.spawn || def.doors[0];   // no starting spot: the first door   // keepX: carries on from where he fell
   const fell = P.fallTop != null && P.y != null ? Math.max(0, P.y - P.fallTop) : 0, vy0 = P.vy || 0;   // how far he'd already fallen, and how fast, in the room he's leaving
   placePlayer(at.x, at.y, at.f);
+  P.walkIn = null; if (d && d.walkIn) startWalkIn(d, true);           // in through a hole in the back wall: out of it toward us
   // still falling from the room above: he carries on at the speed he was going, and the splat counts only how far he's
   // really fallen (10/15/2026: dropping a few tiles down into the mole's workshop he splatted, because a
   // way in from the top used to count as a 400 px fall already). A long fall through a few rooms still adds up

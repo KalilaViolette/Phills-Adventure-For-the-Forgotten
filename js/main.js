@@ -22,7 +22,11 @@ function stepWorld(dt) {
   updateHints(dt);
   shakeT = Math.max(0, shakeT - dt);
   // walking off the edge of the room through a door
-  if (trans.state === 'none' && P.ko <= 0 && !bossLocked()) for (const d of room.def.doors) {
+  if (trans.state === 'none' && P.ko <= 0 && !bossLocked() && !P.walkIn) for (const d of room.def.doors) {
+    if (d.walkIn && P.ground && !P.atk && !P.hang) {                   // a hole in the back wall: walking at it from in front, he goes in
+      const w = d.walkIn, s = d.edge === 'left' ? -1 : 1;
+      if (P.vx * s > 0 && (P.x - w.turn[0]) * s >= 0 && Math.abs(P.y - w.turn[1]) <= 12) { startWalkIn(d, false); break; }
+    }
     const yIn = P.y > d.a && P.y <= d.b + 1;
     const xIn = P.x > d.a && P.x <= d.b;
     if ((d.edge === 'right' && P.x > room.pxW - 4 && yIn) || (d.edge === 'left' && P.x < 4 && yIn)

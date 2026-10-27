@@ -241,11 +241,26 @@ function groundShadow(x, y, maxDrop, rx) {
 }
 let bodyAt = null;                 // where and how his body was last drawn (the charge glow goes right over it)
 function body(im, fr, x, y) { ctx.drawImage(im, fr[0], fr[1], 64, 64, x, y, 64, 64); bodyAt = { t: ctx.getTransform(), x, y }; }
+// walking into a hole in the back wall (10/27/2026): smaller the further in he is, and going the color of the dark in
+// there till he's gone. Coming out, the same the other way
+const walkInCv = document.createElement('canvas'); walkInCv.width = walkInCv.height = 64;
+function drawWalkIn(im, meta, fr, px, py, q) {
+  if (!fr) return;
+  const k = walkInK(), sc = 1 - (1 - (P.walkIn.d.walkIn.scale || 0.7)) * k, dark = Math.max(0, (k - 0.35) / 0.65);
+  const g = walkInCv.getContext('2d'); g.clearRect(0, 0, 64, 64); g.globalCompositeOperation = 'source-over'; g.drawImage(im, fr[0], fr[1], 64, 64, 0, 0, 64, 64);
+  if (dark > 0) { g.globalCompositeOperation = 'source-atop'; g.fillStyle = `rgba(28,52,70,${0.85 * dark})`; g.fillRect(0, 0, 64, 64); g.globalCompositeOperation = 'source-over'; }
+  if (k < 0.5) groundShadow(P.x, P.y, 110 * sc, 11 * sc);
+  const s64 = Math.max(1, Math.round(64 * sc));
+  ctx.globalAlpha = 1 - Math.max(0, (k - 0.75) / 0.25);
+  ctx.drawImage(walkInCv, 0, 0, 64, 64, q(px - fr[2] * sc), q(py - meta.baseline * sc), s64, s64);
+  ctx.globalAlpha = 1;
+}
 function drawPhill(px, py, q) {
   bodyAt = null;
   const name = frameName(), cell = sheathedFrame(name);           // (cell: the picture for it, the gear on his back when it's put away)
   const { im, meta } = phillSheet();
   if (!im || !name) return;
+  if (P.walkIn) { drawWalkIn(im, meta, meta.frames[name], px, py, q); return; }
   if (!P.swim && !P.hang && !P.cling && !P.held && P.ko <= 0) groundShadow(P.x, P.y, 110, 11);
   const fr = meta.frames[cell];
   if (!fr) return;
