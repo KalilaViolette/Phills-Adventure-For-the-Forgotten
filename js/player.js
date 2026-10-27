@@ -27,6 +27,18 @@ const CRITICAL = 0.3;   // at or under this much of his health he's hurting
 const critical = () => P.health / P.maxHealth <= CRITICAL;
 
 const hasHeadroom = h => !boxSolid(P.x - HW, P.y - h, P.x + HW, P.y);   // (standing up: the standing box, where he'll be)
+// crawling down a slope out from under something low (10/27/2026): his feet are where his belly rests, a little way down
+// the slope, so the standing box always caught the slope beside him and he crawled on to the bottom. Standing up there
+// is judged the way he stands on a slope walking: his feet on the highest ground under him (a step up at most), the
+// standing box clear over that, and a step on clear too (or he'd stand up at the edge of something low, walk into it
+// and get straight back down)
+function slopeStand() {
+  let y = Math.round(P.y);
+  for (let k = 0; k < STEP_UP && boxSolid(P.x - HW, y - 1, P.x + HW, y); k++) y--;   // (no more than he'd step up walking)
+  if (boxSolid(P.x - HW, y - 1, P.x + HW, y) || !boxSolid(P.x - HW, y, P.x + HW, y + 2)) return false;
+  for (const x of [P.x, P.x + P.facing * 3]) if (boxSolid(x - HW, y - STAND_H, x + HW, y - 1)) return false;
+  P.y = y; return true;
+}
 // lying down, crawling or swimming, his box runs from his feet to the end of his nose (10/15/2026: it was the
 // standing width, so his head went into walls). Measured off the frames: crawling, 11 px behind where he stands and 31
 // in front; swimming, 21 behind and 22 in front. Straight up or down in the water (dive) he's narrow again
@@ -573,6 +585,7 @@ function update(dt) {
     P.jumpBufT = 0;
     if (P.atkBufT > 0 && P.atkCD <= 0 && !P.atk && !guarding) { if (spend('crawl')) startAttack('crawl'); else P.atkBufT = 0; }   // a jab out along the floor
     if (hasHeadroom(STAND_H) && !P.atk) { P.crawl = false; P.h = STAND_H; puff(P.x, P.y, 3, 20); }
+    else if (!P.atk && P.ground && slopeStand()) { P.crawl = false; P.h = STAND_H; puff(P.x, P.y, 3, 20); }
     else if (P.crawl && !P.atk && P.ground && dir === P.facing && bodyHit(P.x + dir, P.y - P.h, P.y)) {
       // his nose is up against something and there's room to stand a little way along his body (10/17/2026:
       // out from under the bed, nose on the nightstand, his feet still under the bed's edge and no way to get up): he
