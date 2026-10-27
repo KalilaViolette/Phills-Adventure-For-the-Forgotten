@@ -37,120 +37,120 @@ ROOM({
    "front": [
     0,
     1809,
-    797,
-    229
+    789,
+    227
    ],
    "piece_plant_toe_fern": [
     0,
-    2038,
+    2036,
     25,
     15
    ],
    "piece_plant_root_fern": [
     0,
-    2053,
+    2051,
     25,
     15
    ],
    "piece_plant_cave_tuft": [
     0,
-    2068,
+    2066,
     23,
     18
    ],
    "piece_plant_root_hair": [
     0,
-    2086,
+    2084,
     13,
     44
    ],
    "piece_plant_clearing_edge_fern": [
     0,
-    2130,
+    2128,
     25,
     15
    ],
    "piece_plant_low_bank_fern": [
     0,
-    2145,
+    2143,
     25,
     15
    ],
    "piece_plant_toe_earth_tuft": [
     0,
-    2160,
+    2158,
     23,
     18
    ],
    "piece_plant_cave_bank_tuft": [
     0,
-    2178,
+    2176,
     23,
     18
    ],
    "piece_plant_root_back_fern": [
     0,
-    2196,
+    2194,
     25,
     15
    ],
    "piece_plant_upper_root_tuft": [
     0,
-    2211,
+    2209,
     23,
     18
    ],
    "piece_plant_cave_hanging_vine": [
     0,
-    2229,
+    2227,
     13,
     44
    ],
    "piece_plant_ceiling_vine_left": [
     0,
-    2273,
+    2271,
     13,
     44
    ],
    "piece_plant_ceiling_root_hairs": [
     0,
-    2317,
+    2315,
     24,
     64
    ],
    "piece_glow_0": [
     0,
-    2381,
-    198,
-    152
+    2379,
+    213,
+    119
    ],
    "piece_glow_1": [
     0,
-    2533,
+    2498,
     65,
     57
    ],
    "piece_glow_2": [
     0,
-    2590,
+    2555,
     62,
     197
    ],
    "piece_glow_3": [
     0,
-    2787,
+    2752,
     132,
     74
    ],
    "piece_glow_4": [
     0,
-    2861,
+    2826,
     88,
     44
    ],
    "piece_glow_5": [
     0,
-    2905,
+    2870,
     425,
     23
    ]
@@ -171,8 +171,8 @@ ROOM({
   ],
   "front": "art/rootwood/painted/roots.png#front",
   "frontAt": [
-   180,
-   142
+   195,
+   144
   ],
   "pieces": {
    "plant_toe_fern": [
@@ -254,10 +254,10 @@ ROOM({
     64
    ],
    "glow_0": [
-    563,
-    262,
-    198,
-    152
+    486,
+    297,
+    213,
+    119
    ],
    "glow_1": [
     111,
@@ -397,12 +397,6 @@ ROOM({
   "a": 0.6,
   "lights": [
    [
-    657,
-    333,
-    112,
-    1.0
-   ],
-   [
     144,
     348,
     65,
@@ -439,10 +433,16 @@ ROOM({
     0.45
    ],
    [
-    645,
-    366,
-    80,
-    0.8
+    610,
+    360,
+    65,
+    1.0
+   ],
+   [
+    657,
+    333,
+    22,
+    0.7
    ]
   ]
  },
