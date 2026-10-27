@@ -63,6 +63,60 @@ function setupWildlife() {
 // where Phill is, in a layer's own pixels (a layer at f scrolls slower, so the same spot sits nearer the middle)
 const toLayerX = (x, f) => x * f + 320 * (1 - f), toLayerY = (y, f) => y * f + 180 * (1 - f);
 
+// on the room's own ground (10/27/2026): an animal in the room itself walks the ground it's on, up and down its bumps
+// and slopes and along one way roots, and turns round at a wall or a rock, or a drop, instead of walking a straight line
+// through them. Its size comes from its picture
+function wildSize(w) {
+  if (w.size) return w.size;
+  const f = (w.def.anim && w.def.anim[0]) || 'perch', m = typeof sprSource === 'function' ? sprSource(wildName(w, f))[1] : null;
+  if (!m) return { front: 5, h: 8, climb: 3, drop: 5 };
+  const [, , sw, sh, ax, ay] = m, h = Math.max(4, Math.min(ay, 30));
+  return (w.size = { front: Math.max(3, Math.round(Math.max(ax, sw - ax) * 0.7)), h: Math.round(h * 0.8), climb: Math.max(3, Math.round(h * 0.45)), drop: Math.max(5, Math.round(h * 0.7)) });
+}
+// the top he'd stand on at x near y: solid ground (climbing out of it at most up px) or a one way slope, whichever is nearer
+function wildTop(x, y, up, down) {
+  const xi = Math.round(x); let yy = Math.round(y), best = null;
+  if (solidPx(xi, yy)) { let k = 0; while (k < up && solidPx(xi, yy - 1)) { yy--; k++; } if (!solidPx(xi, yy - 1)) best = yy; }
+  else for (let k = 1; k <= down; k++) if (solidPx(xi, yy + k)) { best = yy + k; break; }
+  const r = typeof rampY === 'function' ? rampY(xi, y, down, up) : null;
+  if (r !== null && (best === null || Math.abs(r - y) < Math.abs(best - y))) best = r;
+  for (let row = Math.floor((y - up) / T); row <= Math.floor((y + down) / T) + 1; row++) {   // and the tops of one way shelf tiles (a log, a plank)
+    const sy = row * T;
+    if (sy >= y - up && sy <= y + down && tile(Math.floor(xi / T), row) === 2 && (best === null || Math.abs(sy - y) < Math.abs(best - y))) best = sy;
+  }
+  return best;
+}
+// one step on to nx: the new ground y, or null where it's blocked (a wall or a rock in front of it, too steep, a drop)
+function wildStep(w, c, nx) {
+  const s = wildSize(w), gy = wildTop(nx, c.y, s.climb, s.drop);
+  if (gy === null) return null;
+  for (let yy = gy - s.h; yy <= gy - 2; yy += 2) if (solidPx(nx, yy)) return null;            // no room for it where it'd stand (under a lip)
+  const fx = nx + c.dir * s.front, reach = Math.max(s.climb + 1, Math.round(s.front * 0.9));   // (up to about 45 degrees, measured at its nose)
+  const ga = wildTop(fx, gy, reach, Math.max(s.drop + 1, reach));
+  if (ga === null) return null;                                                               // a wall in front of it, or nothing under its nose
+  for (let yy = ga - s.h; yy <= ga - 3; yy += 2) if (solidPx(fx, yy)) return null;            // something low over the ground ahead
+  return gy;
+}
+// where it turns up: ground within 12 px of the room file's y (the painted rooms' builder puts that y on the painted
+// ground), with room for it. Farther than that, the y is a spot in the art (a bird on a painted branch): it keeps to it
+function wildSpawnY(w, x, y) {
+  const s = wildSize(w); let best = null; x = Math.round(x);
+  for (let yy = Math.round(y) - 12; yy <= Math.round(y) + 12; yy++) {
+    const top = solidPx(x, yy) && !solidPx(x, yy - 1) || (typeof rampY === 'function' && rampY(x, yy, 0.5, 0.5) !== null) || (yy % T === 0 && tile(Math.floor(x / T), yy / T) === 2);
+    if (!top) continue;
+    let clear = true; for (let k = 2; k <= s.h; k += 2) if (solidPx(x, yy - k)) { clear = false; break; }
+    if (clear && (best === null || Math.abs(yy - y) < Math.abs(best - y))) best = yy;
+  }
+  return best;
+}
+// blocked: turn round, and after a couple of turns slip away (into a crack, behind a root) instead of pacing
+function wildBlocked(c, d) {
+  c.turns = (c.turns || 0) + 1;
+  if (c.turns > 2 || c.state === 'flee') { c.state = 'hide'; c.hideT = 0.5; return; }
+  c.dir = -c.dir;
+  if (d.pauses && c.state === 'move') { const [fr, a, b] = pick(d.pauses); c.state = 'pause'; c.frame = fr; c.pauseName = fr; c.pauseT = c.pauseLen = rnd(a * 0.5, b * 0.5); }
+}
+
 function spawnWild(w) {
   const e = w.e, d = w.def;
   let dir = e.dir || (Math.random() < 0.5 ? -1 : 1);
@@ -81,6 +135,11 @@ function spawnWild(w) {
   if (d.kind === 'swimmer') { c.kidYellow = d.kidYellow || 0; for (const [spr, chance, ky] of d.alts || []) if (Math.random() < chance) { c.sprite = spr; c.kidYellow = ky; break; }
     c.kids = []; for (let i = 0; i < (d.ducklings || 0); i++) c.kids.push({ ox: (d.kidStart || 13) + i * (d.kidGap || 13) + rnd(-2, 2), oy: rnd(-1, 1), ph: rnd(0, 6), yellow: Math.random() < c.kidYellow }); }   // a mallard's brood is mostly dark, the odd yellow one; a farm duck's are all yellow
   if (d.fawn && Math.random() < d.fawn) addFawn(c);
+  if (e.at === 'back' && room.detail && (d.kind === 'walker' || d.kind === 'hopper' || d.kind === 'percher')) {   // on the room's real ground (the painted rooms, whose ground is pixels)
+    const x0 = c.x; c.x = Math.round(c.x); let gy = wildSpawnY(w, c.x, e.y);
+    for (let k = 0; k < 6 && gy === null; k++) { c.x = Math.round(rnd(e.x0 + 10, e.x1 - 10)); gy = wildSpawnY(w, c.x, e.y); }
+    if (gy !== null) { c.y = gy; c.terrain = true; } else c.x = x0;          // (no ground there: as before, along the room file's line)
+  }
   w.crit = c;
 }
 // the fawn: a few steps behind its mother, catching up in little bursts, head down when hers is
@@ -130,15 +189,19 @@ function updateWildlife(dt) {
     const anim = (frames, fps) => frames[Math.floor(c.t * fps) % frames.length];
     if (d.kind === 'walker') {
       if (c.fawn) updateFawn(c, d, dt);
-      if (d.flee && near < d.flee && nearY && (busy || near < d.flee * 0.5) && c.state !== 'flee') { c.state = 'flee'; c.dir = dx > 0 ? -1 : 1; c.t = 0; }
-      if (d.scare && near < d.scare && nearY && c.state !== 'scared') { c.state = 'scared'; c.pauseT = d.scareT; }
-      if (d.flyOff && near < d.flyOff && nearY && c.state !== 'fly') { c.state = 'fly'; c.t = 0; c.vy = -40; c.dir = dx > 0 ? -1 : 1; }
+      const hiding = c.state === 'hide';
+      if (!hiding && d.flee && near < d.flee && nearY && (busy || near < d.flee * 0.5) && c.state !== 'flee') { c.state = 'flee'; c.dir = dx > 0 ? -1 : 1; c.t = 0; }
+      if (!hiding && d.scare && near < d.scare && nearY && c.state !== 'scared') { c.state = 'scared'; c.pauseT = d.scareT; }
+      if (!hiding && d.flyOff && near < d.flyOff && nearY && c.state !== 'fly') { c.state = 'fly'; c.t = 0; c.vy = -40; c.dir = dx > 0 ? -1 : 1; }
       if (c.state === 'move' || c.state === 'flee') {
         const sp = c.state === 'flee' ? d.fleeSpeed : d.speed;
-        c.x += c.dir * sp * dt; c.frame = c.state === 'flee' && d.fleeAnim ? timedFrame(d.fleeAnim, d.fleeDur, d.fleeFps || d.fps, c.t) : anim(d.anim, c.state === 'flee' ? d.fps * 1.6 : d.fps);
+        if (c.terrain) { const nx = c.x + c.dir * sp * dt, gy = wildStep(w, c, nx); if (gy === null) { wildBlocked(c, d); continue; } c.x = nx; c.y = gy; }
+        else c.x += c.dir * sp * dt; c.frame = c.state === 'flee' && d.fleeAnim ? timedFrame(d.fleeAnim, d.fleeDur, d.fleeFps || d.fps, c.t) : anim(d.anim, c.state === 'flee' ? d.fps * 1.6 : d.fps);
         const out = x => x < e.x0 - 30 || x > e.x1 + 30;
         if (out(c.x) && (!c.fawn || out(c.fawn.x))) { done(); continue; }
         if (c.state === 'move' && Math.random() < dt * 0.25 && d.pauses) { const [fr, a, b] = pick(d.pauses); c.state = 'pause'; c.frame = fr; c.pauseName = fr; c.pauseT = c.pauseLen = rnd(a, b); }
+      } else if (c.state === 'hide') {                    // slipping away
+        c.hideT -= dt; c.alpha = Math.max(0, c.hideT / 0.5); if (c.hideT <= 0) { done(); continue; }
       } else if (c.state === 'pause' || c.state === 'scared') {
         c.pauseT -= dt;
         const cyc = d.cycles && d.cycles[c.pauseName];
@@ -150,13 +213,19 @@ function updateWildlife(dt) {
         if (c.y < e.y - 260) { done(); continue; }
       }
     } else if (d.kind === 'hopper') {
-      if (d.flee && near < d.flee && nearY && (busy || near < d.flee * 0.5) && c.state !== 'flee') { c.state = 'flee'; c.dir = dx > 0 ? -1 : 1; c.hopT = 0; }
+      if (d.flee && near < d.flee && nearY && (busy || near < d.flee * 0.5) && c.state !== 'flee' && c.state !== 'hide') { c.state = 'flee'; c.dir = dx > 0 ? -1 : 1; c.hopT = 0; }
       if (c.state === 'sit') { c.frame = c.sitT > 1.2 ? 'sit' : 'nibble'; c.sitT -= dt; if (c.sitT <= 0) { c.state = 'hop'; c.hops = 2 + Math.floor(Math.random() * 3); c.hopT = 0; if (Math.random() < 0.4) c.dir = -c.dir; } }
       else {
         const fast = c.state === 'flee', per = fast ? 0.32 : 0.5;
         c.hopT += dt; const k = (c.hopT % per) / per;
-        c.x += c.dir * (fast ? (d.hopSpeed ? d.hopSpeed[1] : 150) : (d.hopSpeed ? d.hopSpeed[0] : 70)) * dt; c.hy = Math.sin(k * Math.PI) * (fast ? (d.hopH ? d.hopH[1] : 14) : (d.hopH ? d.hopH[0] : 9)); c.frame = k < 0.5 ? 'hop_1' : 'hop_2';
-        if (c.hopT >= per * (fast ? 999 : c.hops)) { c.state = 'sit'; c.sitT = rnd(1.5, 4); c.hy = 0; }
+        const hx = c.x + c.dir * (fast ? (d.hopSpeed ? d.hopSpeed[1] : 150) : (d.hopSpeed ? d.hopSpeed[0] : 70)) * dt;
+        if (c.terrain) {                                 // hopping along the real ground: a bigger rise is fine in a hop, a wall isn't
+          const s = wildSize(w), gy = wildTop(hx, c.y, s.climb * 2, s.drop * 2), fx = hx + c.dir * s.front;
+          let wall = gy === null; if (!wall) for (let yy = gy - s.h; yy <= gy - 3; yy += 2) if (solidPx(fx, yy)) { wall = true; break; }
+          if (wall) { if (fast) { c.state = 'hide'; c.hideT = 0.5; c.frame = 'sit'; continue; } c.dir = -c.dir; } else { c.x = hx; c.y = gy; }
+        } else c.x = hx; c.hy = Math.sin(k * Math.PI) * (fast ? (d.hopH ? d.hopH[1] : 14) : (d.hopH ? d.hopH[0] : 9)); c.frame = k < 0.5 ? 'hop_1' : 'hop_2';
+        if (c.state === 'hide') { c.hideT -= dt; c.alpha = Math.max(0, c.hideT / 0.5); if (c.hideT <= 0) { done(); continue; } }
+        else if (c.hopT >= per * (fast ? 999 : c.hops)) { c.state = 'sit'; c.sitT = rnd(1.5, 4); c.hy = 0; }
         if (c.x < e.x0 - 20 || c.x > e.x1 + 20) { done(); continue; }
         if (!fast && (c.x < e.x0 + 10 || c.x > e.x1 - 10)) c.dir = -c.dir;
       }
@@ -166,8 +235,9 @@ function updateWildlife(dt) {
         if (near < d.flyOff && nearY && (busy || near < d.flyOff * 0.5)) { c.state = 'fly'; c.t = 0; c.dir = dx > 0 ? -1 : 1; c.vy = -30; }
         else if (c.sitT <= 0) { c.state = 'hop'; c.hopT = 0.22; c.dir = Math.random() < 0.5 ? -1 : 1; c.hopFrom = c.x; }
       } else if (c.state === 'hop') {
-        c.hopT -= dt; c.frame = 'hop'; c.x += c.dir * 30 * dt; c.hy = Math.sin((0.22 - c.hopT) / 0.22 * Math.PI) * 4;
-        if (c.x < e.x0 || c.x > e.x1) { c.dir = -c.dir; c.x += c.dir * 2; }
+        c.hopT -= dt; c.frame = 'hop'; c.hy = Math.sin((0.22 - c.hopT) / 0.22 * Math.PI) * 4;
+        const hx = c.x + c.dir * 30 * dt, gy = c.terrain ? wildStep(w, c, hx) : c.y;
+        if (gy === null || hx < e.x0 || hx > e.x1) { c.dir = -c.dir; } else { c.x = hx; c.y = gy; }
         if (c.hopT <= 0) { c.state = 'sit'; c.sitT = rnd(0.8, 3); c.hy = 0; }
       } else {
         c.vy -= 70 * dt; c.y += c.vy * dt; c.x += c.dir * 80 * dt; c.frame = anim(['fly_1', 'fly_2'], 10);
@@ -234,7 +304,7 @@ function drawWildlife(at, camX, camY) {
       continue;
     }
     let gy = c.y;
-    if (at === 'back' && w.def.kind !== 'flier' && w.def.kind !== 'moth' && !w.def.swim && c.y === w.e.y) { const g = groundY(c.x, c.y, 8, 8); if (g !== null) gy = g; }   // walking along the natural ground's bumps
+    if (at === 'back' && !c.terrain && w.def.kind !== 'flier' && w.def.kind !== 'moth' && !w.def.swim && c.y === w.e.y) { const g = groundY(c.x, c.y, 8, 8); if (g !== null) gy = g; }   // walking along the natural ground's bumps (on the room's real ground it already is)
     if (c.fawn && c.fawn.frame) draw('fawn_' + c.fawn.frame, c.fawn.x, gy, c.fawn.dir > 0, c.alpha);   // behind her
     draw(wildName(w, c.frame), c.x, gy - (c.hy || 0) + (c.by || 0), flip, c.alpha);
     if (c.kids) for (const k of c.kids) draw((k.yellow ? 'ducklingyellow' : 'duckling') + '_swim_' + (Math.floor((c.ph + k.ph) * 2) % 2 + 1), c.x - c.dir * k.ox, c.y + k.oy + Math.sin(c.ph * 2.2 + k.ph) * 1.2, flip, c.alpha);
