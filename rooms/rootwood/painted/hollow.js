@@ -64,99 +64,141 @@ ROOM({
     64,
     32
    ],
-   "piece_plant_living_nook_left": [
+   "piece_skin_foam_f1": [
     0,
     3692,
+    64,
+    32
+   ],
+   "piece_skin_foam_f2": [
+    0,
+    3724,
+    64,
+    32
+   ],
+   "piece_skin_foam_f3": [
+    0,
+    3756,
+    64,
+    32
+   ],
+   "piece_skin_foam_f4": [
+    0,
+    3788,
+    64,
+    32
+   ],
+   "piece_skin_foam_f5": [
+    0,
+    3820,
+    64,
+    32
+   ],
+   "piece_skin_foam_f6": [
+    0,
+    3852,
+    64,
+    32
+   ],
+   "piece_skin_foam_f7": [
+    0,
+    3884,
+    64,
+    32
+   ],
+   "piece_plant_living_nook_left": [
+    0,
+    3916,
     23,
     22
    ],
    "piece_plant_living_nook_right": [
     0,
-    3714,
+    3938,
     24,
     24
    ],
    "piece_plant_living_lower_floor": [
     0,
-    3738,
+    3962,
     25,
     23
    ],
    "piece_plant_living_entry_hair": [
     0,
-    3761,
+    3985,
     12,
     55
    ],
    "piece_plant_living_bowl_approach_hair": [
     0,
-    3816,
+    4040,
     13,
     83
    ],
    "piece_plant_bowl_seedling": [
     0,
-    3899,
+    4123,
     25,
     23
    ],
    "piece_plant_sweep_seedling": [
     0,
-    3922,
+    4146,
     27,
     24
    ],
    "piece_plant_sweep_small_tuft": [
     0,
-    3946,
+    4170,
     11,
     13
    ],
    "piece_plant_floor_seedling": [
     0,
-    3959,
+    4183,
     25,
     25
    ],
    "piece_plant_under_root_vine": [
     0,
-    3984,
+    4208,
     9,
     68
    ],
    "piece_plant_nook_rear_frond": [
     0,
-    4052,
+    4276,
     17,
     18
    ],
    "piece_glow_0": [
     0,
-    4070,
+    4294,
     147,
     73
    ],
    "piece_glow_1": [
     0,
-    4143,
+    4367,
     389,
     79
    ],
    "piece_glow_2": [
     0,
-    4222,
+    4446,
     248,
     461
    ],
    "piece_glow_3": [
     0,
-    4683,
+    4907,
     60,
     39
    ],
    "piece_glow_4": [
     0,
-    4722,
+    4946,
     49,
     92
    ]
@@ -198,6 +240,48 @@ ROOM({
     32
    ],
    "skin_foam": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f1": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f2": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f3": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f4": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f5": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f6": [
+    448,
+    0,
+    64,
+    32
+   ],
+   "skin_foam_f7": [
     448,
     0,
     64,
@@ -2589,6 +2673,28 @@ ROOM({
   "curtainOpen": "skin_curtain",
   "hollow_web": "skin_web",
   "hollow_foam": "skin_foam"
+ },
+ "skinfx": {
+  "hollow_web": {
+   "shake": [
+    1.0,
+    1.2,
+    "top-bottom"
+   ]
+  },
+  "hollow_foam": {
+   "frames": [
+    "skin_foam",
+    "skin_foam_f1",
+    "skin_foam_f2",
+    "skin_foam_f3",
+    "skin_foam_f4",
+    "skin_foam_f5",
+    "skin_foam_f6",
+    "skin_foam_f7"
+   ],
+   "fps": 4.0
+  }
  },
  "plants": [
   [

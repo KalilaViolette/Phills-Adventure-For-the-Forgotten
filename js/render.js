@@ -810,10 +810,20 @@ function hiddenByCover(x, y) {
 // a painted room's own picture for a wall that breaks or a gate (10/27/2026): the room file names it under skins by
 // the flag that opens it, and it's drawn where it was painted till then, in place of the game's own drawing
 function drawSkin(key, jx) {
-  const n = room.def.skins && room.def.skins[key], r = n && room.def.art.pieces && room.def.art.pieces[n];
+  let n = room.def.skins && room.def.skins[key];
+  const fx = room.def.skinfx && room.def.skinfx[key], now = performance.now() / 1000;
+  if (n && fx && fx.frames) n = fx.frames[Math.floor(now * fx.fps) % fx.frames.length];   // a strip of frames playing in a loop (10/27/2026)
+  const r = n && room.def.art.pieces && room.def.art.pieces[n];
   const im = r && Assets.get(room.def.art.pack + '#piece_' + n);
   if (!im) return false;
-  ctx.drawImage(im, r[0] + jx, r[1]); return true;
+  if (!fx || !fx.shake) { ctx.drawImage(im, r[0] + jx, r[1]); return true; }
+  const [px, speed, anchors] = fx.shake, h = Math.max(1, r[3] - 1);   // trembling: rows slide by whole pixels, the anchored rows still
+  for (let yy = 0; yy < r[3]; yy++) {
+    const u = yy / h, k = anchors === 'top' ? u : anchors === 'bottom' ? 1 - u : Math.sin(Math.PI * u);
+    const dx = Math.round(px * k * Math.sin(now * speed * 2.4 + yy * 0.35));
+    ctx.drawImage(im, 0, yy, r[2], 1, r[0] + jx + dx, r[1] + yy, r[2], 1);
+  }
+  return true;
 }
 function drawBreaks() {
   for (const b of room.breaks) {
