@@ -130,6 +130,7 @@ function render(alpha) {
   ctx.setTransform(S, 0, 0, S, offX, offY);
   ctx.translate(-camX, -camY);
   if (front) { const at = room.def.art.frontAt || [0, 0]; if (room.def.frontFade) drawFrontFaded(front, at, camX, camY, px2, py2); else ctx.drawImage(front, at[0], at[1]); }   // things in front of him
+  drawReveals();                                                               // the near side of what he's gone under, fading while he's in there
   drawPlants(-1, camX, camY);                                                  // and the plants in front of him, swaying, parting as he goes through
   if (typeof drawPondFx === 'function') drawPondFx();                              // the water's surface moving, squeaks, the cape
   drawActors('front');
@@ -913,6 +914,24 @@ function drawSceneText() {
   st.lines.forEach((l, i) => { if (st.t > 0.4 + i * 1.0) readText(l, VW / 2 - readWidth(l) / 2, VH / 2 - 12 + i * 13, '#ffe8c8'); });   // the reading font
   if (st.t > 0.4 + st.lines.length * 1.0 && !st.out && Math.floor(now / 400) % 2) { ctx.fillStyle = '#9aa0bb'; ctx.fillText(fmtKeys('{jump}: go on'), VW / 2, VH / 2 + 32); }
   ctx.textAlign = 'left'; ctx.globalAlpha = 1;
+}
+
+// the near side of something he goes under or into (10/28/2026), drawn over him: it hides what's under it, fades
+// away while he's inside its box and comes back when he's out. The room file: reveals [[piece, [x0, y0, x1, y1]], ...]
+const revealK = {};
+let revealT = 0;
+function drawReveals() {
+  if (!room.def.reveals) return;
+  const now = performance.now() / 1000, dt = Math.min(0.1, Math.max(0, now - revealT)); revealT = now;
+  const pcs = room.def.art.pieces || {};
+  for (const [n, b] of room.def.reveals) {
+    const cx = P.x, cy = P.y - 10, inside = cx >= b[0] && cx <= b[2] && cy >= b[1] && cy <= b[3];
+    const key = room.def.id + ':' + n, k0 = revealK[key] ?? (inside ? 0 : 1), want = inside ? 0 : 1;
+    const k = revealK[key] = k0 + Math.sign(want - k0) * Math.min(Math.abs(want - k0), dt * 4);   // (a quarter of a second either way)
+    const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
+    if (!im || k <= 0.01) continue;
+    ctx.globalAlpha = k; ctx.drawImage(im, r[0], r[1]); ctx.globalAlpha = 1;
+  }
 }
 
 // the near layer, see-through round him (the picnic tree's near leaves and limbs, 10/18/2026: keep the tree full
