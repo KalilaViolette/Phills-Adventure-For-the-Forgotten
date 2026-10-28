@@ -393,7 +393,7 @@ function setupWarrenRoom() {
   if (d.train) room.train = { x: (d.train.x0 + d.train.x1) / 2, y: d.train.y, dir: 1, wait: 0, x0: d.train.x0, x1: d.train.x1, chug: 0 };
   if (inWarren() && !['chest', 'deepdig'].includes(room.id) && trust() < 4 && world.flags.warrenOpen) room.escort = { x: P.x - 50, y: P.y, f: 1, moving: false };
   // Tock, out in the park
-  const sp = TOCK_SPOTS[room.id];
+  const sp = d.tock ? { x: d.tock.x, y: d.tock.y, caps: d.tock.caps.map(c => c / T), key: d.tock.key } : TOCK_SPOTS[room.id];   // (a room drawn from layers says where, in pixels, 10/27/2026)
   world.tockSpots = world.tockSpots || {};
   if (sp && !world.tockSpots[room.id] && (world.tockMet || 0) < 3 && world.has.gear) {
     const n = (world.tockMet || 0) + 1;
