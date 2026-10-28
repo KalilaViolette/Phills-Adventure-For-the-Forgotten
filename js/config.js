@@ -29,7 +29,7 @@ const DEFAULTS = {
   runSpeed: 175, accelTime: 0.05, decelTime: 0.04, airAccelTime: 0.08, airDecelTime: 0.12,
   jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42,
   coyote: 0.09, jumpBuffer: 0.12, attackCooldown: 0.36,
-  rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
+  rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, slowWalk: 0.32, keyWalk: 0.55, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
   pressSwing: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
 };
 const TUNE_ROWS = [
@@ -49,6 +49,8 @@ const TUNE_ROWS = [
   ['chargeTime', 'Hold R1 this long to fully charge', 0.3, 2, 0.05, ' s'],
   ['swordReach', 'How far a swing reaches past the sword as drawn', 0, 30, 1, ' px'],
   ['backSpeed', 'Walking backwards (facing the other way with the right stick)', 0.3, 1, 0.05, 'x'],
+  ['slowWalk', 'Slowest walk, the stick barely pushed (of the run)', 0.15, 0.8, 0.01, 'x'],
+  ['keyWalk', 'Walking speed holding B on the keyboard (of the run)', 0.2, 0.9, 0.01, 'x'],
   ['airHang', 'How much a swing in the air holds him where he is', 0, 1, 0.05, 'x'],
   ['swingLunge', 'How far a swing pulls him forward', 0, 300, 10, ' px/s'],
   ['guardSpeed', 'Walking speed with the shield up', 40, 200, 5, ' px/s'],

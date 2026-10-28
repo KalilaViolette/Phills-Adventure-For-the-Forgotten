@@ -1,16 +1,16 @@
 'use strict';
 // ---------- input: keyboard and controller (PlayStation layout) ----------
 const keys = new Set();
-const inp = { left: 0, right: 0, up: 0, down: 0, jumpH: 0, guardH: 0, atkH: 0, aim: 0, aimX: 0, aimY: 0, aimUp: 0, aimDown: 0, jumpP: 0, atkP: 0, dodgeP: 0, lockP: 0, upP: 0, downP: 0, mapP: 0, guardP: 0, squeakP: 0, spinP: 0, sparkP: 0, any: 0 };
+const inp = { left: 0, right: 0, up: 0, down: 0, jumpH: 0, guardH: 0, atkH: 0, aim: 0, aimX: 0, aimY: 0, aimUp: 0, aimDown: 0, pace: 1, jumpP: 0, atkP: 0, dodgeP: 0, lockP: 0, upP: 0, downP: 0, mapP: 0, guardP: 0, squeakP: 0, spinP: 0, sparkP: 0, any: 0 };
 const talkIn = { press: 0, up: 0, down: 0, back: 0, map: 0, move: 0, guard: 0 };   // presses for talking and menus (read before a scene clears the input)
 const KEYMAP = {
   left: ['ArrowLeft', 'KeyA'], right: ['ArrowRight', 'KeyD'], up: ['ArrowUp', 'KeyW'], down: ['ArrowDown', 'KeyS'],
-  jump: ['KeyZ', 'Space', 'KeyK'], atk: ['KeyX', 'KeyJ'], dodge: ['KeyC', 'KeyL'], guard: ['KeyV', 'ShiftLeft', 'ShiftRight', 'KeyI'], lock: ['KeyR'], map: ['KeyM', 'KeyQ'], squeak: ['KeyF', 'KeyU'], spin: ['KeyG', 'KeyO'], spark: ['KeyE'],
+  jump: ['KeyZ', 'Space', 'KeyK'], atk: ['KeyX', 'KeyJ'], dodge: ['KeyC', 'KeyL'], guard: ['KeyV', 'ShiftLeft', 'ShiftRight', 'KeyI'], lock: ['KeyR'], walk: ['KeyB'], map: ['KeyM', 'KeyQ'], squeak: ['KeyF', 'KeyU'], spin: ['KeyG', 'KeyO'], spark: ['KeyE'],
 };
 const keyIs = (code, act) => KEYMAP[act].includes(code);
 // what the buttons are called, for whichever the player last used. Hints write them as {jump}, {atk} and so on
 const BTN_NAMES = {
-  key: { jump: 'z', atk: 'x', dodge: 'c', guard: 'v', map: 'm', squeak: 'f', spin: 'g', spark: 'e', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r' },
+  key: { jump: 'z', atk: 'x', dodge: 'c', guard: 'v', map: 'm', squeak: 'f', spin: 'g', spark: 'e', walk: 'b', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r' },
   pad: { jump: 'x', atk: 'r1', dodge: 'circle', guard: 'l1', map: 'share', squeak: 'triangle', spin: 'square', spark: 'r2', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r3' },
 };
 let device = null;
@@ -20,8 +20,8 @@ function useDevice(d) {
   device = d; if (typeof knownSig !== 'undefined') knownSig = '';
   const el = document.querySelector('#bar .keys');
   if (el) el.innerHTML = d === 'pad'
-    ? '<span><b>X</b> jump</span><span>Walk into a low gap to crawl under it</span><span>Fall past a ledge and hold toward it to grab it. <b>Up</b> climbs, <b>Down</b> lets go</span><span><b>Down + X</b> drop through shelves</span><span>Hold <b>Up</b> or <b>Down</b> to look around</span><span><b>Circle</b> roll (once he figures it out)</span><span><b>R1</b> swing, <b>L1</b> shield (once he has them)</span><span><b>Right stick</b> turns him to face that way, so he can swing or hold his shield one way while walking the other (a bit slower). Up or down points the swing that way too</span><span><b>Triangle</b> squeak (once he learns it)</span><span><b>Square</b> spin (once he learns it)</span><span><b>Share</b> map</span>'
-    : '<span><b>Z</b> jump</span><span>Walk into a low gap to crawl under it</span><span>Fall past a ledge and hold toward it to grab it. <b>Up</b> climbs, <b>Down</b> lets go</span><span><b>Down + Z</b> drop through shelves</span><span>Hold <b>Up</b> or <b>Down</b> to look around</span><span><b>C</b> roll (once he figures it out)</span><span><b>X</b> swing, <b>V</b> shield (once he has them)</span><span><b>F</b> squeak (once he learns it)</span><span><b>G</b> spin (once he learns it)</span><span><b>M</b> map</span>';
+    ? '<span>Push the <b>stick</b> a little to walk, all the way to run</span><span><b>X</b> jump</span><span>Walk into a low gap to crawl under it</span><span>Fall past a ledge and hold toward it to grab it. <b>Up</b> climbs, <b>Down</b> lets go</span><span><b>Down + X</b> drop through shelves</span><span>Hold <b>Up</b> or <b>Down</b> to look around</span><span><b>Circle</b> roll (once he figures it out)</span><span><b>R1</b> swing, <b>L1</b> shield (once he has them)</span><span><b>Right stick</b> turns him to face that way, so he can swing or hold his shield one way while walking the other (a bit slower). Up or down points the swing that way too</span><span><b>Triangle</b> squeak (once he learns it)</span><span><b>Square</b> spin (once he learns it)</span><span><b>Share</b> map</span>'
+    : '<span>Hold <b>B</b> while moving to walk</span><span><b>Z</b> jump</span><span>Walk into a low gap to crawl under it</span><span>Fall past a ledge and hold toward it to grab it. <b>Up</b> climbs, <b>Down</b> lets go</span><span><b>Down + Z</b> drop through shelves</span><span>Hold <b>Up</b> or <b>Down</b> to look around</span><span><b>C</b> roll (once he figures it out)</span><span><b>X</b> swing, <b>V</b> shield (once he has them)</span><span><b>F</b> squeak (once he learns it)</span><span><b>G</b> spin (once he learns it)</span><span><b>M</b> map</span>';
 }
 let started = false, paused = false, showBoxes = false, showDebug = false;
 // the page's own controls that use the arrow keys and typing themselves (the input audit, 10/17/2026)
@@ -111,11 +111,17 @@ function pollPad() {
     // the stick: a new direction counts once it's been held a moment, or straight away when it's pushed most of the way.
     // Letting go of a push swings the stick back through the middle and a little past it, and that flick was turning
     // him round the wrong way, so a short, soft swing is ignored
-    const now = performance.now(), want = ax < -0.4 ? -1 : ax > 0.4 ? 1 : 0;
+    const now = performance.now(), want = ax < -0.3 ? -1 : ax > 0.3 ? 1 : 0;
     if (want !== padWant) { padWant = want; padWantT = now; }
     padDir = want && (want === padDir || Math.abs(ax) > 0.85 || now - padWantT >= 60) ? want : 0;
     inp.left = k('left') || b(14) || padDir < 0 ? 1 : 0;
     inp.right = k('right') || b(15) || padDir > 0 ? 1 : 0;
+    // how fast he goes (10/27/2026): the stick's tilt, from a slow walk just past the middle to the run he has now at full
+    // tilt, smooth all the way. The d-pad and the arrow keys are a run, or a walk holding the walk key (B)
+    const keyed = KEYMAP.left.some(c => keys.has(c)) || KEYMAP.right.some(c => keys.has(c)) || b(14) || b(15);   // (the arrow keys or the d-pad)
+    const tilt = keyed ? 1 : padDir ? Math.abs(ax) : window.touchTilt > 0 ? window.touchTilt : 1;          // (or the stick on the touch screen)
+    const ease = Math.max(0, Math.min(1, (tilt - 0.3) / 0.6));
+    inp.pace = keyed && k('walk') ? tune.keyWalk : tune.slowWalk + (1 - tune.slowWalk) * ease;
     inp.up = k('up') || b(12) || ay < -0.55 ? 1 : 0;
     inp.down = k('down') || b(13) || ay > 0.55 ? 1 : 0;
     inp.jumpH = k('jump') || b(0) ? 1 : 0;
@@ -159,6 +165,7 @@ function maskInput() {
   }
   if (P.story || cutscene) {
     for (const k in inp) if (k !== 'any') inp[k] = 0;
+    inp.pace = 1;
     if (P.autoX != null) { const d = P.autoX - P.x; inp.right = d > 2 ? 1 : 0; inp.left = d < -2 ? 1 : 0; if (P.hang) inp.up = 1; }   // a scene walking him (and up over any ledge he grabs)
     return;
   }

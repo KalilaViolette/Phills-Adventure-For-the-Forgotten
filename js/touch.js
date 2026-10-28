@@ -144,10 +144,11 @@ const touchUI = (() => {
     knob.style.transform = `translate(${dx}px, ${dy}px)`;
     const ax = dx / R, ay = dy / R;
     key('left', ax < -0.3, 'stick'); key('right', ax > 0.3, 'stick');
+    window.touchTilt = Math.abs(ax);                                                // (how far over: a soft push walks, 10/27/2026)
     key('up', ay < -0.55, 'stick'); key('down', ay > 0.55, 'stick');
   }
   function stickHome() {
-    stickId = null; knob.style.transform = '';
+    stickId = null; knob.style.transform = ''; window.touchTilt = 0;
     base.style.left = home[0] + 'px'; base.style.top = home[1] + 'px'; base.classList.remove('on');
     for (const a of ['left', 'right', 'up', 'down']) key(a, false, 'stick');
   }

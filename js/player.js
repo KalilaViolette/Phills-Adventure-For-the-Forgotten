@@ -646,7 +646,7 @@ function update(dt) {
       if (P.ground && Math.abs(P.vx) > 120) puff(P.x - P.facing * 4, P.y, 3, 30);
       P.facing = dir;
     }
-    let target = dir * (guarding ? tune.guardSpeed : P.charge >= CHARGE_SHOW ? tune.runSpeed * 0.3 : tune.runSpeed);
+    let target = dir * (guarding ? Math.min(tune.guardSpeed, tune.runSpeed * (inp.pace || 1)) : P.charge >= CHARGE_SHOW ? tune.runSpeed * 0.3 : tune.runSpeed * (inp.pace || 1));   // (pace: how far the stick's pushed, 10/27/2026)
     if (inp.aim && dir && dir === -P.facing) target *= tune.backSpeed;                     // going backwards (facing one way with the right stick, walking the other): slower (10/16/2026)
     if (P.soggyT > 0) target *= 0.55;
     if (P.slowT > 0) target *= 0.5;                                                           // a candy wrapper round him, or gum on his feet                                                         // soaked through: heavy, and slow till he's dripped dry
@@ -1209,6 +1209,7 @@ function frameName() {
   if (!P.ground) return (P.vy < -110 ? 'rise_' : P.vy < 110 ? 'top_' : 'fall_') + f;
   if (P.landT > 0) return 'land_' + f;
   if (P.turnT > 0) return 'turn';
+  if (Math.abs(P.vx) > 20 && Math.abs(P.vx) < tune.runSpeed * 0.7) return `walk_${(Math.floor(P.runDist / 9) % 4) + 1}_${f}`;   // a walk at the slower paces (10/27/2026)
   if (Math.abs(P.vx) > 20) return `run_${(Math.floor(P.runDist / 11) % 4) + 1}_${f}`;
   if (P.lookT > 0) return (inp.up ? 'look_up_' : 'look_down_') + f;
   const cyc = [0.45, 0.25, 0.45, 0.25], tot = 1.4;
