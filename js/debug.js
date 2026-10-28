@@ -205,7 +205,11 @@ function perfReport() {
   const SPEEDS = [1, 0.5, 0.25, 2];
   const spd = mk('#gShow', 'Speed 1x', () => { DBG.speed = SPEEDS[(SPEEDS.indexOf(DBG.speed) + 1) % SPEEDS.length]; });
   spd.classList.add('tog');
+  const TIMES = [undefined, 'day', 'dawn', 'dusk', 'night'];                        // the time of day outside, for trying the sky and the dark at each (10/28/2026). Off: the story's own
+  const tm = mk('#gShow', 'Time: story', () => { DBG.time = TIMES[(TIMES.indexOf(DBG.time) + 1) % TIMES.length]; });
+  tm.classList.add('tog');
   function sync() {
+    tm.textContent = 'Time: ' + (DBG.time || 'story'); tm.classList.toggle('on', !!DBG.time);
     for (const [b, get] of togs) b.classList.toggle('on', !!get());
     spd.textContent = 'Speed ' + DBG.speed + 'x'; spd.classList.toggle('on', DBG.speed !== 1);
   }

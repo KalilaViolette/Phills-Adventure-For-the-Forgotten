@@ -20,27 +20,195 @@ ROOM({
     0,
     384,
     1444,
-    503
+    522
+   ],
+   "L1": [
+    0,
+    906,
+    1444,
+    493
+   ],
+   "L2": [
+    0,
+    1399,
+    1444,
+    464
+   ],
+   "front": [
+    0,
+    1863,
+    1025,
+    92
+   ],
+   "piece_time_0_dawn": [
+    0,
+    1955,
+    1440,
+    384
+   ],
+   "piece_time_0_dusk": [
+    0,
+    2339,
+    1440,
+    384
+   ],
+   "piece_time_0_night": [
+    0,
+    2723,
+    1440,
+    384
    ],
    "piece_reveal_log_near_side": [
     0,
-    887,
+    3107,
     179,
     53
+   ],
+   "piece_plant_leaf_tide_plant_01": [
+    0,
+    3160,
+    29,
+    18
+   ],
+   "piece_plant_leaf_tide_plant_02": [
+    0,
+    3178,
+    23,
+    16
+   ],
+   "piece_plant_leaf_tide_plant_03": [
+    0,
+    3194,
+    25,
+    17
+   ],
+   "piece_plant_leaf_tide_plant_04": [
+    0,
+    3211,
+    27,
+    18
+   ],
+   "piece_plant_leaf_tide_plant_05": [
+    0,
+    3229,
+    28,
+    17
+   ],
+   "piece_plant_leaf_tide_plant_06": [
+    0,
+    3246,
+    30,
+    28
+   ],
+   "piece_plant_leaf_tide_plant_07": [
+    0,
+    3274,
+    28,
+    24
+   ],
+   "piece_plant_leaf_tide_plant_08": [
+    0,
+    3298,
+    24,
+    28
    ]
   },
   "layers": [
    {
     "src": "art/rootwood/painted/litterpath.png#L0",
-    "f": 0.4
+    "f": 0.3,
+    "times": {
+     "dawn": "art/rootwood/painted/litterpath.png#piece_time_0_dawn",
+     "dusk": "art/rootwood/painted/litterpath.png#piece_time_0_dusk",
+     "night": "art/rootwood/painted/litterpath.png#piece_time_0_night"
+    }
+   },
+   {
+    "src": "art/rootwood/painted/litterpath.png#L1",
+    "f": 0.45
+   },
+   {
+    "src": "art/rootwood/painted/litterpath.png#L2",
+    "f": 0.6
    }
   ],
+  "front": "art/rootwood/painted/litterpath.png#front",
+  "frontAt": [
+   200,
+   196
+  ],
   "pieces": {
+   "time_0_dawn": [
+    0,
+    0,
+    1440,
+    384
+   ],
+   "time_0_dusk": [
+    0,
+    0,
+    1440,
+    384
+   ],
+   "time_0_night": [
+    0,
+    0,
+    1440,
+    384
+   ],
    "reveal_log_near_side": [
     788,
     236,
     179,
     53
+   ],
+   "plant_leaf_tide_plant_01": [
+    216,
+    268,
+    29,
+    18
+   ],
+   "plant_leaf_tide_plant_02": [
+    554,
+    117,
+    23,
+    16
+   ],
+   "plant_leaf_tide_plant_03": [
+    694,
+    188,
+    25,
+    17
+   ],
+   "plant_leaf_tide_plant_04": [
+    1107,
+    265,
+    27,
+    18
+   ],
+   "plant_leaf_tide_plant_05": [
+    1206,
+    258,
+    28,
+    17
+   ],
+   "plant_leaf_tide_plant_06": [
+    315,
+    209,
+    30,
+    28
+   ],
+   "plant_leaf_tide_plant_07": [
+    636,
+    183,
+    28,
+    24
+   ],
+   "plant_leaf_tide_plant_08": [
+    1176,
+    240,
+    24,
+    28
    ]
   },
   "uses": [
@@ -163,7 +331,7 @@ ROOM({
  ],
  "floor": "leaves",
  "shade": {
-  "a": 0.06,
+  "a": 0.25,
   "lights": []
  },
  "ambient": [
@@ -431,6 +599,13 @@ ROOM({
  },
  "wildlife": [
   {
+   "kind": "deer",
+   "at": "L2",
+   "x0": 128,
+   "x1": 992,
+   "y": 245
+  },
+  {
    "kind": "rabbit",
    "at": "back",
    "x0": 32,
@@ -456,6 +631,7 @@ ROOM({
    "y": 205
   }
  ],
+ "outside": true,
  "reveals": [
   [
    "reveal_log_near_side",
@@ -465,6 +641,88 @@ ROOM({
     978,
     292
    ]
+  ]
+ ],
+ "plants": [
+  [
+   "plant_leaf_tide_plant_01",
+   -1,
+   230,
+   285,
+   1.0,
+   0.72,
+   4.0,
+   0.0
+  ],
+  [
+   "plant_leaf_tide_plant_02",
+   -1,
+   565,
+   132,
+   1.5,
+   1.07,
+   4.0,
+   1.7
+  ],
+  [
+   "plant_leaf_tide_plant_03",
+   -1,
+   706,
+   205,
+   0.8,
+   0.86,
+   4.0,
+   3.4
+  ],
+  [
+   "plant_leaf_tide_plant_04",
+   -1,
+   1120,
+   282,
+   1.2,
+   1.22,
+   4.0,
+   5.1
+  ],
+  [
+   "plant_leaf_tide_plant_05",
+   -1,
+   1220,
+   274,
+   1.0,
+   0.63,
+   4.0,
+   0.52
+  ],
+  [
+   "plant_leaf_tide_plant_06",
+   1,
+   330,
+   237,
+   0.7,
+   0.95,
+   2.0,
+   2.22
+  ],
+  [
+   "plant_leaf_tide_plant_07",
+   1,
+   650,
+   206,
+   1.4,
+   0.8,
+   2.0,
+   3.92
+  ],
+  [
+   "plant_leaf_tide_plant_08",
+   1,
+   1188,
+   267,
+   0.9,
+   1.15,
+   2.0,
+   5.62
   ]
  ],
  "noGrab": [

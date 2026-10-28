@@ -66,7 +66,8 @@ function render(alpha) {
   const far = room.def.art.far && Assets.get(room.def.art.far);
   if (far) { const f = room.def.art.farF; drawView(far, Math.round(camX * f), Math.round(camY * f)); }   // the background, scrolling slower: depth
   const layers = room.def.art.layers || [];   // (a layer's fy: it moves up and down at that instead of f, 10/17/2026. fy 1 pins it to the room's heights)
-  layers.forEach((L, i) => { if (L.f < 1) { const im = Assets.get(L.src); if (im) drawView(im, Math.round(camX * L.f), Math.round(camY * (L.fy ?? L.f))); if (typeof drawWildlife === 'function') drawWildlife('L' + i, camX, camY); } });   // parallax layers, farthest first, with whatever lives in each
+  const tod = room.def.outside ? timeOfDay() : 'day';
+  layers.forEach((L, i) => { if (L.f < 1) { const im = Assets.get((L.times && L.times[tod]) || L.src); if (im) drawView(im, Math.round(camX * L.f), Math.round(camY * (L.fy ?? L.f))); if (typeof drawWildlife === 'function') drawWildlife('L' + i, camX, camY); } });   // parallax layers, farthest first, with whatever lives in each
   if (main) drawView(main, camX, camY);
   ctx.translate(-camX, -camY);
   drawCovers();
@@ -779,10 +780,23 @@ function drawGlow(camX, camY) {
   }
 }
 
+// ---------- the time of day outside (10/28/2026) ----------
+// rooms under the open sky work at any time of day. The game picks day, dawn, dusk or night by where the story is
+// (STORY_TIMES), the sky shows its own picture for that time, and the rest of the room gets the time's tint and dark.
+// DBG.time overrides it (the Time button in the debug strip)
+const TIME_SHADE = { day: null, dawn: { tint: '#2a1a40', a: 0.22, lights: [] }, dusk: { tint: '#3a1a14', a: 0.3, lights: [] }, night: { tint: '#040a20', a: 0.55, lights: [] } };
+const STORY_TIMES = [];                     // [flag, time] in story order, the last one whose flag is set wins: empty (always day) till the story's times are decided
+function timeOfDay() {
+  if (typeof DBG !== 'undefined' && DBG.time) return DBG.time;
+  let t = 'day';
+  for (const [flag, tt] of STORY_TIMES) if (world.flags[flag]) t = tt;
+  return t;
+}
+
 // ---------- the dark under the trees: lights cut out of it (glowing mushrooms, light coming down, a little around Phill) ----------
 let shadeC = null;
 function drawShade(px, py, camX, camY) {
-  const sh = room.def.shade;
+  const sh = room.def.outside ? TIME_SHADE[timeOfDay()] : room.def.shade;
   if (!sh) return;
   if (!shadeC || shadeC.width !== VW || shadeC.height !== VH) { shadeC = document.createElement('canvas'); shadeC.width = VW; shadeC.height = VH; }
   const g = shadeC.getContext('2d'), now = performance.now() / 1000;
