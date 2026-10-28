@@ -11,8 +11,8 @@
 <style>
   /* Alegreya, the title menu's lettering, comes with the game (art/fonts, a Latin cut of it) so it looks the same offline
      or when Google Fonts can't load. SIL Open Font License, in Alegreya-OFL.txt next to it */
-  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya.woff?v=1027u) format('woff'); font-weight: 400 900; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya-Italic.woff?v=1027u) format('woff'); font-weight: 400 900; font-style: italic; font-display: swap; }
+  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya.woff?v=1027v) format('woff'); font-weight: 400 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya-Italic.woff?v=1027v) format('woff'); font-weight: 400 900; font-style: italic; font-display: swap; }
   /* one dark toy-room look for the whole page: the game screen, a strip of controls under it, a tuning drawer */
   :root {
     --bg: #12131c; --panel: #1d2030; --line: #343a55; --fg: #e8e6f0; --dim: #9aa0bb;
@@ -55,7 +55,7 @@
   .overlay .small { color: var(--dim); font-size: 13px; max-width: 46ch; margin-inline: auto; }
   /* the title card (10/17/2026, Moonlit Grime v5): the painting fills the start screen, the title's in it, so the
      words above it are kept for screen readers only and the start note sits low over the bottom of the picture */
-  #start { background: #07080e url(art/title/title_card.jpg?v=1027u) center / contain no-repeat; place-items: end end; text-align: right; }
+  #start { background: #07080e url(art/title/title_card.jpg?v=1027v) center / contain no-repeat; place-items: end end; text-align: right; }
   #start > div:not(#title) { margin: 0 max(2%, 10px) max(2%, 10px) 0; max-width: min(38ch, 46%); padding: 8px 14px 9px; border-radius: 8px; background: rgba(7, 8, 14, .74); }   /* (bottom right, over the water: Phill's in the middle) */
   #start h1, #start .sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   #start .small { font-size: 12px; margin-inline: 0; }
@@ -64,7 +64,7 @@
      bigger box in the middle with the picture blurred and dimmed behind it. Made to go with the painting
      (10/17/2026): night blue panels with a little paper grain, cream storybook lettering, a thin worn gold edge. The night
      blue also fills round the picture where the screen's a different shape */
-  body.titlemenu #start { cursor: default; background-color: #0a1323; background-image: url(art/title/title_card.jpg?v=1027u), radial-gradient(ellipse at 50% 35%, #13213a 0%, #0b1426 55%, #070c17 100%); background-size: contain, cover; background-repeat: no-repeat; background-position: center, 0 0; }
+  body.titlemenu #start { cursor: default; background-color: #0a1323; background-image: url(art/title/title_card.jpg?v=1027v), radial-gradient(ellipse at 50% 35%, #13213a 0%, #0b1426 55%, #070c17 100%); background-size: contain, cover; background-repeat: no-repeat; background-position: center, 0 0; }
   body.titlemenu #start > div:not(#title) { display: none; }
   #title { position: absolute; inset: 0; pointer-events: none; font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Book Antiqua', serif; --cream: #f2e7cd; --gold: #e4c07a; --muted: #b9ad92; --night: 11, 20, 38; }
   /* the picture's edges melt into the night blue */
@@ -227,67 +227,67 @@
   </div>
 </div>
 <!-- the game's code. Rooms aren't listed here: they load one at a time as Phill gets near them -->
-<script>window.BUILD = '1027u';   // bump on every update: every script, room file and picture is asked for with it, so a browser never keeps an old copy</script>
-<script src="art/phill/phill_frames.js?v=1027u"></script>
-<script src="art/crow/crow_frames.js?v=1027u"></script>
-<script src="art/bear/bear_frames.js?v=1027u"></script>
-<script src="rooms/index.js?v=1027u"></script>
-<script src="rooms/map.js?v=1027u"></script>
-<script src="art/rootwood/rootwood_sprites.js?v=1027u"></script>
-<script src="art/rootwood/soldier_sprites.js?v=1027u"></script>
-<script src="art/pond/pond_sprites.js?v=1027u"></script>
-<script src="art/playground/playground_sprites.js?v=1027u"></script>
-<script src="art/oak/oak_sprites.js?v=1027u"></script>
-<script src="art/wildlife/wildlife.js?v=1027u"></script>
-<script src="art/hitmasks.js?v=1027u"></script>
-<script src="art/warren/warren_sprites.js?v=1027u"></script>
-<script src="art/greenhouse/greenhouse_sprites.js?v=1027u"></script>
-<script src="art/hive/hive_sprites.js?v=1027u"></script>
-<script src="js/config.js?v=1027u"></script>
-<script src="js/input.js?v=1027u"></script>
-<script src="js/audio.js?v=1027u"></script>
-<script src="js/assets.js?v=1027u"></script>
-<script src="js/fx.js?v=1027u"></script>
-<script src="js/world.js?v=1027u"></script>
-<script src="js/rooms.js?v=1027u"></script>
-<script src="js/player.js?v=1027u"></script>
-<script src="js/story.js?v=1027u"></script>
-<script src="js/idle.js?v=1027u"></script>
-<script src="js/scene.js?v=1027u"></script>
-<script src="js/scenes/opening.js?v=1027u"></script>
-<script src="js/font.js?v=1027u"></script>
-<script src="js/talk.js?v=1027u"></script>
-<script src="js/pins.js?v=1027u"></script>
-<script src="js/foes.js?v=1027u"></script>
-<script src="js/boss.js?v=1027u"></script>
-<script src="js/pond.js?v=1027u"></script>
-<script src="js/pond_bosses.js?v=1027u"></script>
-<script src="js/rootwood.js?v=1027u"></script>
-<script src="js/rootwood_foes2.js?v=1027u"></script>
-<script src="js/rootwood_plants.js?v=1027u"></script>
-<script src="js/oak.js?v=1027u"></script>
-<script src="js/wildlife.js?v=1027u"></script>
-<script src="js/oak_bosses.js?v=1027u"></script>
-<script src="js/playground.js?v=1027u"></script>
-<script src="js/playground_bosses.js?v=1027u"></script>
-<script src="js/moves2.js?v=1027u"></script>
-<script src="js/map.js?v=1027u"></script>
-<script src="js/scenes/rootwood.js?v=1027u"></script>
-<script src="js/camera.js?v=1027u"></script>
-<script src="js/render.js?v=1027u"></script>
-<script src="js/warren.js?v=1027u"></script>
-<script src="js/greenhouse.js?v=1027u"></script>
-<script src="js/greenhouse_foes.js?v=1027u"></script>
-<script src="js/greenhouse_boss.js?v=1027u"></script>
-<script src="js/hive.js?v=1027u"></script>
-<script src="js/hive_foes.js?v=1027u"></script>
-<script src="js/hive_bosses.js?v=1027u"></script>
-<script src="js/bear.js?v=1027u"></script>
-<script src="js/ui.js?v=1027u"></script>
-<script src="js/main.js?v=1027u"></script>
-<script src="js/touch.js?v=1027u"></script>
-<script src="js/areas.js?v=1027u"></script>
-<script src="js/debug.js?v=1027u"></script>
-<script src="js/menu.js?v=1027u"></script>
+<script>window.BUILD = '1027v';   // bump on every update: every script, room file and picture is asked for with it, so a browser never keeps an old copy</script>
+<script src="art/phill/phill_frames.js?v=1027v"></script>
+<script src="art/crow/crow_frames.js?v=1027v"></script>
+<script src="art/bear/bear_frames.js?v=1027v"></script>
+<script src="rooms/index.js?v=1027v"></script>
+<script src="rooms/map.js?v=1027v"></script>
+<script src="art/rootwood/rootwood_sprites.js?v=1027v"></script>
+<script src="art/rootwood/soldier_sprites.js?v=1027v"></script>
+<script src="art/pond/pond_sprites.js?v=1027v"></script>
+<script src="art/playground/playground_sprites.js?v=1027v"></script>
+<script src="art/oak/oak_sprites.js?v=1027v"></script>
+<script src="art/wildlife/wildlife.js?v=1027v"></script>
+<script src="art/hitmasks.js?v=1027v"></script>
+<script src="art/warren/warren_sprites.js?v=1027v"></script>
+<script src="art/greenhouse/greenhouse_sprites.js?v=1027v"></script>
+<script src="art/hive/hive_sprites.js?v=1027v"></script>
+<script src="js/config.js?v=1027v"></script>
+<script src="js/input.js?v=1027v"></script>
+<script src="js/audio.js?v=1027v"></script>
+<script src="js/assets.js?v=1027v"></script>
+<script src="js/fx.js?v=1027v"></script>
+<script src="js/world.js?v=1027v"></script>
+<script src="js/rooms.js?v=1027v"></script>
+<script src="js/player.js?v=1027v"></script>
+<script src="js/story.js?v=1027v"></script>
+<script src="js/idle.js?v=1027v"></script>
+<script src="js/scene.js?v=1027v"></script>
+<script src="js/scenes/opening.js?v=1027v"></script>
+<script src="js/font.js?v=1027v"></script>
+<script src="js/talk.js?v=1027v"></script>
+<script src="js/pins.js?v=1027v"></script>
+<script src="js/foes.js?v=1027v"></script>
+<script src="js/boss.js?v=1027v"></script>
+<script src="js/pond.js?v=1027v"></script>
+<script src="js/pond_bosses.js?v=1027v"></script>
+<script src="js/rootwood.js?v=1027v"></script>
+<script src="js/rootwood_foes2.js?v=1027v"></script>
+<script src="js/rootwood_plants.js?v=1027v"></script>
+<script src="js/oak.js?v=1027v"></script>
+<script src="js/wildlife.js?v=1027v"></script>
+<script src="js/oak_bosses.js?v=1027v"></script>
+<script src="js/playground.js?v=1027v"></script>
+<script src="js/playground_bosses.js?v=1027v"></script>
+<script src="js/moves2.js?v=1027v"></script>
+<script src="js/map.js?v=1027v"></script>
+<script src="js/scenes/rootwood.js?v=1027v"></script>
+<script src="js/camera.js?v=1027v"></script>
+<script src="js/render.js?v=1027v"></script>
+<script src="js/warren.js?v=1027v"></script>
+<script src="js/greenhouse.js?v=1027v"></script>
+<script src="js/greenhouse_foes.js?v=1027v"></script>
+<script src="js/greenhouse_boss.js?v=1027v"></script>
+<script src="js/hive.js?v=1027v"></script>
+<script src="js/hive_foes.js?v=1027v"></script>
+<script src="js/hive_bosses.js?v=1027v"></script>
+<script src="js/bear.js?v=1027v"></script>
+<script src="js/ui.js?v=1027v"></script>
+<script src="js/main.js?v=1027v"></script>
+<script src="js/touch.js?v=1027v"></script>
+<script src="js/areas.js?v=1027v"></script>
+<script src="js/debug.js?v=1027v"></script>
+<script src="js/menu.js?v=1027v"></script>
 </body>
 </html>
