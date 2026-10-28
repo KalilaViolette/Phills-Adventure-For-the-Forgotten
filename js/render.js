@@ -598,7 +598,11 @@ function glowGroups() {                                // the room's glowworms i
 function drawAmbient(camX, camY, glowPass) {
   if (glowPass) { drawGlow(camX, camY); return; }
   const now = performance.now(), dt = Math.min(0.05, (now - ambT) / 1000); ambT = now;
-  const kinds = room.def.ambient || ['dust'];
+  const kinds = room.def.outside ? OUT_AMBIENT[timeOfDay()] : (room.def.ambient || ['dust']);
+  if (room.def.outside) {                           // (outside, what's in the air goes by the time of day: what doesn't belong to it now is let go)
+    const keep = new Set(kinds.flatMap(k => MOTE_KINDS[k] || []));
+    for (let i = motes.length - 1; i >= 0; i--) if (!keep.has(motes[i].k)) motes.splice(i, 1);
+  }
   const count = k => motes.reduce((n, m) => n + (m.k === k ? 1 : 0), 0);
   const rnd = (a, b) => a + Math.random() * (b - a);
   if (kinds.includes('dust') && count('dust') < 26) motes.push({ k: 'dust', x: rnd(0, VW), y: rnd(0, VH), vx: rnd(-3, 3), vy: rnd(-4, -1), ph: rnd(0, 6) });
@@ -736,8 +740,9 @@ function drawPlants(layer, camX, camY) {
 function glowEach(camX, camY, front, fn) {
   if (!room.def.glow) return;
   const now = performance.now() / 1000, pcs = room.def.art.pieces || {};
-  for (const [n, pulse, speed, phase, depth] of room.def.glow) {
-    if ((depth === 'front') !== front) continue;
+  const tod = room.def.outside ? timeOfDay() : 'day';
+  for (const [n, pulse, speed, phase, depth, times] of room.def.glow) {
+    if ((depth === 'front') !== front || (times && !times.includes(tod))) continue;   // (a light for some times of day only, outside: the mushrooms' glow at night)
     const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
     if (!im || r[0] - camX > VW || r[1] - camY > VH || r[0] + r[2] - camX < 0 || r[1] + r[3] - camY < 0) continue;
     fn(im, r, 1 - pulse * (0.5 + 0.5 * Math.sin(now * speed + phase)));
@@ -785,7 +790,9 @@ function drawGlow(camX, camY) {
 // (STORY_TIMES), the sky shows its own picture for that time, and the rest of the room gets the time's tint and dark.
 // DBG.time overrides it (the Time button in the debug strip)
 const TIME_SHADE = { day: null, dawn: { tint: '#2a1a40', a: 0.22, lights: [] }, dusk: { tint: '#3a1a14', a: 0.3, lights: [] }, night: { tint: '#040a20', a: 0.55, lights: [] } };
-const STORY_TIMES = [];                     // [flag, time] in story order, the last one whose flag is set wins: empty (always day) till the story's times are decided
+const STORY_TIMES = [];
+const OUT_AMBIENT = { day: ['leaves', 'yard'], dawn: ['leaves', 'motes'], dusk: ['leaves', 'midges'], night: ['fireflies'] };   // what's in the air outside at each time: leaves and butterflies by day, midges at dusk, fireflies at night
+const MOTE_KINDS = { leaves: ['leaf'], yard: ['dust', 'fly'], motes: ['dust'], midges: ['midge'], fireflies: ['ff'], spores: ['spore'], dust: ['dust'] };                     // [flag, time] in story order, the last one whose flag is set wins: empty (always day) till the story's times are decided
 function timeOfDay() {
   if (typeof DBG !== 'undefined' && DBG.time) return DBG.time;
   let t = 'day';

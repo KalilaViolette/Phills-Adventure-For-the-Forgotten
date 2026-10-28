@@ -34,83 +34,95 @@ ROOM({
     1444,
     464
    ],
-   "front": [
+   "L3": [
     0,
     1863,
+    1659,
+    445
+   ],
+   "front": [
+    0,
+    2308,
     1025,
     92
    ],
    "piece_time_0_dawn": [
     0,
-    1955,
+    2400,
     1440,
     384
    ],
    "piece_time_0_dusk": [
     0,
-    2339,
+    2784,
     1440,
     384
    ],
    "piece_time_0_night": [
     0,
-    2723,
+    3168,
     1440,
     384
    ],
    "piece_reveal_log_near_side": [
     0,
-    3107,
-    179,
-    53
+    3552,
+    180,
+    56
    ],
    "piece_plant_leaf_tide_plant_01": [
     0,
-    3160,
+    3608,
     29,
     18
    ],
    "piece_plant_leaf_tide_plant_02": [
     0,
-    3178,
+    3626,
     23,
     16
    ],
    "piece_plant_leaf_tide_plant_03": [
     0,
-    3194,
+    3642,
     25,
     17
    ],
    "piece_plant_leaf_tide_plant_04": [
     0,
-    3211,
+    3659,
     27,
     18
    ],
    "piece_plant_leaf_tide_plant_05": [
     0,
-    3229,
+    3677,
     28,
     17
    ],
    "piece_plant_leaf_tide_plant_06": [
     0,
-    3246,
+    3694,
     30,
     28
    ],
    "piece_plant_leaf_tide_plant_07": [
     0,
-    3274,
+    3722,
     28,
     24
    ],
    "piece_plant_leaf_tide_plant_08": [
     0,
-    3298,
+    3746,
     24,
     28
+   ],
+   "piece_glow_0": [
+    0,
+    3774,
+    196,
+    99
    ]
   },
   "layers": [
@@ -130,6 +142,10 @@ ROOM({
    {
     "src": "art/rootwood/painted/litterpath.png#L2",
     "f": 0.6
+   },
+   {
+    "src": "art/rootwood/painted/litterpath.png#L3",
+    "f": 1.15
    }
   ],
   "front": "art/rootwood/painted/litterpath.png#front",
@@ -159,8 +175,8 @@ ROOM({
    "reveal_log_near_side": [
     788,
     236,
-    179,
-    53
+    180,
+    56
    ],
    "plant_leaf_tide_plant_01": [
     216,
@@ -209,6 +225,12 @@ ROOM({
     240,
     24,
     28
+   ],
+   "glow_0": [
+    367,
+    44,
+    196,
+    99
    ]
   },
   "uses": [
@@ -723,6 +745,18 @@ ROOM({
    1.15,
    2.0,
    5.62
+  ]
+ ],
+ "glow": [
+  [
+   "glow_0",
+   0.06,
+   0.6,
+   0.0,
+   "back",
+   [
+    "night"
+   ]
   ]
  ],
  "noGrab": [
