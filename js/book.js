@@ -28,8 +28,25 @@ const BOOK = (() => {
     tree: ['..ggg..', '.gGggg.', 'ggggGgg', '.gggg..', '...n...', '...n...'],
     bunny: ['..P.P..', '..c.c..', '..ccc..', '.ckckc.', '.ccccc.', '..ccc..'],
     carrot: ['..g.g..', '...g...', '..ooo..', '..oo...', '..oo...', '...o...'],
+    frog: ['.g...g.', 'gkg.gkg', 'ggggggg', 'gGrrrGg', '.ggggg.', 'g.g.g.g'],
+    ladybug: ['...k...', '.rrkrr.', 'rkrkrkr', 'rrrkrrr', '.rkrkr.', '..rrr..'],
+    sailboat: ['...ry..', '..rryy.', '.rrryyy', '...k...', 'nnnnnnn', 'bbbbbbb'],
+    whale: ['......b', '.bbbb.b', 'bbbbbbb', 'bkbbbbb', '.bbbbb.', '.......'],
+    mushroom: ['.rrrrr.', 'rrwrrwr', 'rrrrrrr', '..ccc..', '..ccc..', '.ccccc.'],
+    strawberry: ['..ggg..', '.rgrgr.', 'rrrrrrr', 'ryrrryr', '.rrrrr.', '..rrr..'],
+    owl: ['n.....n', 'nnnnnnn', 'yknnnky', 'nnnonnn', '.nnnnn.', '..o.o..'],
+    caterpillar: ['.......', '.....rr', '.gg.gkr', 'gGggGrr', 'g.g.g..', '.......'],
+    turtle: ['.......', '..GgG..', '.GgGgGg', 'GGGGGkg', '.g...g.', '.......'],
+    bee: ['..c.c..', '...c...', '.ykyko.', 'ykykyky', '.ykyky.', '.......'],
+    car: ['.......', '..bbb..', '.bwbwb.', 'bbbbbbb', '.k...k.', '.......'],
+    kite: ['...p...', '..pyp..', '.pyypp.', '..pyp..', '...p.k.', '....k.k'],
+    cupcake: ['...r...', '.PPPPP.', 'PPPPPPP', '.ooooo.', '.onono.', '..ooo..'],
+    penguin: ['..kkk..', '.kwkwk.', '.kkokk.', 'kkwwwkk', '.kwwwk.', '.o...o.'],
+    snowman: ['..kkk..', '..ccc..', '..ckc..', '.ccccc.', '.ckccc.', '.ccccc.'],
+    umbrella: ['..rrr..', '.rbrbr.', 'rbrbrbr', '...k...', '...k...', '..kk...'],
   };
-  const SPREADS = [['duck', 'flower'], ['cat', 'heart'], ['moon', 'star'], ['apple', 'butterfly'], ['rainbow', 'cloud'], ['bear', 'balloon'], ['house', 'tree'], ['bunny', 'carrot']];
+  const SPREADS = [['duck', 'flower'], ['cat', 'heart'], ['moon', 'star'], ['apple', 'butterfly'], ['rainbow', 'cloud'], ['bear', 'balloon'], ['house', 'tree'], ['bunny', 'carrot'],
+    ['frog', 'ladybug'], ['sailboat', 'whale'], ['mushroom', 'strawberry'], ['owl', 'caterpillar'], ['turtle', 'bee'], ['car', 'kite'], ['cupcake', 'penguin'], ['snowman', 'umbrella']];   // (the second eight added the same day)
   // where the open pages show in each of his book frames (the frame's top layer, 64 x 64): columns 22 to 40, rows 39
   // to 47, '#' where the page shows. Worked out from phill_sit.py's own drawing, his hands and the turning page left out
   const X0 = 22, Y0 = 39, SPINE = 31, LEFT = 24, RIGHT = 32, PY = 41;              // (the pictures go at columns 24 and 32, rows 41 to 46)
