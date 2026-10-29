@@ -69,6 +69,17 @@ const pauseMenu = window.pauseMenu = (() => {
     return { label, choices: () => opts.map(o => ({ label: cap(o.textContent), value: o.value, group: group(o) })), current: () => now().value, show: () => name(now()),
       choose: v => { cursor[sel.id] = opts.findIndex(o => o.value === v); if (shut) closeNow(); sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); } };
   };
+  // the tuning's numbers under headings, so each one's easy to find (10/29/2026: they were one long list)
+  const TUNE_GROUPS = [
+    ['Walking and running', ['runSpeed', 'accelTime', 'decelTime', 'slowWalk', 'keyWalk', 'backSpeed', 'crawlSpeed']],
+    ['Jumping and falling', ['jumpHeight', 'apexTime', 'jumpCut', 'coyote', 'jumpBuffer', 'fallMult', 'maxFall', 'splatHeight', 'airAccelTime', 'airDecelTime']],
+    ['Sword', ['attackCooldown', 'chargeTime', 'pressSwing', 'swordReach', 'swingLunge', 'airHang', 'pogo', 'downCooldown']],
+    ['Shield', ['guardSpeed', 'parryWindow', 'blockCost', 'stamRegen', 'guardBack']],
+    ['Roll and air dodge', ['rollSpeed', 'rollTime', 'iframeStart', 'iframeLen', 'airDashSpeed']],
+    ['Stamina', ['enRegen', 'enDelay', 'rollCost', 'airDodgeCost']],
+    ['Special moves', ['rallyTime', 'cdSqueak', 'cdSpin', 'cdBurst']],
+    ['Screen', ['pixelSnap']],
+  ];
   const PICKERS = { areaSel: ['Go to', true], spawnSel: ['Spawn an enemy', true], spawnLvl: ['Its level', false] };
   const SKIP = new Set(['tuneBtn', 'maxBtn', 'muteBtn', 'musicBtn', 'restartBtn', 'titleBtn']);
   const handheld = () => { try { return matchMedia('(hover: none) and (pointer: coarse)').matches; } catch (e) { return false; } };
@@ -126,10 +137,21 @@ const pauseMenu = window.pauseMenu = (() => {
       return [{ label: 'Showing', value: () => view, act: flip, left: flip, right: flip, table: view, note: pad ? pad.textContent : '' }];
     },
     // the tuning (it was its own drawer, on Tab): every number, left and right to change it, held down it keeps going
-    tuning: () => TUNE_ROWS.map(([key, label, mn, mx, stp, unit]) => {
-      const turn = d => () => { tune[key] = Math.min(mx, Math.max(mn, Math.round((tune[key] + d * stp) / stp) * stp)); saveTune(); refreshTune(); };
-      return { label, value: () => fmt(tune[key], stp) + unit, left: turn(-1), right: turn(1), act: turn(1) };
-    }).concat([{ label: 'Reset to defaults', act: () => resetTune() }]),
+    tuning: () => {
+      const row = ([key, label, mn, mx, stp, unit]) => {
+        const turn = d => () => { tune[key] = Math.min(mx, Math.max(mn, Math.round((tune[key] + d * stp) / stp) * stp)); saveTune(); refreshTune(); };
+        return { label, value: () => fmt(tune[key], stp) + unit, left: turn(-1), right: turn(1), act: turn(1) };
+      };
+      const out = [], used = new Set();
+      for (const [head, keys] of TUNE_GROUPS) {
+        const rs = keys.map(k => TUNE_ROWS.find(r => r[0] === k)).filter(Boolean);
+        if (!rs.length) continue;
+        out.push({ head }); for (const r of rs) { out.push(row(r)); used.add(r[0]); }
+      }
+      const rest = TUNE_ROWS.filter(r => !used.has(r[0]));                          // (anything new that hasn't been put under a heading yet)
+      if (rest.length) { out.push({ head: 'Other' }); rest.forEach(r => out.push(row(r))); }
+      return out.concat([{ head: ' ' }, { label: 'Reset to defaults', act: () => resetTune() }]);
+    },
     // the dev tab: what was in the strip under the game (go to, cheats, enemies, what to show)
     dev: () => stripRows(['gGo', 'gCheat', 'gFoes', 'gShow']),
   };
@@ -188,6 +210,13 @@ const pauseMenu = window.pauseMenu = (() => {
     if (n >= rows.length) n = at;
     n = Math.max(-1, n);
     if (n !== at) { at = n; mark(); if (sfx.tick) sfx.tick(); }
+  }
+  function jumpHead(d) {
+    const heads = rows.map((r, i) => r.head && r.head.trim() ? i : -1).filter(i => i >= 0); if (!heads.length) return;
+    const cur = heads.filter(h => h <= at).pop() ?? -1;
+    const to = d > 0 ? heads.find(h => h > at) : heads.filter(h => h < cur).pop() ?? (cur >= 0 ? cur : undefined);
+    if (to === undefined) return;
+    at = to; move(1);
   }
   function pick() {
     if (at === -1) { at = firstRow(); mark(); return; }
@@ -447,6 +476,7 @@ const pauseMenu = window.pauseMenu = (() => {
     else if (['ArrowDown', 'KeyS'].includes(c)) move(1);
     else if (['ArrowLeft', 'KeyA'].includes(c)) side(-1);
     else if (['ArrowRight', 'KeyD'].includes(c)) side(1);
+    else if (c === 'PageDown' || c === 'PageUp') jumpHead(c === 'PageDown' ? 1 : -1);   // (the next or last heading, in Tuning and Dev)
     else if (c === 'KeyQ') { setTab(tab - 1); }
     else if (c === 'KeyE') { setTab(tab + 1); }
     else if (['Enter', 'NumpadEnter', 'Space', 'KeyZ'].includes(c)) pick();
