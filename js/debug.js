@@ -213,6 +213,7 @@ function perfReport() {
     for (const [b, get] of togs) b.classList.toggle('on', !!get());
     spd.textContent = 'Speed ' + DBG.speed + 'x'; spd.classList.toggle('on', DBG.speed !== 1);
   }
+  window.dbgSync = sync;                                                            // (the pause menu calls it straight after pressing one, so it shows the new state at once)
   setInterval(sync, 300);                                                           // (H, F3 and the touch menu change some of these too)
   sync();
 })();

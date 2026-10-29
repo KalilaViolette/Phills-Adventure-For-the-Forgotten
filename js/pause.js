@@ -44,7 +44,7 @@ const pauseMenu = window.pauseMenu = (() => {
   const mirror = b => {
     if (!b.dataset.pmLabel) b.dataset.pmLabel = b.textContent.trim();             // (its own name: a button whose words change when it's on keeps the name it started with)
     const text = b.dataset.pmLabel, m = /^(.*?):\s*(.*)$/.exec(text) || /^(Speed) (.*)$/.exec(text);
-    const press = () => { b.click(); };
+    const press = () => { b.click(); if (window.dbgSync) dbgSync(); };
     const list = CYCLES[m && m[1]];
     if (list) {                                                                       // (a button that goes round a list: a dropdown, and picking one presses it round to that)
       const cur = () => { const t = b.textContent.trim(), n = /^.*?:\s*(.*)$/.exec(t) || /^Speed (.*)$/.exec(t); return n ? n[1] : t; };
@@ -71,11 +71,13 @@ const pauseMenu = window.pauseMenu = (() => {
   };
   const PICKERS = { areaSel: ['Go to', true], spawnSel: ['Spawn an enemy', true], spawnLvl: ['Its level', false] };
   const SKIP = new Set(['tuneBtn', 'maxBtn', 'muteBtn', 'musicBtn', 'restartBtn', 'titleBtn']);
+  const handheld = () => { try { return matchMedia('(hover: none) and (pointer: coarse)').matches; } catch (e) { return false; } };
+  const PHONE_ONLY = new Set(['touchBtn', 'buzzBtn']);                               // (the touch controls and the buzz only show on a phone or a tablet, the same as the title menu's Options)
   function stripRows(ids) {
     const out = [];
     for (const id of ids) {
       const g = document.getElementById(id); if (!g) continue;
-      const items = [...g.querySelectorAll('button, select')].filter(e => !SKIP.has(e.id));
+      const items = [...g.querySelectorAll('button, select')].filter(e => !SKIP.has(e.id) && (!PHONE_ONLY.has(e.id) || handheld()));
       if (!items.length) continue;
       const h = g.querySelector('h3'); if (h && ids.length > 1) out.push({ head: cap(h.textContent.trim().toLowerCase()) });
       for (const e of items) { const r = e.tagName === 'SELECT' ? (PICKERS[e.id] ? picker(e, ...PICKERS[e.id]) : null) : mirror(e); if (r) out.push(r); }
