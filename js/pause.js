@@ -345,6 +345,13 @@ const pauseMenu = window.pauseMenu = (() => {
       && !(P.roll > 0) && !(P.dash > 0) && !(P.ko > 0) && !(P.hurtT > 0) && !(P.splat > 0) && !(P.respawnT > 0) && !P.walkIn && !P.chute && !P.held && !P.hidden && !P.flop
       && trans.state === 'none' && !(typeof bossLocked === 'function' && bossLocked()) && has('sit_3') && !foeClose();
   }
+  // already sitting down resting at a rest spot (scenes/rootwood.js, restNote is up while he's sat there): he stays
+  // sat and goes on doing his sitting things while the menu's up, the same as when the menu sits him down itself
+  function resting() {
+    return typeof restNote !== 'undefined' && !!restNote && !!scene && !mapView && !(typeof pinBoard !== 'undefined' && pinBoard) && !talk && !cutscene
+      && P.story && P.story.kind === 'scene' && trans.state === 'none' && has('sit_3');
+  }
+  let wasResting = false;
   function bits() {
     if (typeof REST_BITS === 'undefined') return [];
     return ['doodle', 'doodle', 'stretch', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book', 'book'] : [])]
@@ -382,11 +389,19 @@ const pauseMenu = window.pauseMenu = (() => {
     api.open = true; closing = false; paused = true;
     for (const n in inp) inp[n] = 0; inp.pace = 1;
     saved = { story: P.story, restHuh: P.restHuh, paper: P.paper, crayon: P.crayon, facing: P.facing };
-    sitting = canSit();
+    wasResting = resting();
+    sitting = wasResting || canSit();
     if (sitting) {
       if (P.idleBit && typeof stopIdleBit === 'function') stopIdleBit();
-      P.paper = null; P.crayon = null; clock = 0; inBit = false; lastBit = null;
-      seq = instant ? [step('sit_3', 0.01)] : [step('turn', 0.12), step('sit_1', 0.13, () => sfx.bump && sfx.bump()), step('sit_2', 0.12), step('sit_3', 0.3)];
+      clock = 0; inBit = false; lastBit = null;
+      if (wasResting) {                                                              // (already down: whatever he had out goes away first, then on with his own things)
+        const props = !!(P.paper || P.crayon || /^rs_/.test(P.story.frame || ''));
+        seq = props ? [step(/^rs_/.test(P.story.frame || '') && has('rs_reach') ? 'rs_reach' : 'paper_3', 0.15, () => { P.paper = null; P.crayon = null; P.restHuh = false; }), step('sit_3', 0.2)] : [step('sit_3', 0.01)];
+        if (instant) seq = [step('sit_3', 0.01, () => { P.paper = null; P.crayon = null; P.restHuh = false; })];
+      } else {
+        P.paper = null; P.crayon = null;
+        seq = instant ? [step('sit_3', 0.01)] : [step('turn', 0.12), step('sit_1', 0.13, () => sfx.bump && sfx.bump()), step('sit_2', 0.12), step('sit_3', 0.3)];
+      }
       si = 0; st = 0; gap = 1.2; begin0();
     }
     for (const id in cursor) delete cursor[id];
@@ -406,7 +421,7 @@ const pauseMenu = window.pauseMenu = (() => {
     if (sitting) {
       const props = !!(P.paper || P.crayon || (P.story && /^rs_/.test(P.story.frame || '')));
       seq = (props ? [step(has('rs_reach') && /^rs_/.test(P.story.frame || '') ? 'rs_reach' : 'paper_3', 0.12, () => { P.paper = null; P.crayon = null; P.restHuh = false; })] : [])
-        .concat([step('sit_3', 0.08, () => { P.paper = null; P.crayon = null; P.restHuh = false; }), step('sit_1', 0.13), step('turn', 0.12)]);
+        .concat([step('sit_3', 0.08, () => { P.paper = null; P.crayon = null; P.restHuh = false; })], wasResting ? [] : [step('sit_1', 0.13), step('turn', 0.12)]);   // (resting: he stays sat)
       si = 0; st = 0; begin0();
     }
     if (!pref.glide || window.__testNoDraw) { k = 0; finish(); }
