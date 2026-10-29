@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 480,
  "art": {
-  "main": "art/oak/nest.png#main",
-  "pack": "art/oak/nest.png",
+  "main": "art/oak/nest.webp#main",
+  "pack": "art/oak/nest.webp",
   "parts": {
    "main": [
     0,
@@ -19,69 +19,72 @@ ROOM({
    "L0": [
     0,
     480,
-    1410,
-    572
+    673,
+    394
    ],
    "L1": [
     0,
-    1052,
-    1360,
-    560
+    874,
+    626,
+    178
    ],
    "L2": [
     0,
-    1612,
-    1277,
-    541
+    1052,
+    1,
+    1
    ],
    "L3": [
     0,
-    2153,
-    1173,
-    517
+    1053,
+    892,
+    142
    ],
    "L4": [
     0,
-    2670,
-    1335,
-    628
+    1195,
+    1215,
+    444
    ],
    "front": [
     0,
-    3298,
+    1639,
     1009,
     480
    ],
    "piece_twig": [
     0,
-    3778,
+    2119,
     191,
     148
    ]
   },
   "layers": [
    {
-    "src": "art/oak/nest.png#L0",
+    "src": "art/oak/nest.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/nest.png#L1",
-    "f": 0.2
+    "src": "art/oak/nest.webp#L1",
+    "f": 0.2,
+    "x": 31,
+    "y": 27
    },
    {
-    "src": "art/oak/nest.png#L2",
+    "src": "art/oak/nest.webp#L2",
     "f": 0.4
    },
    {
-    "src": "art/oak/nest.png#L3",
-    "f": 0.65
+    "src": "art/oak/nest.webp#L3",
+    "f": 0.65,
+    "y": 33
    },
    {
-    "src": "art/oak/nest.png#L4",
+    "src": "art/oak/nest.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/nest.png#front",
+  "front": "art/oak/nest.webp#front",
   "frontAt": [
    0,
    0

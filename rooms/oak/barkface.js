@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 640,
  "art": {
-  "main": "art/oak/barkface.png#main",
-  "pack": "art/oak/barkface.png",
+  "main": "art/oak/barkface.webp#main",
+  "pack": "art/oak/barkface.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,67 @@ ROOM({
    "L0": [
     0,
     640,
-    1405,
-    585
+    668,
+    407
    ],
    "L1": [
     0,
-    1225,
-    1348,
-    592
+    1047,
+    679,
+    293
    ],
    "L2": [
     0,
-    1817,
-    1252,
-    605
+    1340,
+    770,
+    166
    ],
    "L3": [
     0,
-    2422,
-    1132,
-    621
+    1506,
+    850,
+    514
    ],
    "L4": [
     0,
-    3043,
-    1252,
-    836
+    2020,
+    1213,
+    624
    ],
    "front": [
     0,
-    3879,
+    2644,
     154,
     87
    ]
   },
   "layers": [
    {
-    "src": "art/oak/barkface.png#L0",
+    "src": "art/oak/barkface.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/barkface.png#L1",
-    "f": 0.2
+    "src": "art/oak/barkface.webp#L1",
+    "f": 0.2,
+    "x": 27,
+    "y": 81
    },
    {
-    "src": "art/oak/barkface.png#L2",
-    "f": 0.4
+    "src": "art/oak/barkface.webp#L2",
+    "f": 0.4,
+    "y": 323
    },
    {
-    "src": "art/oak/barkface.png#L3",
-    "f": 0.65
+    "src": "art/oak/barkface.webp#L3",
+    "f": 0.65,
+    "y": 2
    },
    {
-    "src": "art/oak/barkface.png#L4",
+    "src": "art/oak/barkface.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/barkface.png#front",
+  "front": "art/oak/barkface.webp#front",
   "frontAt": [
    806,
    21

@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 512,
  "art": {
-  "main": "art/greenhouse/fernhouse.png#main",
-  "pack": "art/greenhouse/fernhouse.png",
+  "main": "art/greenhouse/fernhouse.webp#main",
+  "pack": "art/greenhouse/fernhouse.webp",
   "parts": {
    "main": [
     0,
@@ -19,67 +19,68 @@ ROOM({
    "L0": [
     0,
     512,
-    1371,
-    551
+    666,
+    444
    ],
    "L1": [
     0,
-    1063,
-    1261,
-    538
+    956,
+    700,
+    470
    ],
    "L2": [
     0,
-    1601,
-    1140,
-    528
+    1426,
+    738,
+    489
    ],
    "L3": [
     0,
-    2129,
-    1006,
-    522
+    1915,
+    781,
+    502
    ],
    "L4": [
     0,
-    2651,
-    1085,
-    669
+    2417,
+    637,
+    668
    ],
    "front": [
     0,
-    3320,
+    3085,
     80,
     64
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/fernhouse.png#L0",
+    "src": "art/greenhouse/fernhouse.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/fernhouse.png#L1",
+    "src": "art/greenhouse/fernhouse.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/fernhouse.png#L2",
+    "src": "art/greenhouse/fernhouse.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/fernhouse.png#L3",
+    "src": "art/greenhouse/fernhouse.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/fernhouse.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/fernhouse.webp#L4",
+    "f": 1.3,
+    "x": 281
    }
   ],
-  "front": "art/greenhouse/fernhouse.png#front",
+  "front": "art/greenhouse/fernhouse.webp#front",
   "frontAt": [
    208,
    416

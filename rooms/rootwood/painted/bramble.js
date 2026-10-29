@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 544,
  "art": {
-  "main": "art/rootwood/painted/bramble.png#main",
-  "pack": "art/rootwood/painted/bramble.png",
+  "main": "art/rootwood/painted/bramble.webp#main",
+  "pack": "art/rootwood/painted/bramble.webp",
   "parts": {
    "main": [
     0,
@@ -19,25 +19,25 @@ ROOM({
    "L0": [
     0,
     544,
-    973,
-    557
+    732,
+    498
    ],
    "piece_cover_burrowWall_pass": [
     0,
-    1101,
+    1042,
     60,
     118
    ],
    "piece_cover_burrowWall_wall": [
     0,
-    1219,
+    1160,
     34,
     118
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/painted/bramble.png#L0",
+    "src": "art/rootwood/painted/bramble.webp#L0",
     "f": 0.7
    }
   ],

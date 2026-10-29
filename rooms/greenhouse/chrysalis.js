@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 384,
  "art": {
-  "main": "art/greenhouse/chrysalis.png#main",
-  "pack": "art/greenhouse/chrysalis.png",
+  "main": "art/greenhouse/chrysalis.webp#main",
+  "pack": "art/greenhouse/chrysalis.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,59 @@ ROOM({
    "L0": [
     0,
     384,
-    1363,
-    493
+    658,
+    386
    ],
    "L1": [
     0,
-    877,
-    1242,
-    455
+    770,
+    681,
+    386
    ],
    "L2": [
     0,
-    1332,
-    1108,
-    426
+    1156,
+    706,
+    386
    ],
    "L3": [
     0,
-    1758,
-    960,
-    407
+    1542,
+    735,
+    386
    ],
    "L4": [
     0,
-    2165,
-    1002,
-    503
+    1928,
+    520,
+    502
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/chrysalis.png#L0",
+    "src": "art/greenhouse/chrysalis.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/chrysalis.png#L1",
+    "src": "art/greenhouse/chrysalis.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/chrysalis.png#L2",
+    "src": "art/greenhouse/chrysalis.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/chrysalis.png#L3",
+    "src": "art/greenhouse/chrysalis.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/chrysalis.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/chrysalis.webp#L4",
+    "f": 1.3,
+    "x": 331
    }
   ],
   "uses": [

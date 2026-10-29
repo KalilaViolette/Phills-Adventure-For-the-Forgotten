@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 608,
  "art": {
-  "main": "art/rootwood/mossbank.png#main",
-  "pack": "art/rootwood/mossbank.png",
+  "main": "art/rootwood/mossbank.webp#main",
+  "pack": "art/rootwood/mossbank.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,55 @@ ROOM({
    "L0": [
     0,
     608,
-    1363,
-    583
+    658,
+    413
    ],
    "L1": [
     0,
-    1191,
-    1242,
-    589
+    1021,
+    681,
+    454
    ],
    "L2": [
     0,
-    1780,
-    1108,
-    596
+    1475,
+    706,
+    498
    ],
    "L3": [
     0,
-    2376,
-    960,
-    603
+    1973,
+    735,
+    548
    ],
    "L4": [
     0,
-    2979,
-    1002,
-    794
+    2521,
+    664,
+    689
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/mossbank.png#L0",
+    "src": "art/rootwood/mossbank.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/mossbank.png#L1",
+    "src": "art/rootwood/mossbank.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/mossbank.png#L2",
+    "src": "art/rootwood/mossbank.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/mossbank.png#L3",
+    "src": "art/rootwood/mossbank.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/mossbank.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/mossbank.webp#L4",
+    "f": 1.3,
+    "x": 125
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 640,
  "art": {
-  "main": "art/oak/crown.png#main",
-  "pack": "art/oak/crown.png",
+  "main": "art/oak/crown.webp#main",
+  "pack": "art/oak/crown.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     640,
-    1410,
-    585
+    673,
+    407
    ],
    "L1": [
     0,
-    1225,
-    1360,
-    592
+    1047,
+    451,
+    389
    ],
    "L2": [
     0,
-    1817,
-    1277,
-    605
+    1436,
+    796,
+    148
    ],
    "L3": [
     0,
-    2422,
-    1173,
-    621
+    1584,
+    892,
+    553
    ],
    "L4": [
     0,
-    3043,
-    1335,
-    836
+    2137,
+    1334,
+    624
    ],
    "front": [
     0,
-    3879,
+    2761,
     48,
     64
    ]
   },
   "layers": [
    {
-    "src": "art/oak/crown.png#L0",
+    "src": "art/oak/crown.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/crown.png#L1",
-    "f": 0.2
+    "src": "art/oak/crown.webp#L1",
+    "f": 0.2,
+    "x": 268,
+    "y": 3
    },
    {
-    "src": "art/oak/crown.png#L2",
-    "f": 0.4
+    "src": "art/oak/crown.webp#L2",
+    "f": 0.4,
+    "y": 341
    },
    {
-    "src": "art/oak/crown.png#L3",
+    "src": "art/oak/crown.webp#L3",
     "f": 0.65
    },
    {
-    "src": "art/oak/crown.png#L4",
+    "src": "art/oak/crown.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/crown.png#front",
+  "front": "art/oak/crown.webp#front",
   "frontAt": [
    704,
    576

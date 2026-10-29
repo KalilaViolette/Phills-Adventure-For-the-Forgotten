@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 832,
  "art": {
-  "main": "art/rootwood/painted/well.png#main",
-  "pack": "art/rootwood/painted/well.png",
+  "main": "art/rootwood/painted/well.webp#main",
+  "pack": "art/rootwood/painted/well.webp",
   "parts": {
    "main": [
     0,
@@ -19,13 +19,13 @@ ROOM({
    "L0": [
     0,
     832,
-    1040,
-    759
+    799,
+    700
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/painted/well.png#L0",
+    "src": "art/rootwood/painted/well.webp#L0",
     "f": 0.7
    }
   ],

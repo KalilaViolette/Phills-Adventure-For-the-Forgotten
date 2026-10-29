@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 640,
  "art": {
-  "main": "art/hive/stores.png#main",
-  "pack": "art/hive/stores.png",
+  "main": "art/hive/stores.webp#main",
+  "pack": "art/hive/stores.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,60 @@ ROOM({
    "L0": [
     0,
     640,
-    1386,
-    608
+    681,
+    502
    ],
    "L1": [
     0,
-    1248,
-    1300,
-    621
+    1142,
+    738,
+    379
    ],
    "L2": [
     0,
-    1869,
-    1204,
-    631
+    1521,
+    799,
+    320
    ],
    "L3": [
     0,
-    2500,
-    1098,
-    637
+    1841,
+    873,
+    124
    ],
    "L4": [
     0,
-    3137,
-    1252,
-    836
+    1965,
+    925,
+    185
    ]
   },
   "layers": [
    {
-    "src": "art/hive/stores.png#L0",
+    "src": "art/hive/stores.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/hive/stores.png#L1",
+    "src": "art/hive/stores.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/hive/stores.png#L2",
+    "src": "art/hive/stores.webp#L2",
     "f": 0.5,
-    "fy": 0.8
+    "fy": 0.8,
+    "x": 3
    },
    {
-    "src": "art/hive/stores.png#L3",
+    "src": "art/hive/stores.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/hive/stores.png#L4",
-    "f": 1.3
+    "src": "art/hive/stores.webp#L4",
+    "f": 1.3,
+    "x": 306
    }
   ],
   "uses": [

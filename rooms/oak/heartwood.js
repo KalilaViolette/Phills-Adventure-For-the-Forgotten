@@ -7,8 +7,8 @@ ROOM({
  "music": "oak",
  "viewBottom": 640,
  "art": {
-  "main": "art/oak/heartwood.png#main",
-  "pack": "art/oak/heartwood.png",
+  "main": "art/oak/heartwood.webp#main",
+  "pack": "art/oak/heartwood.webp",
   "parts": {
    "main": [
     0,
@@ -19,66 +19,67 @@ ROOM({
    "L0": [
     0,
     640,
-    1394,
-    587
+    689,
+    417
    ],
    "L1": [
     0,
-    1227,
-    1319,
-    599
+    1057,
+    758,
+    463
    ],
    "L2": [
     0,
-    1826,
-    1236,
-    612
+    1520,
+    834,
+    514
    ],
    "L3": [
     0,
-    2438,
-    1144,
-    626
+    2034,
+    919,
+    571
    ],
    "L4": [
     0,
-    3064,
-    1335,
-    836
+    2605,
+    897,
+    120
    ],
    "piece_cover_rotwood_pass": [
     0,
-    3900,
+    2725,
     96,
     134
    ],
    "piece_cover_rotwood_wall": [
     0,
-    4034,
+    2859,
     18,
     134
    ]
   },
   "layers": [
    {
-    "src": "art/oak/heartwood.png#L0",
+    "src": "art/oak/heartwood.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/oak/heartwood.png#L1",
+    "src": "art/oak/heartwood.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/oak/heartwood.png#L2",
+    "src": "art/oak/heartwood.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/oak/heartwood.png#L3",
+    "src": "art/oak/heartwood.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/oak/heartwood.png#L4",
-    "f": 1.3
+    "src": "art/oak/heartwood.webp#L4",
+    "f": 1.3,
+    "x": 176
    }
   ],
   "pieces": {

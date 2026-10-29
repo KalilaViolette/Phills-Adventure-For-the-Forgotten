@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 416,
  "art": {
-  "main": "art/rootwood/grimepool.png#main",
-  "pack": "art/rootwood/grimepool.png",
+  "main": "art/rootwood/grimepool.webp#main",
+  "pack": "art/rootwood/grimepool.webp",
   "parts": {
    "main": [
     0,
@@ -19,115 +19,122 @@ ROOM({
    "L0": [
     0,
     416,
-    1367,
-    560
+    662,
+    390
    ],
    "L1": [
     0,
-    976,
-    1252,
-    532
+    806,
+    690,
+    396
    ],
    "L2": [
     0,
-    1508,
-    1124,
-    500
+    1202,
+    722,
+    402
    ],
    "L3": [
     0,
-    2008,
-    983,
-    464
+    1604,
+    758,
+    410
    ],
    "L4": [
     0,
-    2472,
-    1044,
-    544
+    2014,
+    500,
+    106
    ],
    "L5": [
     0,
-    3016,
-    893,
-    442
+    2120,
+    626,
+    299
    ],
    "L6": [
     0,
-    3458,
-    1044,
-    544
+    2419,
+    143,
+    65
    ],
    "L7": [
     0,
-    4002,
-    1044,
-    420
+    2484,
+    985,
+    76
    ],
    "L8": [
     0,
-    4422,
-    1204,
-    628
+    2560,
+    1202,
+    100
    ],
    "L9": [
     0,
-    5050,
-    1204,
-    420
+    2660,
+    88,
+    63
    ],
    "front": [
     0,
-    5470,
+    2723,
     729,
     243
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/grimepool.png#L0",
+    "src": "art/rootwood/grimepool.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/grimepool.png#L1",
+    "src": "art/rootwood/grimepool.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/grimepool.png#L2",
+    "src": "art/rootwood/grimepool.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/grimepool.png#L3",
+    "src": "art/rootwood/grimepool.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/grimepool.png#L4",
-    "f": 1.3
-   },
-   {
-    "src": "art/rootwood/grimepool.png#L5",
-    "f": 0.86
-   },
-   {
-    "src": "art/rootwood/grimepool.png#L6",
-    "f": 1.3
-   },
-   {
-    "src": "art/rootwood/grimepool.png#L7",
+    "src": "art/rootwood/grimepool.webp#L4",
     "f": 1.3,
-    "fy": 1.0
+    "x": 171
    },
    {
-    "src": "art/rootwood/grimepool.png#L8",
-    "f": 1.5
+    "src": "art/rootwood/grimepool.webp#L5",
+    "f": 0.86,
+    "x": 154
    },
    {
-    "src": "art/rootwood/grimepool.png#L9",
+    "src": "art/rootwood/grimepool.webp#L6",
+    "f": 1.3,
+    "x": 530,
+    "y": 405
+   },
+   {
+    "src": "art/rootwood/grimepool.webp#L7",
+    "f": 1.3,
+    "fy": 1.0,
+    "x": 22
+   },
+   {
+    "src": "art/rootwood/grimepool.webp#L8",
     "f": 1.5,
-    "fy": 1.0
+    "y": 378
+   },
+   {
+    "src": "art/rootwood/grimepool.webp#L9",
+    "f": 1.5,
+    "fy": 1.0,
+    "x": 531
    }
   ],
-  "front": "art/rootwood/grimepool.png#front",
+  "front": "art/rootwood/grimepool.webp#front",
   "frontAt": [
    46,
    110

@@ -7,8 +7,8 @@ ROOM({
  "music": "warren",
  "viewBottom": 416,
  "art": {
-  "main": "art/warren/mendlane.png#main",
-  "pack": "art/warren/mendlane.png",
+  "main": "art/warren/mendlane.webp#main",
+  "pack": "art/warren/mendlane.webp",
   "parts": {
    "main": [
     0,
@@ -19,34 +19,37 @@ ROOM({
    "L0": [
     0,
     416,
-    1040,
-    565
+    867,
+    76
    ],
    "L1": [
     0,
-    981,
-    1040,
-    420
+    492,
+    823,
+    76
    ],
    "L2": [
     0,
-    1401,
-    906,
-    452
+    568,
+    745,
+    412
    ]
   },
   "layers": [
    {
-    "src": "art/warren/mendlane.png#L0",
-    "f": 1.35
-   },
-   {
-    "src": "art/warren/mendlane.png#L1",
+    "src": "art/warren/mendlane.webp#L0",
     "f": 1.35,
-    "fy": 1.0
+    "x": 89,
+    "y": 393
    },
    {
-    "src": "art/warren/mendlane.png#L2",
+    "src": "art/warren/mendlane.webp#L1",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 119
+   },
+   {
+    "src": "art/warren/mendlane.webp#L2",
     "f": 0.8
    }
   ],

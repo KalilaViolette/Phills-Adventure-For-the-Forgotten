@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 576,
  "art": {
-  "main": "art/pond/swan.png#main",
-  "pack": "art/pond/swan.png",
+  "main": "art/pond/swan.webp#main",
+  "pack": "art/pond/swan.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     576,
-    1386,
-    580
+    681,
+    410
    ],
    "L1": [
     0,
-    1156,
-    1300,
-    580
+    986,
+    738,
+    350
    ],
    "L2": [
     0,
-    1736,
-    1204,
-    580
+    1336,
+    802,
+    236
    ],
    "L3": [
     0,
-    2316,
-    1098,
-    580
+    1572,
+    873,
+    525
    ],
    "L4": [
     0,
-    2896,
-    1252,
-    752
+    2097,
+    991,
+    645
    ]
   },
   "layers": [
    {
-    "src": "art/pond/swan.png#L0",
+    "src": "art/pond/swan.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/swan.png#L1",
-    "f": 0.3
+    "src": "art/pond/swan.webp#L1",
+    "f": 0.3,
+    "y": 94
    },
    {
-    "src": "art/pond/swan.png#L2",
-    "f": 0.5
+    "src": "art/pond/swan.webp#L2",
+    "f": 0.5,
+    "y": 246
    },
    {
-    "src": "art/pond/swan.png#L3",
+    "src": "art/pond/swan.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/swan.png#L4",
-    "f": 1.3
+    "src": "art/pond/swan.webp#L4",
+    "f": 1.3,
+    "x": 198
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "warren",
  "viewBottom": 416,
  "art": {
-  "main": "art/warren/moleshop.png#main",
-  "pack": "art/warren/moleshop.png",
+  "main": "art/warren/moleshop.webp#main",
+  "pack": "art/warren/moleshop.webp",
   "parts": {
    "main": [
     0,
@@ -19,34 +19,37 @@ ROOM({
    "L0": [
     0,
     416,
-    954,
-    565
+    745,
+    75
    ],
    "L1": [
     0,
-    981,
-    954,
-    420
+    491,
+    82,
+    73
    ],
    "L2": [
     0,
-    1401,
-    855,
-    452
+    564,
+    694,
+    412
    ]
   },
   "layers": [
    {
-    "src": "art/warren/moleshop.png#L0",
-    "f": 1.35
-   },
-   {
-    "src": "art/warren/moleshop.png#L1",
+    "src": "art/warren/moleshop.webp#L0",
     "f": 1.35,
-    "fy": 1.0
+    "x": 65,
+    "y": 394
    },
    {
-    "src": "art/warren/moleshop.png#L2",
+    "src": "art/warren/moleshop.webp#L1",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 259
+   },
+   {
+    "src": "art/warren/moleshop.webp#L2",
     "f": 0.8
    }
   ],

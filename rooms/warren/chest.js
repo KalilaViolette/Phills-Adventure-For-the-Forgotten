@@ -7,8 +7,8 @@ ROOM({
  "music": "warren",
  "viewBottom": 480,
  "art": {
-  "main": "art/warren/chest.png#main",
-  "pack": "art/warren/chest.png",
+  "main": "art/warren/chest.webp#main",
+  "pack": "art/warren/chest.webp",
   "parts": {
    "main": [
     0,
@@ -19,34 +19,37 @@ ROOM({
    "L0": [
     0,
     480,
-    1040,
-    652
+    1014,
+    69
    ],
    "L1": [
     0,
-    1132,
-    1040,
-    484
+    549,
+    954,
+    82
    ],
    "L2": [
     0,
-    1616,
-    906,
-    503
+    631,
+    745,
+    463
    ]
   },
   "layers": [
    {
-    "src": "art/warren/chest.png#L0",
-    "f": 1.35
-   },
-   {
-    "src": "art/warren/chest.png#L1",
+    "src": "art/warren/chest.webp#L0",
     "f": 1.35,
-    "fy": 1.0
+    "x": 25,
+    "y": 481
    },
    {
-    "src": "art/warren/chest.png#L2",
+    "src": "art/warren/chest.webp#L1",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 71
+   },
+   {
+    "src": "art/warren/chest.webp#L2",
     "f": 0.8
    }
   ],

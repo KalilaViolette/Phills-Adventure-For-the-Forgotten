@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 384,
  "art": {
-  "main": "art/playground/underpass.png#main",
-  "pack": "art/playground/underpass.png",
+  "main": "art/playground/underpass.webp#main",
+  "pack": "art/playground/underpass.webp",
   "parts": {
    "main": [
     0,
@@ -19,75 +19,82 @@ ROOM({
    "L0": [
     0,
     384,
-    1386,
-    556
+    681,
+    386
    ],
    "L1": [
     0,
-    940,
-    1300,
-    522
+    770,
+    738,
+    386
    ],
    "L2": [
     0,
-    1462,
-    1204,
-    484
+    1156,
+    802,
+    337
    ],
    "L3": [
     0,
-    1946,
-    1098,
-    441
+    1493,
+    859,
+    355
    ],
    "L4": [
     0,
-    2387,
-    1252,
-    503
+    1848,
+    1175,
+    502
    ],
    "L5": [
     0,
-    2890,
-    1300,
-    522
+    2350,
+    80,
+    54
    ],
    "L6": [
     0,
-    3412,
-    1300,
-    388
+    2404,
+    868,
+    71
    ]
   },
   "layers": [
    {
-    "src": "art/playground/underpass.png#L0",
+    "src": "art/playground/underpass.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/underpass.png#L1",
+    "src": "art/playground/underpass.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/playground/underpass.png#L2",
-    "f": 0.5
+    "src": "art/playground/underpass.webp#L2",
+    "f": 0.5,
+    "y": 46
    },
    {
-    "src": "art/playground/underpass.png#L3",
-    "f": 0.72
+    "src": "art/playground/underpass.webp#L3",
+    "f": 0.72,
+    "x": 14,
+    "y": 31
    },
    {
-    "src": "art/playground/underpass.png#L4",
-    "f": 1.3
+    "src": "art/playground/underpass.webp#L4",
+    "f": 1.3,
+    "x": 23
    },
    {
-    "src": "art/playground/underpass.png#L5",
-    "f": 1.35
-   },
-   {
-    "src": "art/playground/underpass.png#L6",
+    "src": "art/playground/underpass.webp#L5",
     "f": 1.35,
-    "fy": 1.0
+    "x": 1218,
+    "y": 365
+   },
+   {
+    "src": "art/playground/underpass.webp#L6",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 104
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 1408,
  "art": {
-  "main": "art/greenhouse/tallhouse.png#main",
-  "pack": "art/greenhouse/tallhouse.png",
+  "main": "art/greenhouse/tallhouse.webp#main",
+  "pack": "art/greenhouse/tallhouse.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,59 @@ ROOM({
    "L0": [
     0,
     1408,
-    1355,
-    1079
+    650,
+    1001
    ],
    "L1": [
     0,
-    2487,
-    1223,
-    1328
+    2409,
+    662,
+    1308
    ],
    "L2": [
     0,
-    3815,
-    1076,
-    1370
+    3717,
+    674,
+    1359
    ],
    "L3": [
     0,
-    5185,
-    914,
-    1412
+    5076,
+    689,
+    1410
    ],
    "L4": [
     0,
-    6597,
-    919,
-    1834
+    6486,
+    727,
+    1833
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/tallhouse.png#L0",
+    "src": "art/greenhouse/tallhouse.webp#L0",
     "f": 0.12,
     "fy": 0.6
    },
    {
-    "src": "art/greenhouse/tallhouse.png#L1",
+    "src": "art/greenhouse/tallhouse.webp#L1",
     "f": 0.3,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/tallhouse.png#L2",
+    "src": "art/greenhouse/tallhouse.webp#L2",
     "f": 0.5,
     "fy": 0.95
    },
    {
-    "src": "art/greenhouse/tallhouse.png#L3",
+    "src": "art/greenhouse/tallhouse.webp#L3",
     "f": 0.72,
     "fy": 1.0
    },
    {
-    "src": "art/greenhouse/tallhouse.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/tallhouse.webp#L4",
+    "f": 1.3,
+    "x": 191
    }
   ],
   "uses": [

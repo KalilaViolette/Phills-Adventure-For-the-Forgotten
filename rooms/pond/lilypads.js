@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 416,
  "art": {
-  "main": "art/pond/lilypads.png#main",
-  "pack": "art/pond/lilypads.png",
+  "main": "art/pond/lilypads.webp#main",
+  "pack": "art/pond/lilypads.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,65 @@ ROOM({
    "L0": [
     0,
     416,
-    1386,
-    560
+    681,
+    390
    ],
    "L1": [
     0,
-    976,
-    1300,
-    532
+    806,
+    738,
+    396
    ],
    "L2": [
     0,
-    1508,
-    1204,
-    500
+    1202,
+    802,
+    306
    ],
    "L3": [
     0,
-    2008,
-    1098,
-    464
+    1508,
+    873,
+    410
    ],
    "L4": [
     0,
-    2472,
-    1252,
-    544
+    1918,
+    1068,
+    437
    ],
    "front": [
     0,
-    3016,
+    2355,
     960,
     256
    ]
   },
   "layers": [
    {
-    "src": "art/pond/lilypads.png#L0",
+    "src": "art/pond/lilypads.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/lilypads.png#L1",
+    "src": "art/pond/lilypads.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/pond/lilypads.png#L2",
-    "f": 0.5
+    "src": "art/pond/lilypads.webp#L2",
+    "f": 0.5,
+    "y": 96
    },
    {
-    "src": "art/pond/lilypads.png#L3",
+    "src": "art/pond/lilypads.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/lilypads.png#L4",
-    "f": 1.3
+    "src": "art/pond/lilypads.webp#L4",
+    "f": 1.3,
+    "x": 146
    }
   ],
-  "front": "art/pond/lilypads.png#front",
+  "front": "art/pond/lilypads.webp#front",
   "frontAt": [
    0,
    160

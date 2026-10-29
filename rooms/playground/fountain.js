@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 448,
  "art": {
-  "main": "art/playground/fountain.png#main",
-  "pack": "art/playground/fountain.png",
+  "main": "art/playground/fountain.webp#main",
+  "pack": "art/playground/fountain.webp",
   "parts": {
    "main": [
     0,
@@ -19,56 +19,58 @@ ROOM({
    "L0": [
     0,
     448,
-    1386,
-    564
+    681,
+    394
    ],
    "L1": [
     0,
-    1012,
-    1300,
-    541
+    842,
+    738,
+    406
    ],
    "L2": [
     0,
-    1553,
-    1204,
-    516
+    1248,
+    802,
+    380
    ],
    "L3": [
     0,
-    2069,
-    1098,
-    487
+    1628,
+    873,
+    429
    ],
    "piece_cover_fountain_mud_pass": [
     0,
-    2556,
+    2057,
     92,
     118
    ],
    "piece_cover_fountain_mud_wall": [
     0,
-    2674,
+    2175,
     34,
     118
    ]
   },
   "layers": [
    {
-    "src": "art/playground/fountain.png#L0",
+    "src": "art/playground/fountain.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/fountain.png#L1",
+    "src": "art/playground/fountain.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/playground/fountain.png#L2",
-    "f": 0.5
+    "src": "art/playground/fountain.webp#L2",
+    "f": 0.5,
+    "y": 38
    },
    {
-    "src": "art/playground/fountain.png#L3",
-    "f": 0.72
+    "src": "art/playground/fountain.webp#L3",
+    "f": 0.72,
+    "y": 4
    }
   ],
   "pieces": {

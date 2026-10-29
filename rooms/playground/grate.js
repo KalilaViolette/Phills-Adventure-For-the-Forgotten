@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 640,
  "art": {
-  "main": "art/playground/grate.png#main",
-  "pack": "art/playground/grate.png",
+  "main": "art/playground/grate.webp#main",
+  "pack": "art/playground/grate.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,67 @@ ROOM({
    "L0": [
     0,
     640,
-    1348,
-    587
+    642,
+    417
    ],
    "L1": [
     0,
-    1227,
-    1204,
-    599
+    1057,
+    642,
+    299
    ],
    "L2": [
     0,
-    1826,
-    1044,
-    612
+    1356,
+    642,
+    319
    ],
    "L3": [
     0,
-    2438,
-    868,
-    626
+    1675,
+    642,
+    571
    ],
    "L4": [
     0,
-    3064,
-    836,
-    836
+    2246,
+    772,
+    202
    ],
    "front": [
     0,
-    3900,
+    2448,
     128,
     224
    ]
   },
   "layers": [
    {
-    "src": "art/playground/grate.png#L0",
+    "src": "art/playground/grate.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/grate.png#L1",
-    "f": 0.3
+    "src": "art/playground/grate.webp#L1",
+    "f": 0.3,
+    "y": 164
    },
    {
-    "src": "art/playground/grate.png#L2",
-    "f": 0.5
+    "src": "art/playground/grate.webp#L2",
+    "f": 0.5,
+    "y": 195
    },
    {
-    "src": "art/playground/grate.png#L3",
+    "src": "art/playground/grate.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/grate.png#L4",
-    "f": 1.3
+    "src": "art/playground/grate.webp#L4",
+    "f": 1.3,
+    "x": 62,
+    "y": 632
    }
   ],
-  "front": "art/playground/grate.png#front",
+  "front": "art/playground/grate.webp#front",
   "frontAt": [
    256,
    416

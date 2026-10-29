@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 480,
  "art": {
-  "main": "art/pond/shallows.png#main",
-  "pack": "art/pond/shallows.png",
+  "main": "art/pond/shallows.webp#main",
+  "pack": "art/pond/shallows.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    362
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1240,
+    802,
+    257
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1497,
+    873,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1252,
-    628
+    1953,
+    878,
+    521
    ],
    "front": [
     0,
-    3269,
+    2474,
     128,
     192
    ]
   },
   "layers": [
    {
-    "src": "art/pond/shallows.png#L0",
+    "src": "art/pond/shallows.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/shallows.png#L1",
-    "f": 0.3
+    "src": "art/pond/shallows.webp#L1",
+    "f": 0.3,
+    "y": 53
    },
    {
-    "src": "art/pond/shallows.png#L2",
-    "f": 0.5
+    "src": "art/pond/shallows.webp#L2",
+    "f": 0.5,
+    "y": 177
    },
    {
-    "src": "art/pond/shallows.png#L3",
+    "src": "art/pond/shallows.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/shallows.png#L4",
-    "f": 1.3
+    "src": "art/pond/shallows.webp#L4",
+    "f": 1.3,
+    "x": 146
    }
   ],
-  "front": "art/pond/shallows.png#front",
+  "front": "art/pond/shallows.webp#front",
   "frontAt": [
    400,
    288

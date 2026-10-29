@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 480,
  "art": {
-  "main": "art/playground/lostfound.png#main",
-  "pack": "art/playground/lostfound.png",
+  "main": "art/playground/lostfound.webp#main",
+  "pack": "art/playground/lostfound.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     480,
-    1348,
-    568
+    642,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1204,
-    551
+    878,
+    642,
+    273
    ],
    "L2": [
     0,
-    1599,
-    1044,
-    532
+    1151,
+    642,
+    275
    ],
    "L3": [
     0,
-    2131,
-    868,
-    510
+    1426,
+    642,
+    456
    ],
    "L4": [
     0,
-    2641,
-    836,
-    628
+    1882,
+    635,
+    210
    ]
   },
   "layers": [
    {
-    "src": "art/playground/lostfound.png#L0",
+    "src": "art/playground/lostfound.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/lostfound.png#L1",
-    "f": 0.3
+    "src": "art/playground/lostfound.webp#L1",
+    "f": 0.3,
+    "y": 142
    },
    {
-    "src": "art/playground/lostfound.png#L2",
-    "f": 0.5
+    "src": "art/playground/lostfound.webp#L2",
+    "f": 0.5,
+    "y": 159
    },
    {
-    "src": "art/playground/lostfound.png#L3",
+    "src": "art/playground/lostfound.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/lostfound.png#L4",
-    "f": 1.3
+    "src": "art/playground/lostfound.webp#L4",
+    "f": 1.3,
+    "x": 58,
+    "y": 416
    }
   ],
   "uses": [

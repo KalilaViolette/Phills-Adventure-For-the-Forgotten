@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 800,
  "art": {
-  "main": "art/playground/slide.png#main",
-  "pack": "art/playground/slide.png",
+  "main": "art/playground/slide.webp#main",
+  "pack": "art/playground/slide.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,59 @@ ROOM({
    "L0": [
     0,
     800,
-    1348,
-    606
+    642,
+    436
    ],
    "L1": [
     0,
-    1406,
-    1204,
-    647
+    1236,
+    642,
+    108
    ],
    "L2": [
     0,
-    2053,
-    1044,
-    692
+    1344,
+    642,
+    41
    ],
    "L3": [
     0,
-    2745,
-    868,
-    741
+    1385,
+    547,
+    686
    ],
    "L4": [
     0,
-    3486,
-    836,
-    1044
+    2071,
+    72,
+    209
    ]
   },
   "layers": [
    {
-    "src": "art/playground/slide.png#L0",
+    "src": "art/playground/slide.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/slide.png#L1",
-    "f": 0.3
+    "src": "art/playground/slide.webp#L1",
+    "f": 0.3,
+    "y": 403
    },
    {
-    "src": "art/playground/slide.png#L2",
-    "f": 0.5
+    "src": "art/playground/slide.webp#L2",
+    "f": 0.5,
+    "y": 553
    },
    {
-    "src": "art/playground/slide.png#L3",
-    "f": 0.72
+    "src": "art/playground/slide.webp#L3",
+    "f": 0.72,
+    "x": 95
    },
    {
-    "src": "art/playground/slide.png#L4",
-    "f": 1.3
+    "src": "art/playground/slide.webp#L4",
+    "f": 1.3,
+    "x": 254,
+    "y": 833
    }
   ],
   "uses": [

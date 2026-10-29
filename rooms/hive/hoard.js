@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 512,
  "art": {
-  "main": "art/hive/hoard.png#main",
-  "pack": "art/hive/hoard.png",
+  "main": "art/hive/hoard.webp#main",
+  "pack": "art/hive/hoard.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,62 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    551
+    681,
+    444
    ],
    "L1": [
     0,
-    1063,
-    1300,
-    538
+    956,
+    718,
+    343
    ],
    "L2": [
     0,
-    1601,
-    1204,
-    528
+    1299,
+    776,
+    216
    ],
    "L3": [
     0,
-    2129,
-    1098,
-    522
+    1515,
+    855,
+    97
    ],
    "L4": [
     0,
-    2651,
-    1252,
-    669
+    1612,
+    958,
+    156
    ]
   },
   "layers": [
    {
-    "src": "art/hive/hoard.png#L0",
+    "src": "art/hive/hoard.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/hive/hoard.png#L1",
+    "src": "art/hive/hoard.webp#L1",
     "f": 0.3,
-    "fy": 0.65
+    "fy": 0.65,
+    "x": 20
    },
    {
-    "src": "art/hive/hoard.png#L2",
+    "src": "art/hive/hoard.webp#L2",
     "f": 0.5,
-    "fy": 0.8
+    "fy": 0.8,
+    "x": 26
    },
    {
-    "src": "art/hive/hoard.png#L3",
+    "src": "art/hive/hoard.webp#L3",
     "f": 0.72,
-    "fy": 0.9
+    "fy": 0.9,
+    "x": 18
    },
    {
-    "src": "art/hive/hoard.png#L4",
-    "f": 1.3
+    "src": "art/hive/hoard.webp#L4",
+    "f": 1.3,
+    "x": 243
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 1344,
  "art": {
-  "main": "art/oak/westdrop.png#main",
-  "pack": "art/oak/westdrop.png",
+  "main": "art/oak/westdrop.webp#main",
+  "pack": "art/oak/westdrop.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,67 @@ ROOM({
    "L0": [
     0,
     1344,
-    1410,
-    641
+    673,
+    463
    ],
    "L1": [
     0,
-    1985,
-    1360,
-    733
+    1807,
+    626,
+    452
    ],
    "L2": [
     0,
-    2718,
-    1277,
-    887
+    2259,
+    796,
+    332
    ],
    "L3": [
     0,
-    3605,
-    1173,
-    1079
+    2591,
+    892,
+    1000
    ],
    "L4": [
     0,
-    4684,
-    1335,
-    1751
+    3591,
+    1334,
+    1345
    ],
    "front": [
     0,
-    6435,
+    4936,
     489,
     652
    ]
   },
   "layers": [
    {
-    "src": "art/oak/westdrop.png#L0",
+    "src": "art/oak/westdrop.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/westdrop.png#L1",
-    "f": 0.2
+    "src": "art/oak/westdrop.webp#L1",
+    "f": 0.2,
+    "x": 93,
+    "y": 84
    },
    {
-    "src": "art/oak/westdrop.png#L2",
-    "f": 0.4
+    "src": "art/oak/westdrop.webp#L2",
+    "f": 0.4,
+    "y": 438
    },
    {
-    "src": "art/oak/westdrop.png#L3",
-    "f": 0.65
+    "src": "art/oak/westdrop.webp#L3",
+    "f": 0.65,
+    "y": 10
    },
    {
-    "src": "art/oak/westdrop.png#L4",
+    "src": "art/oak/westdrop.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/westdrop.png#front",
+  "front": "art/oak/westdrop.webp#front",
   "frontAt": [
    0,
    235

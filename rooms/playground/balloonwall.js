@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 512,
  "art": {
-  "main": "art/playground/balloonwall.png#main",
-  "pack": "art/playground/balloonwall.png",
+  "main": "art/playground/balloonwall.webp#main",
+  "pack": "art/playground/balloonwall.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    572
+    681,
+    402
    ],
    "L1": [
     0,
-    1084,
-    1300,
-    560
+    914,
+    738,
+    272
    ],
    "L2": [
     0,
-    1644,
-    1204,
-    548
+    1186,
+    802,
+    261
    ],
    "L3": [
     0,
-    2192,
-    1098,
-    533
+    1447,
+    873,
+    479
    ],
    "L4": [
     0,
-    2725,
-    1252,
-    669
+    1926,
+    729,
+    210
    ]
   },
   "layers": [
    {
-    "src": "art/playground/balloonwall.png#L0",
+    "src": "art/playground/balloonwall.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/balloonwall.png#L1",
-    "f": 0.3
+    "src": "art/playground/balloonwall.webp#L1",
+    "f": 0.3,
+    "y": 153
    },
    {
-    "src": "art/playground/balloonwall.png#L2",
-    "f": 0.5
+    "src": "art/playground/balloonwall.webp#L2",
+    "f": 0.5,
+    "y": 189
    },
    {
-    "src": "art/playground/balloonwall.png#L3",
+    "src": "art/playground/balloonwall.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/balloonwall.png#L4",
-    "f": 1.3
+    "src": "art/playground/balloonwall.webp#L4",
+    "f": 1.3,
+    "x": 171,
+    "y": 458
    }
   ],
   "uses": [

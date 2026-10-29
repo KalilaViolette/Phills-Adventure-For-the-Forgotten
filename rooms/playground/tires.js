@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 768,
  "art": {
-  "main": "art/playground/tires.png#main",
-  "pack": "art/playground/tires.png",
+  "main": "art/playground/tires.webp#main",
+  "pack": "art/playground/tires.webp",
   "parts": {
    "main": [
     0,
@@ -19,66 +19,70 @@ ROOM({
    "L0": [
     0,
     768,
-    1386,
-    603
+    681,
+    433
    ],
    "L1": [
     0,
-    1371,
-    1300,
-    637
+    1201,
+    738,
+    270
    ],
    "L2": [
     0,
-    2008,
-    1204,
-    676
+    1471,
+    802,
+    263
    ],
    "L3": [
     0,
-    2684,
-    1098,
-    718
+    1734,
+    873,
+    663
    ],
    "L4": [
     0,
-    3402,
-    1252,
-    1002
+    2397,
+    703,
+    207
    ],
    "piece_cover_tirepocket_pass": [
     0,
-    4404,
+    2604,
     151,
     102
    ],
    "piece_cover_tirepocket_wall": [
     0,
-    4506,
+    2706,
     34,
     96
    ]
   },
   "layers": [
    {
-    "src": "art/playground/tires.png#L0",
+    "src": "art/playground/tires.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/tires.png#L1",
-    "f": 0.3
+    "src": "art/playground/tires.webp#L1",
+    "f": 0.3,
+    "y": 232
    },
    {
-    "src": "art/playground/tires.png#L2",
-    "f": 0.5
+    "src": "art/playground/tires.webp#L2",
+    "f": 0.5,
+    "y": 315
    },
    {
-    "src": "art/playground/tires.png#L3",
+    "src": "art/playground/tires.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/tires.png#L4",
-    "f": 1.3
+    "src": "art/playground/tires.webp#L4",
+    "f": 1.3,
+    "x": 160,
+    "y": 794
    }
   ],
   "pieces": {

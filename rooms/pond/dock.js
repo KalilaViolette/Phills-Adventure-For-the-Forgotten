@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 576,
  "art": {
-  "main": "art/pond/dock.png#main",
-  "pack": "art/pond/dock.png",
+  "main": "art/pond/dock.webp#main",
+  "pack": "art/pond/dock.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     576,
-    1386,
-    580
+    681,
+    410
    ],
    "L1": [
     0,
-    1156,
-    1300,
-    580
+    986,
+    738,
+    352
    ],
    "L2": [
     0,
-    1736,
-    1204,
-    580
+    1338,
+    802,
+    258
    ],
    "L3": [
     0,
-    2316,
-    1098,
-    580
+    1596,
+    873,
+    525
    ],
    "L4": [
     0,
-    2896,
-    1252,
-    752
+    2121,
+    1143,
+    645
    ],
    "front": [
     0,
-    3648,
+    2766,
     800,
     128
    ]
   },
   "layers": [
    {
-    "src": "art/pond/dock.png#L0",
+    "src": "art/pond/dock.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/dock.png#L1",
-    "f": 0.3
+    "src": "art/pond/dock.webp#L1",
+    "f": 0.3,
+    "y": 92
    },
    {
-    "src": "art/pond/dock.png#L2",
-    "f": 0.5
+    "src": "art/pond/dock.webp#L2",
+    "f": 0.5,
+    "y": 224
    },
    {
-    "src": "art/pond/dock.png#L3",
+    "src": "art/pond/dock.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/dock.png#L4",
-    "f": 1.3
+    "src": "art/pond/dock.webp#L4",
+    "f": 1.3,
+    "x": 107
    }
   ],
-  "front": "art/pond/dock.png#front",
+  "front": "art/pond/dock.webp#front",
   "frontAt": [
    0,
    448

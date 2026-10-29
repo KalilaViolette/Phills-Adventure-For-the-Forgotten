@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 512,
  "art": {
-  "main": "art/greenhouse/roofwalk.png#main",
-  "pack": "art/greenhouse/roofwalk.png",
+  "main": "art/greenhouse/roofwalk.webp#main",
+  "pack": "art/greenhouse/roofwalk.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,60 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    572
+    681,
+    402
    ],
    "L1": [
     0,
-    1084,
-    1300,
-    560
+    914,
+    348,
+    71
    ],
    "L2": [
     0,
-    1644,
-    1204,
-    548
+    985,
+    802,
+    93
    ],
    "L3": [
     0,
-    2192,
-    1098,
-    533
+    1078,
+    873,
+    29
    ],
    "L4": [
     0,
-    2725,
-    1252,
-    669
+    1107,
+    522,
+    89
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/roofwalk.png#L0",
+    "src": "art/greenhouse/roofwalk.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/greenhouse/roofwalk.png#L1",
-    "f": 0.3
+    "src": "art/greenhouse/roofwalk.webp#L1",
+    "f": 0.3,
+    "x": 390,
+    "y": 300
    },
    {
-    "src": "art/greenhouse/roofwalk.png#L2",
-    "f": 0.5
+    "src": "art/greenhouse/roofwalk.webp#L2",
+    "f": 0.5,
+    "y": 357
    },
    {
-    "src": "art/greenhouse/roofwalk.png#L3",
-    "f": 0.72
+    "src": "art/greenhouse/roofwalk.webp#L3",
+    "f": 0.72,
+    "y": 450
    },
    {
-    "src": "art/greenhouse/roofwalk.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/roofwalk.webp#L4",
+    "f": 1.3,
+    "x": 297,
+    "y": 579
    }
   ],
   "uses": [

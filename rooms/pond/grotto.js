@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 480,
  "art": {
-  "main": "art/pond/grotto.png#main",
-  "pack": "art/pond/grotto.png",
+  "main": "art/pond/grotto.webp#main",
+  "pack": "art/pond/grotto.webp",
   "parts": {
    "main": [
     0,
@@ -19,65 +19,65 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    330
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1208,
+    802,
+    202
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1410,
+    873,
+    215
    ],
    "front": [
     0,
-    2641,
+    1625,
     960,
     256
    ],
    "piece_cover_grotto_mud_pass": [
     0,
-    2897,
+    1881,
     64,
     118
    ],
    "piece_cover_grotto_mud_wall": [
     0,
-    3015,
+    1999,
     18,
     118
    ]
   },
   "layers": [
    {
-    "src": "art/pond/grotto.png#L0",
+    "src": "art/pond/grotto.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/grotto.png#L1",
+    "src": "art/pond/grotto.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/pond/grotto.png#L2",
+    "src": "art/pond/grotto.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/pond/grotto.png#L3",
+    "src": "art/pond/grotto.webp#L3",
     "f": 0.72
    }
   ],
-  "front": "art/pond/grotto.png#front",
+  "front": "art/pond/grotto.webp#front",
   "frontAt": [
    0,
    224

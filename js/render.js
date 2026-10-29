@@ -65,9 +65,9 @@ function render(alpha) {
   const main = Assets.get(room.def.art.main), front = room.def.art.front && Assets.get(room.def.art.front);
   const far = room.def.art.far && Assets.get(room.def.art.far);
   if (far) { const f = room.def.art.farF; drawView(far, Math.round(camX * f), Math.round(camY * f)); }   // the background, scrolling slower: depth
-  const layers = room.def.art.layers || [];   // (a layer's fy: it moves up and down at that instead of f, 10/17/2026. fy 1 pins it to the room's heights)
+  const layers = room.def.art.layers || [];   // (a layer's x and y: where its picture starts, cut to what the screen can ever show of it, 10/29/2026. A layer's fy: it moves up and down at that instead of f, 10/17/2026. fy 1 pins it to the room's heights)
   const tod = room.def.outside ? timeOfDay() : 'day';
-  layers.forEach((L, i) => { if (L.f < 1) { const im = Assets.get((L.times && L.times[tod]) || L.src); if (im) drawView(im, Math.round(camX * L.f), Math.round(camY * (L.fy ?? L.f))); if (typeof drawWildlife === 'function') drawWildlife('L' + i, camX, camY); } });   // parallax layers, farthest first, with whatever lives in each
+  layers.forEach((L, i) => { if (L.f < 1) { const im = Assets.get((L.times && L.times[tod]) || L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('L' + i, camX, camY); } });   // parallax layers, farthest first, with whatever lives in each
   if (main) drawView(main, camX, camY);
   ctx.translate(-camX, -camY);
   drawCovers();
@@ -112,7 +112,7 @@ function render(alpha) {
   if (gs) for (const gh of ghosts) {
     const fr = META.frames[gh.name]; if (!fr) continue;
     ctx.globalAlpha = 0.5 * gh.life / 0.16;
-    ctx.drawImage(gs, fr[0], fr[1], 64, 64, q(gh.x - 32), q(gh.y - 32), 64, 64);
+    drawCell(ctx, gs, fr, q(gh.x - 32), q(gh.y - 32));
   }
   ctx.globalAlpha = 1;
 
@@ -137,7 +137,7 @@ function render(alpha) {
   drawActors('front');
   if (layers.some(L => L.f > 1)) {                // close to the camera, sliding past faster than the room
     ctx.setTransform(S, 0, 0, S, offX, offY);
-    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) drawView(im, Math.round(camX * L.f), Math.round(camY * (L.fy ?? L.f))); if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
+    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
     ctx.translate(-camX, -camY);
   }
 
@@ -242,14 +242,26 @@ function groundShadow(x, y, maxDrop, rx) {
   }
 }
 let bodyAt = null;                 // where and how his body was last drawn (the charge glow goes right over it)
-function body(im, fr, x, y) { ctx.drawImage(im, fr[0], fr[1], 64, 64, x, y, 64, 64); bodyAt = { t: ctx.getTransform(), x, y }; }
+// one of his 64 x 64 frames at x, y. His sheets have the empty space cut out (10/29/2026): a frame is [x, y, anchor, left,
+// top, width, height], just the part with anything in it, drawn at its spot in the cell. Turned (tumbling, rolling,
+// swimming on a slant) it's put back in a whole cell first, so the turn picks exactly the pixels it always did
+const cellCv = document.createElement('canvas'); cellCv.width = cellCv.height = 64;
+function drawCell(c, im, fr, x, y) {
+  if (fr.length <= 3) { c.drawImage(im, fr[0], fr[1], 64, 64, x, y, 64, 64); return; }
+  if (!(fr[5] > 0)) return;
+  const t = c.getTransform();
+  if (!t.b && !t.c) { c.drawImage(im, fr[0], fr[1], fr[5], fr[6], x + fr[3], y + fr[4], fr[5], fr[6]); return; }
+  const g = cellCv.getContext('2d'); g.clearRect(0, 0, 64, 64); g.drawImage(im, fr[0], fr[1], fr[5], fr[6], fr[3], fr[4], fr[5], fr[6]);
+  c.drawImage(cellCv, 0, 0, 64, 64, x, y, 64, 64);
+}
+function body(im, fr, x, y) { drawCell(ctx, im, fr, x, y); bodyAt = { t: ctx.getTransform(), x, y }; }
 // walking into a hole in the back wall (10/27/2026): smaller the further in he is, and going the color of the dark in
 // there till he's gone. Coming out, the same the other way
 const walkInCv = document.createElement('canvas'); walkInCv.width = walkInCv.height = 64;
 function drawWalkIn(im, meta, fr, px, py, q) {
   if (!fr) return;
   const k = walkInK(), sc = 1 - (1 - (P.walkIn.d.walkIn.scale || 0.7)) * k, dark = Math.max(0, (k - 0.35) / 0.65);
-  const g = walkInCv.getContext('2d'); g.clearRect(0, 0, 64, 64); g.globalCompositeOperation = 'source-over'; g.drawImage(im, fr[0], fr[1], 64, 64, 0, 0, 64, 64);
+  const g = walkInCv.getContext('2d'); g.clearRect(0, 0, 64, 64); g.globalCompositeOperation = 'source-over'; drawCell(g, im, fr, 0, 0);
   if (dark > 0) { g.globalCompositeOperation = 'source-atop'; g.fillStyle = `rgba(28,52,70,${0.85 * dark})`; g.fillRect(0, 0, 64, 64); g.globalCompositeOperation = 'source-over'; }
   if (k < 0.5) groundShadow(P.x, P.y, 110 * sc, 11 * sc);
   const s64 = Math.max(1, Math.round(64 * sc));
@@ -273,14 +285,14 @@ function drawPhill(px, py, q) {
   if (!P.ground && !P.hang && !P.held && P.vy > 300 && fallen > 220 && !name.startsWith('roll')) {   // a long fall: he tumbles head over heels
     const f2 = meta.frames[sheathedFrame('hurt_' + (P.facing > 0 ? 'R' : 'L'))];
     ctx.save(); ctx.translate(q(px), q(py - 18)); ctx.rotate(Math.round((fallen / 40) % 8) * Math.PI / 4 * P.facing);
-    ctx.drawImage(im, f2[0], f2[1], 64, 64, -32, -32, 64, 64); ctx.restore(); ctx.globalAlpha = 1;
+    drawCell(ctx, im, f2, -32, -32); ctx.restore(); ctx.globalAlpha = 1;
     return;
   }
   if (P.chute && name.startsWith('slide')) {                         // going down the slide: tipped back a little with the slope
     const top = meta.frames[name.replace(/_[RL]$/, '_top')];
     ctx.save(); ctx.translate(q(px), q(py)); ctx.rotate((P.chute.ang || 0) * 0.35);
     body(im, fr, -31.5, -meta.baseline);
-    if (top) ctx.drawImage(im, top[0], top[1], 64, 64, -31.5, -meta.baseline, 64, 64);
+    if (top) drawCell(ctx, im, top, -31.5, -meta.baseline);
     ctx.restore(); ctx.globalAlpha = 1;
     return;
   }
@@ -292,7 +304,7 @@ function drawPhill(px, py, q) {
     const [hx, hy] = meta.hang[cell], h = P.hang || P.cling;   // his hand sits right on the corner of the ledge (or flat on the bark)
     body(im, fr, Math.round(h.cx - h.dir - hx), Math.round(h.cy - hy));
   } else if (name.startsWith('airdodge')) {
-    if (cape) ctx.drawImage(cape, fr[0], fr[1], 64, 64, q(px - 32), q(py - P.h / 2 - 32), 64, 64);
+    if (cape) drawCell(ctx, cape, fr, q(px - 32), q(py - P.h / 2 - 32));
     body(im, fr, q(px - 32), q(py - P.h / 2 - 32));
   } else if (P.swim && Math.abs(P.swimRot || 0) > 0.03) {             // swimming up, down or on a slant, or swinging or holding the lid that way: turned to it, head first
     const ax = P.facing > 0 ? 30.5 : 33.5;
@@ -303,11 +315,11 @@ function drawPhill(px, py, q) {
     let ax = name === 'turn' || top ? 31.5 : name.startsWith('ko') ? 32 : (P.facing > 0 ? 30.5 : 33.5);
     if (name.startsWith('crawlatk')) ax -= P.facing * 14;            // the jab's drawn shoved back in its cell so the blade fits (CRAWL_ATK_SHIFT in phill_sprites.py)
     const fx = q(px - ax), fy = q(py - meta.baseline);
-    if (cape) ctx.drawImage(cape, fr[0], fr[1], 64, 64, fx, fy, 64, 64);
+    if (cape) drawCell(ctx, cape, fr, fx, fy);
     body(im, fr, fx, fy);
     if (top) {
       if (P.paper) drawPaper(im, meta, name, fx, fy);
-      ctx.drawImage(im, top[0], top[1], 64, 64, fx, fy, 64, 64);
+      drawCell(ctx, im, top, fx, fy);
       const hand = meta.sit.hands[name.replace(/_[RL]$/, '')];
       if (P.crayon && hand) drawCrayon(fx + hand[0], fy + hand[1], P.crayon);
     }
@@ -321,7 +333,7 @@ function drawPhill(px, py, q) {
     if (gs && bodyAt) {
       const sh = full ? (Math.random() < 0.5 ? -0.5 : 0.5) : 0;
       ctx.save(); ctx.setTransform(bodyAt.t); ctx.globalAlpha = Math.max(0, k);
-      ctx.drawImage(gs, fr[0], fr[1], 64, 64, bodyAt.x + sh, bodyAt.y, 64, 64); ctx.restore(); ctx.globalAlpha = 1;
+      drawCell(ctx, gs, fr, bodyAt.x + sh, bodyAt.y); ctx.restore(); ctx.globalAlpha = 1;
     }
   }
   if (P.gbreak > 0) for (let i = 0; i < 3; i++) { const a = P.gbreak * 9 + i * 2.1; ctx.fillStyle = '#ffd36b'; ctx.fillRect(q(px + Math.cos(a) * 9) - 1, q(py - 42 + Math.sin(a) * 2.5), 2, 2); }   // (a bit lower than they were: the bars are over his head now)
@@ -390,7 +402,7 @@ function drawGuardMeter(px, py, q) {
 // around the paper so it doesn't all pile up in one spot. Kept in P.paper.marks (pixels on the paper)
 function drawPaper(im, meta, name, fx, fy) {
   const pg = meta.frames.paper_ground, [x0, y0, w, h] = meta.sit.paper, pp = P.paper;
-  ctx.drawImage(im, pg[0], pg[1], 64, 64, fx, fy, 64, 64);
+  drawCell(ctx, im, pg, fx, fy);
   const hand = meta.sit.hands[name.replace(/_[RL]$/, '')];
   if (hand && P.crayon && name.startsWith('draw') && pp.last !== name) {
     pp.last = name; pp.n = (pp.n || 0) + 1;

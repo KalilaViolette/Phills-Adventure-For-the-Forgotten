@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 480,
  "art": {
-  "main": "art/pond/fishline.png#main",
-  "pack": "art/pond/fishline.png",
+  "main": "art/pond/fishline.webp#main",
+  "pack": "art/pond/fishline.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    415
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1293,
+    802,
+    222
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1515,
+    873,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1252,
-    628
+    1971,
+    1138,
+    590
    ]
   },
   "layers": [
    {
-    "src": "art/pond/fishline.png#L0",
+    "src": "art/pond/fishline.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/fishline.png#L1",
+    "src": "art/pond/fishline.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/pond/fishline.png#L2",
-    "f": 0.5
+    "src": "art/pond/fishline.webp#L2",
+    "f": 0.5,
+    "y": 212
    },
    {
-    "src": "art/pond/fishline.png#L3",
+    "src": "art/pond/fishline.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/fishline.png#L4",
-    "f": 1.3
+    "src": "art/pond/fishline.webp#L4",
+    "f": 1.3,
+    "x": 24,
+    "y": 17
    }
   ],
   "uses": [

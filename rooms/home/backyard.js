@@ -7,8 +7,8 @@ ROOM({
  "music": "home",
  "viewBottom": 496,
  "art": {
-  "main": "art/home/backyard.png#main",
-  "pack": "art/home/backyard.png",
+  "main": "art/home/backyard.webp#main",
+  "pack": "art/home/backyard.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,69 @@ ROOM({
    "L0": [
     0,
     544,
-    1434,
-    578
+    681,
+    396
    ],
    "L1": [
     0,
-    1122,
-    1418,
-    574
+    940,
+    745,
+    157
    ],
    "L2": [
     0,
-    1696,
-    1388,
-    568
+    1097,
+    866,
+    184
    ],
    "L3": [
     0,
-    2264,
-    1348,
-    560
+    1281,
+    547,
+    154
    ],
    "L4": [
     0,
-    2824,
-    1668,
-    711
+    1435,
+    1165,
+    92
    ],
    "front": [
     0,
-    3535,
+    1527,
     850,
     18
    ]
   },
   "layers": [
    {
-    "src": "art/home/backyard.png#L0",
+    "src": "art/home/backyard.webp#L0",
     "f": 0.06
    },
    {
-    "src": "art/home/backyard.png#L1",
-    "f": 0.16
+    "src": "art/home/backyard.webp#L1",
+    "f": 0.16,
+    "y": 6
    },
    {
-    "src": "art/home/backyard.png#L2",
-    "f": 0.35
+    "src": "art/home/backyard.webp#L2",
+    "f": 0.35,
+    "y": 6
    },
    {
-    "src": "art/home/backyard.png#L3",
-    "f": 0.6
+    "src": "art/home/backyard.webp#L3",
+    "f": 0.6,
+    "x": 229,
+    "y": 91
    },
    {
-    "src": "art/home/backyard.png#L4",
-    "f": 1.3
+    "src": "art/home/backyard.webp#L4",
+    "f": 1.3,
+    "x": 73,
+    "y": 508
    }
   ],
-  "front": "art/home/backyard.png#front",
+  "front": "art/home/backyard.webp#front",
   "frontAt": [
    266,
    466

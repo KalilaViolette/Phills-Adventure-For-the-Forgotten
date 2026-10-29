@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 416,
  "art": {
-  "main": "art/pond/reedbank.png#main",
-  "pack": "art/pond/reedbank.png",
+  "main": "art/pond/reedbank.webp#main",
+  "pack": "art/pond/reedbank.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     416,
-    1386,
-    560
+    681,
+    390
    ],
    "L1": [
     0,
-    976,
-    1300,
-    532
+    806,
+    738,
+    320
    ],
    "L2": [
     0,
-    1508,
-    1204,
-    500
+    1126,
+    802,
+    180
    ],
    "L3": [
     0,
-    2008,
-    1098,
-    464
+    1306,
+    873,
+    410
    ],
    "L4": [
     0,
-    2472,
-    1252,
-    544
+    1716,
+    1215,
+    437
    ]
   },
   "layers": [
    {
-    "src": "art/pond/reedbank.png#L0",
+    "src": "art/pond/reedbank.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/reedbank.png#L1",
-    "f": 0.3
+    "src": "art/pond/reedbank.webp#L1",
+    "f": 0.3,
+    "y": 76
    },
    {
-    "src": "art/pond/reedbank.png#L2",
-    "f": 0.5
+    "src": "art/pond/reedbank.webp#L2",
+    "f": 0.5,
+    "y": 222
    },
    {
-    "src": "art/pond/reedbank.png#L3",
+    "src": "art/pond/reedbank.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/reedbank.png#L4",
-    "f": 1.3
+    "src": "art/pond/reedbank.webp#L4",
+    "f": 1.3,
+    "x": 35
    }
   ],
   "uses": [

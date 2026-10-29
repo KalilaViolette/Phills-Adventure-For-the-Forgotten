@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 768,
  "art": {
-  "main": "art/pond/cattails.png#main",
-  "pack": "art/pond/cattails.png",
+  "main": "art/pond/cattails.webp#main",
+  "pack": "art/pond/cattails.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     768,
-    1348,
-    603
+    642,
+    433
    ],
    "L1": [
     0,
-    1371,
-    1204,
-    637
+    1201,
+    642,
+    273
    ],
    "L2": [
     0,
-    2008,
-    1044,
-    676
+    1474,
+    642,
+    109
    ],
    "L3": [
     0,
-    2684,
-    868,
-    718
+    1583,
+    627,
+    663
    ],
    "L4": [
     0,
-    3402,
-    836,
-    1002
+    2246,
+    720,
+    895
    ]
   },
   "layers": [
    {
-    "src": "art/pond/cattails.png#L0",
+    "src": "art/pond/cattails.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/cattails.png#L1",
-    "f": 0.3
+    "src": "art/pond/cattails.webp#L1",
+    "f": 0.3,
+    "y": 229
    },
    {
-    "src": "art/pond/cattails.png#L2",
-    "f": 0.5
+    "src": "art/pond/cattails.webp#L2",
+    "f": 0.5,
+    "y": 469
    },
    {
-    "src": "art/pond/cattails.png#L3",
-    "f": 0.72
+    "src": "art/pond/cattails.webp#L3",
+    "f": 0.72,
+    "x": 15
    },
    {
-    "src": "art/pond/cattails.png#L4",
-    "f": 1.3
+    "src": "art/pond/cattails.webp#L4",
+    "f": 1.3,
+    "x": 114
    }
   ],
   "uses": [

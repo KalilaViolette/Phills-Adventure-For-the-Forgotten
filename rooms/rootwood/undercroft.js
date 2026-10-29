@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 416,
  "art": {
-  "main": "art/rootwood/undercroft.png#main",
-  "pack": "art/rootwood/undercroft.png",
+  "main": "art/rootwood/undercroft.webp#main",
+  "pack": "art/rootwood/undercroft.webp",
   "parts": {
    "main": [
     0,
@@ -19,93 +19,98 @@ ROOM({
    "L0": [
     0,
     416,
-    1413,
-    560
+    708,
+    390
    ],
    "L1": [
     0,
-    976,
-    1367,
-    532
+    806,
+    806,
+    396
    ],
    "L2": [
     0,
-    1508,
-    1316,
-    500
+    1202,
+    914,
+    402
    ],
    "L3": [
     0,
-    2008,
-    1259,
-    464
+    1604,
+    1024,
+    410
    ],
    "L4": [
     0,
-    2472,
-    1543,
-    544
+    2014,
+    1167,
+    107
    ],
    "L5": [
     0,
-    3016,
-    1223,
-    442
+    2121,
+    629,
+    299
    ],
    "L6": [
     0,
-    3458,
-    1543,
-    544
+    2420,
+    1290,
+    470
    ],
    "L7": [
     0,
-    4002,
-    1780,
-    628
+    2890,
+    1649,
+    483
    ],
    "front": [
     0,
-    4630,
+    3373,
     1141,
     167
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/undercroft.png#L0",
+    "src": "art/rootwood/undercroft.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/undercroft.png#L1",
+    "src": "art/rootwood/undercroft.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/undercroft.png#L2",
+    "src": "art/rootwood/undercroft.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/undercroft.png#L3",
-    "f": 0.72
+    "src": "art/rootwood/undercroft.webp#L3",
+    "f": 0.72,
+    "x": 10
    },
    {
-    "src": "art/rootwood/undercroft.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/undercroft.webp#L4",
+    "f": 1.3,
+    "x": 149
    },
    {
-    "src": "art/rootwood/undercroft.png#L5",
-    "f": 0.86
+    "src": "art/rootwood/undercroft.webp#L5",
+    "f": 0.86,
+    "x": 156
    },
    {
-    "src": "art/rootwood/undercroft.png#L6",
-    "f": 1.3
+    "src": "art/rootwood/undercroft.webp#L6",
+    "f": 1.3,
+    "x": 168
    },
    {
-    "src": "art/rootwood/undercroft.png#L7",
-    "f": 1.5
+    "src": "art/rootwood/undercroft.webp#L7",
+    "f": 1.5,
+    "x": 70
    }
   ],
-  "front": "art/rootwood/undercroft.png#front",
+  "front": "art/rootwood/undercroft.webp#front",
   "frontAt": [
    20,
    249

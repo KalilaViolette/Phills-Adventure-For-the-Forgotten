@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 544,
  "art": {
-  "main": "art/rootwood/bramble.png#main",
-  "pack": "art/rootwood/bramble.png",
+  "main": "art/rootwood/bramble.webp#main",
+  "pack": "art/rootwood/bramble.webp",
   "parts": {
    "main": [
     0,
@@ -19,127 +19,135 @@ ROOM({
    "L0": [
     0,
     544,
-    1363,
-    576
+    658,
+    406
    ],
    "L1": [
     0,
-    1120,
-    1242,
-    570
+    950,
+    681,
+    434
    ],
    "L2": [
     0,
-    1690,
-    1108,
-    564
+    1384,
+    706,
+    466
    ],
    "L3": [
     0,
-    2254,
-    960,
-    556
+    1850,
+    727,
+    502
    ],
    "L4": [
     0,
-    2810,
-    1002,
-    711
+    2352,
+    748,
+    102
    ],
    "L5": [
     0,
-    3521,
-    866,
-    552
+    2454,
+    749,
+    376
    ],
    "L6": [
     0,
-    4073,
-    1002,
-    711
+    2830,
+    217,
+    71
    ],
    "L7": [
     0,
-    4784,
-    1002,
-    548
+    2901,
+    725,
+    81
    ],
    "L8": [
     0,
-    5332,
-    1156,
-    820
+    2982,
+    1154,
+    99
    ],
    "L9": [
     0,
-    6152,
-    1156,
-    548
+    3081,
+    98,
+    48
    ],
    "front": [
     0,
-    6700,
+    3129,
     735,
     376
    ],
    "piece_cover_burrowWall_pass": [
     0,
-    7076,
+    3505,
     60,
     118
    ],
    "piece_cover_burrowWall_wall": [
     0,
-    7194,
+    3623,
     34,
     118
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/bramble.png#L0",
+    "src": "art/rootwood/bramble.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/bramble.png#L1",
+    "src": "art/rootwood/bramble.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/bramble.png#L2",
+    "src": "art/rootwood/bramble.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/bramble.png#L3",
-    "f": 0.72
+    "src": "art/rootwood/bramble.webp#L3",
+    "f": 0.72,
+    "x": 8
    },
    {
-    "src": "art/rootwood/bramble.png#L4",
-    "f": 1.3
-   },
-   {
-    "src": "art/rootwood/bramble.png#L5",
-    "f": 0.86
-   },
-   {
-    "src": "art/rootwood/bramble.png#L6",
-    "f": 1.3
-   },
-   {
-    "src": "art/rootwood/bramble.png#L7",
+    "src": "art/rootwood/bramble.webp#L4",
     "f": 1.3,
-    "fy": 1.0
+    "x": 213
    },
    {
-    "src": "art/rootwood/bramble.png#L8",
-    "f": 1.5
+    "src": "art/rootwood/bramble.webp#L5",
+    "f": 0.86,
+    "x": 4
    },
    {
-    "src": "art/rootwood/bramble.png#L9",
+    "src": "art/rootwood/bramble.webp#L6",
+    "f": 1.3,
+    "x": 467,
+    "y": 568
+   },
+   {
+    "src": "art/rootwood/bramble.webp#L7",
+    "f": 1.3,
+    "fy": 1.0,
+    "x": 116
+   },
+   {
+    "src": "art/rootwood/bramble.webp#L8",
     "f": 1.5,
-    "fy": 1.0
+    "y": 573
+   },
+   {
+    "src": "art/rootwood/bramble.webp#L9",
+    "f": 1.5,
+    "fy": 1.0,
+    "x": 670
    }
   ],
-  "front": "art/rootwood/bramble.png#front",
+  "front": "art/rootwood/bramble.webp#front",
   "frontAt": [
    10,
    137

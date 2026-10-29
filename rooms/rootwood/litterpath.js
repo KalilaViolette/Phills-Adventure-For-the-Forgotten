@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 384,
  "art": {
-  "main": "art/rootwood/litterpath.png#main",
-  "pack": "art/rootwood/litterpath.png",
+  "main": "art/rootwood/litterpath.webp#main",
+  "pack": "art/rootwood/litterpath.webp",
   "parts": {
    "main": [
     0,
@@ -19,136 +19,137 @@ ROOM({
    "L0": [
     0,
     384,
-    1444,
-    522
+    882,
+    384
    ],
    "L1": [
     0,
-    906,
-    1444,
-    493
+    768,
+    1002,
+    384
    ],
    "L2": [
     0,
-    1399,
-    1444,
-    464
+    1152,
+    1122,
+    384
    ],
    "L3": [
     0,
-    1863,
-    1659,
-    445
+    1536,
+    1178,
+    45
    ],
    "front": [
     0,
-    2308,
+    1581,
     1054,
     151
    ],
    "piece_time_0_dawn": [
     0,
-    2459,
+    1732,
     1440,
     384
    ],
    "piece_time_0_dusk": [
     0,
-    2843,
+    2116,
     1440,
     384
    ],
    "piece_time_0_night": [
     0,
-    3227,
+    2500,
     1440,
     384
    ],
    "piece_reveal_log_near_side": [
     0,
-    3611,
+    2884,
     180,
     56
    ],
    "piece_plant_leaf_tide_plant_01": [
     0,
-    3667,
+    2940,
     29,
     18
    ],
    "piece_plant_leaf_tide_plant_02": [
     0,
-    3685,
+    2958,
     23,
     16
    ],
    "piece_plant_leaf_tide_plant_03": [
     0,
-    3701,
+    2974,
     25,
     17
    ],
    "piece_plant_leaf_tide_plant_04": [
     0,
-    3718,
+    2991,
     27,
     18
    ],
    "piece_plant_leaf_tide_plant_05": [
     0,
-    3736,
+    3009,
     28,
     17
    ],
    "piece_plant_leaf_tide_plant_06": [
     0,
-    3753,
+    3026,
     30,
     28
    ],
    "piece_plant_leaf_tide_plant_07": [
     0,
-    3781,
+    3054,
     28,
     24
    ],
    "piece_plant_leaf_tide_plant_08": [
     0,
-    3805,
+    3078,
     24,
     28
    ],
    "piece_glow_0": [
     0,
-    3833,
+    3106,
     196,
     269
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/litterpath.png#L0",
+    "src": "art/rootwood/litterpath.webp#L0",
     "f": 0.3,
     "times": {
-     "dawn": "art/rootwood/litterpath.png#piece_time_0_dawn",
-     "dusk": "art/rootwood/litterpath.png#piece_time_0_dusk",
-     "night": "art/rootwood/litterpath.png#piece_time_0_night"
+     "dawn": "art/rootwood/litterpath.webp#piece_time_0_dawn",
+     "dusk": "art/rootwood/litterpath.webp#piece_time_0_dusk",
+     "night": "art/rootwood/litterpath.webp#piece_time_0_night"
     }
    },
    {
-    "src": "art/rootwood/litterpath.png#L1",
+    "src": "art/rootwood/litterpath.webp#L1",
     "f": 0.45
    },
    {
-    "src": "art/rootwood/litterpath.png#L2",
+    "src": "art/rootwood/litterpath.webp#L2",
     "f": 0.6
    },
    {
-    "src": "art/rootwood/litterpath.png#L3",
-    "f": 1.15
+    "src": "art/rootwood/litterpath.webp#L3",
+    "f": 1.15,
+    "y": 339
    }
   ],
-  "front": "art/rootwood/litterpath.png#front",
+  "front": "art/rootwood/litterpath.webp#front",
   "frontAt": [
    171,
    196

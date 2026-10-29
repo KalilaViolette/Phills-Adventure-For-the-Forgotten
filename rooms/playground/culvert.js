@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 512,
  "art": {
-  "main": "art/playground/culvert.png#main",
-  "pack": "art/playground/culvert.png",
+  "main": "art/playground/culvert.webp#main",
+  "pack": "art/playground/culvert.webp",
   "parts": {
    "main": [
     0,
@@ -19,74 +19,80 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    572
+    681,
+    402
    ],
    "L1": [
     0,
-    1084,
-    1300,
-    560
+    914,
+    738,
+    425
    ],
    "L2": [
     0,
-    1644,
-    1204,
-    548
+    1339,
+    802,
+    329
    ],
    "L3": [
     0,
-    2192,
-    1098,
-    533
+    1668,
+    862,
+    471
    ],
    "L4": [
     0,
-    2725,
-    1300,
-    695
+    2139,
+    995,
+    55
    ],
    "L5": [
     0,
-    3420,
-    1300,
-    516
+    2194,
+    911,
+    54
    ],
    "front": [
     0,
-    3936,
+    2248,
     656,
     64
    ]
   },
   "layers": [
    {
-    "src": "art/playground/culvert.png#L0",
+    "src": "art/playground/culvert.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/culvert.png#L1",
+    "src": "art/playground/culvert.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/playground/culvert.png#L2",
-    "f": 0.5
+    "src": "art/playground/culvert.webp#L2",
+    "f": 0.5,
+    "y": 121
    },
    {
-    "src": "art/playground/culvert.png#L3",
-    "f": 0.72
+    "src": "art/playground/culvert.webp#L3",
+    "f": 0.72,
+    "x": 11,
+    "y": 8
    },
    {
-    "src": "art/playground/culvert.png#L4",
-    "f": 1.35
-   },
-   {
-    "src": "art/playground/culvert.png#L5",
+    "src": "art/playground/culvert.webp#L4",
     "f": 1.35,
-    "fy": 1.0
+    "x": 107,
+    "y": 536
+   },
+   {
+    "src": "art/playground/culvert.webp#L5",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 193
    }
   ],
-  "front": "art/playground/culvert.png#front",
+  "front": "art/playground/culvert.webp#front",
   "frontAt": [
    0,
    384

@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 480,
  "art": {
-  "main": "art/pond/sunken.png#main",
-  "pack": "art/pond/sunken.png",
+  "main": "art/pond/sunken.webp#main",
+  "pack": "art/pond/sunken.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,56 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    415
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1293,
+    802,
+    220
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1513,
+    873,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1252,
-    628
+    1969,
+    1200,
+    611
    ]
   },
   "layers": [
    {
-    "src": "art/pond/sunken.png#L0",
+    "src": "art/pond/sunken.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/sunken.png#L1",
+    "src": "art/pond/sunken.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/pond/sunken.png#L2",
-    "f": 0.5
+    "src": "art/pond/sunken.webp#L2",
+    "f": 0.5,
+    "y": 214
    },
    {
-    "src": "art/pond/sunken.png#L3",
+    "src": "art/pond/sunken.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/sunken.png#L4",
-    "f": 1.3
+    "src": "art/pond/sunken.webp#L4",
+    "f": 1.3,
+    "x": 43
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 480,
  "art": {
-  "main": "art/pond/sailboat.png#main",
-  "pack": "art/pond/sailboat.png",
+  "main": "art/pond/sailboat.webp#main",
+  "pack": "art/pond/sailboat.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    400
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1278,
+    802,
+    315
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1593,
+    873,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1252,
-    628
+    2049,
+    1070,
+    521
    ],
    "front": [
     0,
-    3269,
+    2570,
     960,
     256
    ]
   },
   "layers": [
    {
-    "src": "art/pond/sailboat.png#L0",
+    "src": "art/pond/sailboat.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/sailboat.png#L1",
-    "f": 0.3
+    "src": "art/pond/sailboat.webp#L1",
+    "f": 0.3,
+    "y": 15
    },
    {
-    "src": "art/pond/sailboat.png#L2",
-    "f": 0.5
+    "src": "art/pond/sailboat.webp#L2",
+    "f": 0.5,
+    "y": 119
    },
    {
-    "src": "art/pond/sailboat.png#L3",
+    "src": "art/pond/sailboat.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/sailboat.png#L4",
-    "f": 1.3
+    "src": "art/pond/sailboat.webp#L4",
+    "f": 1.3,
+    "x": 63
    }
   ],
-  "front": "art/pond/sailboat.png#front",
+  "front": "art/pond/sailboat.webp#front",
   "frontAt": [
    0,
    224

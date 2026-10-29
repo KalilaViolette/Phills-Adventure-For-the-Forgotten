@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 416,
  "art": {
-  "main": "art/rootwood/roots.png#main",
-  "pack": "art/rootwood/roots.png",
+  "main": "art/rootwood/roots.webp#main",
+  "pack": "art/rootwood/roots.webp",
   "parts": {
    "main": [
     0,
@@ -19,241 +19,242 @@ ROOM({
    "L0": [
     0,
     416,
-    1194,
-    484
+    873,
+    406
    ],
    "L1": [
     0,
-    900,
-    1102,
-    448
+    822,
+    957,
+    375
    ],
    "L2": [
     0,
-    1348,
-    1130,
-    461
+    1197,
+    1063,
+    103
    ],
    "front": [
     0,
-    1809,
+    1300,
     789,
     227
    ],
    "piece_plant_toe_fern": [
     0,
-    2036,
+    1527,
     24,
     15
    ],
    "piece_plant_root_fern": [
     0,
-    2051,
+    1542,
     25,
     15
    ],
    "piece_plant_cave_tuft": [
     0,
-    2066,
+    1557,
     23,
     18
    ],
    "piece_plant_root_hair": [
     0,
-    2084,
+    1575,
     13,
     44
    ],
    "piece_plant_clearing_edge_fern": [
     0,
-    2128,
+    1619,
     25,
     15
    ],
    "piece_plant_low_bank_fern": [
     0,
-    2143,
+    1634,
     25,
     15
    ],
    "piece_plant_toe_earth_tuft": [
     0,
-    2158,
+    1649,
     23,
     18
    ],
    "piece_plant_cave_bank_tuft": [
     0,
-    2176,
+    1667,
     23,
     18
    ],
    "piece_plant_root_back_fern": [
     0,
-    2194,
+    1685,
     25,
     15
    ],
    "piece_plant_upper_root_tuft": [
     0,
-    2209,
+    1700,
     23,
     18
    ],
    "piece_plant_cave_hanging_vine": [
     0,
-    2227,
+    1718,
     13,
     44
    ],
    "piece_plant_ceiling_vine_left": [
     0,
-    2271,
+    1762,
     13,
     44
    ],
    "piece_plant_ceiling_root_hairs": [
     0,
-    2315,
+    1806,
     24,
     64
    ],
    "piece_plant_touch_clearing_sorrel": [
     0,
-    2379,
+    1870,
     26,
     16
    ],
    "piece_plant_touch_toe_fiddlehead": [
     0,
-    2395,
+    1886,
     24,
     17
    ],
    "piece_plant_touch_branch_fern": [
     0,
-    2412,
+    1903,
     34,
     17
    ],
    "piece_plant_touch_root_dip": [
     0,
-    2429,
+    1920,
     31,
     17
    ],
    "piece_plant_touch_root_high": [
     0,
-    2446,
+    1937,
     29,
     17
    ],
    "piece_plant_touch_root_right": [
     0,
-    2463,
+    1954,
     24,
     17
    ],
    "piece_plant_touch_low_sorrel": [
     0,
-    2480,
+    1971,
     26,
     16
    ],
    "piece_plant_touch_low_fern": [
     0,
-    2496,
+    1987,
     34,
     17
    ],
    "piece_plant_touch_cave_fiddlehead": [
     0,
-    2513,
+    2004,
     24,
     17
    ],
    "piece_plant_touch_branch_root_front": [
     0,
-    2530,
+    2021,
     14,
     40
    ],
    "piece_plant_touch_branch_ivy_back": [
     0,
-    2570,
+    2061,
     17,
     43
    ],
    "piece_plant_touch_cave_leaf_roots_front": [
     0,
-    2613,
+    2104,
     15,
     42
    ],
    "piece_plant_touch_cave_wiry_back": [
     0,
-    2655,
+    2146,
     14,
     40
    ],
    "piece_glow_0": [
     0,
-    2695,
+    2186,
     213,
     119
    ],
    "piece_glow_1": [
     0,
-    2814,
+    2305,
     65,
     57
    ],
    "piece_glow_2": [
     0,
-    2871,
+    2362,
     62,
     197
    ],
    "piece_glow_3": [
     0,
-    3068,
+    2559,
     132,
     74
    ],
    "piece_glow_4": [
     0,
-    3142,
+    2633,
     88,
     44
    ],
    "piece_glow_5": [
     0,
-    3186,
+    2677,
     425,
     23
    ],
    "piece_glow_6": [
     0,
-    3209,
+    2700,
     531,
     220
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/roots.png#L0",
+    "src": "art/rootwood/roots.webp#L0",
     "f": 0.6
    },
    {
-    "src": "art/rootwood/roots.png#L1",
-    "f": 0.82
+    "src": "art/rootwood/roots.webp#L1",
+    "f": 0.82,
+    "y": 38
    },
    {
-    "src": "art/rootwood/roots.png#L2",
+    "src": "art/rootwood/roots.webp#L2",
     "f": 1.1
    }
   ],
-  "front": "art/rootwood/roots.png#front",
+  "front": "art/rootwood/roots.webp#front",
   "frontAt": [
    195,
    144

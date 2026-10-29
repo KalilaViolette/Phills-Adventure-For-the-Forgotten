@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 384,
  "art": {
-  "main": "art/oak/flight.png#main",
-  "pack": "art/oak/flight.png",
+  "main": "art/oak/flight.webp#main",
+  "pack": "art/oak/flight.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,60 @@ ROOM({
    "L0": [
     0,
     384,
-    1500,
-    570
+    738,
+    386
    ],
    "L1": [
     0,
-    954,
-    1600,
-    553
+    770,
+    770,
+    60
    ],
    "L2": [
     0,
-    1507,
-    1780,
-    522
+    830,
+    1,
+    1
    ],
    "L3": [
     0,
-    2029,
-    2060,
-    474
+    831,
+    1434,
+    149
    ],
    "L4": [
     0,
-    2503,
-    3716,
-    560
+    980,
+    3108,
+    220
    ]
   },
   "layers": [
    {
-    "src": "art/oak/flight.png#L0",
+    "src": "art/oak/flight.webp#L0",
     "f": 0.05
    },
    {
-    "src": "art/oak/flight.png#L1",
-    "f": 0.14
+    "src": "art/oak/flight.webp#L1",
+    "f": 0.14,
+    "x": 41,
+    "y": 26
    },
    {
-    "src": "art/oak/flight.png#L2",
+    "src": "art/oak/flight.webp#L2",
     "f": 0.3
    },
    {
-    "src": "art/oak/flight.png#L3",
-    "f": 0.55
+    "src": "art/oak/flight.webp#L3",
+    "f": 0.55,
+    "x": 46,
+    "y": 7
    },
    {
-    "src": "art/oak/flight.png#L4",
-    "f": 1.45
+    "src": "art/oak/flight.webp#L4",
+    "f": 1.45,
+    "x": 185,
+    "y": 30
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 384,
  "art": {
-  "main": "art/greenhouse/boiler.png#main",
-  "pack": "art/greenhouse/boiler.png",
+  "main": "art/greenhouse/boiler.webp#main",
+  "pack": "art/greenhouse/boiler.webp",
   "parts": {
    "main": [
     0,
@@ -19,46 +19,46 @@ ROOM({
    "L0": [
     0,
     384,
-    1348,
-    493
+    642,
+    386
    ],
    "L1": [
     0,
-    877,
-    1204,
-    455
+    770,
+    642,
+    386
    ],
    "L2": [
     0,
-    1332,
-    1044,
-    426
+    1156,
+    642,
+    320
    ],
    "L3": [
     0,
-    1758,
-    868,
-    407
+    1476,
+    642,
+    386
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/boiler.png#L0",
+    "src": "art/greenhouse/boiler.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/boiler.png#L1",
+    "src": "art/greenhouse/boiler.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/boiler.png#L2",
+    "src": "art/greenhouse/boiler.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/boiler.png#L3",
+    "src": "art/greenhouse/boiler.webp#L3",
     "f": 0.72,
     "fy": 0.9
    }

@@ -7,8 +7,8 @@ ROOM({
  "music": "warrendeep",
  "viewBottom": 480,
  "art": {
-  "main": "art/warren/deepdig.png#main",
-  "pack": "art/warren/deepdig.png",
+  "main": "art/warren/deepdig.webp#main",
+  "pack": "art/warren/deepdig.webp",
   "parts": {
    "main": [
     0,
@@ -19,34 +19,37 @@ ROOM({
    "L0": [
     0,
     480,
-    1300,
-    652
+    1265,
+    76
    ],
    "L1": [
     0,
-    1132,
-    1300,
-    484
+    556,
+    962,
+    85
    ],
    "L2": [
     0,
-    1616,
-    1060,
-    503
+    641,
+    898,
+    463
    ]
   },
   "layers": [
    {
-    "src": "art/warren/deepdig.png#L0",
-    "f": 1.35
-   },
-   {
-    "src": "art/warren/deepdig.png#L1",
+    "src": "art/warren/deepdig.webp#L0",
     "f": 1.35,
-    "fy": 1.0
+    "x": 33,
+    "y": 480
    },
    {
-    "src": "art/warren/deepdig.png#L2",
+    "src": "art/warren/deepdig.webp#L1",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 188
+   },
+   {
+    "src": "art/warren/deepdig.webp#L2",
     "f": 0.8
    }
   ],

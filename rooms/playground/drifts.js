@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 512,
  "art": {
-  "main": "art/playground/drifts.png#main",
-  "pack": "art/playground/drifts.png",
+  "main": "art/playground/drifts.webp#main",
+  "pack": "art/playground/drifts.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    572
+    681,
+    402
    ],
    "L1": [
     0,
-    1084,
-    1300,
-    560
+    914,
+    738,
+    269
    ],
    "L2": [
     0,
-    1644,
-    1204,
-    548
+    1183,
+    802,
+    251
    ],
    "L3": [
     0,
-    2192,
-    1098,
-    533
+    1434,
+    873,
+    479
    ],
    "L4": [
     0,
-    2725,
-    1252,
-    669
+    1913,
+    819,
+    209
    ]
   },
   "layers": [
    {
-    "src": "art/playground/drifts.png#L0",
+    "src": "art/playground/drifts.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/drifts.png#L1",
-    "f": 0.3
+    "src": "art/playground/drifts.webp#L1",
+    "f": 0.3,
+    "y": 156
    },
    {
-    "src": "art/playground/drifts.png#L2",
-    "f": 0.5
+    "src": "art/playground/drifts.webp#L2",
+    "f": 0.5,
+    "y": 199
    },
    {
-    "src": "art/playground/drifts.png#L3",
+    "src": "art/playground/drifts.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/drifts.png#L4",
-    "f": 1.3
+    "src": "art/playground/drifts.webp#L4",
+    "f": 1.3,
+    "x": 145,
+    "y": 459
    }
   ],
   "uses": [

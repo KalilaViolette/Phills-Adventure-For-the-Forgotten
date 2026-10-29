@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 416,
  "art": {
-  "main": "art/rootwood/clearing.png#main",
-  "pack": "art/rootwood/clearing.png",
+  "main": "art/rootwood/clearing.webp#main",
+  "pack": "art/rootwood/clearing.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,55 @@ ROOM({
    "L0": [
     0,
     416,
-    1359,
-    560
+    654,
+    390
    ],
    "L1": [
     0,
-    976,
-    1232,
-    532
+    806,
+    671,
+    396
    ],
    "L2": [
     0,
-    1508,
-    1092,
-    500
+    1202,
+    690,
+    402
    ],
    "L3": [
     0,
-    2008,
-    937,
-    464
+    1604,
+    712,
+    410
    ],
    "L4": [
     0,
-    2472,
-    960,
-    544
+    2014,
+    717,
+    439
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/clearing.png#L0",
+    "src": "art/rootwood/clearing.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/clearing.png#L1",
+    "src": "art/rootwood/clearing.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/clearing.png#L2",
+    "src": "art/rootwood/clearing.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/clearing.png#L3",
+    "src": "art/rootwood/clearing.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/clearing.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/clearing.webp#L4",
+    "f": 1.3,
+    "x": 130
    }
   ],
   "uses": [

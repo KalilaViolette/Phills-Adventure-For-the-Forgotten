@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 384,
  "art": {
-  "main": "art/greenhouse/hillpath.png#main",
-  "pack": "art/greenhouse/hillpath.png",
+  "main": "art/greenhouse/hillpath.webp#main",
+  "pack": "art/greenhouse/hillpath.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,59 @@ ROOM({
    "L0": [
     0,
     384,
-    1386,
-    556
+    681,
+    386
    ],
    "L1": [
     0,
-    940,
-    1300,
-    522
+    770,
+    738,
+    324
    ],
    "L2": [
     0,
-    1462,
-    1204,
-    484
+    1094,
+    802,
+    116
    ],
    "L3": [
     0,
-    1946,
-    1098,
-    441
+    1210,
+    873,
+    44
    ],
    "L4": [
     0,
-    2387,
-    1252,
-    503
+    1254,
+    487,
+    89
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/hillpath.png#L0",
+    "src": "art/greenhouse/hillpath.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/greenhouse/hillpath.png#L1",
-    "f": 0.3
+    "src": "art/greenhouse/hillpath.webp#L1",
+    "f": 0.3,
+    "y": 62
    },
    {
-    "src": "art/greenhouse/hillpath.png#L2",
-    "f": 0.5
+    "src": "art/greenhouse/hillpath.webp#L2",
+    "f": 0.5,
+    "y": 270
    },
    {
-    "src": "art/greenhouse/hillpath.png#L3",
-    "f": 0.72
+    "src": "art/greenhouse/hillpath.webp#L3",
+    "f": 0.72,
+    "y": 342
    },
    {
-    "src": "art/greenhouse/hillpath.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/hillpath.webp#L4",
+    "f": 1.3,
+    "x": 241,
+    "y": 413
    }
   ],
   "uses": [

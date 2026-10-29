@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 608,
  "art": {
-  "main": "art/playground/partytent.png#main",
-  "pack": "art/playground/partytent.png",
+  "main": "art/playground/partytent.webp#main",
+  "pack": "art/playground/partytent.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     608,
-    1386,
-    583
+    681,
+    413
    ],
    "L1": [
     0,
-    1191,
-    1300,
-    589
+    1021,
+    738,
+    270
    ],
    "L2": [
     0,
-    1780,
-    1204,
-    596
+    1291,
+    802,
+    263
    ],
    "L3": [
     0,
-    2376,
-    1098,
-    603
+    1554,
+    873,
+    548
    ],
    "L4": [
     0,
-    2979,
-    1252,
-    794
+    2102,
+    703,
+    207
    ]
   },
   "layers": [
    {
-    "src": "art/playground/partytent.png#L0",
+    "src": "art/playground/partytent.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/partytent.png#L1",
-    "f": 0.3
+    "src": "art/playground/partytent.webp#L1",
+    "f": 0.3,
+    "y": 184
    },
    {
-    "src": "art/playground/partytent.png#L2",
-    "f": 0.5
+    "src": "art/playground/partytent.webp#L2",
+    "f": 0.5,
+    "y": 235
    },
    {
-    "src": "art/playground/partytent.png#L3",
+    "src": "art/playground/partytent.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/partytent.png#L4",
-    "f": 1.3
+    "src": "art/playground/partytent.webp#L4",
+    "f": 1.3,
+    "x": 160,
+    "y": 586
    }
   ],
   "uses": [

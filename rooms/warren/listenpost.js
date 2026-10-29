@@ -7,8 +7,8 @@ ROOM({
  "music": "warren",
  "viewBottom": 416,
  "art": {
-  "main": "art/warren/listenpost.png#main",
-  "pack": "art/warren/listenpost.png",
+  "main": "art/warren/listenpost.webp#main",
+  "pack": "art/warren/listenpost.webp",
   "parts": {
    "main": [
     0,
@@ -19,34 +19,37 @@ ROOM({
    "L0": [
     0,
     416,
-    1127,
-    565
+    943,
+    72
    ],
    "L1": [
     0,
-    981,
-    1127,
-    420
+    488,
+    717,
+    65
    ],
    "L2": [
     0,
-    1401,
-    957,
-    452
+    553,
+    796,
+    412
    ]
   },
   "layers": [
    {
-    "src": "art/warren/listenpost.png#L0",
-    "f": 1.35
-   },
-   {
-    "src": "art/warren/listenpost.png#L1",
+    "src": "art/warren/listenpost.webp#L0",
     "f": 1.35,
-    "fy": 1.0
+    "x": 113,
+    "y": 393
    },
    {
-    "src": "art/warren/listenpost.png#L2",
+    "src": "art/warren/listenpost.webp#L1",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 366
+   },
+   {
+    "src": "art/warren/listenpost.webp#L2",
     "f": 0.8
    }
   ],

@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 480,
  "art": {
-  "main": "art/oak/drey.png#main",
-  "pack": "art/oak/drey.png",
+  "main": "art/oak/drey.webp#main",
+  "pack": "art/oak/drey.webp",
   "parts": {
    "main": [
     0,
@@ -19,75 +19,78 @@ ROOM({
    "L0": [
     0,
     480,
-    1405,
-    572
+    668,
+    394
    ],
    "L1": [
     0,
-    1052,
-    1348,
-    560
+    874,
+    677,
+    363
    ],
    "L2": [
     0,
-    1612,
-    1252,
-    541
+    1237,
+    770,
+    161
    ],
    "L3": [
     0,
-    2153,
-    1132,
-    517
+    1398,
+    850,
+    309
    ],
    "L4": [
     0,
-    2670,
-    1252,
-    628
+    1707,
+    1215,
+    265
    ],
    "front": [
     0,
-    3298,
+    1972,
     148,
     87
    ],
    "piece_cover_dreywall_pass": [
     0,
-    3385,
+    2059,
     247,
     166
    ],
    "piece_cover_dreywall_wall": [
     0,
-    3551,
+    2225,
     50,
     166
    ]
   },
   "layers": [
    {
-    "src": "art/oak/drey.png#L0",
+    "src": "art/oak/drey.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/drey.png#L1",
-    "f": 0.2
+    "src": "art/oak/drey.webp#L1",
+    "f": 0.2,
+    "x": 29
    },
    {
-    "src": "art/oak/drey.png#L2",
-    "f": 0.4
+    "src": "art/oak/drey.webp#L2",
+    "f": 0.4,
+    "y": 264
    },
    {
-    "src": "art/oak/drey.png#L3",
-    "f": 0.65
+    "src": "art/oak/drey.webp#L3",
+    "f": 0.65,
+    "y": 140
    },
    {
-    "src": "art/oak/drey.png#L4",
+    "src": "art/oak/drey.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/drey.png#front",
+  "front": "art/oak/drey.webp#front",
   "frontAt": [
    812,
    53

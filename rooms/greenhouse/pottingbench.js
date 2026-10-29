@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 512,
  "art": {
-  "main": "art/greenhouse/pottingbench.png#main",
-  "pack": "art/greenhouse/pottingbench.png",
+  "main": "art/greenhouse/pottingbench.webp#main",
+  "pack": "art/greenhouse/pottingbench.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,59 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    551
+    681,
+    444
    ],
    "L1": [
     0,
-    1063,
-    1300,
-    538
+    956,
+    738,
+    470
    ],
    "L2": [
     0,
-    1601,
-    1204,
-    528
+    1426,
+    802,
+    489
    ],
    "L3": [
     0,
-    2129,
-    1098,
-    522
+    1915,
+    873,
+    502
    ],
    "L4": [
     0,
-    2651,
-    1252,
-    669
+    2417,
+    626,
+    150
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/pottingbench.png#L0",
+    "src": "art/greenhouse/pottingbench.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/pottingbench.png#L1",
+    "src": "art/greenhouse/pottingbench.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/pottingbench.png#L2",
+    "src": "art/greenhouse/pottingbench.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/pottingbench.png#L3",
+    "src": "art/greenhouse/pottingbench.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/pottingbench.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/pottingbench.webp#L4",
+    "f": 1.3,
+    "x": 332
    }
   ],
   "uses": [

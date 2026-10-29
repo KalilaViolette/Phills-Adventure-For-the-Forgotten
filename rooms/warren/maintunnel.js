@@ -7,8 +7,8 @@ ROOM({
  "music": "warren",
  "viewBottom": 416,
  "art": {
-  "main": "art/warren/maintunnel.png#main",
-  "pack": "art/warren/maintunnel.png",
+  "main": "art/warren/maintunnel.webp#main",
+  "pack": "art/warren/maintunnel.webp",
   "parts": {
    "main": [
     0,
@@ -19,34 +19,37 @@ ROOM({
    "L0": [
     0,
     416,
-    1386,
-    565
+    1176,
+    80
    ],
    "L1": [
     0,
-    981,
-    1386,
-    420
+    496,
+    878,
+    101
    ],
    "L2": [
     0,
-    1401,
-    1111,
-    452
+    597,
+    950,
+    412
    ]
   },
   "layers": [
    {
-    "src": "art/warren/maintunnel.png#L0",
-    "f": 1.35
-   },
-   {
-    "src": "art/warren/maintunnel.png#L1",
+    "src": "art/warren/maintunnel.webp#L0",
     "f": 1.35,
-    "fy": 1.0
+    "x": 107,
+    "y": 389
    },
    {
-    "src": "art/warren/maintunnel.png#L2",
+    "src": "art/warren/maintunnel.webp#L1",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 163
+   },
+   {
+    "src": "art/warren/maintunnel.webp#L2",
     "f": 0.8
    }
   ],

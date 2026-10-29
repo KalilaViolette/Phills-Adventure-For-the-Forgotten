@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 640,
  "art": {
-  "main": "art/playground/swings.png#main",
-  "pack": "art/playground/swings.png",
+  "main": "art/playground/swings.webp#main",
+  "pack": "art/playground/swings.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     640,
-    1386,
-    587
+    681,
+    417
    ],
    "L1": [
     0,
-    1227,
-    1300,
-    599
+    1057,
+    738,
+    267
    ],
    "L2": [
     0,
-    1826,
-    1204,
-    612
+    1324,
+    802,
+    243
    ],
    "L3": [
     0,
-    2438,
-    1098,
-    626
+    1567,
+    873,
+    571
    ],
    "L4": [
     0,
-    3064,
-    1252,
-    836
+    2138,
+    633,
+    209
    ]
   },
   "layers": [
    {
-    "src": "art/playground/swings.png#L0",
+    "src": "art/playground/swings.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/swings.png#L1",
-    "f": 0.3
+    "src": "art/playground/swings.webp#L1",
+    "f": 0.3,
+    "y": 196
    },
    {
-    "src": "art/playground/swings.png#L2",
-    "f": 0.5
+    "src": "art/playground/swings.webp#L2",
+    "f": 0.5,
+    "y": 271
    },
    {
-    "src": "art/playground/swings.png#L3",
+    "src": "art/playground/swings.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/swings.png#L4",
-    "f": 1.3
+    "src": "art/playground/swings.webp#L4",
+    "f": 1.3,
+    "x": 145,
+    "y": 625
    }
   ],
   "uses": [

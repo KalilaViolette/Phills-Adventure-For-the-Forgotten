@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 704,
  "art": {
-  "main": "art/pond/overlook.png#main",
-  "pack": "art/pond/overlook.png",
+  "main": "art/pond/overlook.webp#main",
+  "pack": "art/pond/overlook.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     704,
-    1348,
-    595
+    642,
+    425
    ],
    "L1": [
     0,
-    1299,
-    1204,
-    618
+    1129,
+    642,
+    249
    ],
    "L2": [
     0,
-    1917,
-    1044,
-    644
+    1378,
+    642,
+    79
    ],
    "L3": [
     0,
-    2561,
-    868,
-    672
+    1457,
+    642,
+    617
    ],
    "L4": [
     0,
-    3233,
-    836,
-    919
+    2074,
+    745,
+    812
    ]
   },
   "layers": [
    {
-    "src": "art/pond/overlook.png#L0",
+    "src": "art/pond/overlook.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/overlook.png#L1",
-    "f": 0.3
+    "src": "art/pond/overlook.webp#L1",
+    "f": 0.3,
+    "y": 233
    },
    {
-    "src": "art/pond/overlook.png#L2",
-    "f": 0.5
+    "src": "art/pond/overlook.webp#L2",
+    "f": 0.5,
+    "y": 467
    },
    {
-    "src": "art/pond/overlook.png#L3",
+    "src": "art/pond/overlook.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/overlook.png#L4",
-    "f": 1.3
+    "src": "art/pond/overlook.webp#L4",
+    "f": 1.3,
+    "x": 89
    }
   ],
   "uses": [

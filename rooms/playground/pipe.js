@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 448,
  "art": {
-  "main": "art/playground/pipe.png#main",
-  "pack": "art/playground/pipe.png",
+  "main": "art/playground/pipe.webp#main",
+  "pack": "art/playground/pipe.webp",
   "parts": {
    "main": [
     0,
@@ -19,74 +19,80 @@ ROOM({
    "L0": [
     0,
     448,
-    1386,
-    564
+    681,
+    394
    ],
    "L1": [
     0,
-    1012,
-    1300,
-    541
+    842,
+    738,
+    406
    ],
    "L2": [
     0,
-    1553,
-    1204,
-    516
+    1248,
+    802,
+    366
    ],
    "L3": [
     0,
-    2069,
-    1098,
-    487
+    1614,
+    859,
+    432
    ],
    "L4": [
     0,
-    2556,
-    1300,
-    608
+    2046,
+    1245,
+    57
    ],
    "L5": [
     0,
-    3164,
-    1300,
-    452
+    2103,
+    656,
+    80
    ],
    "front": [
     0,
-    3616,
+    2183,
     672,
     64
    ]
   },
   "layers": [
    {
-    "src": "art/playground/pipe.png#L0",
+    "src": "art/playground/pipe.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/pipe.png#L1",
+    "src": "art/playground/pipe.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/playground/pipe.png#L2",
-    "f": 0.5
+    "src": "art/playground/pipe.webp#L2",
+    "f": 0.5,
+    "y": 52
    },
    {
-    "src": "art/playground/pipe.png#L3",
-    "f": 0.72
+    "src": "art/playground/pipe.webp#L3",
+    "f": 0.72,
+    "x": 14,
+    "y": 1
    },
    {
-    "src": "art/playground/pipe.png#L4",
-    "f": 1.35
-   },
-   {
-    "src": "art/playground/pipe.png#L5",
+    "src": "art/playground/pipe.webp#L4",
     "f": 1.35,
-    "fy": 1.0
+    "x": 53,
+    "y": 451
+   },
+   {
+    "src": "art/playground/pipe.webp#L5",
+    "f": 1.35,
+    "fy": 1.0,
+    "x": 222
    }
   ],
-  "front": "art/playground/pipe.png#front",
+  "front": "art/playground/pipe.webp#front",
   "frontAt": [
    288,
    384

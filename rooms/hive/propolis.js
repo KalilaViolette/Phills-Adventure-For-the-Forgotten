@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 576,
  "art": {
-  "main": "art/hive/propolis.png#main",
-  "pack": "art/hive/propolis.png",
+  "main": "art/hive/propolis.webp#main",
+  "pack": "art/hive/propolis.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,61 @@ ROOM({
    "L0": [
     0,
     576,
-    1386,
-    580
+    681,
+    473
    ],
    "L1": [
     0,
-    1156,
-    1300,
-    580
+    1049,
+    738,
+    321
    ],
    "L2": [
     0,
-    1736,
-    1204,
-    580
+    1370,
+    764,
+    303
    ],
    "L3": [
     0,
-    2316,
-    1098,
-    580
+    1673,
+    868,
+    92
    ],
    "L4": [
     0,
-    2896,
-    1252,
-    752
+    1765,
+    94,
+    84
    ]
   },
   "layers": [
    {
-    "src": "art/hive/propolis.png#L0",
+    "src": "art/hive/propolis.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/hive/propolis.png#L1",
+    "src": "art/hive/propolis.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/hive/propolis.png#L2",
+    "src": "art/hive/propolis.webp#L2",
     "f": 0.5,
-    "fy": 0.8
+    "fy": 0.8,
+    "x": 38
    },
    {
-    "src": "art/hive/propolis.png#L3",
+    "src": "art/hive/propolis.webp#L3",
     "f": 0.72,
-    "fy": 0.9
+    "fy": 0.9,
+    "x": 5
    },
    {
-    "src": "art/hive/propolis.png#L4",
-    "f": 1.3
+    "src": "art/hive/propolis.webp#L4",
+    "f": 1.3,
+    "x": 344
    }
   ],
   "uses": [

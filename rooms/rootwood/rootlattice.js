@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 480,
  "art": {
-  "main": "art/rootwood/rootlattice.png#main",
-  "pack": "art/rootwood/rootlattice.png",
+  "main": "art/rootwood/rootlattice.webp#main",
+  "pack": "art/rootwood/rootlattice.webp",
   "parts": {
    "main": [
     0,
@@ -19,115 +19,123 @@ ROOM({
    "L0": [
     0,
     480,
-    1447,
-    568
+    742,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1453,
-    551
+    878,
+    892,
+    415
    ],
    "L2": [
     0,
-    1599,
-    1460,
-    532
+    1293,
+    1058,
+    434
    ],
    "L3": [
     0,
-    2131,
-    1467,
-    510
+    1727,
+    1242,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1917,
-    628
+    2183,
+    1813,
+    119
    ],
    "L5": [
     0,
-    3269,
-    1471,
-    497
+    2302,
+    1304,
+    330
    ],
    "L6": [
     0,
-    3766,
-    1917,
-    628
+    2632,
+    967,
+    67
    ],
    "L7": [
     0,
-    4394,
-    1917,
-    484
+    2699,
+    1231,
+    81
    ],
    "L8": [
     0,
-    4878,
-    2212,
-    724
+    2780,
+    2156,
+    121
    ],
    "L9": [
     0,
-    5602,
-    2212,
-    484
+    2901,
+    1426,
+    63
    ],
    "front": [
     0,
-    6086,
+    2964,
     1409,
     273
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/rootlattice.png#L0",
+    "src": "art/rootwood/rootlattice.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/rootlattice.png#L1",
+    "src": "art/rootwood/rootlattice.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/rootlattice.png#L2",
+    "src": "art/rootwood/rootlattice.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/rootlattice.png#L3",
+    "src": "art/rootwood/rootlattice.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/rootlattice.png#L4",
-    "f": 1.3
-   },
-   {
-    "src": "art/rootwood/rootlattice.png#L5",
-    "f": 0.86
-   },
-   {
-    "src": "art/rootwood/rootlattice.png#L6",
-    "f": 1.3
-   },
-   {
-    "src": "art/rootwood/rootlattice.png#L7",
+    "src": "art/rootwood/rootlattice.webp#L4",
     "f": 1.3,
-    "fy": 1.0
+    "x": 100
    },
    {
-    "src": "art/rootwood/rootlattice.png#L8",
-    "f": 1.5
+    "src": "art/rootwood/rootlattice.webp#L5",
+    "f": 0.86,
+    "x": 54
    },
    {
-    "src": "art/rootwood/rootlattice.png#L9",
+    "src": "art/rootwood/rootlattice.webp#L6",
+    "f": 1.3,
+    "x": 479,
+    "y": 487
+   },
+   {
+    "src": "art/rootwood/rootlattice.webp#L7",
+    "f": 1.3,
+    "fy": 1.0,
+    "x": 164
+   },
+   {
+    "src": "art/rootwood/rootlattice.webp#L8",
     "f": 1.5,
-    "fy": 1.0
+    "x": 44,
+    "y": 460
+   },
+   {
+    "src": "art/rootwood/rootlattice.webp#L9",
+    "f": 1.5,
+    "fy": 1.0,
+    "x": 279
    }
   ],
-  "front": "art/rootwood/rootlattice.png#front",
+  "front": "art/rootwood/rootlattice.webp#front",
   "frontAt": [
    26,
    176

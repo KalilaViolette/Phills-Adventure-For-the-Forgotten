@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 416,
  "art": {
-  "main": "art/pond/dragonfly.png#main",
-  "pack": "art/pond/dragonfly.png",
+  "main": "art/pond/dragonfly.webp#main",
+  "pack": "art/pond/dragonfly.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,65 @@ ROOM({
    "L0": [
     0,
     416,
-    1348,
-    560
+    642,
+    390
    ],
    "L1": [
     0,
-    976,
-    1204,
-    532
+    806,
+    642,
+    185
    ],
    "L2": [
     0,
-    1508,
-    1044,
-    500
+    991,
+    1,
+    1
    ],
    "L3": [
     0,
-    2008,
-    868,
-    464
+    992,
+    642,
+    410
    ],
    "L4": [
     0,
-    2472,
-    836,
-    544
+    1402,
+    736,
+    437
    ],
    "front": [
     0,
-    3016,
+    1839,
     128,
     110
    ]
   },
   "layers": [
    {
-    "src": "art/pond/dragonfly.png#L0",
+    "src": "art/pond/dragonfly.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/dragonfly.png#L1",
-    "f": 0.3
+    "src": "art/pond/dragonfly.webp#L1",
+    "f": 0.3,
+    "y": 211
    },
    {
-    "src": "art/pond/dragonfly.png#L2",
+    "src": "art/pond/dragonfly.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/pond/dragonfly.png#L3",
+    "src": "art/pond/dragonfly.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/dragonfly.png#L4",
-    "f": 1.3
+    "src": "art/pond/dragonfly.webp#L4",
+    "f": 1.3,
+    "x": 90
    }
   ],
-  "front": "art/pond/dragonfly.png#front",
+  "front": "art/pond/dragonfly.webp#front",
   "frontAt": [
    160,
    272

@@ -7,8 +7,8 @@ ROOM({
  "music": "oak",
  "viewBottom": 704,
  "art": {
-  "main": "art/oak/shaft.png#main",
-  "pack": "art/oak/shaft.png",
+  "main": "art/oak/shaft.webp#main",
+  "pack": "art/oak/shaft.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     704,
-    1394,
-    595
+    689,
+    425
    ],
    "L1": [
     0,
-    1299,
-    1319,
-    618
+    1129,
+    758,
+    482
    ],
    "L2": [
     0,
-    1917,
-    1236,
-    644
+    1611,
+    830,
+    546
    ],
    "L3": [
     0,
-    2561,
-    1144,
-    672
+    2157,
+    918,
+    617
    ],
    "L4": [
     0,
-    3233,
-    1335,
-    919
+    2774,
+    495,
+    128
    ]
   },
   "layers": [
    {
-    "src": "art/oak/shaft.png#L0",
+    "src": "art/oak/shaft.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/oak/shaft.png#L1",
+    "src": "art/oak/shaft.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/oak/shaft.png#L2",
-    "f": 0.5
+    "src": "art/oak/shaft.webp#L2",
+    "f": 0.5,
+    "x": 4
    },
    {
-    "src": "art/oak/shaft.png#L3",
-    "f": 0.72
+    "src": "art/oak/shaft.webp#L3",
+    "f": 0.72,
+    "x": 1
    },
    {
-    "src": "art/oak/shaft.png#L4",
-    "f": 1.3
+    "src": "art/oak/shaft.webp#L4",
+    "f": 1.3,
+    "x": 268
    }
   ],
   "uses": [

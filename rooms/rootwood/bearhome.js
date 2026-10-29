@@ -7,8 +7,8 @@ ROOM({
  "music": "bear",
  "viewBottom": 352,
  "art": {
-  "main": "art/rootwood/bearhome.png#main",
-  "pack": "art/rootwood/bearhome.png",
+  "main": "art/rootwood/bearhome.webp#main",
+  "pack": "art/rootwood/bearhome.webp",
   "parts": {
    "main": [
     0,
@@ -19,25 +19,28 @@ ROOM({
    "L0": [
     0,
     352,
-    836,
-    461
+    182,
+    61
    ],
    "L1": [
     0,
-    813,
-    836,
-    356
+    413,
+    762,
+    64
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/bearhome.png#L0",
-    "f": 1.3
+    "src": "art/rootwood/bearhome.webp#L0",
+    "f": 1.3,
+    "x": 457,
+    "y": 323
    },
    {
-    "src": "art/rootwood/bearhome.png#L1",
+    "src": "art/rootwood/bearhome.webp#L1",
     "f": 1.3,
-    "fy": 1.0
+    "fy": 1.0,
+    "x": 72
    }
   ],
   "uses": [

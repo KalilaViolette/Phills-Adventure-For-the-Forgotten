@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 384,
  "art": {
-  "main": "art/greenhouse/coldframes.png#main",
-  "pack": "art/greenhouse/coldframes.png",
+  "main": "art/greenhouse/coldframes.webp#main",
+  "pack": "art/greenhouse/coldframes.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,59 @@ ROOM({
    "L0": [
     0,
     384,
-    1348,
-    493
+    642,
+    386
    ],
    "L1": [
     0,
-    877,
-    1204,
-    455
+    770,
+    642,
+    386
    ],
    "L2": [
     0,
-    1332,
-    1044,
-    426
+    1156,
+    642,
+    386
    ],
    "L3": [
     0,
-    1758,
-    868,
-    407
+    1542,
+    642,
+    386
    ],
    "L4": [
     0,
-    2165,
-    836,
-    503
+    1928,
+    34,
+    133
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/coldframes.png#L0",
+    "src": "art/greenhouse/coldframes.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/coldframes.png#L1",
+    "src": "art/greenhouse/coldframes.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/coldframes.png#L2",
+    "src": "art/greenhouse/coldframes.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/coldframes.png#L3",
+    "src": "art/greenhouse/coldframes.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/coldframes.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/coldframes.webp#L4",
+    "f": 1.3,
+    "x": 323
    }
   ],
   "uses": [

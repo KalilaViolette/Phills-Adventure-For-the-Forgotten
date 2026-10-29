@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 576,
  "art": {
-  "main": "art/pond/fenceside.png#main",
-  "pack": "art/pond/fenceside.png",
+  "main": "art/pond/fenceside.webp#main",
+  "pack": "art/pond/fenceside.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     576,
-    1386,
-    580
+    681,
+    410
    ],
    "L1": [
     0,
-    1156,
-    1300,
-    580
+    986,
+    738,
+    342
    ],
    "L2": [
     0,
-    1736,
-    1204,
-    580
+    1328,
+    802,
+    229
    ],
    "L3": [
     0,
-    2316,
-    1098,
-    580
+    1557,
+    873,
+    525
    ],
    "L4": [
     0,
-    2896,
-    1252,
-    752
+    2082,
+    1180,
+    645
    ]
   },
   "layers": [
    {
-    "src": "art/pond/fenceside.png#L0",
+    "src": "art/pond/fenceside.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/fenceside.png#L1",
-    "f": 0.3
+    "src": "art/pond/fenceside.webp#L1",
+    "f": 0.3,
+    "y": 102
    },
    {
-    "src": "art/pond/fenceside.png#L2",
-    "f": 0.5
+    "src": "art/pond/fenceside.webp#L2",
+    "f": 0.5,
+    "y": 253
    },
    {
-    "src": "art/pond/fenceside.png#L3",
+    "src": "art/pond/fenceside.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/fenceside.png#L4",
-    "f": 1.3
+    "src": "art/pond/fenceside.webp#L4",
+    "f": 1.3,
+    "x": 70
    }
   ],
   "uses": [

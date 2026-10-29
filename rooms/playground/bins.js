@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 576,
  "art": {
-  "main": "art/playground/bins.png#main",
-  "pack": "art/playground/bins.png",
+  "main": "art/playground/bins.webp#main",
+  "pack": "art/playground/bins.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     576,
-    1386,
-    580
+    681,
+    410
    ],
    "L1": [
     0,
-    1156,
-    1300,
-    580
+    986,
+    738,
+    260
    ],
    "L2": [
     0,
-    1736,
-    1204,
-    580
+    1246,
+    802,
+    255
    ],
    "L3": [
     0,
-    2316,
-    1098,
-    580
+    1501,
+    873,
+    525
    ],
    "L4": [
     0,
-    2896,
-    1252,
-    752
+    2026,
+    653,
+    207
    ]
   },
   "layers": [
    {
-    "src": "art/playground/bins.png#L0",
+    "src": "art/playground/bins.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/bins.png#L1",
-    "f": 0.3
+    "src": "art/playground/bins.webp#L1",
+    "f": 0.3,
+    "y": 184
    },
    {
-    "src": "art/playground/bins.png#L2",
-    "f": 0.5
+    "src": "art/playground/bins.webp#L2",
+    "f": 0.5,
+    "y": 227
    },
    {
-    "src": "art/playground/bins.png#L3",
+    "src": "art/playground/bins.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/bins.png#L4",
-    "f": 1.3
+    "src": "art/playground/bins.webp#L4",
+    "f": 1.3,
+    "x": 239,
+    "y": 544
    }
   ],
   "uses": [

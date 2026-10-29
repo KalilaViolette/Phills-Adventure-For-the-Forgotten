@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 640,
  "art": {
-  "main": "art/greenhouse/bramblecore.png#main",
-  "pack": "art/greenhouse/bramblecore.png",
+  "main": "art/greenhouse/bramblecore.webp#main",
+  "pack": "art/greenhouse/bramblecore.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,60 @@ ROOM({
    "L0": [
     0,
     640,
-    1378,
-    608
+    673,
+    502
    ],
    "L1": [
     0,
-    1248,
-    1280,
-    621
+    1142,
+    719,
+    553
    ],
    "L2": [
     0,
-    1869,
-    1172,
-    631
+    1695,
+    770,
+    591
    ],
    "L3": [
     0,
-    2500,
-    1052,
-    637
+    2286,
+    827,
+    617
    ],
    "L4": [
     0,
-    3137,
-    1168,
-    836
+    2903,
+    659,
+    98
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/bramblecore.png#L0",
+    "src": "art/greenhouse/bramblecore.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/bramblecore.png#L1",
+    "src": "art/greenhouse/bramblecore.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/bramblecore.png#L2",
+    "src": "art/greenhouse/bramblecore.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/bramblecore.png#L3",
+    "src": "art/greenhouse/bramblecore.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/bramblecore.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/bramblecore.webp#L4",
+    "f": 1.3,
+    "x": 204,
+    "y": 736
    }
   ],
   "uses": [

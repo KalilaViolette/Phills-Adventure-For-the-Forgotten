@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 448,
  "art": {
-  "main": "art/playground/spinner.png#main",
-  "pack": "art/playground/spinner.png",
+  "main": "art/playground/spinner.webp#main",
+  "pack": "art/playground/spinner.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     448,
-    1386,
-    564
+    681,
+    394
    ],
    "L1": [
     0,
-    1012,
-    1300,
-    541
+    842,
+    738,
+    132
    ],
    "L2": [
     0,
-    1553,
-    1204,
-    516
+    974,
+    802,
+    23
    ],
    "L3": [
     0,
-    2069,
-    1098,
-    487
+    997,
+    694,
+    433
    ],
    "L4": [
     0,
-    2556,
-    1252,
-    586
+    1430,
+    1044,
+    196
    ]
   },
   "layers": [
    {
-    "src": "art/playground/spinner.png#L0",
+    "src": "art/playground/spinner.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/spinner.png#L1",
-    "f": 0.3
+    "src": "art/playground/spinner.webp#L1",
+    "f": 0.3,
+    "y": 274
    },
    {
-    "src": "art/playground/spinner.png#L2",
-    "f": 0.5
+    "src": "art/playground/spinner.webp#L2",
+    "f": 0.5,
+    "y": 395
    },
    {
-    "src": "art/playground/spinner.png#L3",
+    "src": "art/playground/spinner.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/spinner.png#L4",
-    "f": 1.3
+    "src": "art/playground/spinner.webp#L4",
+    "f": 1.3,
+    "x": 70,
+    "y": 389
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "home",
  "viewBottom": 592,
  "art": {
-  "main": "art/home/bedroom.png#main",
-  "pack": "art/home/bedroom.png",
+  "main": "art/home/bedroom.webp#main",
+  "pack": "art/home/bedroom.webp",
   "parts": {
    "main": [
     0,
@@ -23,7 +23,7 @@ ROOM({
     3
    ]
   },
-  "front": "art/home/bedroom.png#front",
+  "front": "art/home/bedroom.webp#front",
   "frontAt": [
    134,
    544

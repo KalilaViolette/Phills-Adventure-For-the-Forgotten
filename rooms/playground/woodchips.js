@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 896,
  "art": {
-  "main": "art/playground/woodchips.png#main",
-  "pack": "art/playground/woodchips.png",
+  "main": "art/playground/woodchips.webp#main",
+  "pack": "art/playground/woodchips.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,59 @@ ROOM({
    "L0": [
     0,
     896,
-    1386,
-    618
+    681,
+    448
    ],
    "L1": [
     0,
-    1514,
-    1300,
-    676
+    1344,
+    738,
+    237
    ],
    "L2": [
     0,
-    2190,
-    1204,
-    740
+    1581,
+    802,
+    260
    ],
    "L3": [
     0,
-    2930,
-    1098,
-    810
+    1841,
+    873,
+    285
    ],
    "L4": [
     0,
-    3740,
-    1252,
-    1168
+    2126,
+    1063,
+    209
    ]
   },
   "layers": [
    {
-    "src": "art/playground/woodchips.png#L0",
+    "src": "art/playground/woodchips.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/woodchips.png#L1",
-    "f": 0.3
+    "src": "art/playground/woodchips.webp#L1",
+    "f": 0.3,
+    "y": 303
    },
    {
-    "src": "art/playground/woodchips.png#L2",
-    "f": 0.5
+    "src": "art/playground/woodchips.webp#L2",
+    "f": 0.5,
+    "y": 382
    },
    {
-    "src": "art/playground/woodchips.png#L3",
-    "f": 0.72
+    "src": "art/playground/woodchips.webp#L3",
+    "f": 0.72,
+    "y": 470
    },
    {
-    "src": "art/playground/woodchips.png#L4",
-    "f": 1.3
+    "src": "art/playground/woodchips.webp#L4",
+    "f": 1.3,
+    "x": 186,
+    "y": 958
    }
   ],
   "uses": [

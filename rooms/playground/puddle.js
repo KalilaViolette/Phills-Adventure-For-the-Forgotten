@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 480,
  "art": {
-  "main": "art/playground/puddle.png#main",
-  "pack": "art/playground/puddle.png",
+  "main": "art/playground/puddle.webp#main",
+  "pack": "art/playground/puddle.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,67 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    269
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1147,
+    802,
+    251
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1398,
+    873,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1252,
-    628
+    1854,
+    819,
+    209
    ],
    "front": [
     0,
-    3269,
+    2063,
     576,
     80
    ]
   },
   "layers": [
    {
-    "src": "art/playground/puddle.png#L0",
+    "src": "art/playground/puddle.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/puddle.png#L1",
-    "f": 0.3
+    "src": "art/playground/puddle.webp#L1",
+    "f": 0.3,
+    "y": 146
    },
    {
-    "src": "art/playground/puddle.png#L2",
-    "f": 0.5
+    "src": "art/playground/puddle.webp#L2",
+    "f": 0.5,
+    "y": 183
    },
    {
-    "src": "art/playground/puddle.png#L3",
+    "src": "art/playground/puddle.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/puddle.png#L4",
-    "f": 1.3
+    "src": "art/playground/puddle.webp#L4",
+    "f": 1.3,
+    "x": 145,
+    "y": 417
    }
   ],
-  "front": "art/playground/puddle.png#front",
+  "front": "art/playground/puddle.webp#front",
   "frontAt": [
    192,
    384

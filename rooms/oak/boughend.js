@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 608,
  "art": {
-  "main": "art/oak/boughend.png#main",
-  "pack": "art/oak/boughend.png",
+  "main": "art/oak/boughend.webp#main",
+  "pack": "art/oak/boughend.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     608,
-    1405,
-    582
+    668,
+    404
    ],
    "L1": [
     0,
-    1190,
-    1348,
-    586
+    1012,
+    436,
+    393
    ],
    "L2": [
     0,
-    1776,
-    1252,
-    592
+    1405,
+    770,
+    168
    ],
    "L3": [
     0,
-    2368,
-    1132,
-    600
+    1573,
+    850,
+    524
    ],
    "L4": [
     0,
-    2968,
-    1252,
-    794
+    2097,
+    1213,
+    625
    ],
    "front": [
     0,
-    3762,
+    2722,
     105,
     87
    ]
   },
   "layers": [
    {
-    "src": "art/oak/boughend.png#L0",
+    "src": "art/oak/boughend.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/boughend.png#L1",
-    "f": 0.2
+    "src": "art/oak/boughend.webp#L1",
+    "f": 0.2,
+    "x": 270
    },
    {
-    "src": "art/oak/boughend.png#L2",
-    "f": 0.4
+    "src": "art/oak/boughend.webp#L2",
+    "f": 0.4,
+    "y": 308
    },
    {
-    "src": "art/oak/boughend.png#L3",
-    "f": 0.65
+    "src": "art/oak/boughend.webp#L3",
+    "f": 0.65,
+    "y": 8
    },
    {
-    "src": "art/oak/boughend.png#L4",
+    "src": "art/oak/boughend.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/boughend.png#front",
+  "front": "art/oak/boughend.webp#front",
   "frontAt": [
    0,
    85

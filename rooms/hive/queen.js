@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 704,
  "art": {
-  "main": "art/hive/queen.png#main",
-  "pack": "art/hive/queen.png",
+  "main": "art/hive/queen.webp#main",
+  "pack": "art/hive/queen.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,60 @@ ROOM({
    "L0": [
     0,
     704,
-    1363,
-    656
+    658,
+    578
    ],
    "L1": [
     0,
-    1360,
-    1242,
-    695
+    1282,
+    660,
+    374
    ],
    "L2": [
     0,
-    2055,
-    1108,
-    701
+    1656,
+    706,
+    312
    ],
    "L3": [
     0,
-    2756,
-    960,
-    708
+    1968,
+    735,
+    133
    ],
    "L4": [
     0,
-    3464,
-    1002,
-    919
+    2101,
+    80,
+    146
    ]
   },
   "layers": [
    {
-    "src": "art/hive/queen.png#L0",
+    "src": "art/hive/queen.webp#L0",
     "f": 0.12,
     "fy": 0.6
    },
    {
-    "src": "art/hive/queen.png#L1",
+    "src": "art/hive/queen.webp#L1",
     "f": 0.3,
-    "fy": 0.9
+    "fy": 0.9,
+    "x": 21
    },
    {
-    "src": "art/hive/queen.png#L2",
+    "src": "art/hive/queen.webp#L2",
     "f": 0.5,
     "fy": 0.95
    },
    {
-    "src": "art/hive/queen.png#L3",
+    "src": "art/hive/queen.webp#L3",
     "f": 0.72,
     "fy": 1.0
    },
    {
-    "src": "art/hive/queen.png#L4",
-    "f": 1.3
+    "src": "art/hive/queen.webp#L4",
+    "f": 1.3,
+    "x": 480
    }
   ],
   "uses": [

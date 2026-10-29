@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 896,
  "art": {
-  "main": "art/hive/waxworks.png#main",
-  "pack": "art/hive/waxworks.png",
+  "main": "art/hive/waxworks.webp#main",
+  "pack": "art/hive/waxworks.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,60 @@ ROOM({
    "L0": [
     0,
     896,
-    1386,
-    772
+    681,
+    694
    ],
    "L1": [
     0,
-    1668,
-    1300,
-    868
+    1590,
+    738,
+    558
    ],
    "L2": [
     0,
-    2536,
-    1204,
-    884
+    2148,
+    802,
+    438
    ],
    "L3": [
     0,
-    3420,
-    1098,
-    900
+    2586,
+    828,
+    156
    ],
    "L4": [
     0,
-    4320,
-    1252,
-    1168
+    2742,
+    106,
+    42
    ]
   },
   "layers": [
    {
-    "src": "art/hive/waxworks.png#L0",
+    "src": "art/hive/waxworks.webp#L0",
     "f": 0.12,
     "fy": 0.6
    },
    {
-    "src": "art/hive/waxworks.png#L1",
+    "src": "art/hive/waxworks.webp#L1",
     "f": 0.3,
     "fy": 0.9
    },
    {
-    "src": "art/hive/waxworks.png#L2",
+    "src": "art/hive/waxworks.webp#L2",
     "f": 0.5,
     "fy": 0.95
    },
    {
-    "src": "art/hive/waxworks.png#L3",
+    "src": "art/hive/waxworks.webp#L3",
     "f": 0.72,
-    "fy": 1.0
+    "fy": 1.0,
+    "x": 3
    },
    {
-    "src": "art/hive/waxworks.png#L4",
-    "f": 1.3
+    "src": "art/hive/waxworks.webp#L4",
+    "f": 1.3,
+    "x": 413
    }
   ],
   "uses": [

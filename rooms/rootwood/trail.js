@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 480,
  "art": {
-  "main": "art/rootwood/trail.png#main",
-  "pack": "art/rootwood/trail.png",
+  "main": "art/rootwood/trail.webp#main",
+  "pack": "art/rootwood/trail.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,55 @@ ROOM({
    "L0": [
     0,
     480,
-    1348,
-    568
+    642,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1204,
-    551
+    878,
+    642,
+    415
    ],
    "L2": [
     0,
-    1599,
-    1044,
-    532
+    1293,
+    642,
+    434
    ],
    "L3": [
     0,
-    2131,
-    868,
-    510
+    1727,
+    642,
+    456
    ],
    "L4": [
     0,
-    2641,
-    836,
-    628
+    2183,
+    140,
+    523
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/trail.png#L0",
+    "src": "art/rootwood/trail.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/trail.png#L1",
+    "src": "art/rootwood/trail.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/trail.png#L2",
+    "src": "art/rootwood/trail.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/trail.png#L3",
+    "src": "art/rootwood/trail.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/trail.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/trail.webp#L4",
+    "f": 1.3,
+    "x": 203
    }
   ],
   "uses": [

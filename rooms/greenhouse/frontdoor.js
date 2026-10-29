@@ -7,8 +7,8 @@ ROOM({
  "music": "greenhouse",
  "viewBottom": 384,
  "art": {
-  "main": "art/greenhouse/frontdoor.png#main",
-  "pack": "art/greenhouse/frontdoor.png",
+  "main": "art/greenhouse/frontdoor.webp#main",
+  "pack": "art/greenhouse/frontdoor.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,59 @@ ROOM({
    "L0": [
     0,
     384,
-    1355,
-    493
+    650,
+    386
    ],
    "L1": [
     0,
-    877,
-    1223,
-    455
+    770,
+    662,
+    386
    ],
    "L2": [
     0,
-    1332,
-    1076,
-    426
+    1156,
+    674,
+    386
    ],
    "L3": [
     0,
-    1758,
-    914,
-    407
+    1542,
+    689,
+    386
    ],
    "L4": [
     0,
-    2165,
-    919,
-    503
+    1928,
+    675,
+    110
    ]
   },
   "layers": [
    {
-    "src": "art/greenhouse/frontdoor.png#L0",
+    "src": "art/greenhouse/frontdoor.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/greenhouse/frontdoor.png#L1",
+    "src": "art/greenhouse/frontdoor.webp#L1",
     "f": 0.3,
     "fy": 0.65
    },
    {
-    "src": "art/greenhouse/frontdoor.png#L2",
+    "src": "art/greenhouse/frontdoor.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/greenhouse/frontdoor.png#L3",
+    "src": "art/greenhouse/frontdoor.webp#L3",
     "f": 0.72,
     "fy": 0.9
    },
    {
-    "src": "art/greenhouse/frontdoor.png#L4",
-    "f": 1.3
+    "src": "art/greenhouse/frontdoor.webp#L4",
+    "f": 1.3,
+    "x": 223
    }
   ],
   "uses": [

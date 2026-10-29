@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 512,
  "art": {
-  "main": "art/playground/dandelions.png#main",
-  "pack": "art/playground/dandelions.png",
+  "main": "art/playground/dandelions.webp#main",
+  "pack": "art/playground/dandelions.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,58 @@ ROOM({
    "L0": [
     0,
     512,
-    1386,
-    572
+    681,
+    402
    ],
    "L1": [
     0,
-    1084,
-    1300,
-    560
+    914,
+    738,
+    260
    ],
    "L2": [
     0,
-    1644,
-    1204,
-    548
+    1174,
+    802,
+    255
    ],
    "L3": [
     0,
-    2192,
-    1098,
-    533
+    1429,
+    873,
+    479
    ],
    "L4": [
     0,
-    2725,
-    1252,
-    669
+    1908,
+    653,
+    207
    ]
   },
   "layers": [
    {
-    "src": "art/playground/dandelions.png#L0",
+    "src": "art/playground/dandelions.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/dandelions.png#L1",
-    "f": 0.3
+    "src": "art/playground/dandelions.webp#L1",
+    "f": 0.3,
+    "y": 165
    },
    {
-    "src": "art/playground/dandelions.png#L2",
-    "f": 0.5
+    "src": "art/playground/dandelions.webp#L2",
+    "f": 0.5,
+    "y": 195
    },
    {
-    "src": "art/playground/dandelions.png#L3",
+    "src": "art/playground/dandelions.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/dandelions.png#L4",
-    "f": 1.3
+    "src": "art/playground/dandelions.webp#L4",
+    "f": 1.3,
+    "x": 239,
+    "y": 461
    }
   ],
   "uses": [

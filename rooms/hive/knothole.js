@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 384,
  "art": {
-  "main": "art/hive/knothole.png#main",
-  "pack": "art/hive/knothole.png",
+  "main": "art/hive/knothole.webp#main",
+  "pack": "art/hive/knothole.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,61 @@ ROOM({
    "L0": [
     0,
     384,
-    1386,
-    493
+    681,
+    386
    ],
    "L1": [
     0,
-    877,
-    1300,
-    455
+    770,
+    737,
+    290
    ],
    "L2": [
     0,
-    1332,
-    1204,
-    426
+    1060,
+    802,
+    201
    ],
    "L3": [
     0,
-    1758,
-    1098,
-    407
+    1261,
+    845,
+    77
    ],
    "L4": [
     0,
-    2165,
-    1252,
-    503
+    1338,
+    904,
+    140
    ]
   },
   "layers": [
    {
-    "src": "art/hive/knothole.png#L0",
+    "src": "art/hive/knothole.webp#L0",
     "f": 0.12,
     "fy": 0.45
    },
    {
-    "src": "art/hive/knothole.png#L1",
+    "src": "art/hive/knothole.webp#L1",
     "f": 0.3,
-    "fy": 0.65
+    "fy": 0.65,
+    "x": 1
    },
    {
-    "src": "art/hive/knothole.png#L2",
+    "src": "art/hive/knothole.webp#L2",
     "f": 0.5,
     "fy": 0.8
    },
    {
-    "src": "art/hive/knothole.png#L3",
+    "src": "art/hive/knothole.webp#L3",
     "f": 0.72,
-    "fy": 0.9
+    "fy": 0.9,
+    "x": 28
    },
    {
-    "src": "art/hive/knothole.png#L4",
-    "f": 1.3
+    "src": "art/hive/knothole.webp#L4",
+    "f": 1.3,
+    "x": 261
    }
   ],
   "uses": [

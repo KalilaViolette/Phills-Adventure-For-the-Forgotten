@@ -7,8 +7,8 @@ ROOM({
  "music": "bear",
  "viewBottom": 352,
  "art": {
-  "main": "art/rootwood/painted/bearhome.png#main",
-  "pack": "art/rootwood/painted/bearhome.png",
+  "main": "art/rootwood/painted/bearhome.webp#main",
+  "pack": "art/rootwood/painted/bearhome.webp",
   "parts": {
    "main": [
     0,

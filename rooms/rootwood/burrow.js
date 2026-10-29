@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 384,
  "art": {
-  "main": "art/rootwood/burrow.png#main",
-  "pack": "art/rootwood/burrow.png",
+  "main": "art/rootwood/burrow.webp#main",
+  "pack": "art/rootwood/burrow.webp",
   "parts": {
    "main": [
     0,
@@ -19,115 +19,120 @@ ROOM({
    "L0": [
     0,
     384,
-    1348,
-    556
+    642,
+    386
    ],
    "L1": [
     0,
-    940,
-    1204,
-    522
+    770,
+    642,
+    386
    ],
    "L2": [
     0,
-    1462,
-    1044,
-    484
+    1156,
+    642,
+    386
    ],
    "L3": [
     0,
-    1946,
-    868,
-    441
+    1542,
+    642,
+    386
    ],
    "L4": [
     0,
-    2387,
-    836,
-    503
+    1928,
+    588,
+    113
    ],
    "L5": [
     0,
-    2890,
-    756,
-    414
+    2041,
+    174,
+    229
    ],
    "L6": [
     0,
-    3304,
-    836,
-    503
+    2270,
+    238,
+    80
    ],
    "L7": [
     0,
-    3807,
-    836,
-    388
+    2350,
+    736,
+    78
    ],
    "L8": [
     0,
-    4195,
-    964,
-    580
+    2428,
+    922,
+    102
    ],
    "L9": [
     0,
-    4775,
-    964,
-    388
+    2530,
+    106,
+    63
    ],
    "front": [
     0,
-    5163,
+    2593,
     366,
     15
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/burrow.png#L0",
+    "src": "art/rootwood/burrow.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/burrow.png#L1",
+    "src": "art/rootwood/burrow.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/burrow.png#L2",
+    "src": "art/rootwood/burrow.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/burrow.png#L3",
+    "src": "art/rootwood/burrow.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/burrow.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/burrow.webp#L4",
+    "f": 1.3,
+    "x": 239
    },
    {
-    "src": "art/rootwood/burrow.png#L5",
+    "src": "art/rootwood/burrow.webp#L5",
     "f": 0.86
    },
    {
-    "src": "art/rootwood/burrow.png#L6",
-    "f": 1.3
+    "src": "art/rootwood/burrow.webp#L6",
+    "f": 1.3,
+    "x": 407,
+    "y": 356
    },
    {
-    "src": "art/rootwood/burrow.png#L7",
+    "src": "art/rootwood/burrow.webp#L7",
     "f": 1.3,
     "fy": 1.0
    },
    {
-    "src": "art/rootwood/burrow.png#L8",
-    "f": 1.5
+    "src": "art/rootwood/burrow.webp#L8",
+    "f": 1.5,
+    "y": 335
    },
    {
-    "src": "art/rootwood/burrow.png#L9",
+    "src": "art/rootwood/burrow.webp#L9",
     "f": 1.5,
-    "fy": 1.0
+    "fy": 1.0,
+    "x": 298
    }
   ],
-  "front": "art/rootwood/burrow.png#front",
+  "front": "art/rootwood/burrow.webp#front",
   "frontAt": [
    32,
    306

@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 704,
  "art": {
-  "main": "art/hive/pinata.png#main",
-  "pack": "art/hive/pinata.png",
+  "main": "art/hive/pinata.webp#main",
+  "pack": "art/hive/pinata.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,60 @@ ROOM({
    "L0": [
     0,
     704,
-    1386,
-    656
+    681,
+    578
    ],
    "L1": [
     0,
-    1360,
-    1300,
-    695
+    1282,
+    738,
+    447
    ],
    "L2": [
     0,
-    2055,
-    1204,
-    701
+    1729,
+    802,
+    389
    ],
    "L3": [
     0,
-    2756,
-    1098,
-    708
+    2118,
+    799,
+    92
    ],
    "L4": [
     0,
-    3464,
-    1252,
-    919
+    2210,
+    790,
+    146
    ]
   },
   "layers": [
    {
-    "src": "art/hive/pinata.png#L0",
+    "src": "art/hive/pinata.webp#L0",
     "f": 0.12,
     "fy": 0.6
    },
    {
-    "src": "art/hive/pinata.png#L1",
+    "src": "art/hive/pinata.webp#L1",
     "f": 0.3,
     "fy": 0.9
    },
    {
-    "src": "art/hive/pinata.png#L2",
+    "src": "art/hive/pinata.webp#L2",
     "f": 0.5,
     "fy": 0.95
    },
    {
-    "src": "art/hive/pinata.png#L3",
+    "src": "art/hive/pinata.webp#L3",
     "f": 0.72,
-    "fy": 1.0
+    "fy": 1.0,
+    "x": 19
    },
    {
-    "src": "art/hive/pinata.png#L4",
-    "f": 1.3
+    "src": "art/hive/pinata.webp#L4",
+    "f": 1.3,
+    "x": 239
    }
   ],
   "uses": [

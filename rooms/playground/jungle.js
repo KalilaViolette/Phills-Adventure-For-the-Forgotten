@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 800,
  "art": {
-  "main": "art/playground/jungle.png#main",
-  "pack": "art/playground/jungle.png",
+  "main": "art/playground/jungle.webp#main",
+  "pack": "art/playground/jungle.webp",
   "parts": {
    "main": [
     0,
@@ -19,44 +19,47 @@ ROOM({
    "L0": [
     0,
     800,
-    1386,
-    606
+    681,
+    436
    ],
    "L1": [
     0,
-    1406,
-    1300,
-    647
+    1236,
+    738,
+    85
    ],
    "L2": [
     0,
-    2053,
-    1204,
-    692
+    1321,
+    1,
+    1
    ],
    "L4": [
     0,
-    2745,
-    1252,
-    1044
+    1322,
+    743,
+    209
    ]
   },
   "layers": [
    {
-    "src": "art/playground/jungle.png#L0",
+    "src": "art/playground/jungle.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/jungle.png#L1",
-    "f": 0.3
+    "src": "art/playground/jungle.webp#L1",
+    "f": 0.3,
+    "y": 426
    },
    {
-    "src": "art/playground/jungle.png#L2",
+    "src": "art/playground/jungle.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/playground/jungle.png#L4",
-    "f": 1.3
+    "src": "art/playground/jungle.webp#L4",
+    "f": 1.3,
+    "x": 136,
+    "y": 833
    }
   ],
   "uses": [

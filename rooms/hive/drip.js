@@ -7,8 +7,8 @@ ROOM({
  "music": "hive",
  "viewBottom": 1600,
  "art": {
-  "main": "art/hive/drip.png#main",
-  "pack": "art/hive/drip.png",
+  "main": "art/hive/drip.webp#main",
+  "pack": "art/hive/drip.webp",
   "parts": {
    "main": [
     0,
@@ -19,58 +19,61 @@ ROOM({
    "L0": [
     0,
     1600,
-    1332,
-    1194
+    635,
+    1116
    ],
    "L1": [
     0,
-    2794,
-    1165,
-    1501
+    2716,
+    611,
+    974
    ],
    "L2": [
     0,
-    4295,
-    980,
-    1552
+    3690,
+    610,
+    706
    ],
    "L3": [
     0,
-    5847,
-    775,
-    1604
+    4396,
+    557,
+    291
    ],
    "L4": [
     0,
-    7451,
-    669,
-    2084
+    4687,
+    92,
+    52
    ]
   },
   "layers": [
    {
-    "src": "art/hive/drip.png#L0",
+    "src": "art/hive/drip.webp#L0",
     "f": 0.12,
     "fy": 0.6
    },
    {
-    "src": "art/hive/drip.png#L1",
+    "src": "art/hive/drip.webp#L1",
     "f": 0.3,
-    "fy": 0.9
+    "fy": 0.9,
+    "x": 12
    },
    {
-    "src": "art/hive/drip.png#L2",
+    "src": "art/hive/drip.webp#L2",
     "f": 0.5,
     "fy": 0.95
    },
    {
-    "src": "art/hive/drip.png#L3",
+    "src": "art/hive/drip.webp#L3",
     "f": 0.72,
-    "fy": 1.0
+    "fy": 1.0,
+    "x": 39
    },
    {
-    "src": "art/hive/drip.png#L4",
-    "f": 1.3
+    "src": "art/hive/drip.webp#L4",
+    "f": 1.3,
+    "x": 244
    }
   ],
   "uses": [

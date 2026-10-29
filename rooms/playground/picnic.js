@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 640,
  "art": {
-  "main": "art/playground/picnic.png#main",
-  "pack": "art/playground/picnic.png",
+  "main": "art/playground/picnic.webp#main",
+  "pack": "art/playground/picnic.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,68 @@ ROOM({
    "L0": [
     0,
     640,
-    1386,
-    587
+    681,
+    417
    ],
    "L1": [
     0,
-    1227,
-    1300,
-    599
+    1057,
+    738,
+    275
    ],
    "L2": [
     0,
-    1826,
-    1204,
-    612
+    1332,
+    802,
+    260
    ],
    "L3": [
     0,
-    2438,
-    1098,
-    626
+    1592,
+    873,
+    285
    ],
    "L4": [
     0,
-    3064,
-    1252,
-    836
+    1877,
+    1019,
+    206
    ],
    "front": [
     0,
-    3900,
+    2083,
     960,
     192
    ]
   },
   "layers": [
    {
-    "src": "art/playground/picnic.png#L0",
+    "src": "art/playground/picnic.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/picnic.png#L1",
-    "f": 0.3
+    "src": "art/playground/picnic.webp#L1",
+    "f": 0.3,
+    "y": 188
    },
    {
-    "src": "art/playground/picnic.png#L2",
-    "f": 0.5
+    "src": "art/playground/picnic.webp#L2",
+    "f": 0.5,
+    "y": 254
    },
    {
-    "src": "art/playground/picnic.png#L3",
-    "f": 0.72
+    "src": "art/playground/picnic.webp#L3",
+    "f": 0.72,
+    "y": 286
    },
    {
-    "src": "art/playground/picnic.png#L4",
-    "f": 1.3
+    "src": "art/playground/picnic.webp#L4",
+    "f": 1.3,
+    "x": 99,
+    "y": 628
    }
   ],
-  "front": "art/playground/picnic.png#front",
+  "front": "art/playground/picnic.webp#front",
   "frontAt": [
    0,
    0

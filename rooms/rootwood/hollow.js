@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 576,
  "art": {
-  "main": "art/rootwood/hollow.png#main",
-  "pack": "art/rootwood/hollow.png",
+  "main": "art/rootwood/hollow.webp#main",
+  "pack": "art/rootwood/hollow.webp",
   "parts": {
    "main": [
     0,
@@ -19,209 +19,212 @@ ROOM({
    "L0": [
     0,
     576,
-    1002,
-    580
+    681,
+    502
    ],
    "L1": [
     0,
-    1156,
-    840,
-    580
+    1078,
+    695,
+    544
    ],
    "L2": [
     0,
-    1736,
-    848,
-    695
+    1622,
+    79,
+    233
    ],
    "L3": [
     0,
-    2431,
-    778,
-    637
+    1855,
+    95,
+    140
    ],
    "front": [
     0,
-    3068,
+    1995,
     686,
     496
    ],
    "piece_skin_curtain": [
     0,
-    3564,
+    2491,
     32,
     64
    ],
    "piece_skin_web": [
     0,
-    3628,
+    2555,
     64,
     32
    ],
    "piece_skin_foam": [
     0,
-    3660,
+    2587,
     64,
     32
    ],
    "piece_skin_foam_f1": [
     0,
-    3692,
+    2619,
     64,
     32
    ],
    "piece_skin_foam_f2": [
     0,
-    3724,
+    2651,
     64,
     32
    ],
    "piece_skin_foam_f3": [
     0,
-    3756,
+    2683,
     64,
     32
    ],
    "piece_skin_foam_f4": [
     0,
-    3788,
+    2715,
     64,
     32
    ],
    "piece_skin_foam_f5": [
     0,
-    3820,
+    2747,
     64,
     32
    ],
    "piece_skin_foam_f6": [
     0,
-    3852,
+    2779,
     64,
     32
    ],
    "piece_skin_foam_f7": [
     0,
-    3884,
+    2811,
     64,
     32
    ],
    "piece_plant_living_nook_left": [
     0,
-    3916,
+    2843,
     23,
     21
    ],
    "piece_plant_living_nook_right": [
     0,
-    3937,
+    2864,
     24,
     22
    ],
    "piece_plant_living_lower_floor": [
     0,
-    3959,
+    2886,
     25,
     23
    ],
    "piece_plant_living_entry_hair": [
     0,
-    3982,
+    2909,
     12,
     55
    ],
    "piece_plant_living_bowl_approach_hair": [
     0,
-    4037,
+    2964,
     13,
     83
    ],
    "piece_plant_bowl_seedling": [
     0,
-    4120,
+    3047,
     25,
     23
    ],
    "piece_plant_sweep_seedling": [
     0,
-    4143,
+    3070,
     27,
     24
    ],
    "piece_plant_sweep_small_tuft": [
     0,
-    4167,
+    3094,
     11,
     13
    ],
    "piece_plant_floor_seedling": [
     0,
-    4180,
+    3107,
     25,
     25
    ],
    "piece_plant_under_root_vine": [
     0,
-    4205,
+    3132,
     9,
     68
    ],
    "piece_plant_nook_rear_frond": [
     0,
-    4273,
+    3200,
     17,
     17
    ],
    "piece_glow_0": [
     0,
-    4290,
+    3217,
     163,
     84
    ],
    "piece_glow_1": [
     0,
-    4374,
+    3301,
     396,
     88
    ],
    "piece_glow_2": [
     0,
-    4462,
+    3389,
     252,
     469
    ],
    "piece_glow_3": [
     0,
-    4931,
+    3858,
     68,
     45
    ],
    "piece_glow_4": [
     0,
-    4976,
+    3903,
     55,
     106
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/hollow.png#L0",
+    "src": "art/rootwood/hollow.webp#L0",
     "f": 0.6
    },
    {
-    "src": "art/rootwood/hollow.png#L1",
+    "src": "art/rootwood/hollow.webp#L1",
     "f": 0.82
    },
    {
-    "src": "art/rootwood/hollow.png#L2",
-    "f": 1.2
+    "src": "art/rootwood/hollow.webp#L2",
+    "f": 1.2,
+    "x": 638,
+    "y": 382
    },
    {
-    "src": "art/rootwood/hollow.png#L3",
-    "f": 1.1
+    "src": "art/rootwood/hollow.webp#L3",
+    "f": 1.1,
+    "y": 24
    }
   ],
-  "front": "art/rootwood/hollow.png#front",
+  "front": "art/rootwood/hollow.webp#front",
   "frontAt": [
    0,
    60

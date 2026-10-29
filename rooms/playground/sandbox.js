@@ -7,8 +7,8 @@ ROOM({
  "music": "playground",
  "viewBottom": 576,
  "art": {
-  "main": "art/playground/sandbox.png#main",
-  "pack": "art/playground/sandbox.png",
+  "main": "art/playground/sandbox.webp#main",
+  "pack": "art/playground/sandbox.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,67 @@ ROOM({
    "L0": [
     0,
     576,
-    1386,
-    580
+    681,
+    410
    ],
    "L1": [
     0,
-    1156,
-    1300,
-    580
+    986,
+    738,
+    297
    ],
    "L2": [
     0,
-    1736,
-    1204,
-    580
+    1283,
+    802,
+    302
    ],
    "L3": [
     0,
-    2316,
-    1098,
-    580
+    1585,
+    873,
+    525
    ],
    "L4": [
     0,
-    2896,
-    1252,
-    752
+    2110,
+    610,
+    210
    ],
    "front": [
     0,
-    3648,
+    2320,
     48,
     160
    ]
   },
   "layers": [
    {
-    "src": "art/playground/sandbox.png#L0",
+    "src": "art/playground/sandbox.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/playground/sandbox.png#L1",
-    "f": 0.3
+    "src": "art/playground/sandbox.webp#L1",
+    "f": 0.3,
+    "y": 147
    },
    {
-    "src": "art/playground/sandbox.png#L2",
-    "f": 0.5
+    "src": "art/playground/sandbox.webp#L2",
+    "f": 0.5,
+    "y": 180
    },
    {
-    "src": "art/playground/sandbox.png#L3",
+    "src": "art/playground/sandbox.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/playground/sandbox.png#L4",
-    "f": 1.3
+    "src": "art/playground/sandbox.webp#L4",
+    "f": 1.3,
+    "x": 248,
+    "y": 541
    }
   ],
-  "front": "art/playground/sandbox.png#front",
+  "front": "art/playground/sandbox.webp#front",
   "frontAt": [
    448,
    416

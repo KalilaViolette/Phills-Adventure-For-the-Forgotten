@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 480,
  "art": {
-  "main": "art/oak/westbough.png#main",
-  "pack": "art/oak/westbough.png",
+  "main": "art/oak/westbough.webp#main",
+  "pack": "art/oak/westbough.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     480,
-    1410,
-    572
+    673,
+    394
    ],
    "L1": [
     0,
-    1052,
-    1360,
-    560
+    874,
+    719,
+    299
    ],
    "L2": [
     0,
-    1612,
-    1277,
-    541
+    1173,
+    796,
+    147
    ],
    "L3": [
     0,
-    2153,
-    1173,
-    517
+    1320,
+    892,
+    361
    ],
    "L4": [
     0,
-    2670,
-    1335,
-    628
+    1681,
+    1214,
+    265
    ],
    "front": [
     0,
-    3298,
+    1946,
     110,
     126
    ]
   },
   "layers": [
    {
-    "src": "art/oak/westbough.png#L0",
+    "src": "art/oak/westbough.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/westbough.png#L1",
-    "f": 0.2
+    "src": "art/oak/westbough.webp#L1",
+    "f": 0.2,
+    "y": 48
    },
    {
-    "src": "art/oak/westbough.png#L2",
-    "f": 0.4
+    "src": "art/oak/westbough.webp#L2",
+    "f": 0.4,
+    "y": 278
    },
    {
-    "src": "art/oak/westbough.png#L3",
-    "f": 0.65
+    "src": "art/oak/westbough.webp#L3",
+    "f": 0.65,
+    "y": 88
    },
    {
-    "src": "art/oak/westbough.png#L4",
+    "src": "art/oak/westbough.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/westbough.png#front",
+  "front": "art/oak/westbough.webp#front",
   "frontAt": [
    905,
    259

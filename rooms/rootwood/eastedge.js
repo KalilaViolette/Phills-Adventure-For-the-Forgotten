@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 544,
  "art": {
-  "main": "art/rootwood/eastedge.png#main",
-  "pack": "art/rootwood/eastedge.png",
+  "main": "art/rootwood/eastedge.webp#main",
+  "pack": "art/rootwood/eastedge.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,55 @@ ROOM({
    "L0": [
     0,
     544,
-    1367,
-    576
+    662,
+    406
    ],
    "L1": [
     0,
-    1120,
-    1252,
-    570
+    950,
+    690,
+    434
    ],
    "L2": [
     0,
-    1690,
-    1124,
-    564
+    1384,
+    722,
+    466
    ],
    "L3": [
     0,
-    2254,
-    983,
-    556
+    1850,
+    758,
+    502
    ],
    "L4": [
     0,
-    2810,
-    1044,
-    711
+    2352,
+    732,
+    606
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/eastedge.png#L0",
+    "src": "art/rootwood/eastedge.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/eastedge.png#L1",
+    "src": "art/rootwood/eastedge.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/eastedge.png#L2",
+    "src": "art/rootwood/eastedge.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/eastedge.png#L3",
+    "src": "art/rootwood/eastedge.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/eastedge.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/eastedge.webp#L4",
+    "f": 1.3,
+    "x": 114
    }
   ],
   "uses": [

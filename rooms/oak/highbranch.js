@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 576,
  "art": {
-  "main": "art/oak/highbranch.png#main",
-  "pack": "art/oak/highbranch.png",
+  "main": "art/oak/highbranch.webp#main",
+  "pack": "art/oak/highbranch.webp",
   "parts": {
    "main": [
     0,
@@ -19,53 +19,57 @@ ROOM({
    "L0": [
     0,
     576,
-    1410,
-    580
+    673,
+    402
    ],
    "L1": [
     0,
-    1156,
-    1360,
-    580
+    978,
+    715,
+    355
    ],
    "L2": [
     0,
-    1736,
-    1277,
-    580
+    1333,
+    796,
+    163
    ],
    "L3": [
     0,
-    2316,
-    1173,
-    580
+    1496,
+    892,
+    423
    ],
    "L4": [
     0,
-    2896,
-    1335,
-    752
+    1919,
+    1334,
+    624
    ]
   },
   "layers": [
    {
-    "src": "art/oak/highbranch.png#L0",
+    "src": "art/oak/highbranch.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/highbranch.png#L1",
-    "f": 0.2
+    "src": "art/oak/highbranch.webp#L1",
+    "f": 0.2,
+    "x": 4,
+    "y": 18
    },
    {
-    "src": "art/oak/highbranch.png#L2",
-    "f": 0.4
+    "src": "art/oak/highbranch.webp#L2",
+    "f": 0.4,
+    "y": 300
    },
    {
-    "src": "art/oak/highbranch.png#L3",
-    "f": 0.65
+    "src": "art/oak/highbranch.webp#L3",
+    "f": 0.65,
+    "y": 88
    },
    {
-    "src": "art/oak/highbranch.png#L4",
+    "src": "art/oak/highbranch.webp#L4",
     "f": 1.3
    }
   ],

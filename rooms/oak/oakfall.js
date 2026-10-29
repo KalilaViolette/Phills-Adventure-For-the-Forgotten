@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 1712,
  "art": {
-  "main": "art/oak/oakfall.png#main",
-  "pack": "art/oak/oakfall.png",
+  "main": "art/oak/oakfall.webp#main",
+  "pack": "art/oak/oakfall.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     1760,
-    1333,
-    757
+    652,
+    593
    ],
    "L1": [
     0,
-    2517,
-    1186,
-    994
+    2353,
+    665,
+    862
    ],
    "L2": [
     0,
-    3511,
-    1039,
-    1231
+    3215,
+    678,
+    1105
    ],
    "L3": [
     0,
-    4742,
-    892,
-    1468
+    4320,
+    690,
+    1331
    ],
    "L4": [
     0,
-    6210,
-    989,
-    2468
+    5651,
+    665,
+    1868
    ],
    "front": [
     0,
-    8678,
+    7519,
     489,
     951
    ]
   },
   "layers": [
    {
-    "src": "art/oak/oakfall.png#L0",
+    "src": "art/oak/oakfall.webp#L0",
     "f": 0.15
    },
    {
-    "src": "art/oak/oakfall.png#L1",
-    "f": 0.35
+    "src": "art/oak/oakfall.webp#L1",
+    "f": 0.35,
+    "y": 6
    },
    {
-    "src": "art/oak/oakfall.png#L2",
-    "f": 0.55
+    "src": "art/oak/oakfall.webp#L2",
+    "f": 0.55,
+    "y": 38
    },
    {
-    "src": "art/oak/oakfall.png#L3",
+    "src": "art/oak/oakfall.webp#L3",
     "f": 0.75
    },
    {
-    "src": "art/oak/oakfall.png#L4",
-    "f": 1.4
+    "src": "art/oak/oakfall.webp#L4",
+    "f": 1.4,
+    "y": 167
    }
   ],
-  "front": "art/oak/oakfall.png#front",
+  "front": "art/oak/oakfall.webp#front",
   "frontAt": [
    0,
    235

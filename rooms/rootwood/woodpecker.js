@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 384,
  "art": {
-  "main": "art/rootwood/woodpecker.png#main",
-  "pack": "art/rootwood/woodpecker.png",
+  "main": "art/rootwood/woodpecker.webp#main",
+  "pack": "art/rootwood/woodpecker.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,55 @@ ROOM({
    "L0": [
     0,
     384,
-    1378,
-    556
+    673,
+    386
    ],
    "L1": [
     0,
-    940,
-    1280,
-    522
+    770,
+    719,
+    386
    ],
    "L2": [
     0,
-    1462,
-    1172,
-    484
+    1156,
+    770,
+    386
    ],
    "L3": [
     0,
-    1946,
-    1052,
-    441
+    1542,
+    827,
+    386
    ],
    "L4": [
     0,
-    2387,
-    1168,
-    503
+    1928,
+    1034,
+    398
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/woodpecker.png#L0",
+    "src": "art/rootwood/woodpecker.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/woodpecker.png#L1",
+    "src": "art/rootwood/woodpecker.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/woodpecker.png#L2",
+    "src": "art/rootwood/woodpecker.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/woodpecker.png#L3",
+    "src": "art/rootwood/woodpecker.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/woodpecker.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/woodpecker.webp#L4",
+    "f": 1.3,
+    "x": 66
    }
   ],
   "uses": [

@@ -7,8 +7,8 @@ ROOM({
  "music": "deep",
  "viewBottom": 384,
  "art": {
-  "main": "art/rootwood/sunkroots.png#main",
-  "pack": "art/rootwood/sunkroots.png",
+  "main": "art/rootwood/sunkroots.webp#main",
+  "pack": "art/rootwood/sunkroots.webp",
   "parts": {
    "main": [
     0,
@@ -19,94 +19,99 @@ ROOM({
    "L0": [
     0,
     384,
-    1413,
-    556
+    708,
+    386
    ],
    "L1": [
     0,
-    940,
-    1367,
-    522
+    770,
+    806,
+    386
    ],
    "L2": [
     0,
-    1462,
-    1316,
-    484
+    1156,
+    914,
+    386
    ],
    "L3": [
     0,
-    1946,
-    1259,
-    441
+    1542,
+    984,
+    386
    ],
    "L4": [
     0,
-    2387,
-    1543,
-    503
+    1928,
+    1087,
+    120
    ],
    "L5": [
     0,
-    2890,
-    1223,
-    414
+    2048,
+    735,
+    277
    ],
    "L6": [
     0,
-    3304,
-    1543,
-    503
+    2325,
+    154,
+    59
    ],
    "L7": [
     0,
-    3807,
-    1543,
-    388
+    2384,
+    779,
+    81
    ],
    "front": [
     0,
-    4195,
+    2465,
     1120,
     321
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/sunkroots.png#L0",
+    "src": "art/rootwood/sunkroots.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/sunkroots.png#L1",
+    "src": "art/rootwood/sunkroots.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/sunkroots.png#L2",
+    "src": "art/rootwood/sunkroots.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/sunkroots.png#L3",
-    "f": 0.72
+    "src": "art/rootwood/sunkroots.webp#L3",
+    "f": 0.72,
+    "x": 50
    },
    {
-    "src": "art/rootwood/sunkroots.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/sunkroots.webp#L4",
+    "f": 1.3,
+    "x": 224
    },
    {
-    "src": "art/rootwood/sunkroots.png#L5",
+    "src": "art/rootwood/sunkroots.webp#L5",
     "f": 0.86
    },
    {
-    "src": "art/rootwood/sunkroots.png#L6",
-    "f": 1.3
+    "src": "art/rootwood/sunkroots.webp#L6",
+    "f": 1.3,
+    "x": 458,
+    "y": 366
    },
    {
-    "src": "art/rootwood/sunkroots.png#L7",
+    "src": "art/rootwood/sunkroots.webp#L7",
     "f": 1.3,
-    "fy": 1.0
+    "fy": 1.0,
+    "x": 181
    }
   ],
-  "front": "art/rootwood/sunkroots.png#front",
+  "front": "art/rootwood/sunkroots.webp#front",
   "frontAt": [
    32,
    0

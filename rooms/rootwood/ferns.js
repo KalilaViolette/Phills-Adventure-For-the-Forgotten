@@ -7,8 +7,8 @@ ROOM({
  "music": "rootwood",
  "viewBottom": 416,
  "art": {
-  "main": "art/rootwood/ferns.png#main",
-  "pack": "art/rootwood/ferns.png",
+  "main": "art/rootwood/ferns.webp#main",
+  "pack": "art/rootwood/ferns.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,55 @@ ROOM({
    "L0": [
     0,
     416,
-    1394,
-    560
+    689,
+    390
    ],
    "L1": [
     0,
-    976,
-    1319,
-    532
+    806,
+    758,
+    396
    ],
    "L2": [
     0,
-    1508,
-    1236,
-    500
+    1202,
+    834,
+    402
    ],
    "L3": [
     0,
-    2008,
-    1144,
-    464
+    1604,
+    919,
+    410
    ],
    "L4": [
     0,
-    2472,
-    1335,
-    544
+    2014,
+    1199,
+    439
    ]
   },
   "layers": [
    {
-    "src": "art/rootwood/ferns.png#L0",
+    "src": "art/rootwood/ferns.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/rootwood/ferns.png#L1",
+    "src": "art/rootwood/ferns.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/rootwood/ferns.png#L2",
+    "src": "art/rootwood/ferns.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/rootwood/ferns.png#L3",
+    "src": "art/rootwood/ferns.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/rootwood/ferns.png#L4",
-    "f": 1.3
+    "src": "art/rootwood/ferns.webp#L4",
+    "f": 1.3,
+    "x": 135
    }
   ],
   "uses": [

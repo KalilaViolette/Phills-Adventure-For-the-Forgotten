@@ -7,8 +7,8 @@ ROOM({
  "music": "pond",
  "viewBottom": 480,
  "art": {
-  "main": "art/pond/foamline.png#main",
-  "pack": "art/pond/foamline.png",
+  "main": "art/pond/foamline.webp#main",
+  "pack": "art/pond/foamline.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,66 @@ ROOM({
    "L0": [
     0,
     480,
-    1386,
-    568
+    681,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1300,
-    551
+    878,
+    738,
+    351
    ],
    "L2": [
     0,
-    1599,
-    1204,
-    532
+    1229,
+    802,
+    233
    ],
    "L3": [
     0,
-    2131,
-    1098,
-    510
+    1462,
+    873,
+    456
    ],
    "L4": [
     0,
-    2641,
-    1252,
-    628
+    1918,
+    1179,
+    521
    ],
    "front": [
     0,
-    3269,
+    2439,
     224,
     96
    ]
   },
   "layers": [
    {
-    "src": "art/pond/foamline.png#L0",
+    "src": "art/pond/foamline.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/pond/foamline.png#L1",
-    "f": 0.3
+    "src": "art/pond/foamline.webp#L1",
+    "f": 0.3,
+    "y": 64
    },
    {
-    "src": "art/pond/foamline.png#L2",
-    "f": 0.5
+    "src": "art/pond/foamline.webp#L2",
+    "f": 0.5,
+    "y": 201
    },
    {
-    "src": "art/pond/foamline.png#L3",
+    "src": "art/pond/foamline.webp#L3",
     "f": 0.72
    },
    {
-    "src": "art/pond/foamline.png#L4",
-    "f": 1.3
+    "src": "art/pond/foamline.webp#L4",
+    "f": 1.3,
+    "x": 71
    }
   ],
-  "front": "art/pond/foamline.png#front",
+  "front": "art/pond/foamline.webp#front",
   "frontAt": [
    736,
    384

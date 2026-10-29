@@ -7,8 +7,8 @@ ROOM({
  "music": "oak",
  "viewBottom": 480,
  "art": {
-  "main": "art/oak/knot.png#main",
-  "pack": "art/oak/knot.png",
+  "main": "art/oak/knot.webp#main",
+  "pack": "art/oak/knot.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,56 @@ ROOM({
    "L0": [
     0,
     480,
-    1355,
-    568
+    650,
+    398
    ],
    "L1": [
     0,
-    1048,
-    1223,
-    551
+    878,
+    662,
+    415
    ],
    "L2": [
     0,
-    1599,
-    1076,
-    532
+    1293,
+    674,
+    434
    ],
    "L3": [
     0,
-    2131,
-    914,
-    510
+    1727,
+    688,
+    456
    ],
    "L4": [
     0,
-    2641,
-    919,
-    628
+    2183,
+    617,
+    107
    ]
   },
   "layers": [
    {
-    "src": "art/oak/knot.png#L0",
+    "src": "art/oak/knot.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/oak/knot.png#L1",
+    "src": "art/oak/knot.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/oak/knot.png#L2",
+    "src": "art/oak/knot.webp#L2",
     "f": 0.5
    },
    {
-    "src": "art/oak/knot.png#L3",
-    "f": 0.72
+    "src": "art/oak/knot.webp#L3",
+    "f": 0.72,
+    "x": 1
    },
    {
-    "src": "art/oak/knot.png#L4",
-    "f": 1.3
+    "src": "art/oak/knot.webp#L4",
+    "f": 1.3,
+    "x": 153
    }
   ],
   "uses": [

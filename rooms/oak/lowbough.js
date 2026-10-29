@@ -7,8 +7,8 @@ ROOM({
  "music": "wind",
  "viewBottom": 384,
  "art": {
-  "main": "art/oak/lowbough.png#main",
-  "pack": "art/oak/lowbough.png",
+  "main": "art/oak/lowbough.webp#main",
+  "pack": "art/oak/lowbough.webp",
   "parts": {
    "main": [
     0,
@@ -19,63 +19,65 @@ ROOM({
    "L0": [
     0,
     384,
-    1405,
-    564
+    668,
+    386
    ],
    "L1": [
     0,
-    948,
-    1348,
-    541
+    770,
+    554,
+    334
    ],
    "L2": [
     0,
-    1489,
-    1252,
-    503
+    1104,
+    770,
+    198
    ],
    "L3": [
     0,
-    1992,
-    1132,
-    455
+    1302,
+    850,
+    386
    ],
    "L4": [
     0,
-    2447,
-    1252,
-    503
+    1688,
+    1214,
+    265
    ],
    "front": [
     0,
-    2950,
+    1953,
     96,
     87
    ]
   },
   "layers": [
    {
-    "src": "art/oak/lowbough.png#L0",
+    "src": "art/oak/lowbough.webp#L0",
     "f": 0.08
    },
    {
-    "src": "art/oak/lowbough.png#L1",
-    "f": 0.2
+    "src": "art/oak/lowbough.webp#L1",
+    "f": 0.2,
+    "x": 152
    },
    {
-    "src": "art/oak/lowbough.png#L2",
-    "f": 0.4
+    "src": "art/oak/lowbough.webp#L2",
+    "f": 0.4,
+    "y": 188
    },
    {
-    "src": "art/oak/lowbough.png#L3",
+    "src": "art/oak/lowbough.webp#L3",
     "f": 0.65
    },
    {
-    "src": "art/oak/lowbough.png#L4",
+    "src": "art/oak/lowbough.webp#L4",
     "f": 1.3
    }
   ],
-  "front": "art/oak/lowbough.png#front",
+  "front": "art/oak/lowbough.webp#front",
   "frontAt": [
    0,
    117

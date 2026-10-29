@@ -7,8 +7,8 @@ ROOM({
  "music": "oak",
  "viewBottom": 736,
  "art": {
-  "main": "art/oak/rot.png#main",
-  "pack": "art/oak/rot.png",
+  "main": "art/oak/rot.webp#main",
+  "pack": "art/oak/rot.webp",
   "parts": {
    "main": [
     0,
@@ -19,54 +19,57 @@ ROOM({
    "L0": [
     0,
     736,
-    1355,
-    599
+    650,
+    429
    ],
    "L1": [
     0,
-    1335,
-    1223,
-    628
+    1165,
+    662,
+    492
    ],
    "L2": [
     0,
-    1963,
-    1076,
-    660
+    1657,
+    671,
+    562
    ],
    "L3": [
     0,
-    2623,
-    914,
-    695
+    2219,
+    687,
+    640
    ],
    "L4": [
     0,
-    3318,
-    919,
-    960
+    2859,
+    551,
+    136
    ]
   },
   "layers": [
    {
-    "src": "art/oak/rot.png#L0",
+    "src": "art/oak/rot.webp#L0",
     "f": 0.12
    },
    {
-    "src": "art/oak/rot.png#L1",
+    "src": "art/oak/rot.webp#L1",
     "f": 0.3
    },
    {
-    "src": "art/oak/rot.png#L2",
-    "f": 0.5
+    "src": "art/oak/rot.webp#L2",
+    "f": 0.5,
+    "x": 3
    },
    {
-    "src": "art/oak/rot.png#L3",
-    "f": 0.72
+    "src": "art/oak/rot.webp#L3",
+    "f": 0.72,
+    "x": 2
    },
    {
-    "src": "art/oak/rot.png#L4",
-    "f": 1.3
+    "src": "art/oak/rot.webp#L4",
+    "f": 1.3,
+    "x": 157
    }
   ],
   "uses": [
