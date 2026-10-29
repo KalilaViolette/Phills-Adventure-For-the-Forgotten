@@ -222,7 +222,7 @@ const touchUI = (() => {
     b.addEventListener('pointerdown', e => {
       e.preventDefault(); id = e.pointerId; b.setPointerCapture(e.pointerId); b.classList.add('on');
       if (buzz && navigator.vibrate) try { navigator.vibrate(12); } catch (er) {}              // a little buzz for each press (10/17/2026: phones that can, Android mostly. iPhones can't from a web page)
-      if (act === 'menu') { document.body.classList.toggle('tmenu'); return; }
+      if (act === 'menu') { if (window.pauseMenu) { useDevice('touch'); pauseMenu.toggle(); } return; }   // (the menu: the pause menu, 10/29/2026. Everything that was in the strip under the game is in it now)
       if (act === 'max') { maxUI.toggle(); return; }
       if (act === 'l3' || act === 'l2') return;
       if (act === 'guard') { guardDown(b); return; }
@@ -288,7 +288,7 @@ const maxUI = (() => {
   }
   window.addEventListener('resize', fit); window.addEventListener('orientationchange', () => setTimeout(fit, 200));
   document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && body.classList.contains('max') && !touchUI.active) off(); });
-  window.addEventListener('keydown', e => { if (e.code === 'Escape' && body.classList.contains('max') && !document.fullscreenElement) off(); });
+  window.addEventListener('keydown', e => { if (e.code === 'Escape' && body.classList.contains('max') && !document.fullscreenElement && !(window.pauseMenu && pauseMenu.open)) off(); });   // (in the game Esc is the pause menu, which has full screen in it)
   const b = document.createElement('button'); b.id = 'maxBtn'; b.type = 'button'; b.addEventListener('click', () => body.classList.contains('max') ? off() : on());
   const tch = document.getElementById('touchBtn'); tch.parentNode.insertBefore(b, tch);
   label();

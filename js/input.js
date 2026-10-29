@@ -27,6 +27,7 @@ let started = false, paused = false, showBoxes = false, showDebug = false;
 // the page's own controls that use the arrow keys and typing themselves (the input audit, 10/17/2026)
 const ownsKeys = t => !!t && t.nodeType === 1 && (t.isContentEditable || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && !['button', 'submit', 'reset', 'checkbox', 'radio'].includes(t.type)));
 window.addEventListener('keydown', e => {
+  if (window.pauseMenu && pauseMenu.key(e)) return;                     // the pause menu: Esc or P opens it, and while it's up it takes every key (pause.js)
   if (e.code === 'Tab') { if (!started && window.titleMenu && titleMenu.open) return; e.preventDefault(); if (started && !e.repeat) toggleTune(); return; }   // (on the title menu Tab moves through it. Held down it opens once: the input audit, 10/17/2026)
   if (e.code === 'KeyH' && started) { showBoxes = !showBoxes; return; }
   if (e.code === 'F3') { e.preventDefault(); showDebug = !showDebug; return; }   // G is the spin now (a friend's playtest, 10/14/2026), so what's loaded is F3 or its button
@@ -105,8 +106,9 @@ function pollPad() {
   const ax = gp ? gp.axes[0] || 0 : 0, ay = gp ? gp.axes[1] || 0 : 0;
   const k = act => keys.has('T:' + act) || KEYMAP[act].some(c => keys.has(c));   // (a touch button holds 'T:' and its action: touch.js)
   if (gp && !started && !(window.titleMenu && titleMenu.open)) { for (let i = 0; i < gp.buttons.length; i++) if (pressed(i)) { begin(); break; } }
-  if (gp && started && pressed(9)) toggleTune();
+  if (gp && started && pressed(9) && !tuneOpen()) { if (window.pauseMenu) pauseMenu.toggle(); }   // Options: the pause menu (10/29/2026: it was the tuning, which is on Tab and the button under the game)
   if (tuneOpen()) { tunePad(gp, b, pressed, ay); }
+  else if (window.pauseMenu && pauseMenu.open) { pauseMenu.pad(gp, b, pressed, ax, ay); }
   else {
     // the stick: a new direction counts once it's been held a moment, or straight away when it's pushed most of the way.
     // Letting go of a push swings the stick back through the middle and a little past it, and that flick was turning

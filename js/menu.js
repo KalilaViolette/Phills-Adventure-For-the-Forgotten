@@ -7,6 +7,14 @@
 // it (window.__testSkipTitle): clicking the start screen or any key just starts, like before. The menu stays hidden till
 // the first key, click, tap or controller button (10/20/2026), so the painting shows on its own first. Moving the mouse
 // or a stick doesn't count ----------
+// the controls, one view for the keyboard and one for a controller (the touch buttons are laid out like the controller).
+// The pause menu shows them too (pause.js)
+window.CONTROLS_LIST = {
+  Keyboard: [['Move', 'Arrow keys or WASD'], ['Jump', 'Z or Space'], ['Swing', 'X'], ['Shield', 'Hold V or Shift'], ['Roll', 'C'],
+    ['Squeak', 'F'], ['Spin', 'G'], ['Map', 'M'], ['Look up or down', 'Hold up or down'], ['Pause', 'Esc or P'], ['Tuning', 'Tab']],
+  Controller: [['Move', 'Left stick or D-pad'], ['Jump', 'X'], ['Swing', 'R1'], ['Shield', 'Hold L1, right stick aims'], ['Turn round', 'Right stick'], ['Roll', 'Circle'],
+    ['Squeak', 'Triangle'], ['Spin', 'Square'], ['Map', 'Share'], ['Look up or down', 'Hold up or down'], ['Pause', 'Options']],
+};
 const titleMenu = window.titleMenu = (() => {                                // (on window too: input.js checks it)
   const api = { open: false };
   if (window.__testSkipTitle) return api;
@@ -32,13 +40,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
     "One sunny morning the back door's left open. Phill waddles out into the yard to see what's out there, and a crow spots something small and green in the grass. It snatches him up and carries him off over the fence, into the park.",
     "When you're as small as Phill, the park is a dark forest that goes on forever. Something's wrong out here, too. Black Grime is seeping up out of the ground, the animals are scared, and the toys that got left behind have all gone into hiding. Home is a long way off.",
   ];
-  // the controls, one view for the keyboard and one for a controller (the touch buttons are laid out like the controller)
-  const CONTROLS = {
-    Keyboard: [['Move', 'Arrow keys or WASD'], ['Jump', 'Z or Space'], ['Swing', 'X'], ['Shield', 'Hold V or Shift'], ['Roll', 'C'],
-      ['Squeak', 'F'], ['Spin', 'G'], ['Map', 'M'], ['Look up or down', 'Hold up or down'], ['Tuning', 'Tab']],
-    Controller: [['Move', 'Left stick or D-pad'], ['Jump', 'X'], ['Swing', 'R1'], ['Shield', 'Hold L1, right stick aims'], ['Turn round', 'Right stick'], ['Roll', 'Circle'],
-      ['Squeak', 'Triangle'], ['Spin', 'Square'], ['Map', 'Share'], ['Look up or down', 'Hold up or down'], ['Tuning', 'Options']],
-  };
+  const CONTROLS = window.CONTROLS_LIST;
   const MOVES_TEXT = 'Walk into a low gap to crawl under it. Fall past a ledge and hold toward it to grab on, then press up to climb. Down and jump drops through shelves.';
 
   // ---- the save slots

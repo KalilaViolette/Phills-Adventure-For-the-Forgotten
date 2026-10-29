@@ -11,8 +11,8 @@
 <style>
   /* Alegreya, the title menu's lettering, comes with the game (art/fonts, a Latin cut of it) so it looks the same offline
      or when Google Fonts can't load. SIL Open Font License, in Alegreya-OFL.txt next to it */
-  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya.woff?v=1029c) format('woff'); font-weight: 400 900; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya-Italic.woff?v=1029c) format('woff'); font-weight: 400 900; font-style: italic; font-display: swap; }
+  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya.woff?v=1029e) format('woff'); font-weight: 400 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Alegreya'; src: url(art/fonts/Alegreya-Italic.woff?v=1029e) format('woff'); font-weight: 400 900; font-style: italic; font-display: swap; }
   /* one dark toy-room look for the whole page: the game screen, a strip of controls under it, a tuning drawer */
   :root {
     --bg: #12131c; --panel: #1d2030; --line: #343a55; --fg: #e8e6f0; --dim: #9aa0bb;
@@ -55,7 +55,7 @@
   .overlay .small { color: var(--dim); font-size: 13px; max-width: 46ch; margin-inline: auto; }
   /* the title card (10/17/2026, Moonlit Grime v5): the painting fills the start screen, the title's in it, so the
      words above it are kept for screen readers only and the start note sits low over the bottom of the picture */
-  #start { background: #07080e url(art/title/title_card.jpg?v=1029c) center / contain no-repeat; place-items: end end; text-align: right; }
+  #start { background: #07080e url(art/title/title_card.jpg?v=1029e) center / contain no-repeat; place-items: end end; text-align: right; }
   #start > div:not(#title) { margin: 0 max(2%, 10px) max(2%, 10px) 0; max-width: min(38ch, 46%); padding: 8px 14px 9px; border-radius: 8px; background: rgba(7, 8, 14, .74); }   /* (bottom right, over the water: Phill's in the middle) */
   #start h1, #start .sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   #start .small { font-size: 12px; margin-inline: 0; }
@@ -64,7 +64,7 @@
      bigger box in the middle with the picture blurred and dimmed behind it. Made to go with the painting
      (10/17/2026): night blue panels with a little paper grain, cream storybook lettering, a thin worn gold edge. The night
      blue also fills round the picture where the screen's a different shape */
-  body.titlemenu #start { cursor: default; background-color: #0a1323; background-image: url(art/title/title_card.jpg?v=1029c), radial-gradient(ellipse at 50% 35%, #13213a 0%, #0b1426 55%, #070c17 100%); background-size: contain, cover; background-repeat: no-repeat; background-position: center, 0 0; }
+  body.titlemenu #start { cursor: default; background-color: #0a1323; background-image: url(art/title/title_card.jpg?v=1029e), radial-gradient(ellipse at 50% 35%, #13213a 0%, #0b1426 55%, #070c17 100%); background-size: contain, cover; background-repeat: no-repeat; background-position: center, 0 0; }
   body.titlemenu #start > div:not(#title) { display: none; }
   #title { position: absolute; inset: 0; pointer-events: none; font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Book Antiqua', serif; --cream: #f2e7cd; --gold: #e4c07a; --muted: #b9ad92; --night: 11, 20, 38; }
   /* the picture's edges melt into the night blue */
@@ -189,6 +189,64 @@
   body.max:not(.touch) #app::after { content: "Esc to leave full screen"; position: fixed; top: 6px; right: 10px; color: var(--dim); font-size: 12px; opacity: .6; pointer-events: none; }
   body.rot #app { position: fixed; top: 0; left: 0; width: 100vh; height: 100vw; transform-origin: top left; transform: rotate(90deg) translateY(-100%); }
   body.rot.tmenu #bar { transform: none; }
+  /* the pause menu (js/pause.js, 10/29/2026), from the painter's concept: a quiet dark olive panel with cream lettering
+     and a fine moss green edge, on the side of the game he isn't on (or under the game on a phone held upright).
+     Sized from the game's own height (--gh) so it looks the same on any screen */
+  #pause { position: absolute; inset: 0; z-index: 8; pointer-events: none; font-family: 'Alegreya', Georgia, 'Palatino Linotype', 'Book Antiqua', serif; --cream: #f0e4c6; --gold: #e4cc8e; --muted: #b7c2ad; --fs: clamp(13px, calc(var(--gh, 400px) * .042), 24px); }
+  #pause .pm-panel { pointer-events: auto; position: absolute; box-sizing: border-box; left: calc(var(--gx) + var(--gw) * .035); top: calc(var(--gy) + var(--gh) * .07); width: calc(var(--gw) * .4); max-height: calc(var(--gh) * .86);
+    display: flex; flex-direction: column; overflow: hidden; padding: calc(var(--fs) * 1.1) calc(var(--fs) * 1.3) calc(var(--fs) * .8); color: var(--cream); font-size: var(--fs);
+    background: linear-gradient(120deg, rgba(23, 37, 30, .96), rgba(23, 37, 30, .9)); border: 1px solid rgba(166, 181, 141, .48); border-radius: 7px; box-shadow: 0 14px 40px rgba(0, 0, 0, .45);
+    opacity: 0; transform: translateX(-10px); transition: opacity .25s, transform .25s; }
+  #pause.right .pm-panel { left: auto; right: calc(100% - var(--gx) - var(--gw) + var(--gw) * .035); transform: translateX(10px); }
+  #pause.in .pm-panel { opacity: 1; transform: none; }
+  #pause.below .pm-panel { left: calc(var(--gx) + 8px); width: calc(var(--gw) - 16px); top: auto; bottom: calc(100% - var(--gy) - var(--gh) + 8px); max-height: calc(var(--gh) * .46); transform: translateY(10px); --fs: 16px; }
+  #pause.below.in .pm-panel { transform: none; }
+  #pause h2 { margin: 0; font-weight: 400; font-size: 1.75em; line-height: 1.15; color: #eddbb0; }
+  #pause .pm-where { margin: .15em 0 .55em; font-size: .62em; color: var(--muted); font-variant-numeric: lining-nums; }
+  #pause .pm-tabs { display: flex; flex-wrap: wrap; gap: .2em; border-bottom: 1px solid rgba(113, 133, 100, .45); margin-bottom: .7em; }
+  #pause .pm-tab { font: inherit; font-size: .74em; color: #c5cfb7; background: none; border: 0; border-bottom: 2px solid transparent; padding: .35em .5em .45em; cursor: pointer; outline: none; }
+  #pause .pm-tab[aria-selected="true"] { color: #fff0c7; border-bottom-color: var(--gold); }
+  #pause .pm-tab.on { background: rgba(228, 204, 142, .14); border-radius: 4px 4px 0 0; }
+  #pause .pm-body { overflow-y: auto; flex: 1; min-height: 0; }
+  #pause .pm-lead { margin: 0 0 .3em; font-size: 1.05em; font-weight: 700; }
+  #pause .pm-text { margin: 0 0 .9em; font-size: .8em; color: #c3cdb9; }
+  #pause .pm-rows { display: flex; flex-direction: column; gap: .25em; }
+  #pause .pm-row { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0 .6em; width: 100%; text-align: left; font: inherit; font-size: .86em; line-height: 1.25; color: var(--cream);
+    background: transparent; border: 1px solid transparent; border-radius: 5px; padding: .4em .65em; cursor: pointer; outline: none; }
+  #pause .pm-row.pm-main { background: #41573a; border-color: #92a27b; }
+  #pause .pm-row.on { color: #fff3cf; background: rgba(228, 204, 142, .15); border-color: rgba(228, 204, 142, .55); }
+  #pause .pm-row.pm-main.on { background: #4d6744; }
+  #pause .pm-sub { grid-column: 1 / -1; font-size: .7em; color: var(--muted); }
+  #pause .pm-value { font-size: .85em; color: #dccfac; white-space: nowrap; display: inline-flex; align-items: center; gap: 2px; }
+  #pause .pm-arr { color: var(--gold); padding: 0 .4em; font-size: 1.2em; line-height: 1; }
+  #pause .pm-pips { display: inline-flex; gap: 2px; }
+  #pause .pm-pips i { width: .3em; height: .62em; border-radius: 2px; background: rgba(240, 228, 198, .16); }
+  #pause .pm-pips i.f { background: var(--gold); }
+  #pause .pm-keys { margin-top: .6em; font-size: .7em; }
+  #pause .pm-k { display: grid; grid-template-columns: minmax(6em, auto) 1fr; gap: .6em; padding: .25em .2em; border-top: 1px solid rgba(166, 181, 141, .18); }
+  #pause .pm-k span:first-child { color: var(--muted); }
+  /* a dropdown: opens under its row */
+  #pause .pm-caret { margin-left: .45em; color: var(--gold); font-size: .9em; }
+  #pause .pm-row.open { border-color: rgba(228, 204, 142, .55); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  #pause .pm-drop { margin: -.25em 0 .2em; max-height: calc(var(--fs) * 10); overflow-y: auto; background: rgba(12, 21, 16, .97); border: 1px solid rgba(228, 204, 142, .45); border-top: 0; border-radius: 0 0 5px 5px; padding: .2em 0; font-size: .82em; }
+  #pause .pm-opt { padding: .28em .9em .28em 1.6em; cursor: pointer; color: var(--cream); position: relative; }
+  #pause .pm-opt.cur::before { content: '✓'; position: absolute; left: .55em; color: var(--gold); font-size: .85em; }
+  #pause .pm-opt.on { background: rgba(228, 204, 142, .18); color: #fff3cf; }
+  #pause .pm-dgroup { padding: .45em .9em .2em; font-size: .72em; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: rgba(12, 21, 16, .98); }
+  #pause .pm-head { margin: .7em 0 .1em; padding-left: .2em; font-size: .62em; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  #pause .pm-head:first-child { margin-top: 0; }
+  #pause .pm-note { margin: .5em 0 0; font-size: .66em; color: var(--muted); }
+  #pause .pm-foot { margin-top: .6em; font-size: .6em; color: #aebbab; }
+  #pause .pm-foot:empty { display: none; }
+  body.paused #touchpad { visibility: hidden; }
+  /* the strip under the game is hidden (10/29/2026): everything in it is in the pause menu now, so the page is just the
+     game. Its buttons are still there for the menu to press. body.showbar shows it again (a test uses that) */
+  #bar, body.touch.tmenu #bar, body.max.tmenu #bar { display: none; }
+  body.showbar #bar { display: flex; }
+  #app { padding: 0; gap: 0; }
+  body.showbar #app { padding: 12px 16px; gap: 10px; }
+  #pause.still .pm-panel { transition: none; }
+  @media (prefers-reduced-motion: reduce) { #pause .pm-panel { transition: none; } }
 </style>
 </head>
 <body>
@@ -206,7 +264,7 @@
     </div>
     <div id="tune" class="tune" hidden>
       <h2>Tuning</h2>
-      <p class="hint">Game is paused. D-pad up/down to pick, left/right to change. Options or Tab to close.</p>
+      <p class="hint">Game is paused. D-pad up/down to pick, left/right to change. Tab or Circle to close.</p>
       <div id="rows"></div>
       <div class="btns"><button id="resetTune" type="button">Reset to defaults</button><button id="closeTune" type="button">Close</button></div>
     </div>
@@ -228,11 +286,11 @@
   </div>
 </div>
 <!-- the game's code. Rooms aren't listed here: they load one at a time as Phill gets near them -->
-<script>window.BUILD = '1029c';   // bump on every update: every script, room file and picture is asked for with it, so a browser never keeps an old copy</script>
-<script src="art/phill/phill_frames.js?v=1029c"></script>
-<script src="art/crow/crow_frames.js?v=1029c"></script>
-<script src="art/bear/bear_frames.js?v=1029c"></script>
-<script src="rooms/index.js?v=1029c"></script>
+<script>window.BUILD = '1029e';   // bump on every update: every script, room file and picture is asked for with it, so a browser never keeps an old copy</script>
+<script src="art/phill/phill_frames.js?v=1029e"></script>
+<script src="art/crow/crow_frames.js?v=1029e"></script>
+<script src="art/bear/bear_frames.js?v=1029e"></script>
+<script src="rooms/index.js?v=1029e"></script>
 <script>
 // the painted rooms test (10/25/2026, Source/Rooms/painted_test.py): the same game, with Rootwood's six painted rooms
 // swapped in from rooms/rootwood/painted. This page's saves and settings are kept apart from the main game's
@@ -252,62 +310,63 @@
   }
 })();
 </script>
-<script src="rooms/map.js?v=1029c"></script>
-<script src="art/rootwood/rootwood_sprites.js?v=1029c"></script>
-<script src="art/rootwood/soldier_sprites.js?v=1029c"></script>
-<script src="art/pond/pond_sprites.js?v=1029c"></script>
-<script src="art/playground/playground_sprites.js?v=1029c"></script>
-<script src="art/oak/oak_sprites.js?v=1029c"></script>
-<script src="art/wildlife/wildlife.js?v=1029c"></script>
-<script src="art/hitmasks.js?v=1029c"></script>
-<script src="art/warren/warren_sprites.js?v=1029c"></script>
-<script src="art/greenhouse/greenhouse_sprites.js?v=1029c"></script>
-<script src="art/hive/hive_sprites.js?v=1029c"></script>
-<script src="js/config.js?v=1029c"></script>
-<script src="js/input.js?v=1029c"></script>
-<script src="js/audio.js?v=1029c"></script>
-<script src="js/assets.js?v=1029c"></script>
-<script src="js/fx.js?v=1029c"></script>
-<script src="js/world.js?v=1029c"></script>
-<script src="js/rooms.js?v=1029c"></script>
-<script src="js/player.js?v=1029c"></script>
-<script src="js/story.js?v=1029c"></script>
-<script src="js/idle.js?v=1029c"></script>
-<script src="js/scene.js?v=1029c"></script>
-<script src="js/scenes/opening.js?v=1029c"></script>
-<script src="js/font.js?v=1029c"></script>
-<script src="js/talk.js?v=1029c"></script>
-<script src="js/pins.js?v=1029c"></script>
-<script src="js/foes.js?v=1029c"></script>
-<script src="js/boss.js?v=1029c"></script>
-<script src="js/pond.js?v=1029c"></script>
-<script src="js/pond_bosses.js?v=1029c"></script>
-<script src="js/rootwood.js?v=1029c"></script>
-<script src="js/rootwood_foes2.js?v=1029c"></script>
-<script src="js/rootwood_plants.js?v=1029c"></script>
-<script src="js/oak.js?v=1029c"></script>
-<script src="js/wildlife.js?v=1029c"></script>
-<script src="js/oak_bosses.js?v=1029c"></script>
-<script src="js/playground.js?v=1029c"></script>
-<script src="js/playground_bosses.js?v=1029c"></script>
-<script src="js/moves2.js?v=1029c"></script>
-<script src="js/map.js?v=1029c"></script>
-<script src="js/scenes/rootwood.js?v=1029c"></script>
-<script src="js/camera.js?v=1029c"></script>
-<script src="js/render.js?v=1029c"></script>
-<script src="js/warren.js?v=1029c"></script>
-<script src="js/greenhouse.js?v=1029c"></script>
-<script src="js/greenhouse_foes.js?v=1029c"></script>
-<script src="js/greenhouse_boss.js?v=1029c"></script>
-<script src="js/hive.js?v=1029c"></script>
-<script src="js/hive_foes.js?v=1029c"></script>
-<script src="js/hive_bosses.js?v=1029c"></script>
-<script src="js/bear.js?v=1029c"></script>
-<script src="js/ui.js?v=1029c"></script>
-<script src="js/main.js?v=1029c"></script>
-<script src="js/touch.js?v=1029c"></script>
-<script src="js/areas.js?v=1029c"></script>
-<script src="js/debug.js?v=1029c"></script>
-<script src="js/menu.js?v=1029c"></script>
+<script src="rooms/map.js?v=1029e"></script>
+<script src="art/rootwood/rootwood_sprites.js?v=1029e"></script>
+<script src="art/rootwood/soldier_sprites.js?v=1029e"></script>
+<script src="art/pond/pond_sprites.js?v=1029e"></script>
+<script src="art/playground/playground_sprites.js?v=1029e"></script>
+<script src="art/oak/oak_sprites.js?v=1029e"></script>
+<script src="art/wildlife/wildlife.js?v=1029e"></script>
+<script src="art/hitmasks.js?v=1029e"></script>
+<script src="art/warren/warren_sprites.js?v=1029e"></script>
+<script src="art/greenhouse/greenhouse_sprites.js?v=1029e"></script>
+<script src="art/hive/hive_sprites.js?v=1029e"></script>
+<script src="js/config.js?v=1029e"></script>
+<script src="js/input.js?v=1029e"></script>
+<script src="js/audio.js?v=1029e"></script>
+<script src="js/assets.js?v=1029e"></script>
+<script src="js/fx.js?v=1029e"></script>
+<script src="js/world.js?v=1029e"></script>
+<script src="js/rooms.js?v=1029e"></script>
+<script src="js/player.js?v=1029e"></script>
+<script src="js/story.js?v=1029e"></script>
+<script src="js/idle.js?v=1029e"></script>
+<script src="js/scene.js?v=1029e"></script>
+<script src="js/scenes/opening.js?v=1029e"></script>
+<script src="js/font.js?v=1029e"></script>
+<script src="js/talk.js?v=1029e"></script>
+<script src="js/pins.js?v=1029e"></script>
+<script src="js/foes.js?v=1029e"></script>
+<script src="js/boss.js?v=1029e"></script>
+<script src="js/pond.js?v=1029e"></script>
+<script src="js/pond_bosses.js?v=1029e"></script>
+<script src="js/rootwood.js?v=1029e"></script>
+<script src="js/rootwood_foes2.js?v=1029e"></script>
+<script src="js/rootwood_plants.js?v=1029e"></script>
+<script src="js/oak.js?v=1029e"></script>
+<script src="js/wildlife.js?v=1029e"></script>
+<script src="js/oak_bosses.js?v=1029e"></script>
+<script src="js/playground.js?v=1029e"></script>
+<script src="js/playground_bosses.js?v=1029e"></script>
+<script src="js/moves2.js?v=1029e"></script>
+<script src="js/map.js?v=1029e"></script>
+<script src="js/scenes/rootwood.js?v=1029e"></script>
+<script src="js/camera.js?v=1029e"></script>
+<script src="js/render.js?v=1029e"></script>
+<script src="js/warren.js?v=1029e"></script>
+<script src="js/greenhouse.js?v=1029e"></script>
+<script src="js/greenhouse_foes.js?v=1029e"></script>
+<script src="js/greenhouse_boss.js?v=1029e"></script>
+<script src="js/hive.js?v=1029e"></script>
+<script src="js/hive_foes.js?v=1029e"></script>
+<script src="js/hive_bosses.js?v=1029e"></script>
+<script src="js/bear.js?v=1029e"></script>
+<script src="js/ui.js?v=1029e"></script>
+<script src="js/main.js?v=1029e"></script>
+<script src="js/touch.js?v=1029e"></script>
+<script src="js/areas.js?v=1029e"></script>
+<script src="js/debug.js?v=1029e"></script>
+<script src="js/menu.js?v=1029e"></script>
+<script src="js/pause.js?v=1029e"></script>
 </body>
 </html>

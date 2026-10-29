@@ -24,7 +24,7 @@ function refreshTune() {
   document.getElementById('resetTune').classList.toggle('sel', tuneSel === TUNE_ROWS.length);
 }
 function toggleTune() {
-  tuneEl.hidden = !tuneEl.hidden; paused = tuneOpen();
+  tuneEl.hidden = !tuneEl.hidden; paused = tuneOpen() || !!(window.pauseMenu && pauseMenu.open);
   for (const k in inp) inp[k] = 0;
   if (tuneOpen()) refreshTune();
 }
@@ -33,7 +33,7 @@ function tunePad(gp, b, pressed, ay) {
   if (pressed(13) || (ay > 0.6 && tunePrevDir !== 1)) { tuneSel = Math.min(TUNE_ROWS.length, tuneSel + 1); refreshTune(); rowsEl.children[Math.min(tuneSel, TUNE_ROWS.length - 1)].scrollIntoView({ block: 'nearest' }); }
   if (pressed(12) || (ay < -0.6 && tunePrevDir !== -1)) { tuneSel = Math.max(0, tuneSel - 1); refreshTune(); rowsEl.children[tuneSel].scrollIntoView({ block: 'nearest' }); }
   tunePrevDir = ay > 0.6 ? 1 : ay < -0.6 ? -1 : 0;
-  if (tuneSel === TUNE_ROWS.length) { if (pressed(0)) resetTune(); if (pressed(1)) toggleTune(); return; }
+  if (tuneSel === TUNE_ROWS.length) { if (pressed(0)) resetTune(); if (pressed(1) || pressed(9)) toggleTune(); return; }
   const lr = (b(15) || (gp.axes[0] || 0) > 0.5 ? 1 : 0) - (b(14) || (gp.axes[0] || 0) < -0.5 ? 1 : 0);
   if (lr) {
     if (tuneRepeat <= 0) {
@@ -43,7 +43,7 @@ function tunePad(gp, b, pressed, ay) {
       tuneRepeat = tuneHeld ? 4 : 16; tuneHeld = true;
     } else tuneRepeat--;
   } else { tuneRepeat = 0; tuneHeld = false; }
-  if (pressed(1)) toggleTune();
+  if (pressed(1) || pressed(9)) toggleTune();
 }
 function resetTune() { Object.assign(tune, DEFAULTS); saveTune(); refreshTune(); }
 document.getElementById('resetTune').addEventListener('click', resetTune);
