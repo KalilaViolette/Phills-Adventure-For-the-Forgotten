@@ -43,86 +43,86 @@ ROOM({
    "front": [
     0,
     2308,
-    1025,
-    92
+    1054,
+    151
    ],
    "piece_time_0_dawn": [
     0,
-    2400,
+    2459,
     1440,
     384
    ],
    "piece_time_0_dusk": [
     0,
-    2784,
+    2843,
     1440,
     384
    ],
    "piece_time_0_night": [
     0,
-    3168,
+    3227,
     1440,
     384
    ],
    "piece_reveal_log_near_side": [
     0,
-    3552,
+    3611,
     180,
     56
    ],
    "piece_plant_leaf_tide_plant_01": [
     0,
-    3608,
+    3667,
     29,
     18
    ],
    "piece_plant_leaf_tide_plant_02": [
     0,
-    3626,
+    3685,
     23,
     16
    ],
    "piece_plant_leaf_tide_plant_03": [
     0,
-    3642,
+    3701,
     25,
     17
    ],
    "piece_plant_leaf_tide_plant_04": [
     0,
-    3659,
+    3718,
     27,
     18
    ],
    "piece_plant_leaf_tide_plant_05": [
     0,
-    3677,
+    3736,
     28,
     17
    ],
    "piece_plant_leaf_tide_plant_06": [
     0,
-    3694,
+    3753,
     30,
     28
    ],
    "piece_plant_leaf_tide_plant_07": [
     0,
-    3722,
+    3781,
     28,
     24
    ],
    "piece_plant_leaf_tide_plant_08": [
     0,
-    3746,
+    3805,
     24,
     28
    ],
    "piece_glow_0": [
     0,
-    3774,
+    3833,
     196,
-    99
+    269
    ]
   },
   "layers": [
@@ -150,7 +150,7 @@ ROOM({
   ],
   "front": "art/rootwood/painted/litterpath.png#front",
   "frontAt": [
-   200,
+   171,
    196
   ],
   "pieces": {
@@ -230,7 +230,7 @@ ROOM({
     367,
     44,
     196,
-    99
+    269
    ]
   },
   "uses": [
@@ -250,7 +250,18 @@ ROOM({
    "toDoor": "litter",
    "x": 24.0,
    "y": 288,
-   "f": 1
+   "f": 1,
+   "walkIn": {
+    "turn": [
+     64,
+     288
+    ],
+    "into": [
+     24,
+     262
+    ],
+    "scale": 0.75
+   }
   },
   {
    "id": "down",
