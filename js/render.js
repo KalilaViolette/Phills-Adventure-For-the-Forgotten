@@ -320,6 +320,7 @@ function drawPhill(px, py, q) {
     if (top) {
       if (P.paper) drawPaper(im, meta, name, fx, fy);
       drawCell(ctx, im, top, fx, fy);
+      if (typeof BOOK !== 'undefined') BOOK.draw(name, fx, fy);       // the pictures on his book's pages, new ones every page he turns (book.js)
       const hand = meta.sit.hands[name.replace(/_[RL]$/, '')];
       if (P.crayon && hand) drawCrayon(fx + hand[0], fy + hand[1], P.crayon);
     }
