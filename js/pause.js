@@ -364,8 +364,7 @@ const pauseMenu = window.pauseMenu = (() => {
     seq = REST_BITS[lastBit]().map(s => step(s.f, s.d, s.go, s.huh)); si = 0; st = 0; inBit = true;
     begin0();
   }
-  const quiet = fn => { if (!fn) return; const p = sfx.pickup; sfx.pickup = () => {}; try { fn(); } finally { sfx.pickup = p; } };   // (no pickup chime from his book while the menu's up: it sounded like getting something)
-  function begin0() { const s = seq[si]; if (s) quiet(s.go); show0(); }
+  function begin0() { const s = seq[si]; if (s && s.go) s.go(); show0(); }          // (his sounds too: the rustle of a page, his happy squeak, a yawn)
   function show0() { const s = seq[si]; if (!s) return; P.story = { kind: 'scene', frame: s.f, t: clock }; P.restHuh = !!s.huh; }
   function runSeq(dt) {
     clock += dt;
