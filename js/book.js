@@ -4,8 +4,8 @@
 // find in a children's picture book. The first two pages are the sun and the fish that are drawn into his frames;
 // after that the game draws each new pair on the open pages, over the frame, only where the pages show (not under his
 // hands or the page that's turning). While a page is turning, the side it's lifting off already shows the next one
-// underneath. Shutting the book starts it from the sun and the fish again next time, and each time the pages after
-// that start somewhere different.
+// underneath. When he gets the book out again he opens it where he left off (kept in the save), and after the last
+// pages it goes round to the sun and the fish again. He turns the same number of pages as always.
 const BOOK = (() => {
   const PAPER = ['#6e5838', '#c4b286', '#e2d4aa', '#f4eccc'];                       // (the book's own paper colors, phill_props.py)
   const INK = { g: '#6ea860', G: '#52884c', b: '#6092ce', r: '#ce463c', y: '#f0c446', k: '#463834', o: '#e8843c', w: '#faf8ec', p: '#c478aa',
@@ -79,13 +79,14 @@ const BOOK = (() => {
     }
     cache.set(key, c); return c;
   }
-  const st = { spread: 0, next: null, off: 0 };                                     // spread 0: the sun and the fish, as drawn
-  const pics = n => n === 0 ? [null, null] : SPREADS[(n - 1 + st.off) % SPREADS.length];
+  const ALL = SPREADS.length + 1;                                                   // (and the sun and the fish, as drawn: page 0)
+  const st = { next: null, get spread() { return ((world.bookPage || 0) % ALL + ALL) % ALL; }, set spread(v) { world.bookPage = v % ALL; } };
+  const pics = n => (n % ALL) === 0 ? [null, null] : SPREADS[(n % ALL) - 1];
   function draw(name, fx, fy) {
     const m = /^r[sf]_(lap_1|lap_2|flip_1|flip_2|flip_3|happy_1|happy_2|lap_closed)_[RL]$/.exec(name);
     if (!m) return;
     const f = m[1];
-    if (f === 'lap_closed') { if (st.spread || st.next !== null) { st.spread = 0; st.next = null; st.off = Math.floor(Math.random() * SPREADS.length); } return; }
+    if (f === 'lap_closed') { if (st.next !== null) { st.spread = st.next; st.next = null; } return; }   // (shut: it opens on the same pages next time)
     if (f.startsWith('flip')) { if (st.next === null) st.next = st.spread + 1; }
     else if (st.next !== null) { st.spread = st.next; st.next = null; }
     const [l, r] = pics(st.spread), nr = st.next !== null ? pics(st.next)[1] : r;   // (turning: the right side already shows the next one underneath)
