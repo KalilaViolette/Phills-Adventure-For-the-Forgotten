@@ -65,6 +65,7 @@ function startGame() {
 function begin() {
   if (started) return;
   started = true; audio(); setTimeout(() => music.start(), 120);
+  if (typeof keepSaves === 'function') keepSaves();                       // (asks the browser to keep the saves for good: world.js)
   document.getElementById('start').hidden = true;
   C.focus && C.focus();
 }

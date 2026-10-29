@@ -117,6 +117,12 @@ const pauseMenu = window.pauseMenu = (() => {
       return [
         { label: 'Back to the adventure', act: () => close(), main: true },
         { label: 'Title screen', sub: 'Saves first', act: () => { saveWorld(); location.reload(); } },
+        { label: 'Save to a file', sub: fileNote || 'A copy of this save in your Downloads, to keep or to take to another device', act: () => { fileNote = saveToFile() ? 'Saved to your Downloads' : "There's nothing saved in this slot yet"; } },
+        { label: 'Load a save file', sub: fileArmed ? 'Press it again to pick the file. It replaces the save in this slot' : loadNote || 'Picks up from a save file', act: () => {
+          if (!fileArmed) { fileArmed = true; setTimeout(() => { fileArmed = false; if (api.open && TABS[tab][0] === 'pause') show(true); }, 4000); return; }
+          fileArmed = false;
+          pickSaveFile((w, why) => { if (!w) { if (why !== 'none') { loadNote = why; if (api.open) show(true); } return; } closeNow(); loadFromFile(w); });
+        } },
         rb && { label: 'Start over', sub: armed ? 'Press it again to start over. This save goes back to the start' : '', act: () => { if (/again/i.test(rb.textContent)) { closeNow(); rb.click(); } else { rb.click(); setTimeout(() => { if (api.open && TABS[tab][0] === 'pause') show(true); }, 3150); } } },
       ].filter(Boolean);
     },
@@ -155,6 +161,7 @@ const pauseMenu = window.pauseMenu = (() => {
     // the dev tab: what was in the strip under the game (go to, cheats, enemies, what to show)
     dev: () => stripRows(['gGo', 'gCheat', 'gFoes', 'gShow']),
   };
+  let fileNote = '', loadNote = '', fileArmed = false;                                            // (what Save to a file last said, and Load a save file waiting for its second press)
   const TEXT = { pause: ['The adventure can wait.', 'Phill stays right here with you.'] };
   function show(keepRow) {
     const name = TABS[tab][0], label = keepRow && rows[at] ? rows[at].label : null;
@@ -404,6 +411,7 @@ const pauseMenu = window.pauseMenu = (() => {
       si = 0; st = 0; gap = 1.2; begin0();
     }
     for (const id in cursor) delete cursor[id];
+    fileNote = ''; loadNote = ''; fileArmed = false;
     tab = Math.max(0, TABS.findIndex(t => t[0] === onTab)); rows = ROWS[TABS[tab][0]](); at = firstRow(); keysView = null;
     pickSide(); show(); place();
     root.classList.toggle('still', !pref.glide);                                   // (no camera glide: no sliding panel either)

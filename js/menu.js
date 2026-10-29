@@ -113,6 +113,10 @@ const titleMenu = window.titleMenu = (() => {                                // 
         { label: 'The story', act: () => show('story', { page: 0 }) },
         { label: 'Options', act: () => show('options') },
         { label: 'Controls', act: () => show('controls') },
+        { label: 'Load a save file', act: () => pickSaveFile((w, why) => {          // (a save brought from another device, or a backup: 10/29/2026)
+          if (!w) { if (why !== 'none') show('filebad', { why }); return; }
+          if (readSlot(saveSlot)) show('confirm', { n: saveSlot, kind: 'file', w }); else { loadFromFile(w, saveSlot); go(); }
+        }) },
       ].filter(Boolean) };
     },
     load: () => ({ title: 'Load', items: [1, 2, 3].map(n => { const s = readSlot(n); return { label: `Slot ${n}`, sub: slotLine(s), sub2: slotWhen(s), mark: n === saveSlot && s ? 'last played' : '', act: () => s ? show('slot', { n }) : show('confirm', { n, kind: 'new' }) }; }).concat([{ label: 'Back', act: back, back: true }]) }),
@@ -125,10 +129,13 @@ const titleMenu = window.titleMenu = (() => {                                // 
       const s = readSlot(opts.n), what = s ? `${slotLine(s)}${s.savedAt ? ', ' + slotWhen(s).toLowerCase() : ''}` : '';
       if (opts.kind === 'delete') return { title: `Delete slot ${opts.n}?`, text: `This clears ${what}. It can't be undone.`, items: [
         { label: 'Delete it', act: () => { deleteSlot(opts.n); sfx.crumble && sfx.crumble(); show('load'); } }, { label: 'Keep it', act: back, back: true }], focus: 1 };
+      if (opts.kind === 'file') return { title: `Load the file into slot ${opts.n}?`, text: `The save in it now goes (${what}). The file's save: ${slotLine(opts.w)}.`, items: [
+        { label: 'Load it', act: () => { loadFromFile(opts.w, opts.n); go(); } }, { label: 'Back', act: back, back: true }], focus: 1 };
       if (opts.kind === 'replace') return { title: `Start over in slot ${opts.n}?`, text: `The save in it goes (${what}).`, items: [
         { label: 'Start a new game', act: () => startNew(opts.n) }, { label: 'Back', act: back, back: true }], focus: 1 };
       return { title: `New game in slot ${opts.n}?`, items: [{ label: 'Start a new game', act: () => startNew(opts.n) }, { label: 'Back', act: back, back: true }] };
     },
+    filebad: () => ({ title: "Couldn't load that", text: opts.why, items: [{ label: 'Back', act: back, back: true }] }),
     story: () => {
       const p = opts.page, lastPage = p === STORY.length - 1;
       const turn = d => () => { const q = p + d; if (q >= 0 && q < STORY.length) show('story', { page: q }, false, true); };
@@ -151,10 +158,10 @@ const titleMenu = window.titleMenu = (() => {                                // 
         items: [{ label: 'Showing', value: () => view, act: flip, left: flip, right: flip, stay: true, top: true }, { label: 'Back', act: back, back: true }] };
     },
   };
-  const PARENT = { load: 'main', slot: 'load', newslot: 'main', story: 'main', options: 'main', controls: 'main' };
+  const PARENT = { load: 'main', slot: 'load', newslot: 'main', story: 'main', options: 'main', controls: 'main', filebad: 'main' };
   function back() {
     if (screen === 'main') return;
-    const prev = screen === 'confirm' ? (opts.kind === 'delete' ? ['slot', { n: opts.n }] : opts.kind === 'replace' ? ['newslot', {}] : ['load', {}]) : [PARENT[screen] || 'main', {}];
+    const prev = screen === 'confirm' && opts.kind === 'file' ? ['main', {}] : screen === 'confirm' ? (opts.kind === 'delete' ? ['slot', { n: opts.n }] : opts.kind === 'replace' ? ['newslot', {}] : ['load', {}]) : [PARENT[screen] || 'main', {}];
     show(prev[0], prev[1], true); sfx.click && sfx.click();
   }
   const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

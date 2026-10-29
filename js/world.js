@@ -132,3 +132,51 @@ const MOVES = {
 // world.learned.glide set by the ride
 const GLIDE_IN_CANOPY = false;
 const can = m => unlockAll || (MOVES[m] ? MOVES[m]() : false);
+
+// ---------- keeping saves safe (10/29/2026) ----------
+// The saves live in the browser's own storage for this site. Two things look after them:
+// - the browser's asked to keep that storage for good, so it won't clear it on its own when the computer or phone is
+//   low on space (some do, phones most of all). Clearing the browser's data by hand still clears it
+// - a save can go out to a file (Downloads, like any other file) and come back in from one, from the pause menu and
+//   the title menu. That's a backup that survives the browser's data being cleared, and the way to take a save to
+//   another computer or a phone
+function keepSaves() {
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persisted().then(p => { if (!p) navigator.storage.persist(); }).catch(() => {}); } catch (e) {}
+}
+const pad2 = n => String(n).padStart(2, '0');
+function saveFileName(n, w) {
+  const d = new Date(w && w.savedAt || Date.now()), h = d.getHours();
+  return `Phill's Adventure - slot ${n} - ${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}-${d.getFullYear()} ${(h % 12) || 12}-${pad2(d.getMinutes())} ${h < 12 ? 'AM' : 'PM'}.json`;
+}
+// the slot's save as a file in Downloads (playing: saved first, so it's right up to now)
+function saveToFile(n = saveSlot) {
+  if (started && n === saveSlot) saveWorld();
+  const w = readSlot(n); if (!w) return false;
+  const text = JSON.stringify({ game: "Phill's Adventure: For the Forgotten", slot: n, save: w }, null, 1);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = saveFileName(n, w);
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  return true;
+}
+// pick a save file and read it: done(world) with a good one, done(null, why) with anything else (nothing's changed yet)
+function pickSaveFile(done) {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json'; inp.style.display = 'none';
+  inp.addEventListener('change', () => {
+    const f = inp.files && inp.files[0]; inp.remove();
+    if (!f) return done(null, 'none');
+    if (f.size > 2e6) return done(null, "That file's too big to be a save.");
+    f.text().then(t => {
+      let j = null; try { j = JSON.parse(t); } catch (e) {}
+      const w = j && checkSave(j.save !== undefined ? j.save : j);                     // (a bare save works too)
+      done(w || null, w ? null : "That file isn't a save from this game, or it's broken.");
+    }, () => done(null, "That file couldn't be read."));
+  });
+  document.body.appendChild(inp); inp.click();
+}
+// a save from a file into a slot, and the game picked up from it
+function loadFromFile(w, n = saveSlot) {
+  try { localStorage.setItem(slotKey(n), JSON.stringify(w)); } catch (e) { return false; }
+  useSlot(n); if (!loadWorld()) return false;
+  if (typeof foesAllBack === 'function') foesAllBack();
+  startGame();
+  return true;
+}
