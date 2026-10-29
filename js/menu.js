@@ -9,6 +9,8 @@
 // or a stick doesn't count ----------
 // the controls, one view for the keyboard and one for a controller (the touch buttons are laid out like the controller).
 // The pause menu shows them too (pause.js)
+// which of a volume's ten bars a click is on (the title menu's and the pause menu's): the very left edge is 0
+const pipAt = (pp, e) => { const r = pp.getBoundingClientRect(), f = (e.clientX - r.left) / Math.max(1, r.width); return f < 0.03 ? 0 : Math.max(1, Math.min(10, Math.ceil(f * 10))); };
 window.CONTROLS_LIST = {
   Keyboard: [['Move', 'Arrow keys or WASD'], ['Jump', 'Z or Space'], ['Swing', 'X'], ['Shield', 'Hold V or Shift'], ['Roll', 'C'],
     ['Squeak', 'F'], ['Spin', 'G'], ['Map', 'M'], ['Look up or down', 'Hold up or down'], ['Pause', 'Esc or P'], ['Tuning', 'Tab']],
@@ -101,7 +103,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
       } else { setVolume('sfx', v / 10); if (sfx.tick) sfx.tick(); }
       if (typeof syncVolumes === 'function') syncVolumes();
     };
-    return { label, vol: get, left: () => set(get() - 1), right: () => set(get() + 1), act: () => set(get() >= 10 ? 0 : get() + 1), stay: true };
+    return { label, vol: get, setTo: set, left: () => set(get() - 1), right: () => set(get() + 1), act: () => set(get() >= 10 ? 0 : get() + 1), stay: true };
   };
   const SCREENS = {
     main: () => {
@@ -198,8 +200,9 @@ const titleMenu = window.titleMenu = (() => {                                // 
       const i = +b.dataset.i;
       b.addEventListener('click', e => {
         e.stopPropagation(); wake(); if (e.pointerType) setLast(e.pointerType === 'touch' ? 'touch' : 'mouse');
-        const arr = e.target.closest && e.target.closest('.tm-arr');
+        const arr = e.target.closest && e.target.closest('.tm-arr'), pp = e.target.closest && e.target.closest('.tm-pips');
         focus(i, true);
+        if (pp && items[i].setTo && e.detail !== 0) { items[i].setTo(pipAt(pp, e)); if (sfx.tick) sfx.tick(); if (api.open) show(screen, opts, false, true); return; }   // (a click on the bars sets it right there: left of where it is turns it down, right of it up, 10/29/2026)
         if (arr && e.detail !== 0) side(+arr.dataset.d); else pick();                 // (the little arrows on an option turn it that way)
       });
       b.addEventListener('focus', () => { if (at !== i) { at = i; mark(); } });       // (Tab, or a screen reader, moving the focus)

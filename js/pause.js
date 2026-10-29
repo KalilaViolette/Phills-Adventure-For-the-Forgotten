@@ -108,7 +108,7 @@ const pauseMenu = window.pauseMenu = (() => {
       } else { setVolume('sfx', v / 10); if (sfx.tick) sfx.tick(); }
       if (typeof syncVolumes === 'function') syncVolumes();
     };
-    return { label, vol: get, left: () => set(get() - 1), right: () => set(get() + 1), act: () => set(get() >= 10 ? 0 : get() + 1) };
+    return { label, vol: get, setTo: set, left: () => set(get() - 1), right: () => set(get() + 1), act: () => set(get() >= 10 ? 0 : get() + 1) };
   };
   const onOff = (label, get, flip) => ({ label, value: () => get() ? 'On' : 'Off', act: flip, left: flip, right: flip });
   const ROWS = {
@@ -194,7 +194,8 @@ const pauseMenu = window.pauseMenu = (() => {
       const i = +b.dataset.i;
       b.addEventListener('click', e => {
         e.stopPropagation(); at = i; mark();
-        const arr = e.target.closest && e.target.closest('.pm-arr');
+        const arr = e.target.closest && e.target.closest('.pm-arr'), pp = e.target.closest && e.target.closest('.pm-pips');
+        if (pp && rows[i].setTo && e.detail !== 0) { rows[i].setTo(pipAt(pp, e)); if (sfx.tick) sfx.tick(); show(true); return; }   // (a click on the bars sets it right there: left of where it is turns it down, right of it up)
         if (arr && e.detail !== 0) side(+arr.dataset.d); else pick();
       });
     }
