@@ -110,97 +110,97 @@ ROOM({
     0,
     3916,
     23,
-    22
+    21
    ],
    "piece_plant_living_nook_right": [
     0,
-    3938,
+    3937,
     24,
-    24
+    22
    ],
    "piece_plant_living_lower_floor": [
     0,
-    3962,
+    3959,
     25,
     23
    ],
    "piece_plant_living_entry_hair": [
     0,
-    3985,
+    3982,
     12,
     55
    ],
    "piece_plant_living_bowl_approach_hair": [
     0,
-    4040,
+    4037,
     13,
     83
    ],
    "piece_plant_bowl_seedling": [
     0,
-    4123,
+    4120,
     25,
     23
    ],
    "piece_plant_sweep_seedling": [
     0,
-    4146,
+    4143,
     27,
     24
    ],
    "piece_plant_sweep_small_tuft": [
     0,
-    4170,
+    4167,
     11,
     13
    ],
    "piece_plant_floor_seedling": [
     0,
-    4183,
+    4180,
     25,
     25
    ],
    "piece_plant_under_root_vine": [
     0,
-    4208,
+    4205,
     9,
     68
    ],
    "piece_plant_nook_rear_frond": [
     0,
-    4276,
+    4273,
     17,
-    18
+    17
    ],
    "piece_glow_0": [
     0,
-    4294,
-    147,
-    73
+    4290,
+    163,
+    84
    ],
    "piece_glow_1": [
     0,
-    4367,
-    389,
-    79
+    4374,
+    396,
+    88
    ],
    "piece_glow_2": [
     0,
-    4446,
-    248,
-    461
+    4462,
+    252,
+    469
    ],
    "piece_glow_3": [
     0,
-    4907,
-    60,
-    39
+    4931,
+    68,
+    45
    ],
    "piece_glow_4": [
     0,
-    4946,
-    49,
-    92
+    4976,
+    55,
+    106
    ]
   },
   "layers": [
@@ -289,15 +289,15 @@ ROOM({
    ],
    "plant_living_nook_left": [
     66,
-    469,
+    470,
     23,
-    22
+    21
    ],
    "plant_living_nook_right": [
     157,
-    454,
+    458,
     24,
-    24
+    22
    ],
    "plant_living_lower_floor": [
     232,
@@ -331,7 +331,7 @@ ROOM({
    ],
    "plant_sweep_small_tuft": [
     590,
-    156,
+    158,
     11,
     13
    ],
@@ -349,39 +349,39 @@ ROOM({
    ],
    "plant_nook_rear_frond": [
     83,
-    469,
+    470,
     17,
-    18
+    17
    ],
    "glow_0": [
-    27,
-    402,
-    147,
-    73
+    19,
+    395,
+    163,
+    84
    ],
    "glow_1": [
-    178,
-    422,
-    389,
-    79
+    176,
+    416,
+    396,
+    88
    ],
    "glow_2": [
-    456,
+    452,
     34,
-    248,
-    461
+    252,
+    469
    ],
    "glow_3": [
+    263,
     267,
-    270,
-    60,
-    39
+    68,
+    45
    ],
    "glow_4": [
-    655,
-    99,
-    49,
-    92
+    649,
+    91,
+    55,
+    106
    ]
   },
   "uses": [
@@ -2701,7 +2701,7 @@ ROOM({
    "plant_living_nook_left",
    -1,
    77,
-   488,
+   489,
    1.0,
    0.68,
    4.0,
@@ -2711,7 +2711,7 @@ ROOM({
    "plant_living_nook_right",
    -1,
    169,
-   475,
+   479,
    1.0,
    0.79,
    4.0,
@@ -2771,7 +2771,7 @@ ROOM({
    "plant_sweep_small_tuft",
    -1,
    595,
-   167,
+   169,
    1.0,
    1.32,
    2.0,
@@ -2801,7 +2801,7 @@ ROOM({
    "plant_nook_rear_frond",
    1,
    91,
-   485,
+   486,
    1.0,
    1.17,
    2.0,
