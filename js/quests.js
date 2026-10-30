@@ -44,11 +44,11 @@ const QUESTS = [
       { text: 'Get away from the crow', done: ['branchSnapped'], room: 'nest' },
       { text: 'Fall all the way down', done: ['landed'], room: 'oakfall' },
       { text: 'Pick his sword and shield back up', done: ['has:gear'], room: 'oakfall' },
-      { text: 'Purl sees him get up', done: ['q_metPurl'], room: 'oakfall', dummy: true },
     ] },
   { id: 'rootwood', kind: 'main', who: 'phill', title: 'Rootwood', region: 'Rootwood', starts: ['landed'],
     steps: [
       { text: 'Find the black crayon', done: ['has:crayon_black'], room: 'roots' },
+      { text: 'Purl shows up while he scribbles with the black crayon', done: ['q_metPurl'], room: 'roots', dummy: true },
       { text: 'Look at his map', done: ['openedMap'], room: 'roots' },
       { text: 'Meet the squirrel', done: ['metSquirrel'], also: ['learned:parry'], room: 'hollow' },
       { text: 'Beat the tin soldier', done: ['soldierDown'], room: 'clearing' },

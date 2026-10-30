@@ -13,8 +13,17 @@ const idleState = { still: 0, wait: IDLE_WAIT[0], last: null, long: 0 };
 const rndIn = (a, b) => a + Math.random() * (b - a);
 const ilerp = (a, b, k) => a + (b - a) * k;
 
-// the crayon he draws with: any of the ones he's found (the red from the backyard box to start with)
-const IDLE_CRAYONS = { crayon_black: '#3a3640', crayon_rootwood: '#8fd88a', crayon_pond: '#7aa8f0', crayon_playground: '#f0a060', crayon_oak: '#c89060' };
+// the crayon he draws with (10/30/2026): before the crow takes him he has the whole box, red and all. The crow's snatch
+// spills them over the park, so after that he only draws with the ones he's found again, and with none found yet he
+// doesn't draw at all (standing or sitting)
+const IDLE_CRAYONS = { crayon_black: '#3a3640', crayon_rootwood: '#8fd88a', crayon_pond: '#7aa8f0', crayon_playground: '#f0a060', crayon_oak: '#c89060',
+  crayon_hive: '#f4d038', crayon_greenhouse: '#f07aa8' };
+const BOX_RED = '#e2604a';
+function idleCrayons() {
+  if (!world.has.paper || !world.has.crayons) return [];
+  if (!world.flags.snatched) return [BOX_RED, ...Object.values(IDLE_CRAYONS)];
+  return Object.keys(IDLE_CRAYONS).filter(k => world.has[k]).map(k => IDLE_CRAYONS[k]);
+}
 // pictures he scratches in the dirt with his sword (scratched in going round from the middle, like he's drawing it)
 const DOODLES = [
   ['.##.##.', '#..#..#', '#.....#', '.#...#.', '..#.#..', '...#...'],              // a heart
@@ -102,9 +111,9 @@ const IDLE_BITS = {
   // sits down and draws on his paper for a while, then puts it all away and gets back up
   sit: {
     held: true,                    // the sitting pictures lay his sword and shield down beside him
-    ok: () => world.has.paper && world.has.crayons,
+    ok: () => idleCrayons().length > 0,
     steps: () => {
-      const cols = ['#e2604a', ...Object.keys(IDLE_CRAYONS).filter(k => world.has[k]).map(k => IDLE_CRAYONS[k])];
+      const cols = idleCrayons();
       const col = cols[Math.floor(Math.random() * cols.length)];
       const draw = []; const n = Math.round(rndIn(64, 88));
       for (let i = 0; i < n; i++) {

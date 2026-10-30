@@ -404,7 +404,7 @@ const pauseMenu = window.pauseMenu = (() => {
   let wasResting = false;
   function bits() {
     if (typeof REST_BITS === 'undefined') return [];
-    return ['doodle', 'doodle', 'stretch', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book', 'book'] : [])]
+    return [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book', 'book'] : [])]
       .filter(n => REST_BITS[n] && has({ doodle: 'draw_1', stretch: 'stretch', map: 'rs_map_1', book: 'rs_lap_1' }[n]));
   }
   function nextBit() {

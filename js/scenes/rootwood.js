@@ -36,7 +36,7 @@ const HUH = 'huh';                       // (in place of go: the ? over his head
 const RS = (f, d, go) => go === HUH ? { f, d, huh: true } : { f, d, go };
 const REST_BITS = {
   doodle: () => {
-    const cols = ['#e2604a', ...Object.keys(IDLE_CRAYONS).filter(k => world.has[k]).map(k => IDLE_CRAYONS[k])], col = cols[Math.floor(Math.random() * cols.length)];
+    const cols = idleCrayons(), col = cols[Math.floor(Math.random() * cols.length)];
     const s = [RS('paper_1', 0.28), RS('paper_1b', 0.2, () => sfx.pickup()), RS('paper_2', 0.35), RS('paper_3', 0.55), RS('paper_4', 0.12, () => { P.paper = { marks: {} }; }),
       RS('paper_4', 0.3), RS('paper_1', 0.25, () => { P.crayon = col; })];
     const n = Math.round(rndIn(40, 64));
@@ -90,7 +90,7 @@ REST_BITS.book = () => {
   s.push(RS('rs_lap_closed', 0.5, () => sfx.bump()), ...restPutAway());
   return s;
 };
-const restPick = () => ['doodle', 'doodle', 'stretch', 'stretch', 'nap', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
+const restPick = () => [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', 'stretch', 'nap', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
 const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after (10/27/2026)
 const restSit = () => {
   let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;
