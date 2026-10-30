@@ -33,7 +33,7 @@ const pauseMenu = window.pauseMenu = (() => {
   stage.appendChild(root);
   const panel = root.querySelector('.pm-panel'), tabsEl = root.querySelector('.pm-tabs'), bodyEl = root.querySelector('.pm-body');
   const whereEl = root.querySelector('.pm-where'), footEl = root.querySelector('.pm-foot');
-  const TABS = [['pause', 'Pause'], ['sound', 'Sound'], ['display', 'Display'], ['controls', 'Controls'], ['tuning', 'Tuning'], ['dev', 'Dev']];
+  const TABS = [['pause', 'Pause'], ['quests', 'Quests'], ['sound', 'Sound'], ['display', 'Display'], ['controls', 'Controls'], ['tuning', 'Tuning'], ['dev', 'Dev']];
   let tab = 0, rows = [], at = 0, keysView = null;              // at -1: the row of tabs
   const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const pips = v => `<span class="pm-pips" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i class="${i < v ? 'f' : ''}"></i>`).join('')}</span>`;
@@ -158,9 +158,51 @@ const pauseMenu = window.pauseMenu = (() => {
       if (rest.length) { out.push({ head: 'Other' }); rest.forEach(r => out.push(row(r))); }
       return out.concat([{ head: ' ' }, { label: 'Reset to defaults', act: () => resetTune() }]);
     },
-    // the dev tab: what was in the strip under the game (go to, cheats, enemies, what to show)
-    dev: () => stripRows(['gGo', 'gCheat', 'gFoes', 'gShow']),
+    // his journal (10/29/2026): the quests he's started and the ones he's done, out of js/quests.js. Picking one shows
+    // the steps he's done and the one he's on (never the ones after it)
+    quests: () => {
+      if (typeof QUEST === 'undefined') return [];
+      const flip = d => () => { whose = WHOSE[(WHOSE.indexOf(whose) + d + WHOSE.length) % WHOSE.length]; };
+      const out = [{ label: 'Showing', value: () => whose, act: flip(1), left: flip(-1), right: flip(1) }];
+      for (const [kind, head] of QUEST_KINDS) {
+        const qs = QUEST.list().filter(q => q.kind === kind && (whose === 'Everyone' || q.who === whose.toLowerCase()));
+        const shown = qs.map(q => [q, QUEST.status(q)]).filter(([, st]) => st.state !== 'locked');
+        if (!shown.length) continue;
+        out.push({ head });
+        shown.sort((a, b) => (a[1].state === 'done') - (b[1].state === 'done'));       // (the ones going first, then the ones done)
+        for (const [q, st] of shown) {
+          const now = st.state === 'done' ? '' : q.steps[st.at].text;
+          const who = q.who === 'purl' ? "Purl's. " : '', from = q.from ? `From ${q.from}. ` : '';
+          const steps = q.steps.map((x, i) => x.done.every(w => QUEST.test(w)) ? 'Done: ' + x.text : i === st.at ? 'Now: ' + x.text : null).filter(Boolean);
+          out.push({ label: q.title, value: () => st.state === 'done' ? 'Done' : `${st.done} of ${st.of}`, act: () => { questOpen[q.id] = !questOpen[q.id]; },
+            sub: (who + from + (questOpen[q.id] ? '\n' + steps.join('\n') : now)).trim(), done: st.state === 'done' });
+        }
+      }
+      if (out.length === 1) out.push({ head: 'Nothing in his journal yet' });
+      return out;
+    },
+    // the dev tab: what was in the strip under the game (go to, cheats, enemies, what to show), and the story and
+    // quests, to put this save at any step of them (it changes the flags to match, and starts again there)
+    dev: () => {
+      const rs = stripRows(['gGo', 'gCheat', 'gFoes', 'gShow']);
+      if (typeof QUEST === 'undefined') return rs;
+      const opts = (qs, ends) => qs.flatMap(q => [
+        ...(ends ? [{ label: 'Not started', value: q.id + ':-1', group: q.title }] : []),
+        ...q.steps.map((x, i) => ({ label: x.text + (x.dummy ? ' (not in the game yet)' : ''), value: q.id + ':' + i, group: q.title })),
+        ...(ends || q === qs[qs.length - 1] ? [{ label: 'All of it done', value: q.id + ':' + q.steps.length, group: q.title }] : [])]);   // (the main story: the end of one is the start of the next)
+      const go = v => { const [id, n] = v.split(':'); closeNow(); QUEST.jump(id, +n); };
+      const here = () => { const s = QUEST.story(); return s.q ? s.q.id + ':' + s.n : ''; };
+      const name = () => { const s = QUEST.story(); return !s.q ? '' : s.n >= s.q.steps.length ? s.q.title + ': done' : s.q.title + ': ' + s.q.steps[s.n].text; };
+      const of = kind => QUEST.list().filter(q => q.kind === kind);
+      return rs.concat([{ head: 'Story and quests' },
+        { label: 'Story progress', choices: () => opts(QUEST.mains(), false), current: here, show: name, choose: go },
+        { label: 'Side quests', choices: () => opts(of('side'), true), current: () => '', show: () => 'Pick a step', choose: go },
+        { label: 'Contracts', choices: () => opts(of('contract'), true), current: () => '', show: () => 'Pick a step', choose: go }]);
+    },
   };
+  const WHOSE = ['Everyone', 'Phill', 'Purl'], QUEST_KINDS = [['main', 'Main story'], ['side', 'Side quests'], ['contract', "Contracts from Tock's board"]];
+  let whose = 'Everyone';
+  const questOpen = {};
   let fileNote = '', loadNote = '', fileArmed = false;                                            // (what Save to a file last said, and Load a save file waiting for its second press)
   const TEXT = { pause: ['The adventure can wait.', 'Phill stays right here with you.'] };
   function show(keepRow) {
@@ -175,12 +217,12 @@ const pauseMenu = window.pauseMenu = (() => {
     html += `<div class="pm-rows" role="menu">${rows.map((r, i) => {
       if (r.head) return `<div class="pm-head" role="presentation">${esc(r.head)}</div>`;
       const val = r.vol ? String(r.vol()) : r.value ? r.value() : r.choices ? String((r.choices().find(c => c.value === r.current()) || {}).label || '') : '', side = r.left || r.right;
-      return `<button type="button" class="pm-row${r.main ? ' pm-main' : ''}" role="menuitem" data-i="${i}"${r.choices ? ' aria-haspopup="listbox"' : ''}${val ? ` aria-label="${esc(r.label + ': ' + val)}"` : ''}>`
+      return `<button type="button" class="pm-row${r.main ? ' pm-main' : ''}${r.done ? ' pm-done' : ''}" role="menuitem" data-i="${i}"${r.choices ? ' aria-haspopup="listbox"' : ''}${val ? ` aria-label="${esc(r.label + ': ' + val)}"` : ''}>`
         + `<span class="pm-label">${esc(r.label)}</span>`
         + (r.choices ? `<span class="pm-value pm-pick">${esc(r.show ? r.show() : ((r.choices().find(c => c.value === r.current()) || {}).label || ''))}<span class="pm-caret" aria-hidden="true">▾</span></span>`
           : r.vol ? `<span class="pm-value">${side ? '<span class="pm-arr" data-d="-1">‹</span>' : ''}${pips(r.vol())}${side ? '<span class="pm-arr" data-d="1">›</span>' : ''}</span>`
           : r.value ? `<span class="pm-value">${side ? '<span class="pm-arr" data-d="-1">‹</span>' : ''}${esc(r.value())}${side ? '<span class="pm-arr" data-d="1">›</span>' : ''}</span>` : '')
-        + (r.sub ? `<span class="pm-sub">${esc(r.sub)}</span>` : '') + `</button>`;
+        + (r.sub ? `<span class="pm-sub">${esc(r.sub).replace(/\n/g, '<br>')}</span>` : '') + `</button>`;
     }).join('')}</div>`;
     const t = rows.find(r => r.table);
     if (t) {
