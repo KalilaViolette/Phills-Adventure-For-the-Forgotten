@@ -746,9 +746,12 @@ function drawPurl() {
   if (ghost && ghost.t > 0) {
     ctx.globalAlpha = 0.18 * ghost.t; ctx.drawImage(sheet, (ghost.i % meta.cols) * cw, Math.floor(ghost.i / meta.cols) * ch, cw, ch, ghost.dx - Math.round(cam.x), ghost.dy - Math.round(cam.y), cw, ch); ctx.globalAlpha = 1; ghost.t--;
   }
-  if (hook.state === 'home' && fr.pts && fr.pts.hook_butt) drawYarn(tailTip(), { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4);   // (the yarn behind her, tail to hook)
+  // the yarn, tail to hook: the hook's in her left paw, so facing left the yarn's in front of her, facing right behind her (10/30/2026)
+  const yarn = () => { if (hook.state === 'home' && fr.pts && fr.pts.hook_butt) drawYarn(tailTip(), { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4); };
+  if (pl.fac === 'right') yarn();
   if (P.inv > 0 && Math.floor(P.inv * 20) % 2) ctx.globalAlpha = 0.5;
   ctx.drawImage(sheet, sx, sy, cw, ch, dx, dy, cw, ch); ctx.globalAlpha = 1;
+  if (pl.fac === 'left') yarn();
   return tailTip();
 }
 function drawYarn(from, to, slack) {

@@ -311,10 +311,10 @@ ROOM({
    "kind": "acorn"
   },
   {
-   "id": "acorn_lp54",
+   "id": "gall",
    "x": 872,
    "y": 288,
-   "kind": "acorn"
+   "kind": "gall"
   },
   {
    "id": "acorn_lp59",

@@ -34,7 +34,8 @@ const NEW_WORLD = () => ({
   piles: [],                        // acorns spilled where he got knocked out: { room, x, y, n }. Never lost
   marks: [],                        // things marked on his map after the squirrel told him where they are
   pins: {}, wearing: [], slots: 2,  // pins and buttons he owns, the ones he's wearing, and how many he can wear
-  sword: 0,                         // the beetle's work on his sword: 0 plain, 1 stained, 2 stained and etched
+  sword: 0,                         // the beetle's work on his sword, how many steps of js/sword.js are done: 0 plain, 1 the oak gall's stain, 2 cherry, 3 etched
+  swordV: 2,                        // (saves from before 10/30/2026 counted 1 cherry and 2 etched, with no oak gall: checkSave moves them up one)
   cotton: 0,                        // cotton tufts bought (three make a puff)
   playSec: 0,                       // time played (shown on the save slots)
   savedAt: 0,                       // when it was last saved
@@ -67,6 +68,10 @@ function checkSave(s) {
   for (const k of SAVED_COUNTS) if (s[k] !== undefined && !Number.isFinite(s[k])) return null;
   if (s.door !== undefined && s.door !== null && typeof s.door !== 'string') return null;
   const out = Object.assign(w, s);
+  if (s.swordV === undefined) {                                                              // a save from before the oak gall: what the beetle did for acorns is one step later now,
+    out.swordV = 2;                                                                          // and the gall counts as found and used (10/30/2026)
+    if (out.sword > 0) { out.sword = Math.min(3, out.sword + 1); out.has.gall = true; }
+  }
   out.piles = out.piles.filter(p => isObj(p) && roomOk(p.room) && Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.n));
   out.marks = out.marks.filter(m => isObj(m) && roomOk(m.room) && Number.isFinite(m.x) && Number.isFinite(m.y));     // the same for what's marked on his map (a broken one stopped the game opening the map: the fix check, 10/18/2026)
   out.wearing = [...new Set(out.wearing.filter(id => typeof id === 'string'))];

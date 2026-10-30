@@ -90,6 +90,7 @@ function takeItem(it) {
   if (room.gates.some((g, i) => g.open && !before[i])) { if (P.story) P.story.opened = true; else startStory('nod'); setTimeout(() => sfx.open(), 250); }
   if (bubble) bubble.ids = bubble.ids.filter(id => id !== it.id);
   if (it.id === 'crayon_black') setTimeout(() => { if (SCENES.blackCrayon) playScene(SCENES.blackCrayon()); }, 380);
+  if (it.id === 'gall') { popup(P.x, P.y - 54, 'an old oak gall', '#c8a878', true); setTimeout(() => sfx.idea(), 200); }   // (the beetle can make stain from it: js/sword.js)
   if (it.id === 'crayon_rootwood') { popup(P.x, P.y - 54, 'the green crayon', '#8fd88a', true); setTimeout(() => sfx.idea(), 200); }
   if (it.id === 'memory_balloon') setTimeout(() => { if (SCENES.memory) playScene(SCENES.memory(it)); }, 380);
   if (it.id === 'crayon_pond') { popup(P.x, P.y - 54, 'the blue crayon', '#7aa8f0', true); setTimeout(() => sfx.idea(), 200); }

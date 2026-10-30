@@ -91,4 +91,4 @@ function addCotton() {
   saveWorld();
 }
 // the beetle's work on his sword: each step hits a bit harder
-const swordBonus = () => 1 + 0.25 * (world.sword || 0);   // a quarter more each (was a half: a friend's playtest, 10/14/2026, said stain and etch made everything too easy)
+const swordBonus = () => swordPower();   // how hard each of the beetle's steps makes it hit is in js/sword.js (10/30/2026: the oak gall first, the cherry stain and the etching after)

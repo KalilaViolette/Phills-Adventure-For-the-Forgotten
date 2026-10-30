@@ -4,7 +4,7 @@
 // dirtier as he loses health). Only the set he's using is loaded.
 const SHEETS = {
   nogear: ['d0', 'dpain'].map(d => `art/phill/phill_nogear_${d}.png`),   // clean, and scared and crying (bolting from the crow)
-  get gear() { const s = world.sword ? '_s' + world.sword : ''; return ['d0', 'd1', 'd2', 'd3', 'd4', 'dpain', 'dpainsquint'].map(d => `art/phill/phill_gear${s}_${d}.png`); },   // the beetle's sword upgrades have their own sheets
+  get gear() { const s = typeof swordSheet === 'function' ? swordSheet() : ''; return ['d0', 'd1', 'd2', 'd3', 'd4', 'dpain', 'dpainsquint'].map(d => `art/phill/phill_gear${s}_${d}.png`); },   // the beetle's sword upgrades have their own sheets
 };
 function refreshSheets() { const k = sheetKind; sheetKind = null; useSheets(k); }
 let sheetKind = null, sheetSrcs = [], META = null, ghostSheet = null, oldSheets = null;
@@ -82,7 +82,8 @@ function render(alpha) {
     if (it.got === 2 || it.hidden || !items || hiddenByCover(it.x, it.y)) continue;
     const bob = Math.round(Math.sin(now * 2.2 + it.bob) * 1.5) - 1;
     if (!it.float) { ctx.fillStyle = 'rgba(16,8,16,0.22)'; ellipse(it.x, it.y, 9 + bob, 1); }   // a little shadow under it
-    if (it.kind === 'pin') { const ps = Assets.get(PIN_SHEET); if (ps && PINS[it.pin]) ctx.drawImage(ps, PINS[it.pin].cell * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32); }
+    if (it.kind === 'gall') drawGall(it.x, it.y - 7 + bob);                           // (the oak gall's drawn here, not on the sheet: js/sword.js)
+    else if (it.kind === 'pin') { const ps = Assets.get(PIN_SHEET); if (ps && PINS[it.pin]) ctx.drawImage(ps, PINS[it.pin].cell * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32); }
     else ctx.drawImage(items, itemCell(it) * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32);
     if (Math.sin(now * 1.3 + it.bob * 3) > 0.985) twinkle(it.x + 6, it.y - 18, 1);
   }
@@ -135,6 +136,7 @@ function render(alpha) {
   drawPlants(-1, camX, camY);                                                  // and the plants in front of him, swaying, parting as he goes through
   if (typeof drawPondFx === 'function') drawPondFx();                              // the water's surface moving, squeaks, the cape
   drawActors('front');
+  if (typeof drawGallsShine === 'function') drawGallsShine();                            // the oak gall shining once he's right there with it (js/sword.js)
   if (layers.some(L => L.f > 1)) {                // close to the camera, sliding past faster than the room
     ctx.setTransform(S, 0, 0, S, offX, offY);
     layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
@@ -145,7 +147,7 @@ function render(alpha) {
   if (items) for (const ip of itemPops) {
     const k = Math.min(1, ip.t / 0.35), x = ip.x + (px2 - ip.x) * k, y = ip.y + (py2 - 58 - ip.y) * k - Math.sin(k * Math.PI) * 14;
     ctx.globalAlpha = ip.t < 1.0 ? 1 : Math.max(0, 1 - (ip.t - 1.0) / 0.3);
-    ctx.drawImage(items, itemCell(ip) * 32, 0, 32, 32, Math.round(x - 16), Math.round(y - 16), 32, 32);
+    if (ip.kind === 'gall') drawGall(x, y, 1); else ctx.drawImage(items, itemCell(ip) * 32, 0, 32, 32, Math.round(x - 16), Math.round(y - 16), 32, 32);
   }
   ctx.globalAlpha = 1;
   if (bubble && items) drawBubble(px2, py2, items);

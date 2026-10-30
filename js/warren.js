@@ -465,6 +465,7 @@ checkEvents = dt => {
   for (const s of SUPPLIES) if (s.room === room.id && world.flags.boardRead && !world.has['supply_' + s.id] && !given(s.id) && Math.abs(P.x - s.x) < 14 && Math.abs(P.y - s.y) < 24) {
     world.has['supply_' + s.id] = true; saveWorld(); sfx.pickup(); twinkle(s.x, s.y - 10, 10);
     popup(P.x, P.y - 54, s.name + '. the warren needs this', '#e8e6f0', true);
+    if (window.itemCard) { itemCard.pending++; setTimeout(() => { itemCard.pending--; itemCard.show('supply_' + s.id); }, 1000); }   // (what it is and who it's for: js/itemcard.js)
   }
   // the bunks: everyone asleep. The walled up tunnel: something on the other side of it
   for (const s of room.sleepers || []) {                                                // each sleeper on their own clock

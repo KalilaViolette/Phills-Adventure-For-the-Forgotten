@@ -35,6 +35,11 @@ const say = (who, ...lines) => t => {
   if (t === 0) startTalk(who, lines);
   return !talk;
 };
+// the same, with the box at the top of the screen, for when Phill's down at the bottom and would be under it (10/30/2026)
+const sayTop = (who, ...lines) => t => {
+  if (t === 0) startTalk(who, lines, { top: true });
+  return !talk;
+};
 // a scene step: a question with choices. pick(i) is called with what he chose (back out = the last one)
 const ask = (who, line, options, pick) => t => {
   if (t === 0) { startTalk(who, [line], { options, sel: 0, pick }); talkIn.up = talkIn.down = talkIn.back = 0; }
@@ -79,7 +84,7 @@ function drawTalk() {
   const w = Math.min(420, VW - 40), x = Math.round((VW - w) / 2), LH = 12;
   const shown = tk.lines[tk.i].slice(0, Math.floor(tk.n));
   const rows = wrapRead(tk.lines[tk.i], w - 24), opt = tk.options && tk.n >= tk.lines[tk.i].length ? tk.options : null;
-  const h = 30 + rows.length * LH + (opt ? opt.length * LH + 6 : 0), y = VH - h - 34;
+  const h = 30 + rows.length * LH + (opt ? opt.length * LH + 6 : 0), y = tk.top ? 34 : VH - h - 34;
   ctx.fillStyle = 'rgba(8,9,14,0.9)'; ctx.fillRect(x, y, w, h);
   ctx.fillStyle = '#3a3448'; ctx.fillRect(x, y, w, 1); ctx.fillRect(x, y + h - 1, w, 1); ctx.fillRect(x, y, 1, h); ctx.fillRect(x + w - 1, y, 1, h);
   ctx.fillStyle = v.col; ctx.fillText(v.name, x + 12, y + 13);                     // who's talking stays in the UI font

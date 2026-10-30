@@ -101,6 +101,7 @@ function drawMap() {
     const [mx, my] = toMap(m.x + mk.x / T, m.y + mk.y / T);
     ctx.fillStyle = '#c8322c'; ctx.fillRect(mx - 3, my - 3, 2, 2); ctx.fillRect(mx + 1, my - 3, 2, 2); ctx.fillRect(mx - 1, my - 1, 2, 2); ctx.fillRect(mx - 3, my + 1, 2, 2); ctx.fillRect(mx + 1, my + 1, 2, 2);   // an x
   }
+  if (typeof drawMapWants === 'function') drawMapWants(toMap);    // where to take what he's carrying (js/itemcard.js)
   for (const id of rooms) {                                       // resting spots he's used: a little mushroom
     const m = MAP_ROOMS[id]; if (!m.rest || !(world.rested || {})[id]) continue;
     const [mx, my] = toMap(m.x + m.rest[0] / T, m.y + m.rest[1] / T);

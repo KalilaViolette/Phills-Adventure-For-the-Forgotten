@@ -18,6 +18,8 @@
 //     done  what has to be true for it to count as done (see below)
 //     also  anything else that happens at that step, that Story progress should set too (a move he learns there)
 //     room  where it happens: Story progress puts him there when it's the step he's on
+//     map   whose face goes on his map, and where in the room: { face, x, y }, shown while it's the step he's on, or with
+//           carry: while he has that thing with him (js/itemcard.js)
 //     dummy true while the story beat isn't in the game yet. Its flags are made up (they start with q_) and
 //           nothing sets them, so the quest can't be finished till the beat's built and the real flag goes in
 //
@@ -48,7 +50,7 @@ const QUESTS = [
   { id: 'rootwood', kind: 'main', who: 'phill', title: 'Rootwood', region: 'Rootwood', starts: ['landed'],
     steps: [
       { text: 'Find the black crayon', done: ['has:crayon_black'], room: 'roots' },
-      { text: 'Purl shows up while he scribbles with the black crayon', done: ['q_metPurl'], room: 'roots', dummy: true },
+      { text: 'Purl shows up while he scribbles with the black crayon', done: ['metPurl'], room: 'roots' },
       { text: 'Look at his map', done: ['openedMap'], room: 'roots' },
       { text: 'Meet the squirrel', done: ['metSquirrel'], also: ['learned:parry'], room: 'hollow' },
       { text: 'Beat the tin soldier', done: ['soldierDown'], room: 'clearing' },
@@ -164,10 +166,12 @@ const QUESTS = [
     ] },
 
   // ---------------- side quests ----------------
-  { id: 'beetle', kind: 'side', who: 'phill', title: "The beetle's work", region: 'Rootwood', starts: ['metBeetle'],
+  { id: 'beetle', kind: 'side', who: 'phill', title: "The beetle's work", region: 'Rootwood', starts: ['metBeetle|has:gall'],
     steps: [
-      { text: 'Have the beetle stain his sword', done: ['sword>=1'] },
-      { text: 'Have the beetle etch it', done: ['sword>=2'] },
+      { text: 'Find the old oak gall under the fallen log', done: ['has:gall'], room: 'litterpath' },
+      { text: 'Have the beetle stain his sword with it', done: ['sword>=1'], room: 'roots', map: { face: 'beetle', x: 646, y: 352, carry: 'gall' } },
+      { text: 'Have the beetle stain it cherry', done: ['sword>=2'], room: 'roots', dummy: true },
+      { text: 'Have the beetle etch it', done: ['sword>=3'], room: 'roots', dummy: true },
     ] },
   { id: 'memories', kind: 'side', who: 'phill', title: 'Memories', region: 'All over the park',
     steps: [
@@ -180,10 +184,10 @@ const QUESTS = [
     ] },
   { id: 'supplies', kind: 'side', who: 'phill', title: 'What the Warren needs', region: 'The Warren', starts: ['boardRead'],
     steps: [
-      { text: 'Bring Clank a battery', done: ['gave_battery'], also: ['has:supply_battery', 'musicBoxFixed'] },
-      { text: 'Bring Mabel a spool of thread', done: ['gave_thread'], also: ['has:supply_thread'] },
-      { text: 'Bring Peg a sliver of soap', done: ['gave_soap'], also: ['has:supply_soap'] },
-      { text: 'Bring the mole birthday candles', done: ['gave_candles'], also: ['has:supply_candles'] },
+      { text: 'Bring Clank a battery', done: ['gave_battery'], also: ['has:supply_battery', 'musicBoxFixed'], room: 'mendlane', map: { face: 'clank', x: 472, y: 288, carry: 'supply_battery' } },
+      { text: 'Bring Mabel a spool of thread', done: ['gave_thread'], also: ['has:supply_thread'], room: 'mendlane', map: { face: 'mabel', x: 216, y: 288, carry: 'supply_thread' } },
+      { text: 'Bring Peg a sliver of soap', done: ['gave_soap'], also: ['has:supply_soap'], room: 'chest', map: { face: 'peg', x: 504, y: 352, carry: 'supply_soap' } },
+      { text: 'Bring the mole birthday candles', done: ['gave_candles'], also: ['has:supply_candles'], room: 'moleshop', map: { face: 'mole', x: 392, y: 320, carry: 'supply_candles' } },
     ] },
   { id: 'mole', kind: 'side', who: 'phill', title: "The mole's shop", region: 'The Warren', starts: ['warrenOpen'],
     steps: [

@@ -19,7 +19,8 @@ const tempHint = (text, untilFlag) => run(() => room.hints.some(h => h.practice 
 SCENES.blackCrayon = () => [
   run(() => { for (const id of ['nest', 'oakfall', 'roots']) world.seen[id] = true; saveWorld(); }),
   bars(true), wait(0.3), run(() => popup(P.x, P.y - 54, 'his black crayon', '#e8e6f0', true)), wait(0.8),
-  ...sitDown(), ...getPaper('#1e1a24'), drawFor(2.4),
+  ...sitDown(), ...getPaper('#1e1a24'), drawFor(1.2),
+  ...(typeof purlMeetSteps === 'function' && !world.flags.metPurl ? purlMeetSteps() : [drawFor(1.2)]),   // (the first time, Purl shows up while he draws: js/purl.js)
   ...putAway(), ...standUp(), bars(false),
   tempHint('{map}: look at your map', 'openedMap'),
 ];
@@ -213,31 +214,28 @@ SCENES.squirrel = npc => {
   return steps;
 };
 
-// ---- the beetle under the oak: whittles all day, and for acorns he'll stain and etch Phill's sword
-const SWORD_WORK = [
-  { cost: 45, what: 'stain it', line: "Cherry stain. Soaks in deep, hardens the grain. Hold it still.", done: 'his sword, stained a deep cherry' },
-  { cost: 90, what: 'etch it', line: "Going to burn a pattern down the blade. Burned wood's tougher. Always has been.", done: 'his sword, etched down the blade' },
-];
+// ---- the beetle under the oak: whittles all day, and stains and etches Phill's sword with what Phill brings him
+// (10/30/2026: not for acorns any more. Each step needs something found out in the park, the oak gall first: js/sword.js)
 SCENES.beetle = npc => {
   const steps = [walkTo(npc.x - 3.5 * T), faceTo(npc.x)];
+  const job = swordNext();
   if (!world.flags.metBeetle) {
     world.flags.metBeetle = true; saveWorld();
     steps.push(run(() => { npcPose = { frame: 'beetle_idle_2', t: 0.6 }; }), wait(0.5),
       say('beetle', "*tk tk* Not a bottle cap. Good. Had enough of those chewing my roots.",
         "Let me see that stick. Pine. Somebody carved that careful. Soft, though.",
-        "I can stain it. Hardens the grain, hits harder. Costs acorns."));
+        "I can stain it. Hardens the grain, hits harder. Need something to make the stain from, though."));
+    if (!swordReady()) { steps.push(say('beetle', job.hint)); return steps; }
   } else steps.push(say('beetle', ['Mind the shavings.', '*tk* Back. Still soft, that sword?', 'Hm.'][Math.floor(Math.random() * 3)]));
-  const job = SWORD_WORK[world.sword || 0];
   if (!job) return [...steps, say('beetle', "That's as good as wood from round here gets. Find me better wood somewhere else and we'll talk.")];
+  if (!swordReady()) return [...steps, say('beetle', job.hint)];
   let picked = -1;
-  steps.push(ask('beetle', `Well? You've got ${world.acorns || 0} acorns.`, [`${job.what} (${job.cost} acorns)`, 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('beetle', 'Well? Want me to?', [job.offer, 'not yet'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     if (picked !== 0) return true;
-    if ((world.acorns || 0) < job.cost) { scene.steps.splice(scene.i + 1, 0, say('beetle', "Not enough. I don't work for free.")); return true; }
-    // paid and done in the same save (the save audit, 10/17/2026): the carving after is only for show. It used to save
-    // the acorns gone first and the better sword at the end, so a reload in between kept the acorns and not the work
-    world.acorns -= job.cost; world.sword = (world.sword || 0) + 1; sfx.acorn(); saveWorld();
+    // done in the same save as it's used up (the save audit, 10/17/2026): the carving after is only for show
+    world.sword = swordLevel() + 1; sfx.pickup(); saveWorld();
     scene.steps.splice(scene.i + 1, 0, say('beetle', job.line), bars(true),
       (tt, dt) => { npcPose = { frame: 'beetle_carve_' + (Math.floor(tt * 6) % 2 + 1), t: 0.2 }; if (Math.floor(tt * 6) !== Math.floor((tt - dt) * 6)) sfx.tok(); return tt > 1.8; },
       run(() => { refreshSheets(); popup(P.x, P.y - 54, job.done, '#e8c8a0', true); twinkle(P.x + P.facing * 10, P.y - 20, 10, '#e8c8a0'); sfx.idea(); }),

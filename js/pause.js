@@ -33,7 +33,7 @@ const pauseMenu = window.pauseMenu = (() => {
   stage.appendChild(root);
   const panel = root.querySelector('.pm-panel'), tabsEl = root.querySelector('.pm-tabs'), bodyEl = root.querySelector('.pm-body');
   const whereEl = root.querySelector('.pm-where'), footEl = root.querySelector('.pm-foot');
-  const TABS = [['pause', 'Pause'], ['quests', 'Quests'], ['sound', 'Sound'], ['display', 'Display'], ['controls', 'Controls'], ['tuning', 'Tuning'], ['dev', 'Dev']];
+  const TABS = [['pause', 'Pause'], ['quests', 'Quests'], ['things', 'Things'], ['sound', 'Sound'], ['display', 'Display'], ['controls', 'Controls'], ['tuning', 'Tuning'], ['dev', 'Dev']];
   let tab = 0, rows = [], at = 0, keysView = null;              // at -1: the row of tabs
   const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const pips = v => `<span class="pm-pips" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i class="${i < v ? 'f' : ''}"></i>`).join('')}</span>`;
@@ -181,6 +181,27 @@ const pauseMenu = window.pauseMenu = (() => {
       if (out.length === 1) out.push({ head: 'Nothing in his journal yet' });
       return out;
     },
+    // his things (10/30/2026): what he's carrying for someone (what it is and who to take it to, the same words as the
+    // window when he found it: js/itemcard.js), then his crayons and his memories. Picking one shows more about it
+    things: () => {
+      const out = [], open = id => thingOpen[id];
+      const take = typeof ITEM_INFO === 'undefined' ? [] : Object.keys(ITEM_INFO).filter(id => world.has[id] && !(ITEM_INFO[id].used && ITEM_INFO[id].used()));
+      if (take.length) {
+        out.push({ head: 'To take to someone' });
+        for (const id of take) {
+          const it = ITEM_INFO[id];
+          out.push({ label: it.name, icon: it.draw, sub: open(id) ? it.found + '\n' + it.use + '\n' + it.who : it.who, act: () => { thingOpen[id] = !thingOpen[id]; } });
+        }
+      }
+      out.push({ head: 'His things' });
+      const CRAYON_WORDS = [['crayon_black', 'black'], ['crayon_rootwood', 'green'], ['crayon_pond', 'blue'], ['crayon_playground', 'orange'], ['crayon_oak', 'brown'], ['crayon_hive', 'yellow'], ['crayon_greenhouse', 'pink']];
+      const cr = CRAYON_WORDS.filter(([k]) => world.has[k]).map(([, w]) => w);
+      if (world.has.crayons) out.push({ label: 'Crayons', value: () => `${cr.length} of ${CRAYON_WORDS.length}`,
+        sub: !world.flags.snatched ? 'The whole box' : cr.length ? 'Found again: ' + cr.join(', ') + (open('crayons') ? '\nThe crow spilled them over the park. Each one colors in its own part of his map.' : '') : 'Spilled over the park when the crow took him', act: () => { thingOpen.crayons = !thingOpen.crayons; } });
+      const mem = Object.keys(world.has).filter(k => k.startsWith('memory_') && world.has[k]).length;
+      out.push({ label: 'Memories', value: () => `${mem} of 6`, sub: mem ? 'Each one gives him another puff of stuffing' : 'Little things from home, out there somewhere' });
+      return out;
+    },
     // the dev tab: what was in the strip under the game (go to, cheats, enemies, what to show), and the story and
     // quests, to put this save at any step of them (it changes the flags to match, and starts again there)
     dev: () => {
@@ -202,7 +223,7 @@ const pauseMenu = window.pauseMenu = (() => {
   };
   const WHOSE = ['Everyone', 'Phill', 'Purl'], QUEST_KINDS = [['main', 'Main story'], ['side', 'Side quests'], ['contract', "Contracts from Tock's board"]];
   let whose = 'Everyone';
-  const questOpen = {};
+  const questOpen = {}, thingOpen = {};
   let fileNote = '', loadNote = '', fileArmed = false;                                            // (what Save to a file last said, and Load a save file waiting for its second press)
   const TEXT = { pause: ['The adventure can wait.', 'Phill stays right here with you.'] };
   function show(keepRow) {
@@ -217,8 +238,8 @@ const pauseMenu = window.pauseMenu = (() => {
     html += `<div class="pm-rows" role="menu">${rows.map((r, i) => {
       if (r.head) return `<div class="pm-head" role="presentation">${esc(r.head)}</div>`;
       const val = r.vol ? String(r.vol()) : r.value ? r.value() : r.choices ? String((r.choices().find(c => c.value === r.current()) || {}).label || '') : '', side = r.left || r.right;
-      return `<button type="button" class="pm-row${r.main ? ' pm-main' : ''}${r.done ? ' pm-done' : ''}" role="menuitem" data-i="${i}"${r.choices ? ' aria-haspopup="listbox"' : ''}${val ? ` aria-label="${esc(r.label + ': ' + val)}"` : ''}>`
-        + `<span class="pm-label">${esc(r.label)}</span>`
+      return `<button type="button" class="pm-row${r.main ? ' pm-main' : ''}${r.done ? ' pm-done' : ''}${r.icon ? ' pm-has-icon' : ''}" role="menuitem" data-i="${i}"${r.choices ? ' aria-haspopup="listbox"' : ''}${val ? ` aria-label="${esc(r.label + ': ' + val)}"` : ''}>`
+        + (r.icon ? `<canvas class="pm-icon" width="30" height="30" data-icon="${i}" aria-hidden="true"></canvas>` : '') + `<span class="pm-label">${esc(r.label)}</span>`
         + (r.choices ? `<span class="pm-value pm-pick">${esc(r.show ? r.show() : ((r.choices().find(c => c.value === r.current()) || {}).label || ''))}<span class="pm-caret" aria-hidden="true">▾</span></span>`
           : r.vol ? `<span class="pm-value">${side ? '<span class="pm-arr" data-d="-1">‹</span>' : ''}${pips(r.vol())}${side ? '<span class="pm-arr" data-d="1">›</span>' : ''}</span>`
           : r.value ? `<span class="pm-value">${side ? '<span class="pm-arr" data-d="-1">‹</span>' : ''}${esc(r.value())}${side ? '<span class="pm-arr" data-d="1">›</span>' : ''}</span>` : '')
@@ -231,6 +252,7 @@ const pauseMenu = window.pauseMenu = (() => {
       html += `<div class="pm-keys" role="table" aria-label="Controls">${(window.CONTROLS_LIST ? CONTROLS_LIST[t.table] : []).concat(known).map(r => `<div class="pm-k" role="row"><span role="cell">${esc(r[0])}</span><span role="cell">${esc(r[1])}</span></div>`).join('')}</div>`;
     }
     bodyEl.innerHTML = html; drop = null;
+    for (const cv of bodyEl.querySelectorAll('canvas.pm-icon')) { const r = rows[+cv.dataset.icon], g = cv.getContext('2d'); g.imageSmoothingEnabled = false; try { r.icon(15, 15, g); } catch (e) {} }   // (the pictures of his things)
     for (const b of tabsEl.querySelectorAll('.pm-tab')) b.addEventListener('click', e => { e.stopPropagation(); setTab(+b.dataset.t); at = -1; mark(); });
     for (const b of bodyEl.querySelectorAll('.pm-row')) {
       const i = +b.dataset.i;
