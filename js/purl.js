@@ -5,6 +5,11 @@
 // her yarn from the plum tip of her tail to the butt of her hook. Her lines are composed, every word in its place, and
 // her sound is the hook catching: *snik*. The first scene with her is the first meeting, while Phill draws with the
 // black crayon he's just found (SCENES.blackCrayon, js/scenes/rootwood.js)
+// her faces for talking (10/31/2026): a line can say [amused], [worried] and so on (talk.js), and while it's on, any
+// frame of hers that has that face drawn shows it instead. One entry a facing and face, 'left:amused': the picture
+// they're on, and where each frame's cell is on it by her frame number on purl_proto.png ({ 166: [x, y] }), the cells
+// the same size as hers. None picked yet, so it's empty and she keeps the face she always had
+const PURL_FACES = window.PURL_FACES = {};
 const PURL = (() => {
   const sheet = new Image(); sheet.src = 'art/purl/purl_proto.png';
   const meta = () => window.PURL_FRAMES;
@@ -91,12 +96,13 @@ const PURL = (() => {
     if (!meta() || !sheet.complete || !sheet.naturalWidth) return;
     const pl = place(a), fr = pl.fr, [cw, ch] = meta().cell, sx = (fr.i % meta().cols) * cw, sy = Math.floor(fr.i / meta().cols) * ch;
     if (a.alpha !== undefined) ctx.globalAlpha = a.alpha;
-    drawTail(a.tail);
     // the yarn goes to the hook in her left paw: facing left that's the near paw, so the yarn's in front of her; facing
-    // right it's the far paw and the yarn goes behind her (her arm and tail cover it)
+    // right it's the far paw and the yarn goes behind her, behind her tail too (her arm and tail cover it)
     const yarn = () => { if (fr.pts && fr.pts.hook_butt && a.tail && a.tail.ok) drawYarn(a.tail.n[TAIL.links], { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4); };
     if (pl.fac === 'right') yarn();
-    ctx.drawImage(sheet, sx, sy, cw, ch, pl.dx, pl.dy, cw, ch);
+    drawTail(a.tail);
+    const face = typeof talkFace === 'function' && talkFace('stoat'), fs = face && PURL_FACES[pl.fac + ':' + face], fc = fs && fs.sheet.complete && (fs.cells[fr.i] || Object.values(fs.cells)[0]);   // a face the line has on (talk.js). A face drawn for only some of her frames holds on one of those, so it doesn't flicker
+    ctx.drawImage(fc ? fs.sheet : sheet, fc ? fc[0] : sx, fc ? fc[1] : sy, cw, ch, pl.dx, pl.dy, cw, ch);
     if (pl.fac === 'left') yarn();
     ctx.globalAlpha = 1;
   }
@@ -150,9 +156,9 @@ function purlMeetSteps() {
     pose('sit_look', 0.9),                                                              // he's noticed someone's there
     sayTop('stoat', "I saw you fall. I assumed you'd stay down."),
     wait(0.9),                                                                          // a look over him
-    sayTop('stoat', "No. There's nothing in you to break. *snik* Pillow."),
+    sayTop('stoat', "No. There's nothing in you to break. [amused] *snik* Pillow."),
     wait(0.3),
-    sayTop('stoat', "The crow's nest. It takes soft things. I didn't know it took living ones."),
+    sayTop('stoat', "[worried] The crow's nest. It takes soft things. I didn't know it took living ones."),
     purlClip('start_bound', 'left'), wait(0.08),
     together(purlRun(back, 230), seq([wait(0.35), pose('sit_3', 0.25), pose('sit_look', 0.18), pose('sit_3', 0.3)])),   // (his nod comes after she's gone)
     run(() => { delete actors.purl; }),

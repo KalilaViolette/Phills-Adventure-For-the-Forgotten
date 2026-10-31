@@ -206,6 +206,8 @@ const KNOWN_MOVES = [
   { has: () => world.has.gear, name: 'Parry', how: 'tap {guard} right as a hit gets to him', what: 'knocks it off balance: an opening' },
   { has: () => world.has.gear, name: 'Bounce', how: '{down} + {atk} in the air', what: 'bounces off whatever is under him' },
   { has: () => world.has.gear, name: 'Win fluff back', how: 'hit back while fluff is loose', what: 'three hits wins a puff back, before it settles. resting sews him up' },
+  { has: () => can('bash'), name: 'Shield bash', how: '{bash}', what: 'shoves the shield out in front of him. pushes things back to make room' },   // (once he's sure of his sword and shield: swordSkill, js/player.js)
+  { has: () => world.has.gear && (world.swordSkill || 0) >= 3, name: 'Shield swings', how: '{atk} five times in a row', what: 'after the whirl, the shield and a low cut, then the shield up and the sword down. the last one hits hard' },
   { has: () => can('charge'), name: 'Wind up', how: 'hold {atk}, let go when it flashes', what: 'a big swing. hits harder and breaks hard things' },
   { has: () => can('rollSlash'), name: 'Big swing', how: '{dodge} to roll, then {atk}', what: 'swings as he goes' },
   { has: () => can('airDodge'), name: 'Air dodge', how: '{dodge} in the air', what: 'darts across. once a jump' },

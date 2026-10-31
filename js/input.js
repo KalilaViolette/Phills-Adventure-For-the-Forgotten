@@ -1,17 +1,17 @@
 'use strict';
 // ---------- input: keyboard and controller (PlayStation layout) ----------
 const keys = new Set();
-const inp = { left: 0, right: 0, up: 0, down: 0, jumpH: 0, guardH: 0, atkH: 0, aim: 0, aimX: 0, aimY: 0, aimUp: 0, aimDown: 0, pace: 1, jumpP: 0, atkP: 0, dodgeP: 0, lockP: 0, upP: 0, downP: 0, mapP: 0, guardP: 0, squeakP: 0, spinP: 0, sparkP: 0, any: 0 };
+const inp = { left: 0, right: 0, up: 0, down: 0, jumpH: 0, guardH: 0, atkH: 0, aim: 0, aimX: 0, aimY: 0, aimUp: 0, aimDown: 0, pace: 1, jumpP: 0, atkP: 0, dodgeP: 0, lockP: 0, upP: 0, downP: 0, mapP: 0, guardP: 0, squeakP: 0, spinP: 0, sparkP: 0, bashP: 0, any: 0 };
 const talkIn = { press: 0, up: 0, down: 0, back: 0, map: 0, move: 0, guard: 0 };   // presses for talking and menus (read before a scene clears the input)
 const KEYMAP = {
   left: ['ArrowLeft', 'KeyA'], right: ['ArrowRight', 'KeyD'], up: ['ArrowUp', 'KeyW'], down: ['ArrowDown', 'KeyS'],
-  jump: ['KeyZ', 'Space', 'KeyK'], atk: ['KeyX', 'KeyJ'], dodge: ['KeyC', 'KeyL'], guard: ['KeyV', 'ShiftLeft', 'ShiftRight', 'KeyI'], lock: ['KeyR'], walk: ['KeyB'], map: ['KeyM', 'KeyQ'], squeak: ['KeyF', 'KeyU'], spin: ['KeyG', 'KeyO'], spark: ['KeyE'],
+  jump: ['KeyZ', 'Space', 'KeyK'], atk: ['KeyX', 'KeyJ'], dodge: ['KeyC', 'KeyL'], guard: ['KeyV', 'ShiftLeft', 'ShiftRight', 'KeyI'], lock: ['KeyR'], walk: ['KeyB'], map: ['KeyM', 'KeyQ'], squeak: ['KeyF', 'KeyU'], spin: ['KeyG', 'KeyO'], spark: ['KeyE'], bash: ['KeyT'],
 };
 const keyIs = (code, act) => KEYMAP[act].includes(code);
 // what the buttons are called, for whichever the player last used. Hints write them as {jump}, {atk} and so on
 const BTN_NAMES = {
-  key: { jump: 'z', atk: 'x', dodge: 'c', guard: 'v', map: 'm', squeak: 'f', spin: 'g', spark: 'e', walk: 'b', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r' },
-  pad: { jump: 'x', atk: 'r1', dodge: 'circle', guard: 'l1', map: 'share', squeak: 'triangle', spin: 'square', spark: 'r2', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r3' },
+  key: { jump: 'z', atk: 'x', dodge: 'c', guard: 'v', map: 'm', squeak: 'f', spin: 'g', spark: 'e', bash: 't', walk: 'b', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r' },
+  pad: { jump: 'x', atk: 'r1', dodge: 'circle', guard: 'l1', map: 'share', squeak: 'triangle', spin: 'square', spark: 'r2', bash: 'l2', up: 'up', down: 'down', left: 'left', right: 'right', lock: 'r3' },
 };
 let device = null;
 const fmtKeys = s => s.replace(/\{(\w+)\}/g, (m, a) => BTN_NAMES[device || 'key'][a] || a);
@@ -47,6 +47,7 @@ window.addEventListener('keydown', e => {
   if (keyIs(e.code, 'squeak')) inp.squeakP = 1;
   if (keyIs(e.code, 'spin')) inp.spinP = 1;
   if (keyIs(e.code, 'spark')) inp.sparkP = 1;
+  if (keyIs(e.code, 'bash')) inp.bashP = 1;
 });
 window.addEventListener('keyup', e => keys.delete(e.code));
 // picking a slider (or a box to type in) takes the keyboard off him: game keys already held down stop counting and
@@ -55,7 +56,7 @@ window.addEventListener('keyup', e => keys.delete(e.code));
 window.addEventListener('focusin', e => {
   if (!ownsKeys(e.target)) return;
   for (const c of [...keys]) if (!c.startsWith('T:')) keys.delete(c);
-  inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.sparkP = 0;
+  inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.sparkP = inp.bashP = 0;
 });
 useDevice('key');                                    // keyboard names until a controller gets used
 window.addEventListener('blur', () => keys.clear());
@@ -148,6 +149,7 @@ function pollPad() {
     if (pressed(4)) inp.guardP = 1;
     if (pressed(3)) inp.squeakP = 1;
     if (pressed(7)) inp.sparkP = 1;                                // R2: static spark (10/18/2026)
+    if (pressed(6)) inp.bashP = 1;                                 // L2: the shield bash (10/31/2026)
     if (pressed(2)) inp.spinP = 1;                                 // square: the spin, its own button (a friend's playtest, 10/14/2026)
     padPrevY = ay;
     if (gp) for (let i = 0; i < 16; i++) if (pressed(i)) { inp.any = 1; useDevice('pad'); }
@@ -176,4 +178,5 @@ function maskInput() {
   if (!can('squeak') && !can('burst')) inp.squeakP = 0;   // the squeak button does the squeak, and the fluff burst with {down}
   if (!can('spin')) inp.spinP = 0;                       // the spin has its own button
   if (!can('spark')) inp.sparkP = 0;
+  if (!can('bash')) inp.bashP = 0;
 }

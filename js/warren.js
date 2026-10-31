@@ -166,7 +166,7 @@ function warrenNpcFrame(n, now) {
   if (k === 'oldkey' && !talk && Math.floor(now * 0.4) % 4 === 0) fr = 'oldkey_wind';
   if ((k === 'teddy' || k === 'bunny') && !talk && Math.floor(now * 0.35 + (k === 'bunny' ? 1.3 : 0)) % 4 === 0) fr = k + '_sip';
   if (k === 'mole' && !talk) fr = Math.floor(now * 0.5) % 4 === 0 ? 'mole_sniff' : fr;
-  if (talk && talk.who === k && (!talk.npc || talk.npc === n)) fr = talk.n < talk.lines[talk.i].length ? k + '_talk_' + (Math.floor(now * 9) % 2 + 1) : k + '_idle_1';
+  if (talk && talk.who === k && (!talk.npc || talk.npc === n)) fr = withFace(talk.n < talk.lines[talk.i].length ? k + '_talk_' + (Math.floor(now * 9) % 2 + 1) : k + '_idle_1', k);
   if (n.pose && n.pose.t > 0) fr = n.pose.frame;
   return fr;
 }
@@ -610,8 +610,8 @@ SCENES.scrub = () => {
 };
 WSCENES.peg = n => {
   const steps = walkUp(n);
-  if (world.has.supply_soap && !given('soap')) return [...steps, sayN(n, 'Is that... is that soap? A whole new bit?'), ...deliverSteps(n, 'soap', ["Oh, I've been scraping the last of the old one for weeks. Thank you, dear. Thank you.", "Have a button. Have two. No, one, I'm saving the other."])];
-  steps.push(sayN(n, ...pick(given('soap') ? [["Still got lots of the new soap. Don't go wasting it by staying clean."], ['Toothbrush, soap, a cap of water. That\'s all it takes to keep the Grime out.']] : [["The soap's nearly gone. Down to a sliver of a sliver. If you see any up there, bring it."], ['Grime hates soap. It just slides off, nobody knows why. I don\'t ask.'], ["I scrub everybody. The Nutcracker too, and he hates it worse than you."]])));
+  if (world.has.supply_soap && !given('soap')) return [...steps, sayN(n, 'Is that... is that soap? A whole new bit?'), ...deliverSteps(n, 'soap', ["[happy] Oh, I've been scraping the last of the old one for weeks. Thank you, dear. Thank you.", "Have a button. Have two. No, one, I'm saving the other."])];
+  steps.push(sayN(n, ...pick(given('soap') ? [["Still got lots of the new soap. Don't go wasting it by staying clean."], ['Toothbrush, soap, a cap of water. That\'s all it takes to keep the Grime out.']] : [["[worried] The soap's nearly gone. Down to a sliver of a sliver. If you see any up there, bring it."], ['Grime hates soap. It just slides off, nobody knows why. I don\'t ask.'], ["I scrub everybody. The Nutcracker too, and he hates it worse than you."]])));
   return steps;
 };
 
@@ -670,7 +670,7 @@ const TOCK_TOLD = [
 WSCENES.tock = n => {
   const steps = walkUp(n);
   if (!world.has.crayon_warren) {
-    steps.push(sayN(n, 'You made it! Did Peg get behind your ears? She always gets behind your ears.',
+    steps.push(sayN(n, '[happy] You made it! Did Peg get behind your ears? She always gets behind your ears.',
       "Oh! Wait. Wait wait wait. I found this. Out in a puddle, before I ever met you. It smelled like you. It's yours, isn't it?"),
       pose('reach', 0.3), run(() => { world.has.crayon_warren = true; saveWorld(); sfx.pickup(); popup(P.x, P.y - 54, 'the pink crayon', '#e87aa8', true); setTimeout(() => sfx.idea(), 200); }), pose(null), ...nod(),
       sayN(n, "This is the Warren. We dug it. Well, the mole dug it, mostly. We helped. We carried dirt.",
@@ -680,7 +680,7 @@ WSCENES.tock = n => {
       run(() => { world.flags.boardRead = true; saveWorld(); }));
     return steps;
   }
-  steps.push(sayN(n, ...pick([["Everybody's talking about you. Good talking. Mostly."], ["*tk tk* I'm going out for parts later. Don't tell the Nutcracker."], ["The mole digs, Clank fixes, Mabel mends, Peg scrubs. I fetch. That's me."], [trust() < 4 ? "Give them time. They'll come out of their houses. They always do, eventually." : "See? They're coming out now. I told you they would."]])));
+  steps.push(sayN(n, ...pick([["[happy] Everybody's talking about you. Good talking. Mostly."], ["*tk tk* I'm going out for parts later. Don't tell the Nutcracker."], ["The mole digs, Clank fixes, Mabel mends, Peg scrubs. I fetch. That's me."], [trust() < 4 ? "Give them time. They'll come out of their houses. They always do, eventually." : "[happy] See? They're coming out now. I told you they would."]])));
   const left = TOCK_TOLD.filter(s => !world.flags['toldW_' + s.id] && !given(s.id) && !world.has['supply_' + s.id]);
   if (!left.length) return steps;
   return [...steps, ...buttonShop(n, 'tock', left.map(s => ({ what: 'where ' + SUPPLIES.find(x => x.id === s.id).what.split(',')[0] + ' is', cost: s.cost, grant: () => { world.flags['toldW_' + s.id] = true; world.marks.push(s.mark); }, buy: () => [sayN(n, s.line), run(() => { popup(P.x, P.y - 54, 'marked on his map', '#e8e6f0'); })] })))];
@@ -690,20 +690,20 @@ WSCENES.tock = n => {
 const MABEL_COTTON = [16, 22, 28];
 WSCENES.mabel = n => {
   const steps = walkUp(n);
-  if (world.has.supply_thread && !given('thread')) return [...steps, sayN(n, 'Is that thread? A whole spool of it? Oh, give it here.'), ...deliverSteps(n, 'thread', ["I can mend again. I've had half the town coming apart at the seams.", "Come back any time you've a hole in you. I'll stitch it for buttons. Not many."])];
-  if (!given('thread')) { steps.push(sayN(n, ...(trust() < 2 ? ["We're closed. I mean I'm closed. To you.", "Not to be rude. I don't know you, that's all."] : ["I'd mend you if I could. I've no thread. Not a scrap.", 'Tock put it on his board. If you see any up there, think of me.']))); return steps; }
+  if (world.has.supply_thread && !given('thread')) return [...steps, sayN(n, 'Is that thread? A whole spool of it? Oh, give it here.'), ...deliverSteps(n, 'thread', ["[happy] I can mend again. I've had half the town coming apart at the seams.", "Come back any time you've a hole in you. I'll stitch it for buttons. Not many."])];
+  if (!given('thread')) { steps.push(sayN(n, ...(trust() < 2 ? ["We're closed. I mean I'm closed. To you.", "Not to be rude. I don't know you, that's all."] : ["[worried] I'd mend you if I could. I've no thread. Not a scrap.", 'Tock put it on his board. If you see any up there, think of me.']))); return steps; }
   const c = world.mabelCotton || 0;
-  steps.push(sayN(n, ...pick([["Hold still, I can see stuffing coming out of you from here."], ['I mend everybody down here. Bears, dolls, a sock once. Mostly the same stitch.'], ["Before all this I was somebody's. Lucy. Her name was Lucy. I say it every day so I don't lose it."]])));
+  steps.push(sayN(n, ...pick([["[worried] Hold still, I can see stuffing coming out of you from here."], ['I mend everybody down here. Bears, dolls, a sock once. Mostly the same stitch.'], ["Before all this I was somebody's. Lucy. Her name was Lucy. I say it every day so I don't lose it."]])));
   if (c >= MABEL_COTTON.length) return steps;
-  return [...steps, ...buttonShop(n, 'mabel', [{ what: 'a bit of stuffing, sewn in', cost: MABEL_COTTON[c], grant: () => { world.mabelCotton = c + 1; }, buy: () => [sayN(n, 'There. Snug.'), run(() => addCotton())] }])];
+  return [...steps, ...buttonShop(n, 'mabel', [{ what: 'a bit of stuffing, sewn in', cost: MABEL_COTTON[c], grant: () => { world.mabelCotton = c + 1; }, buy: () => [sayN(n, '[happy] There. Snug.'), run(() => addCotton())] }])];
 };
 WSCENES.clank = n => {
   const steps = walkUp(n);
-  if (world.has.supply_battery && !given('battery')) return [...steps, sayN(n, '*bip* Is that a battery? A battery with juice in it?'), ...deliverSteps(n, 'battery', ['The night lights! The night lights can stay on past sundown! *bip bip*', "And with the light I can finally get at the music box. Its spring's been going for months. Listen."], () => { world.flags.musicBoxFixed = true; saveWorld(); })];
-  if (!given('battery')) { steps.push(sayN(n, ...(trust() < 2 ? ['*bip* Stall closed. Sorry. Stranger.'] : ["I can't fix anything in the dark. *bip* The night lights are nearly flat.", "A battery. Any battery. Bring me a battery and I'll fix you up something nice."]))); return steps; }
-  steps.push(sayN(n, ...pick([['*bip* I fix things. Springs, keys, wheels. Hearts, no. Not that kind.'], ["The music box sounds right again. I keep stopping to listen."], ["I was a birthday present. The batteries ran out on the first day. I didn't mind. They played with me anyway."]])));
+  if (world.has.supply_battery && !given('battery')) return [...steps, sayN(n, '*bip* Is that a battery? A battery with juice in it?'), ...deliverSteps(n, 'battery', ['[happy] The night lights! The night lights can stay on past sundown! *bip bip*', "And with the light I can finally get at the music box. Its spring's been going for months. Listen."], () => { world.flags.musicBoxFixed = true; saveWorld(); })];
+  if (!given('battery')) { steps.push(sayN(n, ...(trust() < 2 ? ['*bip* Stall closed. Sorry. Stranger.'] : ["[worried] I can't fix anything in the dark. *bip* The night lights are nearly flat.", "A battery. Any battery. Bring me a battery and I'll fix you up something nice."]))); return steps; }
+  steps.push(sayN(n, ...pick([['*bip* I fix things. Springs, keys, wheels. Hearts, no. Not that kind.'], ["[happy] The music box sounds right again. I keep stopping to listen."], ["I was a birthday present. The batteries ran out on the first day. I didn't mind. They played with me anyway."]])));
   if ((world.slots || 2) >= 3) return steps;
-  return [...steps, ...buttonShop(n, 'clank', [{ what: 'a bigger pin board (wear one more)', cost: 30, grant: () => { world.slots = (world.slots || 2) + 1; }, buy: () => [sayN(n, '*bip* There. Room for one more pin. Wear it well.'), run(() => { popup(P.x, P.y - 54, 'he can wear one more pin', '#ffd36b', true); sfx.idea(); })] }])];
+  return [...steps, ...buttonShop(n, 'clank', [{ what: 'a bigger pin board (wear one more)', cost: 30, grant: () => { world.slots = (world.slots || 2) + 1; }, buy: () => [sayN(n, '[happy] *bip* There. Room for one more pin. Wear it well.'), run(() => { popup(P.x, P.y - 54, 'he can wear one more pin', '#ffd36b', true); sfx.idea(); })] }])];
 };
 WSCENES.oldkey = n => [...walkUp(n), sayN(n, ...(!world.flags.metOldKey ? ['*tick tick* Hm? Oh. A new one. Do you need winding? No? No key on you. Lucky.',
   "I wind them all up in the morning. Every wind-up toy in the Warren. If I don't, they run down, and running down's like going to sleep, only you don't know if you'll wake.",

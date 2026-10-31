@@ -742,13 +742,13 @@ function drawPurl() {
   // frames (a smear, the way a fast swing is drawn), so the change of pose reads as motion and not a cut (10/23/2026)
   if (lastDrawn && lastDrawn.name !== pl.name && (Math.hypot(P.vx, P.vy) > 150 || P.atk || P.roll > 0 || P.airDodge > 0)) ghost = { i: lastDrawn.i, dx: lastDrawn.dx, dy: lastDrawn.dy, t: 2 };
   lastDrawn = { name: pl.name, i: fr.i, dx: pl.dx, dy: pl.dy };
+  // the yarn, tail to hook: the hook's in her left paw, so facing left the yarn's in front of her, facing right behind her, and behind her tail too (10/30/2026)
+  const yarn = () => { if (hook.state === 'home' && fr.pts && fr.pts.hook_butt) drawYarn(tailTip(), { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4); };
+  if (pl.fac === 'right') yarn();
   drawTail();
   if (ghost && ghost.t > 0) {
     ctx.globalAlpha = 0.18 * ghost.t; ctx.drawImage(sheet, (ghost.i % meta.cols) * cw, Math.floor(ghost.i / meta.cols) * ch, cw, ch, ghost.dx - Math.round(cam.x), ghost.dy - Math.round(cam.y), cw, ch); ctx.globalAlpha = 1; ghost.t--;
   }
-  // the yarn, tail to hook: the hook's in her left paw, so facing left the yarn's in front of her, facing right behind her (10/30/2026)
-  const yarn = () => { if (hook.state === 'home' && fr.pts && fr.pts.hook_butt) drawYarn(tailTip(), { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4); };
-  if (pl.fac === 'right') yarn();
   if (P.inv > 0 && Math.floor(P.inv * 20) % 2) ctx.globalAlpha = 0.5;
   ctx.drawImage(sheet, sx, sy, cw, ch, dx, dy, cw, ch); ctx.globalAlpha = 1;
   if (pl.fac === 'left') yarn();

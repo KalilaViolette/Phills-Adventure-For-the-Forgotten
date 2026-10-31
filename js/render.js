@@ -68,8 +68,9 @@ function render(alpha) {
   const layers = room.def.art.layers || [];   // (a layer's x and y: where its picture starts, cut to what the screen can ever show of it, 10/29/2026. A layer's fy: it moves up and down at that instead of f, 10/17/2026. fy 1 pins it to the room's heights)
   const tod = room.def.outside ? timeOfDay() : 'day';
   layers.forEach((L, i) => { if (L.f < 1) { const im = Assets.get((L.times && L.times[tod]) || L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('L' + i, camX, camY); } });   // parallax layers, farthest first, with whatever lives in each
-  if (main) drawView(main, camX, camY);
+  if (main) drawView(typeof REACT !== 'undefined' ? REACT.mainFor(main) : main, camX, camY);   // (with any parts that give taken out, drawn just after: js/react.js)
   ctx.translate(-camX, -camY);
+  if (typeof REACT !== 'undefined') REACT.draw();                             // a cap or moss he's just landed on, giving (js/react.js)
   drawCovers();
   if (typeof drawWildlife === 'function') drawWildlife('back', camX, camY);   // animals in the room itself, behind everything that moves
   drawGlowLayers(ctx, 0, 0, false, 'lighter', camX, camY);                    // the room's own light, behind him
@@ -273,8 +274,9 @@ function drawWalkIn(im, meta, fr, px, py, q) {
 }
 function drawPhill(px, py, q) {
   bodyAt = null;
-  const name = frameName(), cell = sheathedFrame(name);           // (cell: the picture for it, the gear on his back when it's put away)
+  const name = frameName();
   const { im, meta } = phillSheet();
+  const sk = skillFrame(name), cell = sheathedFrame(meta && meta.frames[sk] ? sk : name);   // (cell: the picture for it, in the set of swings he's at (js/player.js), the gear on his back when it's put away)
   if (!im || !name) return;
   if (P.walkIn) { drawWalkIn(im, meta, meta.frames[name], px, py, q); return; }
   if (!P.swim && !P.hang && !P.cling && !P.held && P.ko <= 0) groundShadow(P.x, P.y, 110, 11);
@@ -363,12 +365,12 @@ let guardMeterT = 0, enMeterT = 0, meterLast = 0, guardHotT = 0, enHotT = 0;
 function drawGuardMeter(px, py, q) {
   const now = performance.now(), dt = Math.min(0.1, (now - meterLast) / 1000); meterLast = now;
   guardMeterT = can('guard') && (inp.guardH || P.stam < 100 || P.gbreak > 0 || P.guardOut) ? 0.6 : Math.max(0, guardMeterT - dt);
-  enMeterT = P.en < 100 || P.enFlash > 0 ? 0.6 : Math.max(0, enMeterT - dt);
+  enMeterT = P.en < enMax() || P.enFlash > 0 ? 0.6 : Math.max(0, enMeterT - dt);
   guardHotT = P.blockT > 0 || P.stam < 34 || P.gbreak > 0 || P.guardOut ? 0.5 : Math.max(0, guardHotT - dt);
   enHotT = P.enFlash > 0 || P.winded || P.en < tune.rollCost ? 0.5 : Math.max(0, enHotT - dt);
   const solid = t => METER_SEE + (1 - METER_SEE) * Math.min(1, t / 0.15);
   if ((guardMeterT <= 0 && enMeterT <= 0) || P.ko > 0 || P.story) return;
-  const top = py - (P.swim || P.crawl ? 22 : 38) - 15, bw = 18, bx = q(px) - bw / 2, x0 = bx - 10, y0 = q(top);   // the bars centered over him, the shield just to their left
+  const top = py - (P.swim || P.crawl ? 22 : 38) - 15, bw = Math.round(18 * enMax() / 100), bx = q(px) - Math.round(bw / 2), x0 = bx - 10, y0 = q(top);   // the bars centered over him, the shield just to their left. Both a piece longer for each extra roll (js/upgrades.js), so they line up
   if (guardMeterT > 0) {
     const k = Math.max(0, Math.min(1, P.stam / 100)), broken = P.gbreak > 0 || P.guardOut;
     ctx.globalAlpha = Math.min(1, guardMeterT / 0.3) * solid(guardHotT);
@@ -388,13 +390,13 @@ function drawGuardMeter(px, py, q) {
     if (P.blockT > 0) { ctx.fillStyle = `rgba(255,255,230,${Math.min(1, P.blockT / 0.15)})`; ctx.fillRect(bx, by, bw, 2); }   // a block: the bar flashes as it takes it
   }
   if (enMeterT > 0) {                                                  // his stamina, just under it: a piece per roll
-    const k = Math.max(0, Math.min(1, P.en / 100)), by = y0 + 5;
+    const k = Math.max(0, Math.min(1, P.en / enMax())), by = y0 + 5;
     ctx.globalAlpha = Math.min(1, enMeterT / 0.3) * solid(enHotT);
     ctx.fillStyle = '#0e0f18'; ctx.fillRect(bx - 1, by - 1, bw + 2, 4);
     ctx.fillStyle = '#2a2234'; ctx.fillRect(bx, by, bw, 2);
     ctx.fillStyle = P.winded ? (Math.floor(now / 160) % 2 ? '#c9d48a' : '#8e9a5a') : '#b8e07a';
     ctx.fillRect(bx, by, Math.round(bw * k), 2);
-    ctx.fillStyle = '#0e0f18'; for (let c = tune.rollCost; c < 100 - tune.rollCost / 2; c += tune.rollCost) ctx.fillRect(bx + Math.round(bw * c / 100), by, 1, 2);   // where each roll's worth ends
+    ctx.fillStyle = '#0e0f18'; for (let c = tune.rollCost; c < enMax() - tune.rollCost / 2; c += tune.rollCost) ctx.fillRect(bx + Math.round(bw * c / enMax()), by, 1, 2);   // where each roll's worth ends
     if (P.enFlash > 0) { ctx.fillStyle = `rgba(255, 110, 90, ${P.enFlash / 0.3 * 0.8})`; ctx.fillRect(bx, by, bw, 2); }
   }
   ctx.globalAlpha = 1;
@@ -925,7 +927,7 @@ function drawNpc() {
   let fr = k + '_idle_' + (Math.floor(now * 2.2) % 4 === 3 ? 2 : 1);
   if (k === 'beetle' && !talk && !npcPose) fr = Math.floor(now * 0.7) % 3 === 0 ? 'beetle_carve_' + (Math.floor(now * 6) % 2 + 1) : fr;   // whittling away when nobody's talking to him
   if (k === 'bullfrog' && !talk && !npcPose && Math.floor(now * 0.4) % 5 === 4) fr = 'bullfrog_croak';     // a deep croak now and then
-  if (talk && talk.who === k) fr = talk.n < talk.lines[talk.i].length ? k + '_talk_' + (Math.floor(now * 9) % 2 + 1) : k + '_idle_1';
+  if (talk && talk.who === k) fr = withFace(talk.n < talk.lines[talk.i].length ? k + '_talk_' + (Math.floor(now * 9) % 2 + 1) : k + '_idle_1', k);   // (with the face the line has on, if he's got it: talk.js)
   if (npcPose && npcPose.t > 0) fr = npcPose.frame;
   spr(fr, n.x, n.y, f > 0);
 }

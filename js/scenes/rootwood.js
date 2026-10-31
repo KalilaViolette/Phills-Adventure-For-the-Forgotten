@@ -64,6 +64,29 @@ const restTurnOver = (s, kind) => s.push(RS(`rs_${kind}_turn_1`, 0.14, () => sfx
 const restHold = (s, kind, d) => { for (let t = 0, k = 0; t < d; t += 0.6, k++) s.push(RS(`rs_${kind}_${k % 2 ? 2 : 1}`, 0.6)); };
 const restGetOut = kind => [RS('rs_sit', 0.25), RS('rs_reach', 0.3, () => sfx.rustle(0.4)), RS('rs_pull_' + kind, 0.25)];
 const restPutAway = () => [RS('rs_reach', 0.3, () => sfx.rustle(0.3)), RS('rs_sit', 0.3), RS('sit_3', 0.3)];
+// leaning back on his hands, kicking his feet, looking round the room (10/31/2026): the three that were waiting on
+// pictures of their own
+REST_BITS.lean = () => {
+  const s = [RS('sit_lean_1', 0.5)];
+  for (let k = 0; k < 4; k++) s.push(RS('sit_lean_1', 0.9), RS('sit_lean_2', 1.1));
+  s.push(RS('sit_lean_1', 0.4), RS('sit_3', 0.4));
+  return s;
+};
+REST_BITS.kick = () => {
+  const s = [];
+  for (let k = 0, n = Math.round(rndIn(6, 10)); k < n; k++) s.push(RS('sit_kick_1', 0.16), RS('sit_kick_2', 0.12), RS('sit_kick_3', 0.16), RS('sit_kick_4', 0.12));
+  s.push(RS('sit_3', 0.4));
+  return s;
+};
+REST_BITS.look = () => [RS('sit_round_l', 1.1), RS('sit_3', 0.35), RS('sit_round_r', 1.2), RS('sit_3', 0.3), RS('sit_round_l', 0.6), RS('sit_3', 0.5)];
+// scratching the side of his head, puzzling something over (10/31/2026)
+REST_BITS.scratch = () => {
+  const s = [RS('sit_3', 0.2)];
+  for (let k = 0, n = Math.round(rndIn(5, 8)); k < n; k++) s.push(RS('sit_scratch_1', 0.14), RS('sit_scratch_2', 0.14));
+  s.push(RS('sit_scratch_1', 0.5), RS('sit_3', 0.4));
+  return s;
+};
+const restHas = f => typeof META !== 'undefined' && META && META.frames && !!META.frames[f + '_R'];
 REST_BITS.map = () => {
   const s = restGetOut('map');
   restHold(s, 'map', 2.2);
@@ -91,7 +114,7 @@ REST_BITS.book = () => {
   s.push(RS('rs_lap_closed', 0.5, () => sfx.bump()), ...restPutAway());
   return s;
 };
-const restPick = () => [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', 'stretch', 'nap', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
+const restPick = () => [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', 'stretch', 'nap', ...['lean', 'kick', 'look', 'scratch'].filter(n => restHas({ lean: 'sit_lean_1', kick: 'sit_kick_1', look: 'sit_round_l', scratch: 'sit_scratch_1' }[n])), ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
 const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after (10/27/2026)
 const restSit = () => {
   let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;

@@ -11,7 +11,7 @@ function newPlayer(x, y, f) {
     coyoteT: 0, jumpBufT: 0, atkBufT: 0, dodgeBufT: 0, jumpHeld: false,
     atk: null, atkCD: 0, roll: 0, rollDir: 1, rollCD: 0, dash: 0, dashUsed: false, dropT: 0,
     inv: 0, hurtT: 0, respawnT: 0, health: world.maxHealth, landT: 0, turnT: 0, lookT: 0, recoilT: 0, recoilV: 0,
-    maxHealth: world.maxHealth, safeX: x, safeY: y, safeT: 0, runDist: 0, guardDist: 0, dashRec: 0, ghostT: 0, hang: null, reach: null, regrabT: 0, rollEndT: 0, crawl: false, crawlDist: 0, guardOut: false, stamFlash: 0, stam: 100, stamDelay: 0, en: 100, enDelay: 0, enFlash: 0, winded: false, tiredT: 0, gbreak: 0, charge: 0, atkHeldT: 0, downCD: 0, splat: 0, fallTop: y, winceT: 0, winceNext: 1, ko: 0, koLanded: false, fadeIn: 0, parryT: 0, parryCD: 0, guardWas: false, edgeT: 0, teeter: false, wallPogoUsed: false, guardLock: false, idleT: 0, blockT: 0, px: x, py: y,
+    maxHealth: world.maxHealth, safeX: x, safeY: y, safeT: 0, runDist: 0, guardDist: 0, dashRec: 0, ghostT: 0, hang: null, reach: null, regrabT: 0, rollEndT: 0, crawl: false, crawlDist: 0, guardOut: false, stamFlash: 0, stam: 100, stamDelay: 0, en: enMax(), enDelay: 0, enFlash: 0, winded: false, tiredT: 0, gbreak: 0, charge: 0, atkHeldT: 0, downCD: 0, splat: 0, fallTop: y, winceT: 0, winceNext: 1, ko: 0, koLanded: false, fadeIn: 0, parryT: 0, parryCD: 0, guardWas: false, edgeT: 0, teeter: false, wallPogoUsed: false, guardLock: false, idleT: 0, blockT: 0, px: x, py: y,
     story: null, worn: 0, loose: 0, looseBits: 0,
   });
 }
@@ -275,7 +275,7 @@ function snapDown() {
 // (10/16/2026: rolling's the escape, and it costs a roll). The shield stays off till its bar's back to half either way
 const GBREAK = 1.1, GBREAK_FREE = 0.33;
 function blockHit(cost, fromX) {
-  P.stam -= cost * (wearing('thimble') ? 0.6 : 1); P.stamDelay = 1.0;   // the thimble pin: blocks cost less
+  P.stam -= cost * (wearing('thimble') ? 0.6 : 1) * shieldBlock(); P.stamDelay = 1.0;   // the thimble pin: blocks cost less (and a tougher shield, js/upgrades.js)
   if (P.stam > 0) return false;
   P.stam = 0; P.gbreak = GBREAK; P.guardOut = true; P.atk = null; P.charge = 0;   // guardOut: no shield until the bar's back to half (tune.guardBack)
   P.vx = Math.sign(P.x - fromX || -P.facing) * 120; P.recoilT = 0;
@@ -345,9 +345,29 @@ const ATK = {
   // whirl with everything he's got behind them. Charged from rest it's still the big sweep above (charged)
   chargedchop: { name: 'chop', frames: [0.08, 0.16, 0.31, 0.48], on: 0.08, off: 0.26, lunge: [0.05, 0.2], lungeSpeed: 220, float: 0.2, reach: 16, charged: true },
   chargedwhirl: { name: 'whirl', frames: [0.08, 0.15, 0.23, 0.38, 0.58], on: 0.08, off: 0.3, lunge: [0.04, 0.2], lungeSpeed: 120, reach: 16, shove: 340, charged: true },   // (frame 3 is frame 2 drawn the other way round: the back half of going round)
+  // the shield bash (10/31/2026): on its own button once he's sure of his sword and shield (the second set on). Braces,
+  // shoves the shield out in front with his whole weight, pulls it back. Mostly a shove, to make room
+  shbash: { name: 'shbash', frames: [0.08, 0.18, 0.34], on: 0.08, off: 0.18, lunge: [0.06, 0.16], lungeSpeed: 150, shove: 300 },
+  // mastered, the combo goes on two more: the shield shoved in first and the sword through low behind it, then the
+  // shield knocked up under whatever's there and the sword brought down over his head, the combo's big finish
+  bashcut: { name: 'bashcut', frames: [0.07, 0.14, 0.26, 0.38], on: 0.07, off: 0.26, lunge: [0.05, 0.16], lungeSpeed: 140, shove: 220 },
+  bashfin: { name: 'bashfin', frames: [0.08, 0.16, 0.25, 0.37, 0.54], on: 0.08, off: 0.37, lunge: [0.25, 0.36], lungeSpeed: 160, shove: 360 },
 };
-// which swing comes next in the combo, and how long after a swing finishes the next press still carries it on
-const COMBO = ['side', 'chop', 'whirl'], COMBO_GAP = 0.4;
+// which swing comes next in the combo, and how long after a swing finishes the next press still carries it on. Mastered
+// (the third set), two more after the whirl
+const COMBO_GAP = 0.4;
+const comboList = () => swordSet() >= 3 ? ['side', 'chop', 'whirl', 'bashcut', 'bashfin'] : ['side', 'chop', 'whirl'];
+// how well he handles the sword and shield (10/31/2026), world.swordSkill: 1 clumsy (early on: loves them, no idea how to
+// use them), 2 sure of it (the swings he's always had, and the shield bash), 3 mastered (the combo's two shield swings).
+// Not set: the swings he's always had and no bash, the game as it was. Who moves him up, and when, isn't picked yet: the
+// dev tab sets it. Only the pictures change between sets (Sprites/sword_sets.py): the hits come from the frames he's
+// always had, so every enemy's tuning holds
+const swordSet = () => world.swordSkill || 0;
+const SKILL_PREFIX = { 1: 'n_', 3: 'm_' };
+function skillFrame(n) {
+  const p = SKILL_PREFIX[swordSet()];
+  return p && n && typeof META !== 'undefined' && META && META.frames[p + n] ? p + n : n;
+}
 // the lid up with nothing else going on (crawling and swimming use it; on his feet it's worked out where he moves)
 const guardHeld = () => inp.guardH && !P.atk && P.gbreak <= 0 && !P.guardOut;
 // his own stamina (separate from the shield's): only the roll and the air dodge use it (10/16/2026: swings
@@ -378,19 +398,19 @@ function holdToCharge() {
   if (P.rollEndT > 0 && can('rollSlash')) return false;
   return P.swim || (P.ground && !inp.up && !inp.down && !inp.aimUp && !inp.aimDown);
 }
-function comboNext(step) { P.combo = (step + 1) % COMBO.length; P.comboT = ATK[P.atk.type].frames[ATK[P.atk.type].frames.length - 1] + COMBO_GAP; }
+function comboNext(step) { P.combo = (step + 1) % comboList().length; P.comboT = ATK[P.atk.type].frames[ATK[P.atk.type].frames.length - 1] + COMBO_GAP; }
 function chargedBurst(lv) {                                                      // a bigger flash of it the further into the combo
   shakeT = 0.12 + lv * 0.04; shakeA = 2 + lv;
   for (let i = 0; i < 10 * lv; i++) { const a = Math.random() * Math.PI * 2; addPart({ x: P.x + P.facing * 18, y: P.y - 26, vx: Math.cos(a) * (150 + lv * 50), vy: Math.sin(a) * (150 + lv * 50), life: 0.3, max: 0.3, c: i % 2 ? '#fff6d8' : '#ffd36b', s: 2, g: 0 }); }
 }
 function startAttack(type) {
   P.atk = { type, t: 0, hit: new Set(), whiff: true };
-  P.atkCD = tune.attackCooldown + (type === 'rollslash' ? 0.08 : type === 'whirl' ? 0.2 : type === 'chop' ? 0.04 : 0); P.atkBufT = 0;   // the whirl leaves him dizzy a moment: mashing all three isn't free
+  P.atkCD = tune.attackCooldown + (type === 'rollslash' ? 0.08 : type === 'whirl' ? 0.2 : type === 'chop' ? 0.04 : type === 'bashfin' ? 0.2 : type === 'shbash' ? 0.12 : 0); P.atkBufT = 0;   // the whirl leaves him dizzy a moment: mashing all three isn't free
   if (isCharged(type)) {
     if (!world.flags.chargedOnce) { world.flags.chargedOnce = true; saveWorld(); }
     P.atkCD = Math.max(0.55, ATK[type].frames[ATK[type].frames.length - 1] + 0.05); sfx.clack(); sfx.bigswing(); if (type === 'chargedwhirl') sfx.whirl(); puff(P.x - P.facing * 10, P.y, 12, 80); shakeT = 0.12; shakeA = 2;
     for (let i = 0; i < 18; i++) { const a = (i / 18) * Math.PI * 2; addPart({ x: P.x + P.facing * 14, y: P.y - 26, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, life: 0.25, max: 0.25, c: i % 2 ? '#fff6d8' : '#ffd36b', s: 2, g: 0 }); }
-  } else if (type === 'rollslash') { sfx.bigswing(); puff(P.x - P.facing * 8, P.y, 6, 50); } else sfx.swing();
+  } else if (type === 'rollslash') { sfx.bigswing(); puff(P.x - P.facing * 8, P.y, 6, 50); } else if (type === 'shbash') sfx.bump(); else if (type === 'bashfin') sfx.bigswing(); else sfx.swing();
   // a swing in the air holds him about where he was for a moment (10/16/2026): not stopped dead, just going up
   // or down a lot slower while it's out. Less each swing till he lands again, so mashing it can't keep him up there
   if (!P.ground && !P.swim && !P.hang && !P.cling && (type === 'side' || type === 'chop' || type === 'up')) {
@@ -490,7 +510,8 @@ function update(dt) {
   const upP = inp.upP, mapP = inp.mapP;
   if (inp.squeakP) { P.squeakBuf = 0.15; P.squeakDown = !!inp.down; } if (inp.spinP) P.spinBuf = 0.15;   // (squeakDown: down held as it was pressed means the burst, whatever's held by the time it goes)           // (kept a moment, like the other presses: one made during a hit's little pause was being lost, the combat review 10/17/2026)
   if (inp.sparkP) P.sparkBuf = 0.15;
-  inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.sparkP = 0;
+  if (inp.bashP) P.bashBuf = 0.15;
+  inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.sparkP = inp.bashP = 0;
   if (hitstop > 0) { hitstop -= dt; return; }
   P.squeakBuf = Math.max(0, (P.squeakBuf || 0) - dt); P.spinBuf = Math.max(0, (P.spinBuf || 0) - dt);
   const squeakP = P.squeakBuf > 0 && P.squeakCD <= 0, spinP = P.spinBuf > 0 && P.squeakCD <= 0;
@@ -518,7 +539,7 @@ function update(dt) {
   // his stamina comes back once he stops for a moment. Winded (ran it dry): panting until it's back to a third
   P.tiredT = Math.max(0, P.tiredT - dt); P.enFlash = Math.max(0, P.enFlash - dt);
   if (P.enDelay > 0) P.enDelay -= dt;
-  else P.en = Math.min(100, P.en + tune.enRegen * dt);                               // (swinging and charging don't hold it back)
+  else P.en = Math.min(enMax(), P.en + tune.enRegen * dt);                               // (swinging and charging don't hold it back)
   if (P.winded && P.en >= 34) P.winded = false;
   if (P.winded && Math.random() < dt * 5 && P.ko <= 0) addPart({ x: P.x + P.facing * 12, y: P.y - 26, vx: P.facing * 18, vy: -14, life: 0.45, max: 0.45, c: '#e8eef6', s: 1, g: -10, a: 0.7 });
   // shield stamina refills slowly with the shield up, much faster once he lowers it
@@ -567,6 +588,8 @@ function update(dt) {
   if (squeakP && (!P.story || P.story.free) && P.squeakCD <= 0 && P.charge <= 0) { P.squeakBuf = 0; startSpecial(null, P.squeakDown); }     // the squeak, or the fluff burst (down)
   else if (spinP && (!P.story || P.story.free) && P.squeakCD <= 0 && P.charge <= 0) { P.spinBuf = 0; startSpecial('spin'); }   // the spin, on its own button
   P.sparkBuf = Math.max(0, (P.sparkBuf || 0) - dt);
+  P.bashBuf = Math.max(0, (P.bashBuf || 0) - dt);   // the shield bash (10/31/2026): on his feet, nothing else going on
+  if (P.bashBuf > 0 && (!P.story || P.story.free) && P.ground && !P.atk && P.atkCD <= 0 && P.charge <= 0 && !P.crawl && !P.swim && P.roll <= 0 && P.dash <= 0 && P.gbreak <= 0) { P.bashBuf = 0; startAttack('shbash'); P.combo = 0; }
   if (P.sparkBuf > 0 && (!P.story || P.story.free) && P.charge <= 0 && !(P.sparkCD > 0)) { P.sparkBuf = 0; startSpark(); }   // static spark (10/18/2026)
   updateSparkMove(dt);
   if (swimStep(dt, dir)) { stepWorld(dt); return; }                                 // in deep water: swimming, or sinking if he isn't waterproof
@@ -704,7 +727,7 @@ function update(dt) {
     if (P.atkBufT > 0 && P.atkCD <= 0) {
       let type = inp.up || inp.aimUp ? 'up' : inp.down || inp.aimDown ? (P.ground ? 'low' : 'down') : (P.rollEndT > 0 && can('rollSlash') ? 'rollslash' : 'side');
       const step = type === 'side' ? (P.ground ? (P.combo || 0) : (P.combo || 0) % 2) : -1;   // in the air: the slash and the chop back and forth (no whirl off the ground)
-      if (step >= 0) { type = COMBO[step]; P.lastStep = step; }
+      if (step >= 0) { const cl = comboList(); type = cl[step % cl.length]; P.lastStep = step; }
       // one down swing per fall: another only after the cooldown (long falls), or once a bounce lands
       if (type === 'down' && P.downCD > 0) P.atkBufT = 0;
       else if (!spend(type)) P.atkBufT = 0;
@@ -1002,7 +1025,7 @@ function updateKO(dt) {
       world.piles.push({ room: room.id, x: at.x + (kind === 'pebbles' ? 10 : 0), y: at.y, n: spill, kind, dry: true }); pileLock = 1.5;
     }
     if (world.rest) {
-      Object.assign(P, { guardOut: false, stam: 100, en: 100, winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45, h: STAND_H });
+      Object.assign(P, { guardOut: false, stam: 100, en: enMax(), winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45, h: STAND_H });
       // where he's going is saved along with the spill (the save audit, 10/17/2026): saved with this room still in it, a
       // reload during the fade put him back where he went down instead of where he rested
       sewUp(); world.room = world.rest.room; world.door = '@rest'; saveWorld(); trans.state = 'none'; goTo(world.rest.room, '@rest');
@@ -1012,7 +1035,7 @@ function updateKO(dt) {
     // (10/17/2026: put back at the door, the arena's wall was still up between him and the fight, so he got shoved into
     // the wall, and the boss kept all the damage it had taken)
     if (typeof bossLocked === 'function' && bossLocked()) {
-      Object.assign(P, { guardOut: false, stam: 100, en: 100, winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45 });
+      Object.assign(P, { guardOut: false, stam: 100, en: enMax(), winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45 });
       sewUp(); saveWorld(); trans.state = 'none'; goTo(room.id, koDoor());
       return;
     }
@@ -1020,7 +1043,7 @@ function updateKO(dt) {
     // a fresh start on the spot, the same as coming in a door (the save audit): he used to be stood up but left swimming,
     // so a knockout in deep water brought him back a full height swimmer. Now the water (or a low roof) decides again
     sewUp(); placePlayer(at.x, at.y, at.f);
-    Object.assign(P, { stam: 100, en: 100, inv: 1.2, fadeIn: 0.45, story: null });
+    Object.assign(P, { stam: 100, en: enMax(), inv: 1.2, fadeIn: 0.45, story: null });
     cam.snap = true; saveWorld();
   }
 }
@@ -1166,9 +1189,10 @@ function frameName() {
   if (P.swim && guardHeld()) return `swimguard_${Math.floor((P.swimDist || 0) / 8) % 2 + 1}_${f}`;   // the lid up under water
   if (P.swim) return Math.abs(P.vx) + Math.abs(P.vy) > 25 ? `swim_${(Math.floor((P.swimDist || 0) / 5) % 8) + 1}_${f}` : `float_${(Math.floor(performance.now() / 260) % 4) + 1}_${f}`;
   if (P.spinT > 0) return 'rollslash_2_' + (Math.floor(P.spinT / 0.06) % 2 ? 'L' : 'R');
-  if ((P.squeakT > 0 || P.burstT > 0) && !P.atk) return 'land_' + f;
+  const own = (n, or) => (META && META.frames[n + '_' + f] ? n : or) + '_' + f;   // (a picture of its own if the sheet has it: 10/31/2026)
+  if ((P.squeakT > 0 || P.burstT > 0) && !P.atk) return own(P.burstT > 0 ? 'burst' : 'squeak', 'land');   // puffed up squeaking, or crouched and puffed out wide for the fluff burst
   if (P.reach) return 'rise_' + f;
-  if (P.cling) return 'hang_2_' + f;
+  if (P.cling) return own('hang_cling_' + (Math.floor((P.cling.t || 0) / 0.18) % 2 + 1), 'hang_2');   // stuck to the bark, feet scrabbling a little (10/31/2026)
   if (P.hang) {
     const h = P.hang;
     if (h.climb !== null) return h.climb / CLIMB_T < 0.6 ? 'climb_' + f : 'land_' + f;
@@ -1183,9 +1207,9 @@ function frameName() {
   if (P.crawl && guardHeld()) return `crawlguard_${Math.floor(P.crawlDist / 5) % 2 + 1}_${f}`;   // the lid up, a little wobble shuffling along
   if (P.crawl && P.lookT > 0) return (inp.up ? 'crawl_up_' : 'crawl_down_') + f;
   if (P.crawl) return `crawl_${(Math.floor(P.crawlDist / 1.75) % 16) + 1}_${f}`;
-  if (P.flop) return 'roll_' + f;                                         // the belly flop: tucked up (10/18/2026)
+  if (P.flop) return own(P.flop.phase === 'tuck' ? 'flop_tuck' : 'flop_drop', 'roll');   // the belly flop: tucked up, then flat out face down like a starfish all the way down (pictures of its own 10/31/2026: it was his roll)
   if (P.flopLag > 0) return 'splat_2_' + f;                               // and flat on his tummy after
-  if (P.sparkT > 0) return 'land_' + f;                                   // fuzzing himself up for the spark
+  if (P.sparkT > 0) return own('spark_' + (Math.floor(performance.now() / 70) % 2 + 1), 'land');   // fuzzing himself up for the spark, jiggling
   if (P.roll > 0) return 'roll_' + f;
   if (P.dash > 0) return (P.dash > 0.05 ? 'airdodge_1_' : 'airdodge_2_') + f;
   if (P.dashRec > 0 && !P.ground && !P.atk) return 'airdodge_2_' + f;
@@ -1209,6 +1233,7 @@ function frameName() {
   if (!P.ground) return (P.vy < -110 ? 'rise_' : P.vy < 110 ? 'top_' : 'fall_') + f;
   if (P.landT > 0) return 'land_' + f;
   if (P.turnT > 0) return 'turn';
+  if (P.teeter) return own('teeter_' + (Math.floor(P.edgeT / 0.12) % 2 + 1), 'walk_' + (Math.floor(P.edgeT / 0.09) % 2 ? 2 : 4));   // wobbling at the edge, arms going round
   if (Math.abs(P.vx) > 20 && Math.abs(P.vx) < tune.runSpeed * 0.7) return `walk_${(Math.floor(P.runDist / 9) % 4) + 1}_${f}`;   // a walk at the slower paces (10/27/2026)
   if (Math.abs(P.vx) > 20) return `run_${(Math.floor(P.runDist / 11) % 4) + 1}_${f}`;
   if (P.lookT > 0) return (inp.up ? 'look_up_' : 'look_down_') + f;

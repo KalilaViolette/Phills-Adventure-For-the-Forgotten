@@ -125,7 +125,7 @@ takeItem = it => {
 // drawn here, a few pixels each, one for each character as they're needed: MAP_FACES
 function drawMapWants(toMap) {
   if (typeof QUEST === 'undefined') return;
-  const t = performance.now() / 1000;
+  const t = performance.now() / 1000, marks = [];
   for (const q of QUEST.list()) {
     const st = QUEST.status(q); if (st.state !== 'active') continue;
     q.steps.forEach((step, i) => {
@@ -135,12 +135,34 @@ function drawMapWants(toMap) {
       if (mk.carry ? !world.has[mk.carry] : i !== st.at) return;                          // (carry: while he has it with him. Otherwise: while it's the step he's on)
       const m = window.MAP_ROOMS && MAP_ROOMS[id]; if (!m) return;
       const [mx, my] = toMap(m.x + mk.x / T, m.y + mk.y / T);
-      const ph = ((t + i * 0.4) % 1.6) / 1.6, rr = 6 + ph * 10;                            // the ring going out
-      ctx.save(); ctx.globalAlpha *= (1 - ph) * 0.8; ctx.strokeStyle = '#e8b040'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(mx + 0.5, my - 8, rr, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-      MAP_FACES[mk.face](mx, my + Math.round(Math.sin(t * 5 + i) * 0.8), t + i);
+      marks.push({ x: mx, y: my, face: mk.face, i });
     });
   }
+  spreadMapWants(marks);
+  for (const k of marks) {
+    const ph = ((t + k.i * 0.4) % 1.6) / 1.6, rr = 6 + ph * 10;                            // the ring going out
+    ctx.save(); ctx.globalAlpha *= (1 - ph) * 0.8; ctx.strokeStyle = '#e8b040'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(k.x + 0.5, k.y - 8, rr, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    MAP_FACES[k.face](k.x, k.y + Math.round(Math.sin(t * 5 + k.i) * 0.8), t + k.i);
+  }
+}
+// two faces close together on the map (Clank and Mabel are both on Mend Lane, and the whole Warren is small on it)
+// would sit on top of each other, so they're pushed apart sideways until there's room for both (10/30/2026)
+function spreadMapWants(marks) {
+  const GAP = 16, H = 11;
+  for (let pass = 0; pass < 8; pass++) {
+    let moved = false;
+    for (let a = 0; a < marks.length; a++) for (let b = a + 1; b < marks.length; b++) {
+      const A = marks[a], B = marks[b];
+      if (Math.abs(A.y - B.y) >= H) continue;
+      const d = B.x - A.x, need = GAP - Math.abs(d);
+      if (need <= 0) continue;
+      const s = d > 0 || (d === 0 && b > a) ? 1 : -1;
+      A.x = Math.round(A.x - s * need / 2); B.x = Math.round(B.x + s * need / 2); moved = true;
+    }
+    if (!moved) break;
+  }
+  return marks;
 }
 const MAP_BEETLE = [                                                                      // his head side on, looking left: the big jaws, the gold rim round his eye
   '....OOOOOO....',

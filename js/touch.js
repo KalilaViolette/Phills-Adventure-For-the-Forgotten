@@ -67,7 +67,7 @@ const touchUI = (() => {
     const edge = u * 0.5 + Math.max(5, H * 0.015);                                   // a button's middle, in from the edge
     // the shoulders, right up in the top corners
     const topY = edge;
-    put(B('l2'), edge, topY, u); put(B('r2'), W - edge, topY, u);                    // the triggers out in the corners (nothing on them yet: shield bash and such later)
+    put(B('l2'), edge, topY, u); put(B('r2'), W - edge, topY, u);                    // the triggers out in the corners (the shield bash and the spark)
     put(B('guard'), edge + u * 1.9, topY, u); put(B('atk'), W - edge - u * 1.9, topY, u);   // L1 and R1 in from them
     // the sticks: low, out toward the edges, with L3 and R3 in the bottom corners beside them
     const rad = Math.max(40, Math.min(u * 1.1, H * 0.165));
@@ -110,8 +110,8 @@ const touchUI = (() => {
   window.addEventListener('resize', () => setTimeout(layout, 60));
 
   // pressing and letting go of a button: the same as its key going down and up
-  const PRESS = { jump: 'jumpP', atk: 'atkP', dodge: 'dodgeP', guard: 'guardP', squeak: 'squeakP', spin: 'spinP', spark: 'sparkP', map: 'mapP', up: 'upP', down: 'downP', lock: 'lockP' };
-  // (L2, R2 and L3 do nothing in the game yet, the same as on the controller: they're there for when they do)
+  const PRESS = { jump: 'jumpP', atk: 'atkP', dodge: 'dodgeP', guard: 'guardP', squeak: 'squeakP', spin: 'spinP', spark: 'sparkP', bash: 'bashP', map: 'mapP', up: 'upP', down: 'downP', lock: 'lockP' };
+  // (L2 is the shield bash and R2 the spark, the same as on the controller. L3 does nothing yet)
   const DPAD = { dup: 'up', ddown: 'down', dleft: 'left', dright: 'right' };
   // Each thing holding an action is kept track of on its own (the input audit, 10/17/2026): there are two Swing buttons,
   // and letting go of either one let go of the swing even with the other still held, so a charge went off early. It's
@@ -224,11 +224,11 @@ const touchUI = (() => {
       if (buzz && navigator.vibrate) try { navigator.vibrate(12); } catch (er) {}              // a little buzz for each press (10/17/2026: phones that can, Android mostly. iPhones can't from a web page)
       if (act === 'menu') { if (window.pauseMenu) { useDevice('touch'); pauseMenu.toggle(); } return; }   // (the menu: the pause menu, 10/29/2026. Everything that was in the strip under the game is in it now)
       if (act === 'max') { maxUI.toggle(); return; }
-      if (act === 'l3' || act === 'l2') return;
+      if (act === 'l3') return;
       if (act === 'guard') { guardDown(b); return; }
-      key(act === 'r2' ? 'spark' : act, true, b);   // (R2: static spark, 10/18/2026)
+      key(act === 'r2' ? 'spark' : act === 'l2' ? 'bash' : act, true, b);   // (R2: static spark, 10/18/2026. L2: the shield bash, 10/31/2026)
     });
-    const up = e => { if (e.pointerId !== id) return; id = null; b.classList.remove('on'); if (act === 'guard') { guardUp(b); return; } if (!['menu', 'max', 'l3', 'l2'].includes(act)) key(act === 'r2' ? 'spark' : act, false, b); };
+    const up = e => { if (e.pointerId !== id) return; id = null; b.classList.remove('on'); if (act === 'guard') { guardUp(b); return; } if (!['menu', 'max', 'l3'].includes(act)) key(act === 'r2' ? 'spark' : act === 'l2' ? 'bash' : act, false, b); };
     for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) b.addEventListener(ev, up);
     b.addEventListener('contextmenu', e => e.preventDefault());
   }

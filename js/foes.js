@@ -8,7 +8,7 @@ const FOE = {
   can: { hp: 5, hw: 7, h: 26, speed: 0, acorns: [2, 3], harmless: f => f.state === 'roll' || f.state === 'lie',
     box: f => (f.state === 'roll' || f.state === 'lie' ? { l: f.x - 10, r: f.x + 10, t: f.y - 20 + f.yoff, b: f.y + f.yoff } : { l: f.x - 7, r: f.x + 7, t: f.y - 26 + f.yoff, b: f.y + f.yoff }) },
 };
-const DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 3, chargedchop: 3, chargedwhirl: 3 };
+const DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 3, chargedchop: 3, chargedwhirl: 3, shbash: 1, bashcut: 1, bashfin: 2 };
 // how many attacks an enemy has (10/16/2026): at least 3 in Rootwood, and one more for every region its room
 // is from Rootwood on the map. Each kind lists its attacks in order and a copy only uses the first f.moves of them.
 // Rootwood's own enemies got two new attacks each, so a few start with more than 3 (baseMoves)
@@ -671,7 +671,7 @@ function foeHits(box, a) {
     }
     let dmg = ((DMG[a.type] || 1) + (a.level || 0)) * swordBonus();   // (a charged swing deep in the combo: one more for each step in)
     if (FOE[f.kind].soak && !isCharged(a.type) && a.type !== 'rollslash') { dmg *= 0.5; if (!f.told) { f.told = 1; popup(f.x, f.y - 34, 'it soaks it up', '#cfd6e6'); } }   // the sponge: plain swings barely dent it
-    const finisher = a.type === 'whirl';                                                 // the combo's last swing: its whole shove, so it buys him room (the combat review, 10/17/2026)
+    const finisher = a.type === 'whirl' || a.type === 'bashfin';                                                 // the combo's last swing: its whole shove, so it buys him room (the combat review, 10/17/2026)
     foeHurt(f, dmg, ATK[a.type].shove ? Math.sign(f.x - P.x || P.facing) * ATK[a.type].shove : P.facing * (isCharged(a.type) ? 220 + (a.level || 0) * 40 : a.type === 'chop' ? 150 : 120), cx, cy, isCharged(a.type) || a.type === 'rollslash',
       { full: finisher, power: isCharged(a.type) ? 1.8 + (a.level || 0) * 0.3 : finisher ? 1.5 : a.type === 'chop' ? 1.2 : 1, shoveT: finisher ? 0.35 : a.type === 'chop' ? 0.18 : undefined });   // the whirl shoves whatever it catches off him, either side
     f.bumpGrace = 0.3;

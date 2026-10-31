@@ -17,18 +17,40 @@ const VOICE = {
   bear: { name: 'the bear', col: '#d8b88a', speed: 32, every: 3, blip: () => sfx.bearTalk(), noise: () => sfx.bearTalk() },   // (10/20/2026: no name yet, he never got one)
 };
 // "*kraa* There." -> the text without the stars, and where the sound words are in it
+// A face written into a line in square brackets ([amused], [worried], [idle] for back to normal) isn't shown either:
+// it's where the speaker's face changes, as the words get to it (10/31/2026). It lasts till the next one or the end
+// of the talk. Anyone with that face drawn shows it (talkFace below), anyone without just keeps their own
 function parseTalk(raw) {
-  let text = '', spans = [], at = -1;
-  for (const ch of raw) {
+  let text = '', spans = [], at = -1, faces = [];
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw[i];
+    if (ch === '[') {
+      const m = /^\[([a-z]+)\]/.exec(raw.slice(i));
+      if (m) { faces.push([text.length, m[1]]); i += m[0].length - 1; if ((!text || text.endsWith(' ')) && raw[i + 1] === ' ') i++; continue; }
+    }
     if (ch === '*') { if (at < 0) at = text.length; else { spans.push([at, text.length]); at = -1; } continue; }
     text += ch;
   }
-  return { text, spans };
+  return { text, spans, faces };
 }
 function startTalk(who, raw, extra) {
   const ps = raw.map(parseTalk);
-  talk = Object.assign({ who, lines: ps.map(p => p.text), spans: ps.map(p => p.spans), i: 0, n: 0, t: 0, blipN: 0, played: 0 }, extra || {});
+  talk = Object.assign({ who, lines: ps.map(p => p.text), spans: ps.map(p => p.spans), faces: ps.map(p => p.faces), i: 0, n: 0, t: 0, blipN: 0, played: 0 }, extra || {});
   talkIn.press = 0;
+}
+// the face whoever's talking has on right now ('amused', 'worried'...), or null for their own. who: their voice
+function talkFace(who) {
+  const tk = talk; if (!tk || tk.who !== who || !tk.faces) return null;
+  let face = null;
+  for (let li = 0; li <= tk.i; li++) for (const [pos, f] of tk.faces[li] || []) if (li < tk.i || pos <= tk.n) face = f;
+  return face === 'idle' ? null : face;
+}
+// a sprite's frame with that face on, if there's a picture for it (squirrel_talk_1_amused, or squirrel_amused for
+// one that does for every frame), else the frame as it was
+function withFace(fr, who, kind = who) {
+  const f = talkFace(who); if (!f) return fr;
+  for (const name of [fr + '_' + f, kind + '_' + f]) if (sprSource(name)[1]) return name;
+  return fr;
 }
 // a scene step: says the lines, done when the last one's been read
 const say = (who, ...lines) => t => {

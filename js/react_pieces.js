@@ -1,0 +1,3 @@
+// the parts of painted rooms that give when he lands on them: where they are on their sheets and in the rooms.
+// Made by Sprites/react_pieces.py from the rooms' own paintings, don't edit by hand. How they move: js/react.js
+window.REACT_PIECES = {"hollow":{"pack":"art/rootwood/hollow.webp","sheet":"art/rootwood/react_hollow.png","parts":[{"id":"rest_mushroom_cap","x":40,"y":396,"w":126,"h":56,"piece":[0,0],"under":[126,0],"anchor":[103,434],"top":[46,160,404,436],"kind":"squash","amt":0.14,"puff":"#d8c08a"},{"id":"rest_moss","x":110,"y":468,"w":48,"h":22,"piece":[0,56],"under":[48,56],"anchor":[134,486],"top":[110,158,470,490],"kind":"squash","amt":0.2,"puff":"#a8c060"}]}};

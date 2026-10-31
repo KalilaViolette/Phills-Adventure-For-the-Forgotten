@@ -11,7 +11,7 @@ hurt = function (...a) { if (DBG.god) return; return _hurtDbg(...a); };
 // flying and no clip: the arrows (or the stick) move him any way, no falling. Flying still stops at walls, no clip goes
 // through them. Doors still work, so he can fly out of a room
 function dbgFly(dt) {
-  inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = 0;
+  inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.bashP = 0;
   const dx = inp.right - inp.left, dy = inp.down - inp.up, sp = FLY_SPEED * (inp.jumpH ? 2 : 1);
   P.px = P.x; P.py = P.y;
   P.hang = null; P.cling = null; P.reach = null; P.airHang = null; P.atk = null; P.roll = 0; P.dash = 0; P.charge = 0;
@@ -27,7 +27,7 @@ function dbgFly(dt) {
 const _updateDbg = update;
 update = function (dt) {
   if (DBG.god) { P.pinned = null; P.leech = null; P.slowT = 0; P.health = Math.max(P.health, 1); }
-  if (DBG.stam) { P.en = 100; P.stam = 100; P.winded = false; P.guardOut = false; P.gbreak = 0; P.enDelay = 0; P.stamDelay = 0; }
+  if (DBG.stam) { P.en = enMax(); P.stam = 100; P.winded = false; P.guardOut = false; P.gbreak = 0; P.enDelay = 0; P.stamDelay = 0; }
   if ((DBG.fly || DBG.noclip) && !P.held && !cutscene && !(P.story && !P.story.free) && P.ko <= 0 && P.respawnT <= 0 && !mapView) return dbgFly(dt);
   return _updateDbg(dt);
 };
@@ -130,7 +130,7 @@ function perfReport() {
   tog('#gCheat', 'Endless stamina', 'stam');
   mk('#gCheat', 'Heal', () => {
     P.worn = 0; P.loose = 0; P.looseBits = 0; P.maxHealth = world.maxHealth; P.health = P.maxHealth;
-    P.en = 100; P.stam = 100; P.winded = false; P.guardOut = false; P.gbreak = 0; say('all better');
+    P.en = enMax(); P.stam = 100; P.winded = false; P.guardOut = false; P.gbreak = 0; say('all better');
   });
   // his heart, for trying how the squeak grows with it (10/18/2026). Not saved: off goes back to the save's own heart
   const heartB = mk('#gCheat', 'Heart: save', () => { DBG.heart = DBG.heart == null ? 1 : DBG.heart >= 3 ? null : DBG.heart + 1; heartB.textContent = 'Heart: ' + (DBG.heart == null ? 'save' : DBG.heart); heartB.classList.toggle('on', DBG.heart != null); say(DBG.heart == null ? "the save's own" : 'heart ' + DBG.heart); }, true);

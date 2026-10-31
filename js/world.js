@@ -116,6 +116,7 @@ const hasAll = list => (list || []).every(id => world.has[id]);
 const MOVES = {
   attack: () => !!world.has.gear,     // swinging his sword (side, up, down bounce, low)
   guard: () => !!world.has.gear,      // the shield
+  bash: () => !!world.has.gear && (world.swordSkill || 0) >= 2,   // the shield bash: once he's sure of his sword and shield (js/player.js, swordSkill)
   roll: () => !!world.learned.roll,   // figured out in the hallway
   airDodge: () => !!world.learned.airdodge,   // watching the dragonfly (the Pond)
   squeak: () => !!world.learned.squeak,       // the old bullfrog (the Pond)

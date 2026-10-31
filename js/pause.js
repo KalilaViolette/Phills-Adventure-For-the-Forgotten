@@ -218,7 +218,14 @@ const pauseMenu = window.pauseMenu = (() => {
       return rs.concat([{ head: 'Story and quests' },
         { label: 'Story progress', choices: () => opts(QUEST.mains(), false), current: here, show: name, choose: go },
         { label: 'Side quests', choices: () => opts(of('side'), true), current: () => '', show: () => 'Pick a step', choose: go },
-        { label: 'Contracts', choices: () => opts(of('contract'), true), current: () => '', show: () => 'Pick a step', choose: go }]);
+        { label: 'Contracts', choices: () => opts(of('contract'), true), current: () => '', show: () => 'Pick a step', choose: go }],
+        [{ head: 'His sword and shield (nobody moves him up yet)' },                                        // (js/player.js, swordSkill: which set of swings he's at)
+          { label: 'How well he handles them', sub: 'Clumsy, sure of it (with the shield bash), mastered (two shield swings on the end of the combo)',
+            value: () => ['As the game is now', 'Clumsy', 'Sure of it', 'Mastered'][world.swordSkill || 0],
+            act: () => { world.swordSkill = ((world.swordSkill || 0) + 1) % 4; if (!world.swordSkill) delete world.swordSkill; saveWorld(); } }],
+        typeof UPGRADES === 'undefined' ? [] : [{ head: 'Upgrades (nobody gives these yet)' },                       // (js/upgrades.js: give one or take it away, to try it)
+          ...UPGRADES.map(u => ({ label: u.name[0].toUpperCase() + u.name.slice(1), sub: u.what, value: () => hasUpgrade(u.id) ? 'Has it' : 'No',
+            act: () => { if (hasUpgrade(u.id)) takeUpgrade(u.id); else giveUpgrade(u.id, true); } }))]);
     },
   };
   const WHOSE = ['Everyone', 'Phill', 'Purl'], QUEST_KINDS = [['main', 'Main story'], ['side', 'Side quests'], ['contract', "Contracts from Tock's board"]];
@@ -426,8 +433,8 @@ const pauseMenu = window.pauseMenu = (() => {
   let wasResting = false;
   function bits() {
     if (typeof REST_BITS === 'undefined') return [];
-    return [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book', 'book'] : [])]
-      .filter(n => REST_BITS[n] && has({ doodle: 'draw_1', stretch: 'stretch', map: 'rs_map_1', book: 'rs_lap_1' }[n]));
+    return [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', 'lean', 'kick', 'look', 'scratch', ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book', 'book'] : [])]
+      .filter(n => REST_BITS[n] && has({ doodle: 'draw_1', stretch: 'stretch', map: 'rs_map_1', book: 'rs_lap_1', lean: 'sit_lean_1', kick: 'sit_kick_1', look: 'sit_round_l', scratch: 'sit_scratch_1' }[n]));
   }
   function nextBit() {
     const names = bits().filter(n => n !== lastBit);
