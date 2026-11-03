@@ -161,14 +161,49 @@ function warrenNpcFrame(n, now) {
   if (k === 'ballerina') fr = 'ballerina_' + ['idle_1', 'idle_2', 'turn', 'idle_2'][Math.floor(now * (world.flags.musicBoxFixed ? 1.6 : 0.9)) % 4];
   if (k === 'drummer' && !talk) fr = 'drummer_idle_' + (Math.floor(now * 3) % 2 + 1);
   if (k === 'dot' && !talk) fr = Math.floor(now * 0.3) % 3 ? 'dot_listen' : 'dot_idle_1';
-  if (k === 'mabel' && !talk && Math.floor(now * 0.5) % 3 === 0) fr = 'mabel_sew';
-  if (k === 'clank' && !talk && Math.floor(now * 0.6) % 3 === 0) fr = 'clank_tinker';
+  n.workFlip = null;
+  if (WORK[k] && !(talk && talk.who === k) && !scene && !(n.pose && n.pose.t > 0)) { const w = atWork(n, k, now); if (w) { n.workFlip = n.f > 0; fr = w; } }
   if (k === 'oldkey' && !talk && Math.floor(now * 0.4) % 4 === 0) fr = 'oldkey_wind';
   if ((k === 'teddy' || k === 'bunny') && !talk && Math.floor(now * 0.35 + (k === 'bunny' ? 1.3 : 0)) % 4 === 0) fr = k + '_sip';
   if (k === 'mole' && !talk) fr = Math.floor(now * 0.5) % 4 === 0 ? 'mole_sniff' : fr;
   if (talk && talk.who === k && (!talk.npc || talk.npc === n)) fr = withFace(talk.n < talk.lines[talk.i].length ? k + '_talk_' + (Math.floor(now * 9) % 2 + 1) : k + '_idle_1', k);
   if (n.pose && n.pose.t > 0) fr = n.pose.frame;
   return fr;
+}
+// ---------- Mabel, Clank and Peg at work (10/31/2026) ----------
+// Like the beetle by the roots: when Phill isn't close by, each gets on with their own job, facing the way the room
+// puts them (f), round and round. When he comes up, or they're talking, they turn to him as before.
+// Mabel sews a few stitches, bites the thread off and holds the mend up to see it. Clank turns a screw (little sparks
+// off it), then holds a cog up to his visor. Peg scrubs with her toothbrush (suds), dips it, shakes it off, and looks
+// it over. One step a line: the frame, how long, and what comes off it (at: where, in the picture's own pixels)
+const WORK = {
+  mabel: { fx: 15, fy: 41, steps: [['sew', 0.5], ['sew_pull', 0.6, 'thread'], ['sew', 0.5], ['sew_pull', 0.6, 'thread'], ['sew', 0.5], ['sew_pull', 0.6, 'thread'],
+    ['snip', 0.8], ['hold', 1.4], ['idle_1', 1.0]], at: { thread: [26, 20] } },
+  clank: { fx: 15, fy: 41, steps: [...Array(4)].flatMap(() => [['tinker', 0.35, 'spark'], ['tinker_2', 0.35]]).concat([['peer', 1.6], ['idle_1', 0.8]]), at: { spark: [-1, 18] } },
+  peg: { fx: 13, fy: 31, steps: [...Array(5)].flatMap(() => [['scrub_1', 0.2, 'suds'], ['scrub_2', 0.2]]).concat([['dip', 0.7, 'dip'], ['shake', 0.5, 'drops'],
+    ...[...Array(3)].flatMap(() => [['scrub_1', 0.2, 'suds'], ['scrub_2', 0.2]]), ['look', 1.2], ['idle_1', 0.6]]), at: { suds: [2, 22], dip: [1, 31], drops: [4, 5] } },
+};
+for (const w of Object.values(WORK)) w.len = w.steps.reduce((a, s) => a + s[1], 0);
+window.__warrenWork = { WORK, npcsHere: () => npcsHere(), frame: (n, now) => warrenNpcFrame(n, now) };   // (for the checks in tests/t162)
+const WORK_NEAR = 60;                                                    // closer than this, they stop and look at him
+function atWork(n, k, now) {
+  const w = WORK[k];
+  if (Math.abs(P.x - n.x) < WORK_NEAR && Math.abs(P.y - n.y) < 48) return null;
+  if (!(window.WARREN_SPRITES && WARREN_SPRITES[k + '_' + w.steps[0][0]])) return null;
+  let t = (now + n.x * 0.037) % w.len, i = 0;                            // (each their own place in it)
+  while (t >= w.steps[i][1]) { t -= w.steps[i][1]; i++; }
+  const s = w.steps[i];
+  if (s[2] && n.workStep !== i) workFx(n, w, s[2]);
+  n.workStep = i;
+  return k + '_' + s[0];
+}
+function workFx(n, w, fx) {
+  const sd = n.f > 0 ? -1 : 1, [ax, ay] = w.at[fx], x = n.x + (ax - w.fx) * sd, y = n.y - (w.fy - ay), near = Math.abs(P.x - n.x) < 200;
+  if (fx === 'thread') part(x, y, -sd * 8, -10, 0.25, '#c84040', 1, 0);
+  if (fx === 'spark') { for (let i = 0; i < 2; i++) part(x, y, -sd * (10 + Math.random() * 30), -15 - Math.random() * 25, 0.3, Math.random() < 0.5 ? '#ffe08a' : '#fff6d0', 1, 120); if (near && Math.random() < 0.5) sfx.tok(); }
+  if (fx === 'suds') { if (Math.random() < 0.7) part(x + (Math.random() - 0.5) * 4, y, (Math.random() - 0.5) * 6, -6 - Math.random() * 8, 0.7, '#f4f8ff', 1, -4, 0.8); if (near && Math.random() < 0.3) sfx.scrub(); }
+  if (fx === 'dip') for (let i = 0; i < 3; i++) part(x + (Math.random() - 0.5) * 4, y - 1, (Math.random() - 0.5) * 8, -8 - Math.random() * 10, 0.5, '#f4f8ff', 1, -4, 0.8);
+  if (fx === 'drops') for (let i = 0; i < 4; i++) part(x, y, (Math.random() - 0.5) * 50, -20 - Math.random() * 25, 0.5, '#a8d0f0', 1, 200);
 }
 function drawLid(k) {                                                                    // k: 0 shut, 1 open. It swings open toward us on its hinge (its left edge), like a door
   const L = room.def.lid; if (!L) return;
@@ -267,7 +302,7 @@ drawNpc = () => {
     ctx.globalAlpha = 1; ctx.textAlign = 'left';
   }
   for (const [gx, gy] of d.guards || []) { groundShadow(gx, gy, 24, 7); spr('guard_idle_' + (Math.floor(now * 1.7 + gx * 0.031) % 6 === 5 ? 2 : 1), gx, gy, P.x > gx); }   // the Nutcracker's two tin soldiers, a step behind him
-  for (const n of npcsHere()) { const w = SHW[n.kind] ?? 9; if (w) groundShadow(n.x, n.y, 30, w); spr(warrenNpcFrame(n, now), n.x, n.y, n.kind !== 'ballerina' && P.x > n.x); }   // a soft shadow under each, so they stand on the floor
+  for (const n of npcsHere()) { const w = SHW[n.kind] ?? 9; if (w) groundShadow(n.x, n.y, 30, w); const fr = warrenNpcFrame(n, now); spr(fr, n.x, n.y, n.workFlip ?? (n.kind !== 'ballerina' && P.x > n.x)); }   // a soft shadow under each, so they stand on the floor
   for (const n of npcsHere()) if (n.sick && SPOT_AT[n.kind]) { const fl = P.x > n.x, o = SPOT_AT[n.kind]; spr('grimespot', n.x + (fl ? -o[0] : o[0]), n.y + o[1], fl); }   // the spot they're watching
   if (room.escort) groundShadow(room.escort.x, room.escort.y, 30, 8);
   if (actors.tock && !actors.tock.hidden) groundShadow(actors.tock.x, actors.tock.y, 30, 8);
@@ -707,7 +742,7 @@ WSCENES.clank = n => {
 };
 WSCENES.oldkey = n => [...walkUp(n), sayN(n, ...(!world.flags.metOldKey ? ['*tick tick* Hm? Oh. A new one. Do you need winding? No? No key on you. Lucky.',
   "I wind them all up in the morning. Every wind-up toy in the Warren. If I don't, they run down, and running down's like going to sleep, only you don't know if you'll wake.",
-  "I had a kid once. A boy. His name was... it was...", "It'll come to me."] : pick([["Running down's the worst of it. You can feel it coming. Slower and slower."], ["His name was... no. Gone again. It'll come back."], ['Tock lost his key once. Wouldn\'t have woken up if you hadn\'t found it. *tick*'], ["The music box is a wind-up too, you know. Same as me. Only bigger."]]))), run(() => { world.flags.metOldKey = true; saveWorld(); })];
+  "[worried] I had a kid once. A boy. His name was... it was...", "It'll come to me."] : pick([["[worried] Running down's the worst of it. You can feel it coming. Slower and slower."], ["[worried] His name was... no. Gone again. It'll come back."], ['Tock lost his key once. Wouldn\'t have woken up if you hadn\'t found it. *tick*'], ["The music box is a wind-up too, you know. Same as me. Only bigger."]]))), run(() => { world.flags.metOldKey = true; saveWorld(); })];
 WSCENES.ballerina = n => [...walkUp(n), sayN(n, ...(world.flags.musicBoxFixed ? pick([["It doesn't drag anymore. Can you hear? I can dance properly again."], ['Round and round. It never gets old. Well. It gets a little old.']]) : pick([["The spring's tired. I'm tired. We turn slower every night."], ['They come and sit round the box in the evening. It helps them forget for a bit.'], ['Mind my tune. It\'s all some of them have left of home.']])))];
 WSCENES.teddy = n => [...walkUp(n), sayN(n, ...pick([["Tea? It's very good tea. It's pretend, but it's very good pretend."], ["We have a party every day. It's always somebody's birthday somewhere."], ['Bun pours. I drink. It works out.']]))];
 WSCENES.bunny = n => [...walkUp(n), sayN(n, ...pick([['More tea? I just made a fresh pot. Of nothing.'], ['My girl used to hold me by the ears. I didn\'t mind. I still don\'t.'], ["Teddy's had eleven cups today. He says he's not counting. I am."]]))];
@@ -788,7 +823,7 @@ WSCENES.mole = n => {
   }
   // 10/16/2026: Phill can't talk, so the mole reads the question off his face. Told once, then it's in the rotation
   if (!world.flags.moleHereJoke) { world.flags.moleHereJoke = true; saveWorld(); steps.push(sayN(n, ...MOLE_HERE_JOKE)); return steps; }
-  steps.push(sayN(n, ...pick([MOLE_HERE_JOKE, ["*snf* Knock on the molehill if you're going somewhere."], ["That wall at the bottom of the town. I dug that tunnel. I sealed it, too. Don't ask."], ['The toys took me in when the Grime got my place. So I dig for them. Fair trade.'], ["Spoons. Best thing for digging. Don't let anyone tell you different."]])));
+  steps.push(sayN(n, ...pick([MOLE_HERE_JOKE, ["*snf* Knock on the molehill if you're going somewhere."], ["That wall at the bottom of the town. I dug that tunnel. [worried] I sealed it, too. Don't ask."], ['The toys took me in when the Grime got my place. So I dig for them. Fair trade.'], ["[happy] Spoons. Best thing for digging. Don't let anyone tell you different."]])));
   return steps;
 };
 // knock on a molehill: he comes up and takes you anywhere he's dug

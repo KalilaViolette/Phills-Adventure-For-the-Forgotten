@@ -312,9 +312,11 @@ function hurt(fromX, kind, dmg = 1) {
   const dir = Math.sign(P.x - fromX) || -P.facing;
   P.vx = dir * 170; P.vy = -230; P.facing = -dir;
   if (wearing('shell')) { P.vx = dir * 50; P.vy = -90; }            // the snail shell pin: hits hardly move him
+  else if (tune.feelHurt) P.vx = dir * 250;                          // (the feel try-out: knocked back harder, about where Silksong's comes out at his size)
   if (kind === 'water') { P.vx = 0; P.vy = 0; P.hurtT = 0; if (P.health <= 0) { P.x = P.safeX; P.y = P.safeY; P.px = P.x; P.py = P.y; cam.snap = true; } }   // sank: he comes up where he last stood
   hitstop = 0.06; shakeT = 0.18; shakeA = 3;
   puff(P.x, P.y - 22, 8, 70, '#ffffff', 80);           // a bit of his fluff comes out
+  if (tune.feelHurt) { hitstop = 0.2; shakeA = 6; puff(P.x, P.y - 22, 10, 110, '#ffffff', 80); }   // (the feel try-out: the whole game holds a moment, a hard shake that drops off fast, more fluff out)
   sfx.hurt();
   if (P.health <= 0) {                               // knocked out: flung back, then flat out for a bit
     P.ko = 0.001; P.koBy = kind; P.koLanded = false; P.vy = -280; P.vx = dir * 150; P.inv = 9; hitstop = 0.15; shakeT = 0.2; shakeA = 3;
@@ -363,6 +365,14 @@ const comboList = () => swordSet() >= 3 ? ['side', 'chop', 'whirl', 'bashcut', '
 // dev tab sets it. Only the pictures change between sets (Sprites/sword_sets.py): the hits come from the frames he's
 // always had, so every enemy's tuning holds
 const swordSet = () => world.swordSkill || 0;
+// the feel try-out (10/31/2026): the swings that let him turn round early (the bigger combo swings stay locked)
+const QUICK_TURN = new Set(['side', 'up', 'low', 'down']);
+// the feel try-out (10/31/2026), what each sword set changes when it's on: clumsy swings again a bit slower, bounces
+// back off what he hits more and moves it less, mastered quicker and steadier. Like Silksong's crests, the same character tuned three ways
+const SKILL_FEEL = { 1: { wait: 0.42, bounce: 20, push: 0.75, hold: 0.03 }, 2: { wait: 0.36, bounce: 15, push: 1, hold: 0.04 }, 3: { wait: 0.30, bounce: 10, push: 1, hold: 0.05 } };   // (mastered pushes no further than sure on the way through the combo: tested, more push sent things out of reach and walking back in got him hurt. Its big shove is the combo's last swing)
+const skillFeel = () => (tune.feelSkill && SKILL_FEEL[swordSet()]) || null;
+const swingWait = () => (skillFeel() ? skillFeel().wait : tune.attackCooldown);
+const bounceBack = () => (skillFeel() ? skillFeel().bounce : 15);                   // px he's pushed back off a hit
 const SKILL_PREFIX = { 1: 'n_', 3: 'm_' };
 function skillFrame(n) {
   const p = SKILL_PREFIX[swordSet()];
@@ -405,7 +415,7 @@ function chargedBurst(lv) {                                                     
 }
 function startAttack(type) {
   P.atk = { type, t: 0, hit: new Set(), whiff: true };
-  P.atkCD = tune.attackCooldown + (type === 'rollslash' ? 0.08 : type === 'whirl' ? 0.2 : type === 'chop' ? 0.04 : type === 'bashfin' ? 0.2 : type === 'shbash' ? 0.12 : 0); P.atkBufT = 0;   // the whirl leaves him dizzy a moment: mashing all three isn't free
+  P.atkCD = swingWait() + (type === 'rollslash' ? 0.08 : type === 'whirl' ? 0.2 : type === 'chop' ? 0.04 : type === 'bashfin' ? 0.2 : type === 'shbash' ? 0.12 : 0); P.atkBufT = 0;   // the whirl leaves him dizzy a moment: mashing all three isn't free
   if (isCharged(type)) {
     if (!world.flags.chargedOnce) { world.flags.chargedOnce = true; saveWorld(); }
     P.atkCD = Math.max(0.55, ATK[type].frames[ATK[type].frames.length - 1] + 0.05); sfx.clack(); sfx.bigswing(); if (type === 'chargedwhirl') sfx.whirl(); puff(P.x - P.facing * 10, P.y, 12, 80); shakeT = 0.12; shakeA = 2;
@@ -426,6 +436,7 @@ const atkLive = a => a.t >= ATK[a.type].on && a.t < ATK[a.type].off;
 // the sword goes, so each swing matters). Each one's stretched past the drawn blade by tune.swordReach (it's drawn short,
 // for a plush, and his reach is what every enemy's tuned around) and fattened a few pixels either side (SWORD_R)
 const SWORD_R = 5;
+const EDGE_DEEP = 12;                                                            // how far down a backing heel looks for ground before he hesitates (see the edge check)
 function swordLines() {
   const a = P.atk; if (!a || P.swim || P.crawl || typeof META === 'undefined' || !META || !META.hit) return null;
   const hits = META.hit[frameName()]; if (!hits) return null;
@@ -661,7 +672,7 @@ function update(dt) {
     if (P.dash <= 0 && !P.atk) { P.vx *= 0.55; P.h = STAND_H; P.dashRec = 0.09; P.rollEndT = 0.15; if (!hasHeadroom(STAND_H)) { P.crawl = true; P.h = ROLL_H; } }
   } else {
     const guarding = inp.guardH && !P.atk && P.gbreak <= 0 && !P.guardOut;
-    const midSwing = P.atk && P.atk.t < ATK[P.atk.type].off;
+    const midSwing = P.atk && P.atk.t < (tune.feelTurn && QUICK_TURN.has(P.atk.type) ? 0.1 : ATK[P.atk.type].off);   // (the feel try-out: a plain swing frees him to turn after 0.1s, the way Hollow Knight does)
     if (inp.aimX && !midSwing && P.facing !== inp.aimX) { P.facing = inp.aimX; if (P.ground && Math.abs(P.vx) < 40) P.turnT = 0.06; }   // the right stick turns him that way, on the ground or in the air (10/16/2026)
     const locked = midSwing || inp.aim || (guarding && P.guardLock);   // facing holds mid swing, while the right stick's held, or when the guard's locked with R3
     if (dir && !locked && dir !== P.facing) {
@@ -674,10 +685,14 @@ function update(dt) {
     if (P.soggyT > 0) target *= 0.55;
     if (P.slowT > 0) target *= 0.5;                                                           // a candy wrapper round him, or gum on his feet                                                         // soaked through: heavy, and slow till he's dripped dry
     // backing up with the guard locked: he's nervous about stepping off an edge he can't see. Hold back long enough and he goes
+    // (10/31/2026: how far down it looks under his heel. It was 6, and on the painted rooms' steeper slopes, like the root in
+    // the squirrel's hollow, the ground falls more than that in the width of his foot, so backing down one he froze at
+    // every step. A real drop is far deeper than this)
     P.teeter = false;
     if ((inp.aim || (guarding && P.guardLock)) && P.ground && dir && dir === -P.facing) {
       const heel = P.x + dir * (HW - 2) + dir * 2;
-      if (!boxSolid(heel - 1, P.y, heel + 1, P.y + 6) && !boxHas(heel - 1, P.y, heel + 1, P.y + 6, 2) && !(room.ramps.length && rampY(heel, P.y, 6, STEP_UP) !== null)) {   // nothing under his heel (it read the tile row his feet were in, and on ground that sits a hair high, a flat floor counted as an edge). A shelf or a one-way slope under it is ground too: backing along the hollow's root he froze every few steps, the terrain audit 10/17/2026
+      const deep = P.y + EDGE_DEEP;
+      if (!boxSolid(heel - 1, P.y, heel + 1, deep) && !boxHas(heel - 1, P.y, heel + 1, deep, 2) && !(room.ramps.length && rampY(heel, P.y, EDGE_DEEP, STEP_UP) !== null)) {   // nothing under his heel (it read the tile row his feet were in, and on ground that sits a hair high, a flat floor counted as an edge). A shelf or a one-way slope under it is ground too: backing along the hollow's root he froze every few steps, the terrain audit 10/17/2026
         P.edgeT += dt;
         if (P.edgeT < tune.edgeHesitate) { target = 0; P.vx = 0; P.teeter = true; if (P.edgeT - dt <= 0) sfx.teeter(); }
       } else P.edgeT = 0;

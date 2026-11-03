@@ -237,36 +237,7 @@ SCENES.squirrel = npc => {
   return steps;
 };
 
-// ---- the beetle under the oak: whittles all day, and stains and etches Phill's sword with what Phill brings him
-// (10/30/2026: not for acorns any more. Each step needs something found out in the park, the oak gall first: js/sword.js)
-SCENES.beetle = npc => {
-  const steps = [walkTo(npc.x - 3.5 * T), faceTo(npc.x)];
-  const job = swordNext();
-  if (!world.flags.metBeetle) {
-    world.flags.metBeetle = true; saveWorld();
-    steps.push(run(() => { npcPose = { frame: 'beetle_idle_2', t: 0.6 }; }), wait(0.5),
-      say('beetle', "*tk tk* Not a bottle cap. Good. Had enough of those chewing my roots.",
-        "Let me see that stick. Pine. Somebody carved that careful. Soft, though.",
-        "I can stain it. Hardens the grain, hits harder. Need something to make the stain from, though."));
-    if (!swordReady()) { steps.push(say('beetle', job.hint)); return steps; }
-  } else steps.push(say('beetle', ['Mind the shavings.', '*tk* Back. Still soft, that sword?', 'Hm.'][Math.floor(Math.random() * 3)]));
-  if (!job) return [...steps, say('beetle', "That's as good as wood from round here gets. Find me better wood somewhere else and we'll talk.")];
-  if (!swordReady()) return [...steps, say('beetle', job.hint)];
-  let picked = -1;
-  steps.push(ask('beetle', 'Well? Want me to?', [job.offer, 'not yet'], i => { picked = i; }));
-  steps.push(t => {
-    if (t > 0) return true;
-    if (picked !== 0) return true;
-    // done in the same save as it's used up (the save audit, 10/17/2026): the carving after is only for show
-    world.sword = swordLevel() + 1; sfx.pickup(); saveWorld();
-    scene.steps.splice(scene.i + 1, 0, say('beetle', job.line), bars(true),
-      (tt, dt) => { npcPose = { frame: 'beetle_carve_' + (Math.floor(tt * 6) % 2 + 1), t: 0.2 }; if (Math.floor(tt * 6) !== Math.floor((tt - dt) * 6)) sfx.tok(); return tt > 1.8; },
-      run(() => { refreshSheets(); popup(P.x, P.y - 54, job.done, '#e8c8a0', true); twinkle(P.x + P.facing * 10, P.y - 20, 10, '#e8c8a0'); sfx.idea(); }),
-      wait(0.8), bars(false), say('beetle', '*tk tk* There. Go hit something.'));
-    return true;
-  });
-  return steps;
-};
+// ---- the beetle under the oak: his scene is in js/swordwork.js now (10/31/2026), with the work on Phill's sword all seen
 function squirrelFirst(npc) {
   return [
     bars(true), walkTo(npc.x - 4.5 * T), faceTo(npc.x),

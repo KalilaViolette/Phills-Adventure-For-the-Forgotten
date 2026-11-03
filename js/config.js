@@ -30,7 +30,7 @@ const DEFAULTS = {
   jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42,
   coyote: 0.09, jumpBuffer: 0.12, attackCooldown: 0.36,
   rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, slowWalk: 0.32, keyWalk: 0.55, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
-  pressSwing: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
+  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
 };
 const TUNE_ROWS = [
   ['runSpeed', 'Run speed', 100, 320, 5, ' px/s'],
@@ -77,6 +77,13 @@ const TUNE_ROWS = [
   ['downCooldown', 'Wait before another down swing in the air', 0.2, 2.5, 0.05, ' s'],
   ['pixelSnap', 'Snap movement to art pixels (0 off, 1 on)', 0, 1, 1, ''],
   ['pressSwing', 'Swing on the press, hold on to charge the next (0 off, 1 on)', 0, 1, 1, ''],
+  // the combat feel try-outs (10/31/2026), from what Hollow Knight and Silksong do (Notes: Combat feel research 10-31-2026). All off is the game as it was
+  ['feelHurt', 'Feel: getting hurt is a big moment, a longer freeze, a sharp shake, a harder knock back (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelKill', 'Feel: the knockout is its own moment, a hitch, a shake, thrown the way it was hit (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelHits', 'Feel: plain hits, no shake, he bounces back off it, the flash fades out (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelSkill', 'Feel: his sword set changes his swing speed, how much he bounces and how far things go (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelTrail', 'Feel: a thread trail behind the sword, out to where it reaches (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelTurn', 'Feel: he can turn round sooner in a plain swing, the bigger swings stay locked (0 off, 1 on)', 0, 1, 1, ''],
 ];
 const tune = { ...DEFAULTS };
 // TUNE_V goes up when defaults change on purpose: saved numbers from before that for those few don't win over the new

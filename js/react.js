@@ -10,6 +10,8 @@
 // the same place, so at rest it all looks as it always did.
 // How each kind moves:
 //   squash   flattens toward where it joins and spreads a little, a few times smaller each bounce (amt: how far)
+//   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
+//            (amt: how far it turns, free: which end is free, 1 right, -1 left) (10/31/2026)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
@@ -66,12 +68,40 @@ const REACT = (() => {
       if (!m) { ctx.drawImage(cut.im, p.piece[0], p.piece[1], p.w, p.h, p.x, p.y, p.w, p.h); continue; }   // at rest: just as the painting had it
       const k = m.k * spring(m.t), s = shape(p, k);
       ctx.drawImage(cut.im, p.under[0], p.under[1], p.w, p.h, p.x, p.y, p.w, p.h);         // what's under it
-      ctx.save(); ctx.translate(p.anchor[0], p.anchor[1]); ctx.scale(s.sx, s.sy); ctx.translate(-p.anchor[0], -p.anchor[1]);
-      ctx.drawImage(cut.im, p.piece[0], p.piece[1], p.w, p.h, p.x, p.y, p.w, p.h);         // and it, squashed toward where it joins
+      ctx.save(); ctx.translate(p.anchor[0], p.anchor[1]);
+      if (p.kind === 'flex') ctx.rotate(p.amt * k * (p.free || 1)); else ctx.scale(s.sx, s.sy);
+      ctx.translate(-p.anchor[0], -p.anchor[1]);
+      ctx.drawImage(cut.im, p.piece[0], p.piece[1], p.w, p.h, p.x, p.y, p.w, p.h);         // and it, squashed toward where it joins (or turned, a bracket)
       ctx.restore();
     }
   }
   return { update, draw, mainFor, live, here };
 })();
+// ---------- leaves kicked up crawling (10/31/2026) ----------
+// From the same To do list item: crawling through the leaves under the fallen log on the litter path, he scuffs a few
+// up behind him that flutter and land again. The colors are the lit leaves on that floor in the painting (the darker
+// ones disappear against it). Each lasts till it's back down on the floor, so none fall through it. Where: a box
+// in the room's pixels (x0, x1, y0, y1, where his feet are)
+const KICK = {
+  litterpath: { box: [815, 962, 272, 300], cols: ['#b8783c', '#c98a44', '#d89a50', '#e8b060', '#9e6130'], every: 0.08 },
+};
+const KICKUP = (() => {
+  let t = 0;
+  function update(dt) {
+    const k = room && KICK[room.def.id];
+    if (!k || !P.crawl || !P.ground || Math.abs(P.vx) < 8) { t = 0; return; }
+    const [x0, x1, y0, y1] = k.box;
+    if (P.x < x0 || P.x > x1 || P.y < y0 || P.y > y1) return;
+    if ((t -= dt) > 0) return;
+    t = k.every * (0.6 + Math.random() * 0.8);
+    const back = -Math.sign(P.vx);                                                          // off his feet, behind him (lying down, they're well back)
+    for (let i = 0, n = Math.random() < 0.4 ? 2 : 1; i < n; i++) {
+      const vy = -25 - Math.random() * 30, g = 300;
+      part(P.x + back * (CRAWL_BACK + Math.random() * 6), P.y - 2, back * (10 + Math.random() * 20), vy, -2 * vy / g,
+           k.cols[Math.floor(Math.random() * k.cols.length)], Math.random() < 0.6 ? 2 : 1, g);
+    }
+  }
+  return { update, KICK };
+})();
 const _checkEventsReact = checkEvents;
-checkEvents = dt => { _checkEventsReact(dt); REACT.update(dt); };
+checkEvents = dt => { _checkEventsReact(dt); REACT.update(dt); KICKUP.update(dt); };

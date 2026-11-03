@@ -22,9 +22,15 @@ function clearParts() { for (const p of parts) p.on = false; popups.length = 0; 
 const liveParts = () => parts.reduce((n, p) => n + (p.on ? 1 : 0), 0);
 
 const popups = [];
-const popup = (x, y, text, col = '#ffffff', big = false) => { if (popups.length < 12) popups.push({ x, y, text, col, life: big ? 1.3 : 0.9, big }); };
+// (11/02/2026: long ones went by too fast to read and ran off the screen. Now each stays up for as long as it takes to
+// read, about a third of a second a word, and the long ones drift up slowly. The drawing wraps them and keeps them on screen: js/render.js)
+const popup = (x, y, text, col = '#ffffff', big = false) => {
+  if (popups.length >= 12) return;
+  const words = String(text).trim().split(/\s+/).length, life = Math.min(7, Math.max(big ? 1.3 : 0.9, 0.6 + words * 0.3));
+  popups.push({ x, y, text, col, life, max: life, big });
+};
 function updatePopups(dt) {
-  for (const p of popups) { p.life -= dt; p.y -= 22 * dt; }
+  for (const p of popups) { p.life -= dt; p.y -= (p.max > 1.6 ? 8 : 22) * dt; }
   for (let i = popups.length - 1; i >= 0; i--) if (popups[i].life <= 0) popups.splice(i, 1);
 }
 

@@ -9,7 +9,7 @@
 const BEAR_SHEET = 'art/bear/bear.png';
 const BEAR_AT = {
   meet: { room: 'eastedge', x: 274, y: 448, talk: 110, clear: [220, 100] },   // where he stands at the east edge (past the big trunk, so he shows against the dark), how close Phill comes to start the meeting, and how far round him the Grime things have to be gone first
-  watch: { room: 'clearing', layer: 1, x: 200, y: 224, scale: 0.5 },       // watching the soldier fight, far back on the clearing's second layer (in the shade, off to the side of the light)
+  watch: { room: 'clearing', layer: 1, behind: 2, x: 176, y: 245, scale: 0.5, out: 11 },   // watching the soldier fight from behind a tree: drawn with the second layer, placed on the third (its trunk at x 118 to 178 there), so that trunk is in front of him. out: how far he leans
   invite: { room: 'eastedge', x: 684, y: 448, go: 40 },                     // waiting under his hole after Phill's first boss, and how far in from where Phill comes in before he calls out
   home: { room: 'bearhome', x: 27 * 16, y: 18 * 16 },                     // in his home, between the seats and his bed
 };
@@ -89,22 +89,34 @@ function drawBear(a) {
   drawBearPic(im, bearFrame(a), a.x, a.y);
 }
 
-// ---- watching the soldier fight from the back of the clearing. Small and hazy that far back, turned toward the fight.
-// Gone the moment the soldier's down
+// ---- watching the soldier fight from behind a tree at the back of the clearing (11/02/2026). He's drawn just before the
+// layer with the tree, so its trunk is in front of him and only the side of his head comes out past it. Darkened to
+// nearly the trunk's own color, so he's hard to spot: you can just about make out that it's him. Now and then he leans
+// back in. Gone the moment the soldier's down
+const PEEK = [[2.6, 1], [0.9, 0], [3.4, 1], [0.5, 0.4], [1.8, 1], [1.2, 0]];          // how long, and how far out (1 all the way, 0 back behind the tree)
+const PEEK_LEN = PEEK.reduce((n, p) => n + p[0], 0);
+function peekOut(t) {
+  let at = t % PEEK_LEN, from = PEEK[PEEK.length - 1][1];
+  for (const [len, to] of PEEK) { if (at < len) { const k = Math.min(1, at / 0.6); return from + (to - from) * (k * k * (3 - 2 * k)); } at -= len; from = to; }
+  return from;
+}
+let peekCanvas = null;
 const _drawWildlifeB = drawWildlife;
 drawWildlife = (at, camX, camY) => {
   _drawWildlifeB(at, camX, camY);
-  const w = BEAR_AT.watch, L = room && room.def.art.layers && room.def.art.layers[w.layer];
+  const w = BEAR_AT.watch, Ls = room && room.def.art.layers, L = Ls && Ls[w.behind];
   if (!L || at !== 'L' + w.layer || room.def.id !== w.room || world.flags.soldierDown) return;
-  const im = Assets.get(BEAR_SHEET); if (!im) return;
-  const X = w.x - camX * L.f, Y = w.y - camY * (L.fy ?? L.f);
+  const im = Assets.get(BEAR_SHEET), F = window.BEAR_FRAMES; if (!im || !F) return;
+  const t = performance.now() / 1000, X = w.x + Math.round(peekOut(t) * w.out) - camX * L.f, Y = w.y - camY * (L.fy ?? L.f);
   if (X < -60 || X > VW + 60) return;
-  const t = performance.now() / 1000, toward = boss && boss.x !== undefined ? boss.x : P.x;
-  const f = toward > X + camX ? 'R' : 'L';
-  ctx.save(); ctx.globalAlpha = Math.min(1, 0.25 + L.f * 0.8);           // the same haze as the animals that far back
-  ctx.translate(Math.round(X), Math.round(Y)); ctx.scale(w.scale, w.scale);
-  drawBearPic(im, (t % 4.1 < 0.12 ? 'blink_' : 'idle_') + breathAt(t) + '_' + f, 0, 0);
-  ctx.restore();
+  const fr = F.frames[(t % 4.1 < 0.12 ? 'blink_' : 'idle_') + breathAt(t) + '_R'];
+  if (!fr) return;
+  if (!peekCanvas) { peekCanvas = document.createElement('canvas'); peekCanvas.width = F.w; peekCanvas.height = F.h; }
+  const pc = peekCanvas.getContext('2d');                                               // him darkened, on a little canvas of his own
+  pc.globalCompositeOperation = 'source-over'; pc.clearRect(0, 0, F.w, F.h); pc.imageSmoothingEnabled = false;
+  pc.drawImage(im, fr[0], fr[1], F.w, F.h, 0, 0, F.w, F.h);
+  pc.globalCompositeOperation = 'source-atop'; pc.fillStyle = 'rgba(17, 23, 22, 0.84)'; pc.fillRect(0, 0, F.w, F.h);
+  ctx.drawImage(peekCanvas, Math.round(X - F.feet[0] * w.scale), Math.round(Y - F.feet[1] * w.scale), F.w * w.scale, F.h * w.scale);
 };
 
 // ---- the east edge: he's there till Phill's met him. The meeting only starts once the Grime things round him are beaten

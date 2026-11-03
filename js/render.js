@@ -49,6 +49,13 @@ const motes = [];
 let vignette = null;
 
 // ---------- drawing ----------
+// a popup's words broken into lines no wider than w, in the font that's set
+function wrapLines(t, w) {
+  const out = []; let line = '';
+  for (const word of t.split(' ')) { const next = line ? line + ' ' + word : word; if (line && ctx.measureText(next).width > w) { out.push(line); line = word; } else line = next; }
+  if (line) out.push(line);
+  return out.length ? out : [''];
+}
 function render(alpha) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#0b0c12'; ctx.fillRect(0, 0, C.width, C.height);
@@ -126,7 +133,18 @@ function render(alpha) {
   if (typeof drawOnPhill === 'function') drawOnPhill(px2, py2);                           // things stuck on him (the gum leech)
 
   ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.textAlign = 'center';
-  for (const p of popups) { ctx.font = p.big ? '600 16px "Pixelify Sans", ui-monospace, monospace' : '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.globalAlpha = Math.min(1, p.life * 2.5); ctx.fillStyle = '#0e0f18'; const pt = fmtKeys(p.text); ctx.fillText(pt, p.x + 1, p.y + 1); ctx.fillStyle = p.col; ctx.fillText(pt, p.x, p.y); }
+  const placed = [];                                                            // (where the ones already drawn this frame are, so a wrapped one doesn't land on top of another)
+  for (const p of popups) {                                                     // wrapped to a width, and kept on screen (11/02/2026: long ones ran off the side)
+    ctx.font = p.big ? '600 16px "Pixelify Sans", ui-monospace, monospace' : '600 8px "Pixelify Sans", ui-monospace, monospace';
+    const pt = fmtKeys(p.text), lh = p.big ? 18 : 10;
+    if (p.wrapped !== pt) { p.wrapped = pt; p.lines = wrapLines(pt, p.big ? 300 : 200); p.w = Math.max(...p.lines.map(l => ctx.measureText(l).width)); }
+    const half = p.w / 2 + 3, x = Math.max(camX + half, Math.min(camX + VW - half, p.x));
+    let y = p.y - (p.lines.length - 1) * lh; const top = y - lh + 2; if (top < camY + 4) y += camY + 4 - top;   // (the last line where it always was, the rest above it)
+    for (let k = 0; k < 6; k++) { const hit = placed.find(o => x - half < o.r && x + half > o.l && y - lh + 2 < o.b && y + (p.lines.length - 1) * lh + 3 > o.t); if (!hit) break; y -= y + (p.lines.length - 1) * lh + 3 - hit.t; }
+    placed.push({ l: x - half, r: x + half, t: y - lh + 2, b: y + (p.lines.length - 1) * lh + 3 });
+    ctx.globalAlpha = Math.min(1, p.life * 2.5);
+    p.lines.forEach((l, i) => { ctx.fillStyle = '#0e0f18'; ctx.fillText(l, x + 1, y + i * lh + 1); ctx.fillStyle = p.col; ctx.fillText(l, x, y + i * lh); });
+  }
   ctx.globalAlpha = 1; ctx.textAlign = 'left';
   for (const p of parts) { if (!p.on) continue; ctx.globalAlpha = Math.min(1, p.life / p.max * 1.6) * p.a; ctx.fillStyle = p.c; ctx.fillRect(q(p.x), q(p.y), p.s, p.s); }
   ctx.globalAlpha = 1;
@@ -758,16 +776,21 @@ function glowEach(camX, camY, front, fn) {
   if (!room.def.glow) return;
   const now = performance.now() / 1000, pcs = room.def.art.pieces || {};
   const tod = room.def.outside ? timeOfDay() : 'day';
-  for (const [n, pulse, speed, phase, depth, times] of room.def.glow) {
+  for (const [n, pulse, speed, phase, depth, times, blend] of room.def.glow) {
     if ((depth === 'front') !== front || (times && !times.includes(tod))) continue;   // (a light for some times of day only, outside: the mushrooms' glow at night)
     const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
     if (!im || r[0] - camX > VW || r[1] - camY > VH || r[0] + r[2] - camX < 0 || r[1] + r[3] - camY < 0) continue;
-    fn(im, r, 1 - pulse * (0.5 + 0.5 * Math.sin(now * speed + phase)));
+    fn(im, r, 1 - pulse * (0.5 + 0.5 * Math.sin(now * speed + phase)), blend);
   }
 }
 function drawGlowLayers(g, ox, oy, front, op, camX = ox, camY = oy) {
-  glowEach(camX, camY, front, (im, r, a) => {
-    g.globalCompositeOperation = op; g.globalAlpha = a;
+  glowEach(camX, camY, front, (im, r, a, blend) => {
+    // a light layer can say how it's laid over the room (11/02/2026): screen lightens like light falling on it, multiply
+    // darkens like shade, normal is just drawn over (haze). Those are part of the room's look, not lights in the dark, so
+    // they never open the dark up. Without one it adds light the way it always has
+    const own = blend && blend !== 'lighter';
+    if (own && op === 'destination-out') return;
+    g.globalCompositeOperation = own ? (blend === 'normal' ? 'source-over' : blend) : op; g.globalAlpha = a;
     g.drawImage(op === 'destination-out' ? glowMask(im) : im, r[0] - ox, r[1] - oy);   // (not rounded: the camera moves in fractions of a pixel, and the room with it)
   });
   g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';

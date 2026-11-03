@@ -626,14 +626,21 @@ function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
   const mid = committed(f), holds = !heavy;
   const power = opts.power ?? (heavy ? 1.8 : 1), braced = mid && !heavy;
   const opening = /stuck|stagger|dizzy|flat|lie|wobble|tangle/.test(f.state);              // (in an opening it hardly moves: hitting it out of reach of the next hit wasted the opening, the spinner stuck in the ground)
-  f.flash = 0.12; f.hp -= dmg; f.vel = (heavy || opts.full ? push : push * (mid ? 0.25 : 0.5)) * (opening ? 0.3 : 1);
+  const sk = typeof skillFeel === 'function' && skillFeel();
+  f.flash = tune.feelHits ? 0.22 : 0.12; f.hp -= dmg; f.vel = (heavy || opts.full ? push : push * (mid ? 0.25 : 0.5)) * (opening ? 0.3 : 1) * (sk && !heavy ? sk.push : 1);
   f.shoveT = Math.max(f.shoveT || 0, opts.shoveT ?? (heavy || opts.full ? 0.3 : 0.15));
   foeReact(f, power, braced);
   impact(x, y, Math.sign(f.x - P.x) || P.facing, power, braced ? 'braced' : 'clean', MAT_BITS[matOf(f)]);
-  hitstop = Math.max(hitstop, heavy ? 0.08 : 0.05); shakeT = heavy ? 0.14 : 0.08; shakeA = heavy ? 2.5 : 1.5;
+  hitstop = Math.max(hitstop, heavy ? 0.08 : (sk ? sk.hold : 0.05));
+  if (!tune.feelHits || heavy) { shakeT = heavy ? 0.14 : 0.08; shakeA = heavy ? 2.5 : 1.5; }   // (the feel try-out: neither game shakes on a plain hit, so the knockout and getting hurt stand out)
   sfx.hit(); (MAT_SFX[matOf(f)] || MAT_SFX.flex)(); if (braced) sfx.hitBraced();
   if (f.hp <= 0) {                                                                      // knocked out: the Grime seeps out of it for now
     f.hp = 0; setFoeState(f, 'down'); f.yoff = 0; f.vy = 0; sfx.ko && sfx.ko();
+    const kd = Math.sign(f.x - P.x) || P.facing;
+    if (tune.feelKill) {                                                                  // (the feel try-out: its own hitch and shake, and it's thrown the way it was hit, the Grime going that way too)
+      hitstop = Math.max(hitstop, 0.08); shakeT = 0.4; shakeA = 1.35; f.vel = kd * 260;
+      for (let i = 0; i < 14; i++) part(f.x, f.y - 8, kd * (30 + Math.random() * 130), -20 - Math.random() * 110, 0.7, i % 2 ? '#2c1c3c' : '#4a3462', 2, 300);
+    } else
     for (let i = 0; i < 12; i++) part(f.x, f.y - 8, (Math.random() * 2 - 1) * 80, -Math.random() * 120, 0.6, i % 2 ? '#2c1c3c' : '#4a3462', 2, 300);
     const n = foeDropCount(f);
     for (let i = 0; i < n; i++) dropAcorn(f.x, f.y - 10);
@@ -677,6 +684,7 @@ function foeHits(box, a) {
     f.bumpGrace = 0.3;
     rally();
     if (a.type === 'down') pogo();
+    else if (tune.feelHits || tune.feelSkill) { P.recoilT = 0.1; P.recoilV = -P.facing * bounceBack() / 0.1; }   // (the feel try-outs: he bounces back off it far enough to feel)
     else { P.recoilT = 0.08; P.recoilV = -P.facing * 90; }
   }
 }
@@ -773,7 +781,7 @@ function drawOneFoe(f) {
     const shake = /wind$/.test(f.state) || f.state === 'aim' || f.state === 'crouch' || f.state === 'tip' || f.state === 'shake' ? Math.round(Math.sin(f.t * 60)) : 0;
     ctx.fillStyle = 'rgba(0,0,0,0.25)'; ellipse(f.x, f.y, FOE[f.kind].hw + 1, 1);
     spr(foeFrame(f), f.x + shake, f.y + f.yoff, f.f > 0);
-    if (f.flash > 0) { ctx.globalCompositeOperation = 'lighter'; spr(foeFrame(f), f.x, f.y + f.yoff, f.f > 0, 0.6); ctx.globalCompositeOperation = 'source-over'; }
+    if (f.flash > 0) { ctx.globalCompositeOperation = 'lighter'; spr(foeFrame(f), f.x, f.y + f.yoff, f.f > 0, tune.feelHits ? 0.85 * Math.min(1, f.flash / 0.1) : 0.6); ctx.globalCompositeOperation = 'source-over'; }   // (the feel try-out: stronger, and it fades out instead of switching off)
     if (f.state === 'stagger') for (let i = 0; i < 3; i++) { const a = f.t * 8 + i * 2.1; ctx.fillStyle = '#ffd36b'; ctx.fillRect(Math.round(f.x + Math.cos(a) * 7) - 1, Math.round(f.y - FOE[f.kind].h - 6 + Math.sin(a) * 2), 2, 2); }
   }
 }

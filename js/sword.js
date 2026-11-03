@@ -14,16 +14,25 @@
 //   hint    what the beetle says when Phill hasn't got what it needs yet
 //   sheet   which of Phill's gear sheets has the sword looking like this ('' the plain one)
 //   hits    how hard the sword hits, times the plain sword
+//   process how the beetle gets it ready before it goes on, seen in the scene (js/swordwork.js PROCESS: gall), or
+//           null for one that hasn't got its own yet (he just gnaws it)
+//   admire  what he says holding Phill's sword up before he starts (10/31/2026)
+//   tooSoon what he says when Phill brings this one before the step it goes over is done (optional)
+//   under   what this step leaves on the blade, for when he says a later one needs it underneath
 const SWORD_WORK = [
-  { needs: 'gall', offer: 'stain it with the gall', sheet: '_gall', hits: 1.15,             // (dark umber, the hilt kept warm: phill_gear_gall_*.png)
-    line: "Oak gall. Crush it, soak it, and it makes the darkest stain there is. Hold it still.",
+  { needs: 'gall', offer: 'stain it with the gall', sheet: '_gall', hits: 1.15, process: 'gall', under: "the gall's stain",   // (dark umber, the hilt kept warm: phill_gear_gall_*.png)
+    line: "Oak gall. Crack it, soak it, and that's the darkest stain there is.",
+    admire: ["*tk* Now that's a sword.", "Pine, carved careful. Every edge rounded off so it won't catch a seam. Whoever made this knew what it was for.",
+      "And it's yours, all right. Light enough to swing all day, and it won't tear you if you land on it. Fits you like it grew there."],
     done: 'his sword, stained dark with the oak gall',
     hint: "There's an old oak gall under the fallen log out on the litter path. Bring me that and I'll make you a stain." },
-  { needs: null, offer: 'stain it cherry', sheet: '_s1', hits: 1.35,
+  { needs: null, offer: 'stain it cherry', sheet: '_s1', hits: 1.35, process: null, under: 'the cherry stain',
+    admire: ["*tk* Look at that. The gall's taken right down into the grain.", "Still yours, through and through. Still fits."],
     line: "Cherry stain over the gall. Soaks in deep, hardens the grain. Hold it still.",
     done: 'his sword, stained a deep cherry',
     hint: "Could go darker and harder still. I'd need something to make it from, though. Haven't seen it round here." },
-  { needs: null, offer: 'etch it', sheet: '_s2', hits: 1.6,
+  { needs: null, offer: 'etch it', sheet: '_s2', hits: 1.6, process: null,
+    admire: ["*tk* Cherry over gall. Not many swords get to look like that.", "Hold still while I look. Yes. Made for you, this. Every bit of it."],
     line: "Going to burn a pattern down the blade. Burned wood's tougher. Always has been.",
     done: 'his sword, etched down the blade',
     hint: "I could burn a pattern into it. Need something to do it with, though. Keep your eyes open." },
@@ -33,6 +42,17 @@ const swordNext = () => SWORD_WORK[swordLevel()] || null;
 const swordReady = () => { const w = swordNext(); return !!(w && w.needs && world.has[w.needs]); };
 const swordSheet = () => { const l = swordLevel(); return l ? SWORD_WORK[l - 1].sheet : ''; };
 const swordPower = () => { const l = swordLevel(); return l ? SWORD_WORK[l - 1].hits : 1; };
+// a later step's thing Phill's carrying before the step it goes over (10/31/2026): it can't go on yet, it'd ruin the
+// blade, so the beetle won't put it on. He'd trade for it, though
+const swordEarly = () => SWORD_WORK.slice(swordLevel() + 1).find(w => w.needs && world.has[w.needs] && !world.flags['traded_' + w.needs]) || null;
+// what the beetle would trade for one of those. None yet: what he'd give is something from another region, or
+// whatever the game has for it later. One a line:
+//   for    the thing he wants (a later step's needs)
+//   gives  what Phill gets for it (world.has)
+//   name   what pops up over Phill
+//   offer  what the beetle's question says
+//   line   what he says after
+const SWORD_TRADES = [];
 
 // the oak gall as he finds it: a little round woody ball, dark and knobbly, with the hole the wasp left. It's hidden
 // under the log, so from outside it's just a dark lump like the litter round it. Once he's down there with it, it
