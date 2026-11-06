@@ -762,7 +762,7 @@ const PLANT_BENDS = {
   curve:  k => Math.pow(k, 1.4),
   rooted: k => k < 0.3 ? 0 : Math.pow((k - 0.3) / 0.7, 1.4),
 };
-let plantFrom = null, plantTo = null, plantWarp = 0, plantWarpSeen = 0;
+let plantFrom = null, plantTo = null, plantWarp = 0, plantWarpSeen = 0, plantAir = { ground: true, vy: 0 }, plantLand = 0;
 function warpPlants() { plantWarp++; }                             // anything that puts him somewhere without moving him there (a door, a respawn, a
                                                                    //  scripted placing) calls this, so the plants don't see him travel the gap
 function drawPlants(layer, camX, camY) {
@@ -777,6 +777,8 @@ function drawPlants(layer, camX, camY) {
     // room or a long hitch he's just where he is now, nothing in between gets touched. (Moving further than he could is a backup)
     const jumped = !plantTo || plantTo.room !== at.room || plantWarp !== plantWarpSeen || long || (Math.hypot(at.x - plantTo.x, at.y - plantTo.y) > 420 * plantDt + 8);
     plantWarpSeen = plantWarp; plantFrom = jumped ? at : plantTo; plantTo = at;
+    plantLand = P.ground && !plantAir.ground && !jumped ? plantAir.vy : 0;   // (the frame he lands: how fast he was coming down)
+    plantAir = { ground: !!P.ground, vy: P.vy || 0 };
   }
   const now = performance.now() / 1000, dt = plantDt, pcs = room.def.art.pieces || {}, FEATHER = 6;
   const from = plantFrom || { x: P.x, y: P.y, h: P.h }, to = plantTo || from;
@@ -795,10 +797,16 @@ function drawPlants(layer, camX, camY) {
       const u = (s + 1) / steps, px = from.x + (to.x - from.x) * u, py = from.y + (to.y - from.y) * u, top = py - to.h, L = px - HW, R = px + HW;
       // how much of him is touching its leaves, 0 to 1: the picture's solid span in bands about 8 px tall (worked out when the room is
       // built), easing off over a few pixels past their edges instead of stopping at a rectangle
+      // how much of him is in its leaves, 0 to 1: of his height (or the plant's, if it's shorter), how many rows overlap the leaves,
+      // each band counting less over the last few pixels past its sides. So jumping up out of it lets it go, and coming down presses it again
       let touch = 0;
-      if (part > 0) for (const [y0, y1, x0, x1] of shape) {
-        const gap = Math.max(x0 - R, L - x1, y0 - py, top - y1, 0);
-        if (gap < FEATHER) { const k = 1 - gap / FEATHER; touch = Math.max(touch, k * k * (3 - 2 * k)); }
+      if (part > 0) {
+        let rows = 0;
+        for (const [y0, y1, x0, x1] of shape) {
+          const gap = Math.max(x0 - R, L - x1, 0), over = Math.min(y1, py) - Math.max(y0, top) + 1;
+          if (gap < FEATHER && over > 0) { const k = 1 - gap / FEATHER; rows += over * k * k * (3 - 2 * k); }
+        }
+        touch = Math.min(1, rows / Math.max(4, Math.min(to.h, r[3]) * 0.8));
       }
       const dx = ax - px, clear = Math.abs(dx) > HW;
       // which way it's pushed: the side it's on once his body is clear of the stem. While he's over the stem it keeps the way it
@@ -812,6 +820,8 @@ function drawPlants(layer, camX, camY) {
       if (st.c > 0.3 && !st.in) { st.in = true; st.v += ((P.vx || 0) * 0.5 * reach / 6 + (P.vy > 120 ? Math.sign(dx || -P.facing) * Math.min(P.vy, 500) * 0.25 * reach / 6 : 0)) * kick; }   // running into it shoves it his way, landing in it splays it out
       if (st.c < 0.1) st.in = false;
       st.v += (P.vx || 0) * 3 * h * reach / 6 * st.c * press;            // pushing on through keeps it bent ahead of him
+      st.v += Math.sign(st.side || dx || -P.facing) * Math.min(Math.abs(P.vy || 0), 400) * 1.5 * h * reach / 6 * st.c * press;   // going up or down through it rustles it away from him
+      if (s === 0 && plantLand > 120 && st.c > 0.1) st.v += Math.sign(st.side || dx || -P.facing) * Math.min(plantLand, 500) * 0.25 * reach / 6 * kick;   // and landing in it splays it
       st.v += ((target - st.o) * om * om - st.v * cd) * h; st.o += st.v * h;
       if (Math.abs(st.o) > lim) { st.o = Math.sign(st.o) * lim; st.v *= -0.3; }
     }
