@@ -21,6 +21,7 @@ function placePlayer(x, y, f) {
   const keep = { health: P.health, maxHealth: P.maxHealth, en: P.en, stam: P.stam, story: P.story, worn: P.worn || 0, loose: P.loose || 0, looseBits: P.looseBits || 0, looseT: P.looseT || 0, looseMax: P.looseMax || 0, slid: P.slid || false, sheathed: P.sheathed || false, calmT: P.calmT || 0 };   // (gear put away stays put away through a door)
   newPlayer(x, y, f); Object.assign(P, keep);
   P.crawl = !hasHeadroom(STAND_H); if (P.crawl) P.h = ROLL_H;
+  if (typeof warpPlants === 'function') warpPlants();   // (put somewhere, not walked there: the plants don't sweep the gap)
 }
 const ghosts = [];
 const CRITICAL = 0.3;   // at or under this much of his health he's hurting
@@ -313,7 +314,7 @@ function hurt(fromX, kind, dmg = 1) {
   P.vx = dir * 170; P.vy = -230; P.facing = -dir;
   if (wearing('shell')) { P.vx = dir * 50; P.vy = -90; }            // the snail shell pin: hits hardly move him
   else if (tune.feelHurt) P.vx = dir * 250;                          // (the feel try-out: knocked back harder, about where Silksong's comes out at his size)
-  if (kind === 'water') { P.vx = 0; P.vy = 0; P.hurtT = 0; if (P.health <= 0) { P.x = P.safeX; P.y = P.safeY; P.px = P.x; P.py = P.y; cam.snap = true; } }   // sank: he comes up where he last stood
+  if (kind === 'water') { P.vx = 0; P.vy = 0; P.hurtT = 0; if (P.health <= 0) { P.x = P.safeX; P.y = P.safeY; P.px = P.x; P.py = P.y; cam.snap = true; if (typeof warpPlants === 'function') warpPlants(); } }   // sank: he comes up where he last stood
   hitstop = 0.06; shakeT = 0.18; shakeA = 3;
   puff(P.x, P.y - 22, 8, 70, '#ffffff', 80);           // a bit of his fluff comes out
   if (tune.feelHurt) { hitstop = 0.2; shakeA = 6; puff(P.x, P.y - 22, 10, 110, '#ffffff', 80); }   // (the feel try-out: the whole game holds a moment, a hard shake that drops off fast, more fluff out)
@@ -570,7 +571,7 @@ function update(dt) {
   if (P.respawnT > 0) {
     P.respawnT -= dt;
     if (P.respawnT <= 0 && trans.state !== 'none') P.respawnT = 0;              // half way through a door: he's not coming back
-    else if (P.respawnT <= 0) { P.pinned = null; P.x = P.safeX; P.y = P.safeY; P.vx = P.vy = 0; P.hurtT = 0; P.inv = 0.8; P.px = P.x; P.py = P.y; cam.snap = true; P.sinkT = 0; P.swim = false; P.h = STAND_H; }
+    else if (P.respawnT <= 0) { P.pinned = null; P.x = P.safeX; P.y = P.safeY; P.vx = P.vy = 0; P.hurtT = 0; P.inv = 0.8; P.px = P.x; P.py = P.y; cam.snap = true; if (typeof warpPlants === 'function') warpPlants(); P.sinkT = 0; P.swim = false; P.h = STAND_H; }
     if (P.hurtT > 0) { P.hurtT -= dt; P.vy = Math.min(P.vy + gravity() * dt, tune.maxFall); moveX(P.vx * dt); if (moveY(P.vy * dt)) P.vy = 0; }
     stepWorld(dt); return;
   }
