@@ -45,6 +45,18 @@ ROOM({
     1920,
     613,
     384
+   ],
+   "front": [
+    0,
+    2304,
+    80,
+    48
+   ],
+   "piece_reveal_nook_cover": [
+    0,
+    2352,
+    80,
+    48
    ]
   },
   "layers": [
@@ -70,6 +82,19 @@ ROOM({
     "x": 84
    }
   ],
+  "front": "art/rootwood/painted/woodpecker.webp#front",
+  "frontAt": [
+   448,
+   64
+  ],
+  "pieces": {
+   "reveal_nook_cover": [
+    448,
+    64,
+    80,
+    48
+   ]
+  },
   "uses": [
    "art/rootwood/rootwood_sprites.png",
    "art/rootwood/rootwood_items.png",
@@ -230,6 +255,17 @@ ROOM({
     35
    ]
   }
+ ],
+ "reveals": [
+  [
+   "reveal_nook_cover",
+   [
+    446,
+    62,
+    530,
+    118
+   ]
+  ]
  ],
  "foes": [
   {
