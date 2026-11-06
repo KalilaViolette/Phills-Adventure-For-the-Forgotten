@@ -299,7 +299,7 @@ SCENES.woodpecker = def => {
     (t, dt) => {                                                                   // hammering away
       const a = actors.woodpecker; if (!a) return true;
       const k = Math.floor(t / 0.07);
-      a.frame = k % 2 ? 'wp_peck_2' : 'wp_peck_1';
+      a.frame = k % 2 ? 'wp_pull' : 'wp_peck_1';                                  // (wp_peck_2 reached into the tree and gave its hidden nook away)
       if (k !== Math.floor((t - dt) / 0.07) && k % 2) { sfx.tok(); part(w.x + 8, w.y - 30, 40 + Math.random() * 60, -Math.random() * 60, 0.5, '#7e7870', 2, 300); }
       return t > 1.2;
     },
@@ -327,5 +327,5 @@ SCENES.memory = it => [
 // things a room in Rootwood sets up when he walks in
 function setupRootwoodRoom() {
   const d = room.def;
-  if (d.woodpecker) addActor('woodpecker', { kind: 'rw', x: d.woodpecker.x, y: d.woodpecker.y, anim: ['wp_perch', 'wp_perch', 'wp_perch', 'wp_perch', 'wp_peck_1', 'wp_peck_2', 'wp_peck_1', 'wp_perch'], fps: 4, layer: 'back' });
+  if (d.woodpecker) addActor('woodpecker', { kind: 'rw', x: d.woodpecker.x, y: d.woodpecker.y, anim: ['wp_perch', 'wp_perch', 'wp_perch', 'wp_perch', 'wp_peck_1', 'wp_pull', 'wp_peck_1', 'wp_perch'], fps: 4, layer: 'back' });
 }
