@@ -79,6 +79,7 @@ function render(alpha) {
   ctx.translate(-camX, -camY);
   if (typeof REACT !== 'undefined') REACT.draw();                             // a cap or moss he's just landed on, giving (js/react.js)
   drawCovers();
+  if (typeof SOFT !== 'undefined') SOFT.draw(ctx);                        // the soft pieces (caps, a branch, roots), bending under him (js/painted/soft.js)
   if (typeof drawWildlife === 'function') drawWildlife('back', camX, camY);   // animals in the room itself, behind everything that moves
   drawGlowLayers(ctx, 0, 0, false, 'lighter', camX, camY);                    // the room's own light, behind him
   drawPlants(1, camX, camY);                                                   // plants behind him, swaying
@@ -131,6 +132,7 @@ function render(alpha) {
   drawActors('back');
   if (!P.held && !P.hidden) { drawIdleGround(q); drawPhill(px2, py2 + (P.idleBit ? P.idleBit.dy : 0), q); drawIdleBits(q); }
   if (typeof drawOnPhill === 'function') drawOnPhill(px2, py2);                           // things stuck on him (the gum leech)
+  if (typeof SOFT !== 'undefined') SOFT.drawFront(ctx);                                 // the dent's walls round his feet in a mushroom's flesh (js/painted/soft.js)
 
   ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.textAlign = 'center';
   const placed = [];                                                            // (where the ones already drawn this frame are, so a wrapped one doesn't land on top of another)
