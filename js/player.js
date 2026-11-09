@@ -102,7 +102,10 @@ function fitBody() {
 // with the wall going on up right beside them. That isn't somewhere he can stand: he slides off it, away from the wall.
 // Floors, slopes, the dirt packed into corners and the lips of ledges all have more under him or no wall beside them,
 // so they're the same as before. Returns which way he slides off (0: it's real ground)
-const NUB_MAX = 4, NUB_WALL = [8, 14, 20];
+// (11/09/2026) the same goes for the face of something leaning, like a dead tree's trunk: the wall beside his feet
+// doesn't go straight up, it leans back the higher it goes. NUB_LEAN is how far back per pixel up it can lean and still
+// count as a wall, so ground steeper than that is a face he slides down, and anything gentler he can still stand on
+const NUB_MAX = 4, NUB_WALL = [8, 14, 20, 26], NUB_LEAN = 0.5;
 function nubAt(x, y) {
   let l = 0, r = 0;
   const top = Math.abs(y - Math.round(y / T) * T) < 0.01;
@@ -112,12 +115,13 @@ function nubAt(x, y) {
   const sup = l + r;
   if (!sup || sup > NUB_MAX) return 0;
   const s = r >= l ? 1 : -1;
+  let walls = 0;                                         // (two of the four heights: a shelf growing out of the face leaves a notch in it, and that's still a face)
   for (const k of NUB_WALL) {
     let wall = false;
-    for (let d = HW; d <= HW + 4 && !wall; d++) wall = solidPx(x + s * d, y - k);
-    if (!wall) return 0;
+    for (let d = HW; d <= HW + 4 + k * NUB_LEAN && !wall; d++) wall = solidPx(x + s * d, y - k);
+    if (wall) walls++;
   }
-  return -s;
+  return walls >= 2 ? -s : 0;
 }
 const onRamp = () => P.dropT <= 0 && rampY(P.x, P.y, 0.6, 0.6) !== null;   // standing on a one-way slope
 // walking onto a side way (a slope the room marks as one, rampsUp) takes holding up, unless he's on one already: the main way goes on past it (10/27/2026)
