@@ -44,155 +44,155 @@ ROOM({
     0,
     4237,
     61,
-    12
+    13
    ],
    "piece_soft_bracket_r2": [
     0,
-    4249,
+    4250,
     69,
-    14
+    17
    ],
    "piece_soft_oyster_r3": [
     0,
-    4263,
+    4267,
     65,
-    12
+    14
    ],
    "piece_soft_bracket_r4": [
     0,
-    4275,
+    4281,
     73,
-    15
+    18
    ],
    "piece_soft_branch": [
     0,
-    4290,
+    4299,
     325,
     60
    ],
    "piece_soft_cap_c1": [
     0,
-    4350,
+    4359,
     73,
-    14
+    18
    ],
    "piece_soft_cap_c2": [
     0,
-    4364,
+    4377,
     75,
-    15
+    19
    ],
    "piece_soft_knee_k1": [
     0,
-    4379,
+    4396,
     63,
     12
    ],
    "piece_soft_knee_k2": [
     0,
-    4391,
+    4408,
     65,
     13
    ],
    "piece_soft_shroom_f1": [
     0,
-    4404,
+    4421,
     43,
-    11
+    15
    ],
    "piece_stem_shroom_f1": [
     0,
-    4415,
+    4436,
     9,
     17
    ],
    "piece_skin_curtain": [
     0,
-    4432,
+    4453,
     30,
     64
    ],
    "piece_skin_leaves": [
     0,
-    4496,
+    4517,
     32,
     48
    ],
    "piece_reveal_tree_rim": [
     0,
-    4544,
+    4565,
     91,
     60
    ],
    "piece_plant_plant_00": [
     0,
-    4604,
+    4625,
     64,
     44
    ],
    "piece_plant_plant_01": [
     0,
-    4648,
+    4669,
     47,
     32
    ],
    "piece_plant_plant_02": [
     0,
-    4680,
+    4701,
     18,
     12
    ],
    "piece_plant_plant_03": [
     0,
-    4692,
+    4713,
     10,
     11
    ],
    "piece_plant_plant_04": [
     0,
-    4703,
+    4724,
     9,
     10
    ],
    "piece_plant_plant_05": [
     0,
-    4713,
+    4734,
     20,
     12
    ],
    "piece_plant_plant_06": [
     0,
-    4725,
+    4746,
     18,
     12
    ],
    "piece_plant_plant_07": [
     0,
-    4737,
+    4758,
     37,
     20
    ],
    "piece_plant_plant_08": [
     0,
-    4757,
+    4778,
     24,
     12
    ],
    "piece_plant_plant_09": [
     0,
-    4769,
+    4790,
     10,
     11
    ],
    "piece_glow_0": [
     0,
-    4780,
+    4801,
     864,
     832
    ],
    "piece_glow_1": [
     0,
-    5612,
+    5633,
     864,
     832
    ]
@@ -218,27 +218,27 @@ ROOM({
   "pieces": {
    "soft_oyster_r1": [
     242,
-    295,
+    294,
     61,
-    12
+    13
    ],
    "soft_bracket_r2": [
     260,
-    351,
+    348,
     69,
-    14
+    17
    ],
    "soft_oyster_r3": [
     266,
-    406,
+    404,
     65,
-    12
+    14
    ],
    "soft_bracket_r4": [
     276,
-    462,
+    459,
     73,
-    15
+    18
    ],
    "soft_branch": [
     288,
@@ -248,15 +248,15 @@ ROOM({
    ],
    "soft_cap_c1": [
     544,
-    530,
+    526,
     73,
-    14
+    18
    ],
    "soft_cap_c2": [
     552,
-    590,
+    586,
     75,
-    15
+    19
    ],
    "soft_knee_k1": [
     660,
@@ -272,9 +272,9 @@ ROOM({
    ],
    "soft_shroom_f1": [
     440,
-    741,
+    737,
     43,
-    11
+    15
    ],
    "stem_shroom_f1": [
     456,
@@ -438,7 +438,7 @@ ROOM({
   {
    "id": "acorn_w0",
    "x": 272,
-   "y": 297,
+   "y": 294,
    "kind": "acorn"
   },
   {
@@ -512,7 +512,7 @@ ROOM({
   "###################...................################",
   "###################..................#################",
   "###################..................#################",
-  "###################..................#################",
+  "###################...................################",
   "###################....................###############",
   "###################..................#################",
   "###################..................#################",
@@ -591,215 +591,215 @@ ROOM({
    ],
    [
     244,
-    296
+    295
    ],
    [
     245,
-    296
+    295
    ],
    [
     246,
-    296
+    295
    ],
    [
     247,
-    296
+    295
    ],
    [
     248,
-    296
+    295
    ],
    [
     249,
-    296
+    295
    ],
    [
     250,
-    296
+    295
    ],
    [
     251,
-    296
+    295
    ],
    [
     252,
-    296
+    295
    ],
    [
     253,
-    296
+    295
    ],
    [
     254,
-    296
+    295
    ],
    [
     255,
-    296
+    294
    ],
    [
     256,
-    296
+    294
    ],
    [
     257,
-    296
+    294
    ],
    [
     258,
-    296
+    294
    ],
    [
     259,
-    296
+    294
    ],
    [
     260,
-    296
+    294
    ],
    [
     261,
-    296
+    294
    ],
    [
     262,
-    296
+    294
    ],
    [
     263,
-    296
+    294
    ],
    [
     264,
-    296
+    294
    ],
    [
     265,
-    297
+    294
    ],
    [
     266,
-    297
+    294
    ],
    [
     267,
-    297
+    294
    ],
    [
     268,
-    297
+    294
    ],
    [
     269,
-    297
+    294
    ],
    [
     270,
-    297
+    294
    ],
    [
     271,
-    297
+    294
    ],
    [
     272,
-    297
+    294
    ],
    [
     273,
-    297
+    294
    ],
    [
     274,
-    297
+    294
    ],
    [
     275,
-    297
+    294
    ],
    [
     276,
-    297
+    294
    ],
    [
     277,
-    297
+    294
    ],
    [
     278,
-    297
+    294
    ],
    [
     279,
-    297
+    294
    ],
    [
     280,
-    297
+    294
    ],
    [
     281,
-    297
+    294
    ],
    [
     282,
-    297
+    294
    ],
    [
     283,
-    297
+    294
    ],
    [
     284,
-    296
+    294
    ],
    [
     285,
-    296
+    294
    ],
    [
     286,
-    296
+    294
    ],
    [
     287,
-    296
+    294
    ],
    [
     288,
-    296
+    294
    ],
    [
     289,
-    296
+    294
    ],
    [
     290,
-    296
+    294
    ],
    [
     291,
-    296
+    294
    ],
    [
     292,
-    295
+    294
    ],
    [
     293,
-    295
+    294
    ],
    [
     294,
-    295
+    294
    ],
    [
     295,
-    295
+    294
    ],
    [
     296,
-    295
+    294
    ],
    [
     297,
@@ -823,7 +823,285 @@ ROOM({
    ],
    [
     302,
-    295
+    296
+   ]
+  ],
+  [
+   [
+    260,
+    352
+   ],
+   [
+    261,
+    351
+   ],
+   [
+    262,
+    350
+   ],
+   [
+    263,
+    350
+   ],
+   [
+    264,
+    350
+   ],
+   [
+    265,
+    350
+   ],
+   [
+    266,
+    349
+   ],
+   [
+    267,
+    349
+   ],
+   [
+    268,
+    349
+   ],
+   [
+    269,
+    349
+   ],
+   [
+    270,
+    349
+   ],
+   [
+    271,
+    349
+   ],
+   [
+    272,
+    349
+   ],
+   [
+    273,
+    349
+   ],
+   [
+    274,
+    349
+   ],
+   [
+    275,
+    349
+   ],
+   [
+    276,
+    349
+   ],
+   [
+    277,
+    349
+   ],
+   [
+    278,
+    349
+   ],
+   [
+    279,
+    349
+   ],
+   [
+    280,
+    349
+   ],
+   [
+    281,
+    348
+   ],
+   [
+    282,
+    348
+   ],
+   [
+    283,
+    348
+   ],
+   [
+    284,
+    348
+   ],
+   [
+    285,
+    348
+   ],
+   [
+    286,
+    348
+   ],
+   [
+    287,
+    348
+   ],
+   [
+    288,
+    348
+   ],
+   [
+    289,
+    348
+   ],
+   [
+    290,
+    348
+   ],
+   [
+    291,
+    348
+   ],
+   [
+    292,
+    348
+   ],
+   [
+    293,
+    348
+   ],
+   [
+    294,
+    348
+   ],
+   [
+    295,
+    348
+   ],
+   [
+    296,
+    348
+   ],
+   [
+    297,
+    348
+   ],
+   [
+    298,
+    348
+   ],
+   [
+    299,
+    348
+   ],
+   [
+    300,
+    348
+   ],
+   [
+    301,
+    348
+   ],
+   [
+    302,
+    348
+   ],
+   [
+    303,
+    348
+   ],
+   [
+    304,
+    349
+   ],
+   [
+    305,
+    349
+   ],
+   [
+    306,
+    349
+   ],
+   [
+    307,
+    349
+   ],
+   [
+    308,
+    349
+   ],
+   [
+    309,
+    349
+   ],
+   [
+    310,
+    349
+   ],
+   [
+    311,
+    350
+   ],
+   [
+    312,
+    350
+   ],
+   [
+    313,
+    350
+   ],
+   [
+    314,
+    350
+   ],
+   [
+    315,
+    350
+   ],
+   [
+    316,
+    350
+   ],
+   [
+    317,
+    350
+   ],
+   [
+    318,
+    351
+   ],
+   [
+    319,
+    351
+   ],
+   [
+    320,
+    351
+   ],
+   [
+    321,
+    351
+   ],
+   [
+    322,
+    351
+   ],
+   [
+    323,
+    351
+   ],
+   [
+    324,
+    351
+   ],
+   [
+    325,
+    351
+   ],
+   [
+    326,
+    352
+   ],
+   [
+    327,
+    352
+   ],
+   [
+    328,
+    352
    ]
   ],
   [
@@ -1086,284 +1364,6 @@ ROOM({
    [
     624,
     353
-   ]
-  ],
-  [
-   [
-    260,
-    352
-   ],
-   [
-    261,
-    352
-   ],
-   [
-    262,
-    352
-   ],
-   [
-    263,
-    352
-   ],
-   [
-    264,
-    352
-   ],
-   [
-    265,
-    353
-   ],
-   [
-    266,
-    353
-   ],
-   [
-    267,
-    353
-   ],
-   [
-    268,
-    353
-   ],
-   [
-    269,
-    353
-   ],
-   [
-    270,
-    353
-   ],
-   [
-    271,
-    353
-   ],
-   [
-    272,
-    353
-   ],
-   [
-    273,
-    353
-   ],
-   [
-    274,
-    353
-   ],
-   [
-    275,
-    353
-   ],
-   [
-    276,
-    353
-   ],
-   [
-    277,
-    353
-   ],
-   [
-    278,
-    353
-   ],
-   [
-    279,
-    353
-   ],
-   [
-    280,
-    353
-   ],
-   [
-    281,
-    353
-   ],
-   [
-    282,
-    353
-   ],
-   [
-    283,
-    353
-   ],
-   [
-    284,
-    352
-   ],
-   [
-    285,
-    352
-   ],
-   [
-    286,
-    352
-   ],
-   [
-    287,
-    352
-   ],
-   [
-    288,
-    352
-   ],
-   [
-    289,
-    352
-   ],
-   [
-    290,
-    352
-   ],
-   [
-    291,
-    352
-   ],
-   [
-    292,
-    351
-   ],
-   [
-    293,
-    351
-   ],
-   [
-    294,
-    351
-   ],
-   [
-    295,
-    351
-   ],
-   [
-    296,
-    351
-   ],
-   [
-    297,
-    351
-   ],
-   [
-    298,
-    351
-   ],
-   [
-    299,
-    351
-   ],
-   [
-    300,
-    351
-   ],
-   [
-    301,
-    351
-   ],
-   [
-    302,
-    351
-   ],
-   [
-    303,
-    351
-   ],
-   [
-    304,
-    351
-   ],
-   [
-    305,
-    351
-   ],
-   [
-    306,
-    351
-   ],
-   [
-    307,
-    351
-   ],
-   [
-    308,
-    351
-   ],
-   [
-    309,
-    351
-   ],
-   [
-    310,
-    351
-   ],
-   [
-    311,
-    351
-   ],
-   [
-    312,
-    351
-   ],
-   [
-    313,
-    351
-   ],
-   [
-    314,
-    351
-   ],
-   [
-    315,
-    351
-   ],
-   [
-    316,
-    351
-   ],
-   [
-    317,
-    351
-   ],
-   [
-    318,
-    351
-   ],
-   [
-    319,
-    351
-   ],
-   [
-    320,
-    351
-   ],
-   [
-    321,
-    351
-   ],
-   [
-    322,
-    351
-   ],
-   [
-    323,
-    351
-   ],
-   [
-    324,
-    351
-   ],
-   [
-    325,
-    351
-   ],
-   [
-    326,
-    351
-   ],
-   [
-    327,
-    351
-   ],
-   [
-    328,
-    351
    ]
   ],
   [
@@ -1651,215 +1651,215 @@ ROOM({
    ],
    [
     273,
-    409
+    408
    ],
    [
     274,
-    409
+    408
    ],
    [
     275,
-    409
+    408
    ],
    [
     276,
-    409
+    408
    ],
    [
     277,
-    409
+    408
    ],
    [
     278,
-    409
+    408
    ],
    [
     279,
-    409
+    408
    ],
    [
     280,
-    409
+    407
    ],
    [
     281,
-    409
+    407
    ],
    [
     282,
-    409
+    407
    ],
    [
     283,
-    409
+    407
    ],
    [
     284,
-    408
+    407
    ],
    [
     285,
-    408
+    407
    ],
    [
     286,
-    408
+    406
    ],
    [
     287,
-    408
+    406
    ],
    [
     288,
-    408
+    406
    ],
    [
     289,
-    408
+    406
    ],
    [
     290,
-    408
+    405
    ],
    [
     291,
-    408
+    405
    ],
    [
     292,
-    407
+    405
    ],
    [
     293,
-    407
+    405
    ],
    [
     294,
-    407
+    405
    ],
    [
     295,
-    407
+    405
    ],
    [
     296,
-    407
+    405
    ],
    [
     297,
-    407
+    405
    ],
    [
     298,
-    407
+    404
    ],
    [
     299,
-    407
+    404
    ],
    [
     300,
-    407
+    404
    ],
    [
     301,
-    407
+    404
    ],
    [
     302,
-    407
+    404
    ],
    [
     303,
-    407
+    404
    ],
    [
     304,
-    407
+    404
    ],
    [
     305,
-    407
+    404
    ],
    [
     306,
-    407
+    404
    ],
    [
     307,
-    407
+    405
    ],
    [
     308,
-    407
+    405
    ],
    [
     309,
-    407
+    405
    ],
    [
     310,
-    407
+    405
    ],
    [
     311,
-    407
+    405
    ],
    [
     312,
-    407
+    405
    ],
    [
     313,
-    407
+    405
    ],
    [
     314,
-    407
+    405
    ],
    [
     315,
-    407
+    405
    ],
    [
     316,
-    407
+    405
    ],
    [
     317,
-    407
+    406
    ],
    [
     318,
-    407
+    406
    ],
    [
     319,
-    407
+    406
    ],
    [
     320,
-    407
+    406
    ],
    [
     321,
-    407
+    406
    ],
    [
     322,
-    407
+    406
    ],
    [
     323,
-    407
+    406
    ],
    [
     324,
-    407
+    406
    ],
    [
     325,
-    407
+    406
    ],
    [
     326,
@@ -1879,7 +1879,7 @@ ROOM({
    ],
    [
     330,
-    406
+    407
    ]
   ],
   [
@@ -1889,247 +1889,247 @@ ROOM({
    ],
    [
     277,
-    465
+    464
    ],
    [
     278,
-    465
+    463
    ],
    [
     279,
-    465
+    463
    ],
    [
     280,
-    465
+    462
    ],
    [
     281,
-    465
+    462
    ],
    [
     282,
-    465
+    461
    ],
    [
     283,
-    465
+    461
    ],
    [
     284,
-    464
+    461
    ],
    [
     285,
-    464
+    461
    ],
    [
     286,
-    464
+    460
    ],
    [
     287,
-    464
+    460
    ],
    [
     288,
-    464
+    460
    ],
    [
     289,
-    464
+    460
    ],
    [
     290,
-    464
+    460
    ],
    [
     291,
-    464
+    459
    ],
    [
     292,
-    463
+    459
    ],
    [
     293,
-    463
+    459
    ],
    [
     294,
-    463
+    459
    ],
    [
     295,
-    463
+    459
    ],
    [
     296,
-    463
+    459
    ],
    [
     297,
-    463
+    459
    ],
    [
     298,
-    463
+    459
    ],
    [
     299,
-    463
+    459
    ],
    [
     300,
-    463
+    459
    ],
    [
     301,
-    463
+    459
    ],
    [
     302,
-    463
+    459
    ],
    [
     303,
-    463
+    459
    ],
    [
     304,
-    463
+    459
    ],
    [
     305,
-    463
+    459
    ],
    [
     306,
-    463
+    459
    ],
    [
     307,
-    463
+    459
    ],
    [
     308,
-    463
+    459
    ],
    [
     309,
-    463
+    459
    ],
    [
     310,
-    463
+    460
    ],
    [
     311,
-    463
+    460
    ],
    [
     312,
-    463
+    460
    ],
    [
     313,
-    463
+    460
    ],
    [
     314,
-    463
+    460
    ],
    [
     315,
-    463
+    460
    ],
    [
     316,
-    463
+    460
    ],
    [
     317,
-    463
+    460
    ],
    [
     318,
-    463
+    460
    ],
    [
     319,
-    463
+    460
    ],
    [
     320,
-    463
+    460
    ],
    [
     321,
-    463
+    460
    ],
    [
     322,
-    463
+    461
    ],
    [
     323,
-    463
+    461
    ],
    [
     324,
-    463
+    461
    ],
    [
     325,
-    463
+    461
    ],
    [
     326,
-    463
+    461
    ],
    [
     327,
-    463
+    461
    ],
    [
     328,
-    463
+    461
    ],
    [
     329,
-    463
+    461
    ],
    [
     330,
-    462
+    461
    ],
    [
     331,
-    462
+    461
    ],
    [
     332,
-    462
+    461
    ],
    [
     333,
-    462
+    461
    ],
    [
     334,
-    462
+    461
    ],
    [
     335,
-    462
+    461
    ],
    [
     336,
-    462
+    461
    ],
    [
     337,
-    462
+    461
    ],
    [
     338,
@@ -2157,15 +2157,15 @@ ROOM({
    ],
    [
     344,
-    462
+    463
    ],
    [
     345,
-    462
+    463
    ],
    [
     346,
-    462
+    463
    ],
    [
     347,
@@ -2173,7 +2173,7 @@ ROOM({
    ],
    [
     348,
-    463
+    464
    ]
   ],
   [
@@ -3481,19 +3481,19 @@ ROOM({
   [
    [
     544,
-    532
+    533
    ],
    [
     545,
-    532
+    533
    ],
    [
     546,
-    531
+    532
    ],
    [
     547,
-    531
+    532
    ],
    [
     548,
@@ -3501,255 +3501,255 @@ ROOM({
    ],
    [
     549,
-    531
+    530
    ],
    [
     550,
-    531
+    530
    ],
    [
     551,
-    531
+    530
    ],
    [
     552,
-    531
+    529
    ],
    [
     553,
-    531
+    529
    ],
    [
     554,
-    530
+    528
    ],
    [
     555,
-    530
+    528
    ],
    [
     556,
-    530
+    528
    ],
    [
     557,
-    530
+    527
    ],
    [
     558,
-    530
+    527
    ],
    [
     559,
-    530
+    527
    ],
    [
     560,
-    530
+    526
    ],
    [
     561,
-    530
+    526
    ],
    [
     562,
-    530
+    526
    ],
    [
     563,
-    530
+    526
    ],
    [
     564,
-    530
+    526
    ],
    [
     565,
-    530
+    526
    ],
    [
     566,
-    530
+    526
    ],
    [
     567,
-    530
+    526
    ],
    [
     568,
-    530
+    526
    ],
    [
     569,
-    530
+    526
    ],
    [
     570,
-    530
+    526
    ],
    [
     571,
-    531
+    526
    ],
    [
     572,
-    531
+    526
    ],
    [
     573,
-    531
+    526
    ],
    [
     574,
-    531
+    526
    ],
    [
     575,
-    531
+    526
    ],
    [
     576,
-    531
+    526
    ],
    [
     577,
-    531
+    526
    ],
    [
     578,
-    531
+    526
    ],
    [
     579,
-    531
+    527
    ],
    [
     580,
-    531
+    527
    ],
    [
     581,
-    531
+    527
    ],
    [
     582,
-    531
+    527
    ],
    [
     583,
-    531
+    527
    ],
    [
     584,
-    531
+    527
    ],
    [
     585,
-    531
+    527
    ],
    [
     586,
-    531
+    528
    ],
    [
     587,
-    531
+    528
    ],
    [
     588,
-    531
+    528
    ],
    [
     589,
-    531
+    528
    ],
    [
     590,
-    531
+    528
    ],
    [
     591,
-    531
+    528
    ],
    [
     592,
-    531
+    528
    ],
    [
     593,
-    531
+    528
    ],
    [
     594,
-    531
+    529
    ],
    [
     595,
-    531
+    529
    ],
    [
     596,
-    531
+    529
    ],
    [
     597,
-    531
+    529
    ],
    [
     598,
-    531
+    529
    ],
    [
     599,
-    531
+    529
    ],
    [
     600,
-    531
+    529
    ],
    [
     601,
-    531
+    529
    ],
    [
     602,
-    531
+    530
    ],
    [
     603,
-    531
+    530
    ],
    [
     604,
-    531
+    530
    ],
    [
     605,
-    531
+    530
    ],
    [
     606,
-    531
+    530
    ],
    [
     607,
-    532
+    531
    ],
    [
     608,
-    532
+    531
    ],
    [
     609,
-    532
+    531
    ],
    [
     610,
-    532
+    531
    ],
    [
     611,
-    532
+    531
    ],
    [
     612,
@@ -3775,19 +3775,19 @@ ROOM({
   [
    [
     552,
-    591
+    592
    ],
    [
     553,
-    591
+    592
    ],
    [
     554,
-    590
+    591
    ],
    [
     555,
-    590
+    591
    ],
    [
     556,
@@ -3799,259 +3799,259 @@ ROOM({
    ],
    [
     558,
-    590
+    589
    ],
    [
     559,
-    590
+    589
    ],
    [
     560,
-    590
+    589
    ],
    [
     561,
-    590
+    588
    ],
    [
     562,
-    590
+    588
    ],
    [
     563,
-    590
+    588
    ],
    [
     564,
-    590
+    587
    ],
    [
     565,
-    590
+    587
    ],
    [
     566,
-    590
+    587
    ],
    [
     567,
-    590
+    587
    ],
    [
     568,
-    590
+    587
    ],
    [
     569,
-    590
+    587
    ],
    [
     570,
-    590
+    587
    ],
    [
     571,
-    591
+    586
    ],
    [
     572,
-    591
+    586
    ],
    [
     573,
-    591
+    586
    ],
    [
     574,
-    591
+    586
    ],
    [
     575,
-    591
+    586
    ],
    [
     576,
-    591
+    586
    ],
    [
     577,
-    591
+    586
    ],
    [
     578,
-    591
+    586
    ],
    [
     579,
-    591
+    586
    ],
    [
     580,
-    591
+    586
    ],
    [
     581,
-    591
+    587
    ],
    [
     582,
-    591
+    587
    ],
    [
     583,
-    591
+    587
    ],
    [
     584,
-    591
+    587
    ],
    [
     585,
-    591
+    587
    ],
    [
     586,
-    591
+    587
    ],
    [
     587,
-    591
+    587
    ],
    [
     588,
-    591
+    587
    ],
    [
     589,
-    591
+    587
    ],
    [
     590,
-    591
+    587
    ],
    [
     591,
-    591
+    587
    ],
    [
     592,
-    591
+    587
    ],
    [
     593,
-    591
+    587
    ],
    [
     594,
-    591
+    587
    ],
    [
     595,
-    591
+    587
    ],
    [
     596,
-    591
+    587
    ],
    [
     597,
-    591
+    588
    ],
    [
     598,
-    591
+    588
    ],
    [
     599,
-    591
+    588
    ],
    [
     600,
-    591
+    588
    ],
    [
     601,
-    591
+    588
    ],
    [
     602,
-    591
+    588
    ],
    [
     603,
-    591
+    588
    ],
    [
     604,
-    591
+    589
    ],
    [
     605,
-    591
+    589
    ],
    [
     606,
-    591
+    589
    ],
    [
     607,
-    592
+    589
    ],
    [
     608,
-    592
+    589
    ],
    [
     609,
-    592
+    590
    ],
    [
     610,
-    592
+    590
    ],
    [
     611,
-    592
+    590
    ],
    [
     612,
-    592
+    590
    ],
    [
     613,
-    592
+    591
    ],
    [
     614,
-    592
+    591
    ],
    [
     615,
-    592
+    591
    ],
    [
     616,
-    592
+    591
    ],
    [
     617,
-    593
+    592
    ],
    [
     618,
-    593
+    592
    ],
    [
     619,
-    593
+    592
    ],
    [
     620,
-    593
+    592
    ],
    [
     621,
-    593
+    592
    ],
    [
     622,
@@ -4547,15 +4547,15 @@ ROOM({
   [
    [
     440,
-    741
+    743
    ],
    [
     441,
-    741
+    742
    ],
    [
     442,
-    741
+    742
    ],
    [
     443,
@@ -4571,127 +4571,127 @@ ROOM({
    ],
    [
     446,
-    741
+    740
    ],
    [
     447,
-    741
+    740
    ],
    [
     448,
-    741
+    739
    ],
    [
     449,
-    741
+    739
    ],
    [
     450,
-    741
+    739
    ],
    [
     451,
-    741
+    739
    ],
    [
     452,
-    741
+    738
    ],
    [
     453,
-    741
+    738
    ],
    [
     454,
-    741
+    738
    ],
    [
     455,
-    741
+    738
    ],
    [
     456,
-    741
+    738
    ],
    [
     457,
-    741
+    737
    ],
    [
     458,
-    741
+    737
    ],
    [
     459,
-    741
+    737
    ],
    [
     460,
-    741
+    737
    ],
    [
     461,
-    741
+    737
    ],
    [
     462,
-    741
+    737
    ],
    [
     463,
-    741
+    737
    ],
    [
     464,
-    741
+    737
    ],
    [
     465,
-    741
+    737
    ],
    [
     466,
-    741
+    737
    ],
    [
     467,
-    741
+    737
    ],
    [
     468,
-    741
+    737
    ],
    [
     469,
-    741
+    738
    ],
    [
     470,
-    741
+    738
    ],
    [
     471,
-    741
+    738
    ],
    [
     472,
-    741
+    739
    ],
    [
     473,
-    741
+    739
    ],
    [
     474,
-    741
+    739
    ],
    [
     475,
-    741
+    740
    ],
    [
     476,
-    741
+    740
    ],
    [
     477,
@@ -4703,19 +4703,19 @@ ROOM({
    ],
    [
     479,
-    741
+    742
    ],
    [
     480,
-    741
+    742
    ],
    [
     481,
-    742
+    743
    ],
    [
     482,
-    742
+    744
    ]
   ]
  ],
@@ -5088,9 +5088,9 @@ ROOM({
    "piece": "soft_oyster_r1",
    "box": [
     242,
-    295,
+    294,
     61,
-    12
+    13
    ],
    "anchors": [
     [
@@ -5170,7 +5170,7 @@ ROOM({
     0,
     0,
     0,
-    0,
+    10,
     10,
     10,
     10,
@@ -5228,164 +5228,13 @@ ROOM({
    "sponge": 1.5
   },
   "1": {
-   "sag": 2.0,
-   "piece": "soft_knee_k2",
-   "box": [
-    560,
-    350,
-    65,
-    13
-   ],
-   "anchors": [
-    [
-     624,
-     624,
-     "held"
-    ]
-   ],
-   "down": [
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8
-   ],
-   "up": [
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8
-   ]
-  },
-  "2": {
    "sag": 4.0,
    "piece": "soft_bracket_r2",
    "box": [
     260,
-    351,
+    348,
     69,
-    14
+    17
    ],
    "anchors": [
     [
@@ -5537,6 +5386,157 @@ ROOM({
     12
    ],
    "sponge": 2.0
+  },
+  "2": {
+   "sag": 2.0,
+   "piece": "soft_knee_k2",
+   "box": [
+    560,
+    350,
+    65,
+    13
+   ],
+   "anchors": [
+    [
+     624,
+     624,
+     "held"
+    ]
+   ],
+   "down": [
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "up": [
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8
+   ]
   },
   "3": {
    "sag": 2.0,
@@ -5695,9 +5695,9 @@ ROOM({
    "piece": "soft_oyster_r3",
    "box": [
     266,
-    406,
+    404,
     65,
-    12
+    14
    ],
    "anchors": [
     [
@@ -5847,9 +5847,9 @@ ROOM({
    "piece": "soft_bracket_r4",
    "box": [
     276,
-    462,
+    459,
     73,
-    15
+    18
    ],
    "anchors": [
     [
@@ -5941,7 +5941,7 @@ ROOM({
     0,
     0,
     0,
-    0,
+    12,
     12,
     12,
     12,
@@ -6691,9 +6691,9 @@ ROOM({
    "piece": "soft_cap_c1",
    "box": [
     544,
-    530,
+    526,
     73,
-    14
+    18
    ],
    "anchors": [
     [
@@ -6859,9 +6859,9 @@ ROOM({
    "piece": "soft_cap_c2",
    "box": [
     552,
-    590,
+    586,
     75,
-    15
+    19
    ],
    "anchors": [
     [
@@ -7031,9 +7031,9 @@ ROOM({
    "piece": "soft_shroom_f1",
    "box": [
     440,
-    741,
+    737,
     43,
-    11
+    15
    ],
    "anchors": [
     [
@@ -7363,6 +7363,7 @@ ROOM({
    1927,
    1962,
    1981,
+   1982,
    2017,
    2035,
    2036,
@@ -7417,6 +7418,6 @@ ROOM({
    2635,
    2636
   ],
-  "bits": "D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w///////////////////////////////////////v/g/AD/////////////////////////+P+A/ADAAAAAAAAAAP/////////////////8+ACAAAAAAAAAAAAAAAAAAAAA////////////////AP8AAAAAAAAAAAAAAAAAAAAAAAD//////////////////wAAAAAAAAAAAAAAAAAAAAAAAP////////////////4AAAAAAAAAAAAAAAAAAAAAAAAA/////////////4AAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////P/8APwAAAAAAAAAAAAAAAAAAAAAAAA//D/8P/w//D/8P/w//Af8APwAHAAEAAAAAAAAAAAAA/////////////////////////////3//P/8f/w//D//////////////////////4//j/+P/4//j/+P/4//j/+P////////////////////8D/wADAAAAAAAAAAAAAAAA//////////////////////////wAAAAAAAAAAAAAAAD////////////////////w/AAAAAAAAAAAAAAAAAAAAP////////////////////9//3//P/8//z//P/8f/x//////////////////H/+AB4AAgACAAMAAwADAAMAAwAD/////////////////////B/8AAAAAAAAAAAAAAAAAAP////////////////////j+AAAAAAAAAAAAAAAAAAAA////////////4PwAwAAAAAAAAAAAAAAAAAAAAAAAAAD//////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8ADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////8f/wP/AH8ADwADAAAAAAAAAAAAAAAAAAAAAP////////////////////9//x//A/8A/wA/AA8AAQAA////////////////////////////////////////f///+P/4//j/+P/4//j/+P/4//j/+P/4//j/+P/4//j/+B//H/8P/w//D/8P/wf/B/8H/wf/A/8D/wP/A/8B/wH/wADgAOAA4ADgAPAA8ADwAPAA+AD4APgA+AD4APgA/AAf/wf/Af8AfwAfAAcAAwAAAAAAAAAAAAAAAAAAAAAAAP////////////////////8//w//A/8B/wB/AB8ADwAD//j/+P/4//j/+P/4//j/+P/4//j/+P/4//j/+P/4//gB/wH/AP8A/wD/AP8AfwB/AH8AfwB/AH8APwA/AD8AP/wA/AD8AP4A/gD+AP4A/gD+AP8A/wD/AP8A/4D/gP+A//9//x//D/8D/wD/AH8AHwAPAAMAAQAAAAAAAAAAAAD/////////////////////////////f/8//w//B/8D///4//j//P/8//z//P/8//z//P/8//z//P/8//z//P/8AD8APwAfAB8AHwAfAB8AHwAfAB8ADwAPAA8ADwAPAA//gP+A/4D/wP/A/8D/wP/g/+D/4P/g//D/8P/w//D/+AD/AH8AHwAPAAcAAQAAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////8//x//D/8D/wH/AP8AfwAfAA///P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//AAPAA8ABwAHAAcABwAHAAcAAwADAAMAAwADAAMAAQAB//j/+P/4//z//P/8//z//v/+//////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAgADAAAAHAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////f/8//w//B/8D/wH/AH8APwAfAA8ABwABAAD//P/8//z//P/8//z//P/8//z//P/8//z//P/8//j/+AABAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////f/9//3//f/8//z//P/8//x//H//AAMAAwADgAOAA4ADgAPAA8AD4APgA/AD8APwA/AD+AH//P/8f/w//A/8B/wD/AH8APwAfAA8AAwABAAAAAAAA/////////////////////////////////////3//P///+P/4//j/+P/4//j/+P/w//D/8P/w//D/8P/w//D/4B//H/8P/w//D/8P/wf/B/8D/wP/A/8D/wH/Af8B/wH//gD/AP8A/wD/AP+A/4D/wP/A/8D/wP/g/+D/8P/w//Af/w//B/8D/wD/AH8APwAfAA8ABwADAAEAAAAAAAAAAP//////////////////////////////////f/8//x///+D/4P/g/+D/4P/g/8D/wP/A/8D/wP/A/8D/gP+A/4AA/wD/AP8A/wB/AH8AfwB/AD8APwA/AD8AHwAfAB8AH//////////////////////////////////////////g///////////////////////////////////+AAAAAAD//////////////////////////////////wAAAAAAAP//////////////////////////////////AD8AAAAA//D/+P/4//j/+P/8//z//v/+//7//v///////3//A/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAA//B/8D/wH/AP8AfwA/AA8ABwADAAEAAAAAAAAAAAAA////////////////////////////////f/8//x//D/8ADwAPAA8ADgAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4A8ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH8ABwABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/A/8B/wD/AH8AfwA/AB8ADwAHAAMAAQAAAAAAAAAA//////////////////////////////////9//z//H/8P/wf/A/8B/wD/AH8APwAfAA8ABwAHAAMAAQAAAAAAAP////////////////////////////////////9//z//H/8P/wf/A/8B/wD/AP8AfwA/AB8ADwAHAAMAAQAAAADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA+AD4APgA+AD8APwA/AD8AP4A/gD+AP4A/wD/AP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+A//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAA/wD/AP8A/4D/gP+A/4D/wMAAwADAAMAA8AD/AP/A/+AAPwAfAA8ABwADAAEAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////////f/8//x//D/8H/wP/Af8A/wB///7///////////////////////////////////////8AAPgA/gD/gP/g//j//P/+//7////////////////////g/+D/4P/w//D/8P/w//j/+P/4//j/+P/4//z//P/8AD8AHwAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////w//AH8ABwAAAAAAAAAAAAAAAAAAAAAAAP//////////////////f/8APwAAAAAAAAAAAAAAAAAA////////////////////////D/8AAAAAAAAAAAAAAAD//////////////////////////3//AAMAAAAAAAAAAP///////////////////////////////wAPAAAAAAAA//////////////////////////////////8APwAAAAD/////////////////////////////////////AH8AAP///////////////////////////////////////wD///z//v/+//7//v////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAACAAIAAwADAAMAAwADgAOAA8ADwAPAA8AD4APgA/AD8APwA/AD+AP4A/wD/AP8A8ADwAPAA8ADwAPAA/AD/AP/A/+D/4P/g/+D/4P/g//D/8P/w//D/8P/w//D/8P/w//D/+P/4//j/+P/4//j/+P/4//j/+P/8//z//P/8//z//P/8//z//v/+//7//v/+//7//v/+/////////////////8D/wP/A/8D/wP/8///AAMAAwADAAMAA4ADgAOAA4ADgAOAA8ADwAPAA8AD4APgA+AD4APgA+AD8APwA/AD8APwA/AD+AP4A/gD+AP8A/wD/AP8A/4D/gP+A/4D/wP/A/8D/wP/g/+D/4P/g//AAAAAAAAAAAAADAAcAHwA/AD8AfwD/Af8D/wf/B/8P/wAHAf8///////////////////////////////////////DwAPAA8ADwAPAA8AD8AP/A//z//P/+//7//v/+//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABwB/AD8AHwAAAAAAAAAAAAAAAAAAAAAH/wf/f///////////////AAAAAAAAAAAAAAAAAACAAP/8//////////////////8AAAAAAAAAAAAAAAAAAAAAAAD//////////////////wAAAAAAAAAAAAAAAAAHAf9/////////////////////AAAAAAAAAAAAAAAA8AD///////////////////////8AAAAAAAAAAAAAAAAAAMAA/////////////////////wAAAAAAAAAAAAAAAAAfB///////////////////////AAAAAAAAAAAAAP4A//////////////////////////8AAAAAAAAAAQADAD///////////////////////////x//f///////////////////////////////////////AAAAAAAAgACAAIAAgADAAMAAwADAAMAAwADgAOAA4AAADwAPAA8ADwAPAA8ADwAPAA8ADwAPAB8AHwAfAB8AH+AA8ADwAPAA8ADwAPAA+AD4APgA+AD4APgA/AD8APwAAB8AHwAfAB8AHwAfAB8APwA/AD8APwA/AD8APwA/AD/8APwA/AD8APwA/gD+AMAAAAAAAAAAAAAAAAAAwAD/AAA/AD8APwB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwD//wD/AP8A/wD/AP8A/wD/AP8A/4D/gP+A/4D/gP+A/4AA/wD/AP8AAQAAAAAAAAAAAAAAAAAAAAAAAQAfAf8B////////////AH8AfwB/AH8AfwB/Af8f/////////////4D/gP+A/8D/wP/A/8D/wP/A/8D/wP/A/8D/4P/g/+AB/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B///g/+D/4P/w//D/8P/w//D/8P/w//D/+P/4//j/+P/4Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af//+P/8//z//P/8//z//P/+//7//v/+/////////////wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wABAACAAIAAgACAAIAAgADAAMAAwADAAMAAwADAAMAA4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfwf/B/8H/wB/AAAAAAAAAAAAAAAAAAAAAQAfAf9///////////////8f/x//H/8f/x//H/9////////////////////////gAOAA4ADgAOAA8ADwAPAA8ADwAPAA8ADwAPgA+AD4AAf/B/8H/w//D/8P/w//H/8f/x//H/8f/x//H/8f/z//+AD4APgA+AD4APgA+AD8APwA/AD8APwA/AD8APwA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQABAAEAAz//P/8//3//f/9//3///////////////////////////AD+AP4A/gD+AP4A/gD+AP4A/wD/AP8A/wD/AP8A/4AAAwADAAMABwAHAAcABwAHAAcABwAHAAcABwAHAAcAD//////////////////////////////////f/x/8H/gf/4D/gP+A/4D/gP+A/4D/wP/A/8D/wP/g/+D/4P/g/+AADwAPAA8ADwAMAAAAAAAAAAAAAAAAAAAAAAABAAMAB/AfwB+AHwA/AH8A/wH/A/8H/w//H/9//////////////+D/8P/w//D/8P/4//j/+P/4//j/+P/8//z//P/8//4ABwAHAAMAAwADAAMAAwADAAMAAwABAAEAAQABAAAAAP/////////////////////////////////g/+D/8P/w////////////////////////////////f/8A/wABAAD//////////////////////////////////v/4/8AAAP///////////////////////////////wAAAAAAAAAA////////////////////////////////B/8ABAAAAAD//v/+//7///////////////7//P/w/+D/gAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA////////////////f/9//3//f/8//z//P/8//z//P/8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAP/4//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/gAAA////////////////////////////////////////AAD+AP////////////////////////////////////8AAAAA/////////////////////////////////////wAAAA//////////////////////////////////////Af//////////////////////////////////////////4P///////////////////////////////////////wAA8AD//v//////////////////////////////////AAAAAAAA//////////////////////////////////8AAAAAAAD//////////////////////////////////wAAAAE/////////////////////////////////////AAD///////////////////////////////////////8//////////////////////////////////////////+AA////////////////////////////////////////AAD///////////////////////////////////////8AP////////////////////////////////////////8AA//j/////////////////////////////////////AAAAAP8A//////////////////////////////////8AAAAAAAD//////////////////////////////////wAAAAAAAf//////////////////////////////////AAAAP/////////////////////////////////////8P/////////////////////////////////////////w=="
+  "bits": "D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w//D/8P/w///////////////////////////////////////v/g/AD/////////////////////////+P+A/ADAAAAAAAAAAP/////////////////8+ACAAAAAAAAAAAAAAAAAAAAA////////////////AP8AAAAAAAAAAAAAAAAAAAAAAAD//////////////////wAAAAAAAAAAAAAAAAAAAAAAAP////////////////4AAAAAAAAAAAAAAAAAAAAAAAAA/////////////4AAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////P/8APwAAAAAAAAAAAAAAAAAAAAAAAA//D/8P/w//D/8P/w//Af8APwAHAAEAAAAAAAAAAAAA/////////////////////////////3//P/8f/w//D//////////////////////4//j/+P/4//j/+P/4//j/+P////////////////////8D/wADAAAAAAAAAAAAAAAA//////////////////////////wAAAAAAAAAAAAAAAD////////////////////w/AAAAAAAAAAAAAAAAAAAAP////////////////////9//3//P/8//z//P/8f/x//////////////////H/+AB4AAgACAAMAAwADAAMAAwAD/////////////////////B/8AAAAAAAAAAAAAAAAAAP////////////////////j+AAAAAAAAAAAAAAAAAAAA////////////4PwAwAAAAAAAAAAAAAAAAAAAAAAAAAD//////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8ADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////8f/wP/AH8ADwADAAAAAAAAAAAAAAAAAAAAAP////////////////////9//x//A/8A/wA/AA8AAQAA////////////////////////////////////////f///+P/4//j/+P/4//j/+P/4//j/+P/4//j/+P/4//j/+B//H/8P/w//D/8P/wf/B/8H/wf/A/8D/wP/A/8B/wH/wADgAOAA4ADgAPAA8ADwAPAA+AD4APgA+AD4APgA/AAf/wf/Af8AfwAfAAcAAwAAAAAAAAAAAAAAAAAAAAAAAP////////////////////8//w//A/8B/wB/AB8ADwAD//j/+P/4//j/+P/4//j/+P/4//j/+P/4//j/+P/4//gB/wH/AP8A/wD/AP8AfwB/AH8AfwB/AH8APwA/AD8AP/wA/AD8AP4A/gD+AP4A/gD+AP8A/wD/AP8A/4D/gP+A//9//x//D/8D/wD/AH8AHwAPAAMAAQAAAAAAAAAAAAD/////////////////////////////f/8//w//B/8D///4//j//P/8//z//P/8//z//P/8//z//P/8//z//P/8AD8APwAfAB8AHwAfAB8AHwAfAB8ADwAPAA8ADwAPAA//gP+A/4D/wP/A/8D/wP/g/+D/4P/g//D/8P/w//D/+AD/AH8AHwAPAAcAAQAAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////8//x//D/8D/wH/AP8AfwAfAA///P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//AAPAA8ABwAHAAcABwAHAAcAAwADAAMAAwADAAMAAQAB//j/+P/4//z//P/8//z//v/+//////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAgADAAAAHAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////f/8//w//B/8D/wH/AH8APwAfAA8ABwABAAD//P/8//z//P/8//z//P/8//z//P/8//z//P/8//j/+AABAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////f/9//3//f/8//z//P/8//x//H//AAMAAwADgAOAA4ADgAPAA8AD4APgA/AD8APwA/AD+AH//P/8f/w//A/8B/wD/AH8APwAfAA8AAwABAAAAAAAA/////////////////////////////////////3//P///+P/4//j/+P/4//j/+P/w//D/8P/w//D/8P/w//D/4B//H/8P/w//D/8P/wf/B/8D/wP/A/8D/wH/Af8B/wH//gD/AP8A/wD/AP+A/4D/wP/A/8D/wP/g/+D/8P/w//Af/w//B/8D/wD/AH8APwAfAA8ABwADAAEAAAAAAAAAAP//////////////////////////////////f/8//x///+D/4P/g/+D/4P/g/8D/wP/A/8D/wP/A/8D/gP+A/4AA/wD/AP8A/wB/AH8AfwB/AD8APwA/AD8AHwAfAB8AH//////////////////////////////////////////g///////////////////////////////////+AAAAAAD//////////////////////////////////wAAAAAAAP//////////////////////////////////AD8AAAAA//D/+P/4//j/+P/8//z//v/+//7//v///////3//A/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAA//B/8D/wH/AP8AfwA/AA8ABwADAAEAAAAAAAAAAAAA////////////////////////////////f/8//x//D/8ADwAPAA8ADgAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4A8ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH8ABwABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/A/8B/wD/AH8AfwA/AB8ADwAHAAMAAQAAAAAAAAAA//////////////////////////////////9//z//H/8P/wf/A/8B/wD/AH8APwAfAA8ABwAHAAMAAQAAAAAAAP////////////////////////////////////9//z//H/8P/wf/A/8B/wD/AP8AfwA/AB8ADwAHAAMAAQAAAADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA+AD4APgA+AD8APwA/AD8AP4A/gD+AP4A/wD/AP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+A//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAA/wD/AP8A/4D/gP+A/4DwAMAAwADAAMAA8AD/AP/A/+AAPwAfAA8ABwADAAEAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////////f/8//x//D/8H/wP/Af8A/wB///7///////////////////////////////////////8AAPgA/gD/gP/g//j//P/+//7////////////////////g/+D/4P/w//D/8P/w//j/+P/4//j/+P/4//z//P/8AD8AHwAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////w//AH8ABwAAAAAAAAAAAAAAAAAAAAAAAP//////////////////f/8APwAAAAAAAAAAAAAAAAAA////////////////////////D/8AAAAAAAAAAAAAAAD//////////////////////////3//AAMAAAAAAAAAAP///////////////////////////////wAPAAAAAAAA//////////////////////////////////8APwAAAAD/////////////////////////////////////AH8AAP///////////////////////////////////////wD///z//v/+//7//v////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAACAAIAAwADAAMAAwADgAOAA8ADwAPAA8AD4APgA/AD8APwA/AD+AP4A/wD8APgA8ADwAPAA8ADwAPAA/AD/AP/A/+D/4P/g/+D/4P/g//D/8P/w//D/8P/w//D/8P/w//D/+P/4//j/+P/4//j/+P/4//j/+P/8//z//P/8//z//P/8//z//v/+//7//v/+//7//v/+/////////////////8D/wP/A/8D/wP/8///AAMAAwADAAMAA4ADgAOAA4ADgAOAA8ADwAPAA8AD4APgA+AD4APgA+AD8APwA/AD8APwA/AD+AP4A/gD+AP8A/wD/AP8A/4D/gP+A/4D/wP/A/8D/wP/g/+D/wP8A/AAAAAAAAAAAAAADAAcAHwA/AD8AfwD/Af8D/wf/B/8P/wAHAf8/////////////////////////////////////+ADwAPAA8ADwAPAA8AD8AP/A//z//P/+//7//v/+//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABwB/AD8AHwAAAAAAAAAAAAAAAAAAAAAH/wf/f///////////////AAAAAAAAAAAAAAAAAACAAP/8//////////////////8AAAAAAAAAAAAAAAAAAAAAAAD//////////////////wAAAAAAAAAAAAAAAAAHAf9/////////////////////AAAAAAAAAAAAAAAA8AD///////////////////////8AAAAAAAAAAAAAAAAAAMAA/////////////////////wAAAAAAAAAAAAAAAAAfB///////////////////////AAAAAAAAAAAAAP4A//////////////////////////8AAAAAAAAAAQADAD///////////////////////////x//f///////////////////////////////////////AAAAAAAAgACAAIAAgADAAMAAwADAAMAAwADgAOAA4AAADwAPAA8ADwAPAA8ADwAPAA8ADwAPAB8AHwAfAB8AH+AA8ADwAPAA8ADwAPAA+AD4APgA+AD4APgA/AD8APwAAB8AHwAfAB8AHwAfAB8APwA/AD8APwA/AD8APwA/AD/8APwA/AD8APwA/gD+AMAAAAAAAAAAAAAAAAAAwAD/AAA/AD8APwB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwD//wD/AP8A/wD/AP8A/wD/AP8A/4D/gP+A/4D/gP+A/4AA/wA/AAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAfAf8B/////////w//AH8AfwB/AH8AfwB/Af8f/////////////4D/gP+A/8D/wP/A/8D/wP/A/8D/wP/A/8D/4P/g/+AB/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B///g/+D/4P/w//D/8P/w//D/8P/w//D/+P/4//j/+P/4Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af//+P/8//z//P/8//z//P/+//7//v/+/////////////wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wAPAAAAAAAA//////////////////////////////////9//wf/AH8AAIAAgACAAIAAgACAAMAAwADAAMAAwADAAMAAwADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/B/8H/wf/AAMAAAAAAAAAAAAAAAAAAAABAB8B/3///////////////x//H/8f/x//H/8f/3///////////////////////+AA4ADgAOAA4ADwAPAA8ADwAPAA8ADwAPAA+AD4APgAB/8H/wf/D/8P/w//D/8f/x//H/8f/x//H/8f/x//P//4APgA+AD4APgA+AD4APwA/AD8APwA/AD8APwA/AD8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAEAAQADP/8//z//f/9//3//f//////////////////////////8AP4A/gD+AP4A/gD+AP4A/gD/AP8A/wD/AP8A/wD/gAADAAMAAwAHAAcABwAHAAcABwAHAAcABwAHAAcABwAP/////////////////////////////////9//H/wf+B//gP+A/4D/gP+A/4D/gP/A/8D/wP/A/+D/4P/g/+D/4AAPAA8ADwAPAAwAAAAAAAAAAAAAAAAAAAAAAAEAAwAH8B/AH4AfAD8AfwD/Af8D/wf/D/8f/3//////////////4P/w//D/8P/w//j/+P/4//j/+P/4//z//P/8//z//gAHAAcAAwADAAMAAwADAAMAAwADAAEAAQABAAEAAAAA/////////////////////////////////+D/4P/w//D///////////////////////////////9//wD/AAEAAP/////////////////////////////////+//j/wAAA////////////////////////////////AAAAAAAAAAD///////////////////////////////8H/wAEAAAAAP/+//7//v///////////////v/8//D/4P+AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAD///////////////9//3//f/9//z//P/8//z//P/8//z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA//j//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP+AAAD///////////////////////////////////////8AAP4A/////////////////////////////////////wAAAAD/////////////////////////////////////AAAAD/////////////////////////////////////8B///////////////////////////////////////////g////////////////////////////////////////AADwAP/+//////////////////////////////////8AAAAAAAD//////////////////////////////////wAAAAAAAP//////////////////////////////////AAAAAT////////////////////////////////////8AAP///////////////////////////////////////z//////////////////////////////////////////4AD///////////////////////////////////////8AAP///////////////////////////////////////wA/////////////////////////////////////////wAD/+P////////////////////////////////////8AAAAA/wD//////////////////////////////////wAAAAAAAP//////////////////////////////////AAAAAAAB//////////////////////////////////8AAAA//////////////////////////////////////w//////////////////////////////////////////"
  }
 });

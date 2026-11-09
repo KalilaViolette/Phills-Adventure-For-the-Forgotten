@@ -160,7 +160,7 @@ function render(alpha) {
   if (typeof drawGallsShine === 'function') drawGallsShine();                            // the oak gall shining once he's right there with it (js/sword.js)
   if (layers.some(L => L.f > 1)) {                // close to the camera, sliding past faster than the room
     ctx.setTransform(S, 0, 0, S, offX, offY);
-    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
+    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) { const v = frontAt(im, L, camX, camY); drawView(im, v[0], v[1]); } if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
     ctx.translate(-camX, -camY);
   }
 
@@ -245,6 +245,19 @@ function render(alpha) {
   ctx.restore();
 }
 // draws just the part of a room picture that's on screen
+// where a layer in front of the room starts on screen (11/09/2026). It slides past at its own speed around the middle of
+// the view, the way it does with the 640 by 384 view it's painted for, so a smaller view (a short window, the menu's
+// close-up) doesn't push it up or sideways over him, and it's never drawn past its own edges, so its bottom and sides
+// stay at the screen's edges wherever the camera goes
+const FRONT_REF_W = 640, FRONT_REF_H = 384;
+function frontAt(im, L, camX, camY) {
+  const fx = L.f, fy = L.fy ?? L.f;
+  let x = (camX + VW / 2) * fx - (fx - 1) * FRONT_REF_W / 2 - VW / 2 - (L.x || 0);
+  let y = (camY + VH / 2) * fy - (fy - 1) * FRONT_REF_H / 2 - VH / 2 - (L.y || 0);
+  if (im.width >= VW) x = Math.max(0, Math.min(im.width - VW, x));
+  if (im.height >= VH) y = Math.max(0, Math.min(im.height - VH, y));
+  return [Math.round(x), Math.round(y)];
+}
 function drawView(im, camX, camY) {
   const sx = Math.max(0, Math.floor(camX)), sy = Math.max(0, Math.floor(camY));
   const sw = Math.min(im.width - sx, VW + 2), sh = Math.min(im.height - sy, VH + 2);
