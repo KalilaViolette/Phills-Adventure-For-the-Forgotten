@@ -54,8 +54,13 @@ const SOFT = (() => {
     const down = bend(s.n, anchors, xl), up = bend(s.n, anchors.filter(a => a[2] === 'held'), xl), k = s.k;
     const tips = mode !== 'sink' && d.stem;
     if (tips) tip(s, d, rp, xl, down, mode === 'blend' ? BLEND : 1);
-    for (let x = 0; x < s.n; x++) { s.S[x] = k + (1 - k) * down.S[x]; s.U[x] = k + (1 - k) * (tips ? down.S[x] : up.S[x]); }
-    s.soft = k + (1 - k) * down.soft;
+    // under him the stem gives k and the cap's own bend (1 - k) x down.soft, so the cap's share of what moves under him is
+    // that part alone: a column's shift is the stem's share plus the cap's share times its bend there. (Taking the whole
+    // shift under him times the bend sent a cap's far edge way down when he stood just off its stem, where the bend's
+    // ratio of edge to under him is large but the cap itself barely gives.)
+    const sb = (1 - k) * down.soft, tot = Math.max(1e-6, k + sb), ks = k / tot, cs = sb / tot;
+    for (let x = 0; x < s.n; x++) { s.S[x] = d.stem ? ks + cs * down.S[x] : down.S[x]; s.U[x] = d.stem ? ks + cs * (tips ? down.S[x] : up.S[x]) : up.S[x]; }
+    s.soft = d.stem ? tot : down.soft;
   }
   function bend(n, anchors, xl) {
     const S = new Float32Array(n);
@@ -140,6 +145,8 @@ const SOFT = (() => {
       }
       for (let x = 0; x < s.n; x++) {                                                      // every column: its shift, within the room's clearance there, into the line he stands on
         let v = Math.round(s.T * sh[x]);
+        const most = Math.ceil(1.8 * d.sag);                                               // (no column of a piece ever goes past the most the piece can fold, wherever he stands)
+        if (v > most) v = most; else if (v < -most) v = -most;
         if (v > d.down[x]) v = d.down[x]; else if (v < -d.up[x]) v = -d.up[x];
         s.d[x] = v;
         let dn = s.dent[x]; if (v + dn > d.down[x]) dn = d.down[x] - v;
