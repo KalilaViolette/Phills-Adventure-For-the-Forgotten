@@ -22,8 +22,8 @@ function clearParts() { for (const p of parts) p.on = false; popups.length = 0; 
 const liveParts = () => parts.reduce((n, p) => n + (p.on ? 1 : 0), 0);
 
 const popups = [];
-// (11/02/2026: long ones went by too fast to read and ran off the screen. Now each stays up for as long as it takes to
-// read, about a third of a second a word, and the long ones drift up slowly. The drawing wraps them and keeps them on screen: js/render.js)
+// each stays up for as long as it takes to read, about a third of a second a word, and the long ones drift up slowly.
+// The drawing wraps them and keeps them on screen: js/render.js
 const popup = (x, y, text, col = '#ffffff', big = false) => {
   if (popups.length >= 12) return;
   const words = String(text).trim().split(/\s+/).length, life = Math.min(7, Math.max(big ? 1.3 : 0.9, 0.6 + words * 0.3));
@@ -40,10 +40,10 @@ function puff(x, y, n, spread, col = '#e9e4da', up = 30) {
 function spark(x, y) {
   for (let i = 0; i < 7; i++) { const a = Math.random() * Math.PI * 2, v = 80 + Math.random() * 120; part(x, y, Math.cos(a) * v, Math.sin(a) * v, 0.16, '#fff6d8', 2, 0); }
 }
-// a hit landing (the combat review, 10/17/2026): one shape where the blade meets it, held through the hit's little
-// pause and gone a moment after. clean: a bright burst and streaks along the swing, bits of whatever it's made of flying
-// on the way it was hit. braced (it took it without stopping): smaller, a hard ring and a few bits. armor (it glanced
-// off): a gray ring and sparks kicked back at him
+// a hit landing: one shape where the blade meets it, held through the hit's little pause and gone a moment after.
+// clean: a bright burst and streaks along the swing, bits of whatever it's made of flying on the way it was hit. braced
+// (it took it without stopping): smaller, a hard ring and a few bits. armor (it glanced off): a gray ring and sparks
+// kicked back at him
 const impacts = [];
 function impact(x, y, dir, power = 1, kind = 'clean', bits) {
   impacts.push({ x, y, dir, p: power, kind, t: 0, life: kind === 'clean' ? 0.12 + 0.03 * power : 0.11 });
@@ -57,7 +57,7 @@ function updateImpacts(dt) {
   for (const m of impacts) m.t += dt; for (let i = impacts.length - 1; i >= 0; i--) if (impacts[i].t >= impacts[i].life) impacts.splice(i, 1);
   for (const w of sweeps) w.t += dt; while (sweeps.length && sweeps[0].t >= SWEEP_LIFE) sweeps.shift();
 }
-// a charged swing's reach (combat readability, 10/17/2026): it hits a long way past the sword as it's drawn, so it leaves
+// a charged swing's reach (combat readability): it hits a long way past the sword as it's drawn, so it leaves
 // a quick pale sweep through all of where it really reaches, from the drawn blade's tip out to the edge, gone a moment
 // after. Only a picture: the hits still go by swordLines(). Drawn with the impacts, outside what an enemy's hits go by
 const sweeps = [], SWEEP_LIFE = 0.14;

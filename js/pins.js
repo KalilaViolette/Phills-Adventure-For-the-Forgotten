@@ -14,7 +14,7 @@ const PINS = {
   burr: { name: 'sticky burr', what: 'anything that bumps into him gets stuck a moment', cell: 10, cost: 0 },
   party_hat: { name: 'party hat', what: 'the squeak, spin and fluff burst cost less breath', cell: 7, cost: 32 },
   tiny_top: { name: 'tiny top', what: 'the spin lasts longer', cell: 8, cost: 27 },
-  watch: { name: 'pocket watch', what: 'the squeak, spin and fluff burst come back sooner', cell: 11, cost: 0 },   // found, not bought: behind the dead leaves in the well's wall (10/14/2026)
+  watch: { name: 'pocket watch', what: 'the squeak, spin and fluff burst come back sooner', cell: 11, cost: 0 },   // found, not bought: behind the dead leaves in the well's wall
 };
 const PIN_SHEET = 'art/pins.png';
 Assets.use(PIN_SHEET);
@@ -91,4 +91,4 @@ function addCotton() {
   saveWorld();
 }
 // the beetle's work on his sword: each step hits a bit harder
-const swordBonus = () => swordPower();   // how hard each of the beetle's steps makes it hit is in js/sword.js (10/30/2026: the oak gall first, the cherry stain and the etching after)
+const swordBonus = () => swordPower();   // how hard each of the beetle's steps makes it hit is in js/sword.js (the oak gall first, the cherry stain and the etching after)

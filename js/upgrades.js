@@ -1,6 +1,6 @@
 'use strict';
-// ---------- his upgrades: more rolls, a tougher shield (10/31/2026) ----------
-// From the fairness plan (To do.md): a simple upgrade system, things like an extra roll or more shield. Enemies are
+// ---------- his upgrades: more rolls, a tougher shield ----------
+// A simple upgrade system, things like an extra roll or more shield. Enemies are
 // tuned against Phill with none of these and checked again with all of them, so they're room to breathe, never a
 // way past an enemy's answer. Two kinds so far, one line each:
 //   roll     one more roll's worth of stamina. The stamina bar gets a piece longer, and the shield bar stretches to

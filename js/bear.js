@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the bear (10/20/2026) ----------
+// ---------- the bear ----------
 // The forgotten teddy bear. He never got a name: the kid who got him dropped him in the park less than five minutes in.
 // Phill first sees him right after the tin soldier, at the east edge, looking like he's just minding his own business.
 // He's the one who got the Grime into the soldier in the first place. He was watching the whole fight from the back of the
@@ -25,8 +25,8 @@ const bearWaiting = () => !!(world.flags.soldierDown && !world.flags.metBear);
 const firstBossDown = () => !!(world.flags.sailboatDown || world.flags.topDown);       // the sailboat or the spinning top, whichever he did first
 const inviteWaiting = () => firstBossDown() && !world.flags.bearInvited;
 
-// his breath (10/21/2026): slow, in two steps and out again, most of the time resting. It was a hard swap every 0.75 s
-// between in and out, and that read as his whole body lurching
+// his breath: slow, in two steps and out again, most of the time resting. A hard swap between in and out reads as his
+// whole body lurching
 const BREATH = [[1.7, 0], [0.3, 1], [1.0, 2], [0.4, 1]];                             // how long at each step, and the step (0 rest, 1 a little in, 2 all the way in)
 const BREATH_T = BREATH.reduce((n, [d]) => n + d, 0);
 function breathAt(t) { let u = t % BREATH_T; for (const [d, k] of BREATH) { if (u < d) return k; u -= d; } return 0; }
@@ -41,7 +41,7 @@ function bearFrame(a) {
   if (a.t % 3.7 < 0.12) return 'blink_' + b + '_' + f;
   return 'idle_' + b + '_' + f;
 }
-// walking (10/21/2026): a waddle, 8 pictures, slow. bearWalkTo is a scene step: he turns the way he's going and walks
+// walking: a waddle, 8 pictures, slow. bearWalkTo is a scene step: he turns the way he's going and walks
 // there at his own pace, then stands
 const BEAR_STEP = 0.09, BEAR_PACE = 30, BEAR_WALK_N = 8;
 const bearWalkTo = (x, pace = BEAR_PACE) => {
@@ -54,7 +54,7 @@ const bearWalkTo = (x, pace = BEAR_PACE) => {
     return false;
   };
 };
-// climbing the lace (10/21/2026): bearClimb is a scene step. From under the lace he goes up it, a pull every BEAR_PULL
+// climbing the lace: bearClimb is a scene step. From under the lace he goes up it, a pull every BEAR_PULL
 // seconds, till he's in his hole, then he's peeking out of it
 const BEAR_PULL = 0.3, BEAR_CLIMB_PACE = 34;
 const bearClimb = () => (t, dt) => {
@@ -75,12 +75,12 @@ function drawBear(a) {
   const im = Assets.get(BEAR_SHEET);
   if (!im) return;
   const h = room.def.bearhole;
-  if (a.peek && h) {                                                                   // his head poking out of his hole, paws on the rim (10/21/2026: its own picture)
+  if (a.peek && h) {                                                                   // his head poking out of his hole, paws on the rim (its own picture)
     ctx.save(); ctx.beginPath(); ctx.ellipse(h.cx, h.cy, 12, 16, 0, 0, Math.PI * 2); ctx.clip();
     drawBearPic(im, 'peek_' + (a.face || 'L'), h.cx + 2, h.cy + 56);
     ctx.restore(); return;
   }
-  if (a.climb && h) {                                                                  // going up the lace into his hole: only what's below the hole or inside it shows, so he goes in (10/21/2026)
+  if (a.climb && h) {                                                                  // going up the lace into his hole: only what's below the hole or inside it shows, so he goes in
     ctx.save(); ctx.beginPath(); ctx.rect(h.cx - 200, h.cy + 16, 400, 600); ctx.ellipse(h.cx, h.cy, 12, 16, 0, 0, Math.PI * 2); ctx.clip();
     drawBearPic(im, 'climb_' + (Math.floor(a.climb.t / BEAR_PULL) % 2 + 1) + '_' + (a.face || 'L'), a.x, a.y);
     ctx.restore(); return;
@@ -89,7 +89,7 @@ function drawBear(a) {
   drawBearPic(im, bearFrame(a), a.x, a.y);
 }
 
-// ---- watching the soldier fight from behind a tree at the back of the clearing (11/02/2026). He's drawn just before the
+// ---- watching the soldier fight from behind a tree at the back of the clearing. He's drawn just before the
 // layer with the tree, so its trunk is in front of him and only the side of his head comes out past it. Darkened to
 // nearly the trunk's own color, so he's hard to spot: you can just about make out that it's him. Now and then he leans
 // back in. Gone the moment the soldier's down
@@ -119,8 +119,8 @@ drawWildlife = (at, camX, camY) => {
   ctx.drawImage(peekCanvas, Math.round(X - F.feet[0] * w.scale), Math.round(Y - F.feet[1] * w.scale), F.w * w.scale, F.h * w.scale);
 };
 
-// ---- the east edge: he's there till Phill's met him. The meeting only starts once the Grime things round him are beaten
-// (10/20/2026), so nothing comes at Phill while they talk
+// ---- the east edge: he's there till Phill's met him. The meeting only starts once the Grime things round him are beaten,
+// so nothing comes at Phill while they talk
 function setupBearRoom() {
   const m = BEAR_AT.meet, iv = BEAR_AT.invite, id = room.def.id;
   room.bearEntry = { x: P.x, y: P.y };
@@ -132,7 +132,7 @@ function setupBearRoom() {
   }
   if (id === iv.room && world.flags.bearInvited && !world.flags.bearVisited)           // asked him in: still peeking out, waiting for him to come up
     addActor('bear', { kind: 'bear', peek: true, x: 0, y: 0, face: 'L', layer: 'back' });
-  if (id === BEAR_AT.home.room) {                                                      // he's home whenever Phill comes up (10/20/2026)
+  if (id === BEAR_AT.home.room) {                                                      // he's home whenever Phill comes up
     const hm = homeSpots(room.def);
     addActor('bear', { kind: 'bear', x: hm.x, y: hm.y, face: 'L', layer: 'back' });
     if (!world.flags.bearVisited) playScene(SCENES.bearHome(room.def));                 // the first time
@@ -141,7 +141,7 @@ function setupBearRoom() {
   if (id !== m.room || !bearWaiting()) return;
   addActor('bear', { kind: 'bear', x: m.x, y: m.y, face: 'R', layer: 'back' });   // facing away, busy with nothing much
 }
-// where things are in his home: the room file says (the painted home, 10/26/2026: bear = {x, y, seat, tally}), else the drawn room's spots
+// where things are in his home: the room file says (the painted home: bear = {x, y, seat, tally}), else the drawn room's spots
 const homeSpots = def => Object.assign({ x: BEAR_AT.home.x, y: BEAR_AT.home.y, seat: 23.5 * 16, tally: 11 * 16 }, (def && def.bear) || {});
 const _setupPondRoomBear = setupPondRoom;
 setupPondRoom = () => { _setupPondRoomBear(); setupBearRoom(); };
@@ -153,14 +153,14 @@ function checkBear() {
   world.flags.metBear = true; saveWorld();
   playScene(SCENES.bearMeet(room.def));
 }
-// the invite: it can't be missed, so it starts a few steps in from whichever way Phill came in (10/20/2026)
+// the invite: it can't be missed, so it starts a few steps in from whichever way Phill came in
 function checkInvite() {
   const iv = BEAR_AT.invite, a = actors.bear, e = room.bearEntry;
   if (!a || a.peek || room.def.id !== iv.room || !inviteWaiting() || P.story || sceneRunning() || P.ko > 0 || !P.ground || !e) return;
   if (Math.hypot(P.x - e.x, P.y - e.y) < iv.go) return;
   playScene(SCENES.bearInvite(room.def));
 }
-// once he's asked, his home is the way on: going for either way out of the east edge, he calls Phill back (10/20/2026)
+// once he's asked, his home is the way on: going for either way out of the east edge, he calls Phill back
 const mustGoUp = () => room && room.def.id === BEAR_AT.invite.room && !!world.flags.bearInvited && !world.flags.bearVisited;
 function checkLeave() {
   if (!mustGoUp() || P.story || sceneRunning() || P.ko > 0) return;
@@ -181,7 +181,7 @@ function faceBearHome() {
 const _checkEventsBear = checkEvents;
 checkEvents = dt => { _checkEventsBear(dt); checkBear(); checkInvite(); checkLeave(); faceBearHome(); };
 
-// ---- meeting him (the lines are a first draft, 10/20/2026)
+// ---- meeting him
 const bearDo = fn => run(() => { const a = actors.bear; if (a) fn(a); });
 SCENES.bearMeet = def => {
   const m = BEAR_AT.meet, side = P.x < m.x ? -1 : 1;                       // (whichever side of him Phill's on)
@@ -205,13 +205,13 @@ SCENES.bearMeet = def => {
     ...nod(),
     say('bear', "Good. That's good.", "The playground's up past the gate. Be careful up there.", "I'll be around. Come find me whenever you want."),
     wait(0.3),
-    bearWalkTo(m.x + 84),                                                     // and off he goes, toward where his home turns out to be (10/21/2026)
+    bearWalkTo(m.x + 84),                                                     // and off he goes, toward where his home turns out to be
     fadeTo(1, 0.45), run(() => { delete actors.bear; }), wait(0.3), fadeTo(0, 0.45),   // (a short fade still covers the rest of the way: it's a long walk out of the picture at his pace)
     camBack(), bars(false), run(() => music.play(room.def.music)),
   ];
 };
 
-// ---- his home (10/20/2026): a hole he dug up into the bank at the east edge, the toys' old bootlace hanging out of it,
+// ---- his home: a hole he dug up into the bank at the east edge, the toys' old bootlace hanging out of it,
 // tied to a twig in its lip. It's pulled up out of sight till he asks Phill in, then it stays down
 const bearLaceDown = () => !!world.flags.bearInvited;
 function drawBearLace(h, len) {
@@ -234,7 +234,7 @@ drawNpc = () => {
   if (room && room.def.id === BEAR_BRIDGE.room && (bridgeUp() || world.flags.bearBridgeGone)) drawBearBridge(!bridgeUp());
 };
 
-// ---- the way over the brambles (10/20/2026): ready for when he asks Phill home (after Phill's first boss), the bear's laid two old wooden rulers end
+// ---- the way over the brambles: ready for when he asks Phill home (after Phill's first boss), the bear's laid two old wooden rulers end
 // to end over the thorns at the east edge, propped on two cotton reels in the bramble, with a ruler leaning up to it at
 // each end, so Phill can come and go without getting scratched. After the fight around 60% he breaks it
 // (bearBridgeGone, set by that fight when it's built): the pieces are left lying in the thorns
@@ -309,7 +309,7 @@ interact = () => {
   return _interactB();
 };
 
-// ---- asking Phill home (10/20/2026, the lines are a first draft). Right after his first boss: the bear heard it go quiet
+// ---- asking Phill home. Right after his first boss: the bear heard it go quiet
 SCENES.bearInvite = def => {
   const iv = BEAR_AT.invite, h = def.bearhole, side = P.x < iv.x ? -1 : 1;
   const which = world.flags.sailboatDown && world.flags.topDown ? '' : world.flags.sailboatDown ? 'sailboat' : 'top';
@@ -332,7 +332,7 @@ SCENES.bearInvite = def => {
     say('bear', 'I put that over the brambles for you.', "So you don't get scratched, coming and going."),
     camTo(iv.x + side * 20, iv.y - 60, 0.6),
     say('bear', 'Okay. Okay, good.', "Give me a second. I'll tidy up a bit."),
-    bearWalkTo(h.x + 16), wait(0.3),                                              // over to the lace (10/21/2026), the far side of it so he climbs facing Phill's way
+    bearWalkTo(h.x + 16), wait(0.3),                                              // over to the lace, the far side of it so he climbs facing Phill's way
     together(bearClimb(), camTo(h.cx - 20, h.cy + 30, 2.5)),                     // and up it, into his hole
     run(() => { world.flags.bearInvited = true; world.flags.metBear = true; saveWorld(); }),
     wait(0.5),
@@ -341,7 +341,7 @@ SCENES.bearInvite = def => {
   ];
 };
 
-// ---- Phill's first time in his home (10/20/2026, the lines are a first draft). Proud of it, nervous, glad of the company
+// ---- Phill's first time in his home. Proud of it, nervous, glad of the company
 SCENES.bearHome = def => {
   const hm = homeSpots(def), T_ = 16;
   return [
@@ -367,7 +367,7 @@ SCENES.bearHome = def => {
   ];
 };
 
-// ---- calling Phill back to the lace if he goes for a way out before he's been up (10/20/2026, a first draft)
+// ---- calling Phill back to the lace if he goes for a way out before he's been up
 SCENES.bearThisWay = (def, backTo) => {
   const h = def.bearhole, first = !room.calledBack; room.calledBack = true;
   return [
@@ -379,7 +379,7 @@ SCENES.bearThisWay = (def, backTo) => {
 };
 
 // ---- talking to him at home: optional, a little more about him every time, light things first and harder ones the more
-// Phill keeps coming back to him (10/20/2026, the lines are a first draft)
+// Phill keeps coming back to him
 const BEAR_CHAT = [
   () => [say('bear', "Oh, the cups? There's no tea. I don't have any tea.", "They're just nice to have out. In case.")],
   () => [say('bear', 'I found the mitten by the fence, the first winter. Some kid\'s hand was cold that day, I bet.', 'I sleep better in it than I ever did on a shelf.')],

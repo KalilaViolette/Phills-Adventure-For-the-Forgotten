@@ -73,7 +73,7 @@ drawSoftWall = (b, jx) => {
     ctx.fillStyle = '#2c1c3c'; for (let k = 0; k < 5; k++) ctx.fillRect(x0 + rnd(k) * (w - 4), y0 + rnd(k + 9) * (h - 4), 3, 3);   // dead things in it
     return;
   }
-  if (b.look === 'leaves') {                                                              // dead leaves drifted in and packed tight (redrawn 10/14/2026: it has to look natural)
+  if (b.look === 'leaves') {                                                              // dead leaves drifted in and packed tight, drawn to look natural
     if (!b.leafArt) b.leafArt = leafPile(b, w, h, rnd);
     const A = b.leafArt;
     ctx.drawImage(A.c, Math.round(x0 - A.ox), Math.round(y0 - A.oy));
@@ -110,7 +110,7 @@ drawSoftWall = (b, jx) => {
 // ---------- the litter that ends up in a tree ----------
 Object.assign(FOE, {
   // a paper airplane: glides in long passes across the room, dipping down toward him when it comes past. Newer
-  // (10/16/2026): loops the loop over him and swoops back down at him, throws a few little paper darts, and climbs up
+  //: loops the loop over him and swoops back down at him, throws a few little paper darts, and climbs up
   // and nose dives straight down at him, where it sticks in the ground a moment
   plane: { hp: 4, hw: 14, h: 10, acorns: [1, 2], free: true,
     setup(f) { f.hx = f.x; f.hy = f.y; f.f = f.f || -1; f.dir = f.f; },
@@ -182,7 +182,7 @@ Object.assign(FOE, {
     },
     frame: f => 'plane_' + ({ walk: f.dive ? 'dive' : 'fly_' + (Math.floor(f.t * 3) % 2 + 1), foldwind: 'fly_2', throw: 'dive', down: 'down', stagger: 'dizzy', hurt: 'fly_2' }[f.state] || 'fly_1') },
 
-  // an old tennis ball full of Grime: bounces about the room in big arcs, harder when he's near. Newer (10/16/2026): a
+  // an old tennis ball full of Grime: bounces about the room in big arcs, harder when he's near. Newer: a
   // huge bounce that comes down on him with a shock along the ground both ways (jump it), spits Grime out of its split
   // seam, and spins in place and rolls at him along the ground
   ball: { hp: 5, hw: 10, h: 20, acorns: [1, 2],
@@ -195,7 +195,7 @@ Object.assign(FOE, {
       const dx = P.x - f.x, adx = Math.abs(dx);
       if (f.air) {
         if (hopFoe(f, dt, 800)) {
-          if (f.state === 'slam' && f.y < f.slamY - 8 && tile(Math.floor(f.x / T), Math.round(f.y / T)) === 2) { f.air = true; f.y += 2; f.vy = Math.max(f.vy, 60); return; }   // a thin ledge up above where it started: on through it (it was landing up there every time, 10/16/2026)
+          if (f.state === 'slam' && f.y < f.slamY - 8 && tile(Math.floor(f.x / T), Math.round(f.y / T)) === 2) { f.air = true; f.y += 2; f.vy = Math.max(f.vy, 60); return; }   // a thin ledge up above where it started: on through it, or it would land up there every time
           if (f.state === 'slam') { setFoeState(f, 'quake'); ringOut(f.x, f.y - 2, 55, '#b8d83a'); shakeT = 0.12; shakeA = 1.6; sfx.thud(); puff(f.x, f.y, 8, 50); return; }
           setFoeState(f, 'squash'); sfx.boing ? sfx.boing() : sfx.bump(); puff(f.x, f.y, 4, 30);
         }
@@ -240,7 +240,7 @@ Object.assign(FOE, {
     frame: f => 'ball_' + (f.state === 'down' ? 'down' : f.state === 'stagger' ? 'dizzy' : f.state === 'squash' || f.state === 'quake' ? 'squash' : f.state === 'spit' ? (f.t < 0.6 ? 'spit' : 'roll_1') : f.state === 'spin' ? 'spin' : f.state === 'roll' ? (Math.floor(f.t * 16) % 2 ? 'spin' : 'roll_' + (Math.floor(f.t * 16) % 4 < 2 ? 1 : 2)) : f.vy < -60 ? 'launch' : 'roll_' + (Math.floor(f.t * 6) % 2 + 1)) },
 
   // a shuttlecock hanging in the leaves. Walk under it and it drops, nose first. Then it flutters back up to where it
-  // was. Newer (10/16/2026): shakes loose a few feathers that drift down after him, spirals down at him from off to the
+  // was. Newer: shakes loose a few feathers that drift down after him, spirals down at him from off to the
   // side, and a drop that bounces back up off the ground and comes down on him again
   shuttle: { hp: 2, hw: 8, h: 26, acorns: [1, 2], free: true,
     setup(f) { f.hx = f.x; f.hy = f.y; },
@@ -248,14 +248,14 @@ Object.assign(FOE, {
     update(f, dt) {
       if (f.state === 'down') { fallDown(f, dt); return; }
       baseState(f, dt);
-      const dx = P.x - f.x, adx = Math.abs(dx), below = phillAround() && !(P.story && !P.story.free) && P.y > f.y && P.y - f.y < 460;   // (it was 300: the ones in the crown hang higher than that over the floor, and never dropped, 10/16/2026)
+      const dx = P.x - f.x, adx = Math.abs(dx), below = phillAround() && !(P.story && !P.story.free) && P.y > f.y && P.y - f.y < 460;   // (460: the ones in the crown hang high over the floor)
       if (f.state === 'walk') {                                                          // hanging there, swaying
         if (f.y > f.hy + 4) { setFoeState(f, 'rise'); return; }                          // knocked out of a drop (or off the ground) by a hit: back up home first
         f.x = f.hx + Math.sin(f.t * 1.5) * 3;
         if (f.cd <= 0 && below) {
           const under = adx < 20;
           const m = choose([[under ? 2 : 0, 'drop'], [hasMove(f, 4) && adx < 26 ? 1.2 : 0, 'drop2'], [hasMove(f, 2) && adx < 100 && !under ? 0.6 : 0, 'shake'], [hasMove(f, 3) && adx > 40 && adx < 180 ? 0.5 : 0, 'spinwind']]);
-          if (m === 'drop' || m === 'drop2') { setFoeState(f, 'dropwind'); f.rebound = m === 'drop2'; sfx.rustle(1.4); }   // (it used to drop the moment he was under it: a beat first now, 10/17/2026)
+          if (m === 'drop' || m === 'drop2') { setFoeState(f, 'dropwind'); f.rebound = m === 'drop2'; sfx.rustle(1.4); }   // (a beat first, not the moment he's under it)
           else if (m) { setFoeState(f, m); f.f = Math.sign(dx) || f.f; }
           else f.cd = 0.3;
         }
@@ -276,9 +276,9 @@ Object.assign(FOE, {
       } else if (f.state === 'stuck') {
         if (f.t >= 1.0) setFoeState(f, 'rise');
       } else if (f.state === 'rise') {
-        const x0 = f.x, y0 = f.y, up = 45 + Math.min(105, Math.max(0, f.y - f.hy) * 0.4);   // faster from a long way down (it can drop a lot farther now: 11 seconds back up in the west drop, 10/16/2026)
+        const x0 = f.x, y0 = f.y, up = 45 + Math.min(105, Math.max(0, f.y - f.hy) * 0.4);   // faster from a long way down (it can drop a long way: the west drop would take 11 seconds back up)
         freeMove(f, Math.sign(f.hx - f.x) * 20 * dt, -up * dt);
-        if (Math.abs(f.x - x0) + Math.abs(f.y - y0) < 0.2 || f.t > 4) { f.y -= up * dt; f.x += Math.sign(f.hx - f.x) * Math.min(Math.abs(f.hx - f.x), 20 * dt); }   // caught under a branch: it flutters up through the leaves (the bough end's never got home, 10/16/2026)
+        if (Math.abs(f.x - x0) + Math.abs(f.y - y0) < 0.2 || f.t > 4) { f.y -= up * dt; f.x += Math.sign(f.hx - f.x) * Math.min(Math.abs(f.hx - f.x), 20 * dt); }   // caught under a branch: it flutters up through the leaves (the bough end's never got home)
         if (f.y <= f.hy + 2) { f.y = f.hy; f.x = f.hx; setFoeState(f, 'walk'); f.cd = 1.2; }
       } else if (f.state === 'shake') {                                                  // shaking a few feathers loose, that drift down after him
         f.x = f.hx + Math.sin(f.t * 50) * 1.5;
@@ -373,7 +373,7 @@ SCENES.cape = it => {
   ];
 };
 // and the crow, back from wherever it's been. Its own part, so if a reload cuts it off after the cape's tied on, it
-// can still happen: the next time he's standing in the nest it flies in and says it all (the save audit, 10/17/2026)
+// can still happen: the next time he's standing in the nest it flies in and says it all
 function crowBack(BR) {
   const crow = () => actors.crow;
   const shakeHead = [face(-1), wait(0.18), face(1), wait(0.18), face(-1), wait(0.18), face(1), wait(0.2)];

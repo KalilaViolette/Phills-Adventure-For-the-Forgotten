@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the Hive's candy: Grime candy spilled out of the split piñata (New regions.md, 10/18/2026) ----------
+// ---------- the Hive's candy: Grime candy spilled out of the split piñata ----------
 // A gumdrop, a little gummy worm, a lollipop, a jawbreaker, a lump of taffy and a swarm of candy corn. Region level 2,
 // so each has five attacks (the first always, the rest by hasMove), every one with its own wind up, and one the shield
 // doesn't answer (HEAVY: the red !!). Helpers (near, strike, baseState, heard) are in pond.js, freeMove and fallDown in

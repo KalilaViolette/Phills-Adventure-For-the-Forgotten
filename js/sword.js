@@ -1,5 +1,5 @@
 'use strict';
-// ---------- his sword's upgrades (10/30/2026) ----------
+// ---------- his sword's upgrades ----------
 // The beetle under the oak does the work, and every step needs something Phill finds out in the park to do it with,
 // not acorns. The first is the old oak gall under the fallen log on the litter path: oaks grow these and they were
 // used for ink and wood stain, so the beetle makes a dark stain from it. The steps after it (the cherry stain and the
@@ -16,7 +16,7 @@
 //   hits    how hard the sword hits, times the plain sword
 //   process how the beetle gets it ready before it goes on, seen in the scene (js/swordwork.js PROCESS: gall), or
 //           null for one that hasn't got its own yet (he just gnaws it)
-//   admire  what he says holding Phill's sword up before he starts (10/31/2026)
+//   admire  what he says holding Phill's sword up before he starts
 //   tooSoon what he says when Phill brings this one before the step it goes over is done (optional)
 //   under   what this step leaves on the blade, for when he says a later one needs it underneath
 const SWORD_WORK = [
@@ -42,7 +42,7 @@ const swordNext = () => SWORD_WORK[swordLevel()] || null;
 const swordReady = () => { const w = swordNext(); return !!(w && w.needs && world.has[w.needs]); };
 const swordSheet = () => { const l = swordLevel(); return l ? SWORD_WORK[l - 1].sheet : ''; };
 const swordPower = () => { const l = swordLevel(); return l ? SWORD_WORK[l - 1].hits : 1; };
-// a later step's thing Phill's carrying before the step it goes over (10/31/2026): it can't go on yet, it'd ruin the
+// a later step's thing Phill's carrying before the step it goes over: it can't go on yet, it'd ruin the
 // blade, so the beetle won't put it on. He'd trade for it, though
 const swordEarly = () => SWORD_WORK.slice(swordLevel() + 1).find(w => w.needs && world.has[w.needs] && !world.flags['traded_' + w.needs]) || null;
 // what the beetle would trade for one of those. None yet: what he'd give is something from another region, or
@@ -57,7 +57,7 @@ const SWORD_TRADES = [];
 // the oak gall as he finds it: a little round woody ball, dark and knobbly, with the hole the wasp left. It's hidden
 // under the log, so from outside it's just a dark lump like the litter round it. Once he's down there with it, it
 // warms up: a soft gold glow round it, a bright rim along the top, and now and then a glint off it, so it reads as
-// something special without giving away where it is from anywhere else (10/30/2026)
+// something special without giving away where it is from anywhere else
 const GALL_NEAR = 90;                                                                   // how close he has to be (across, and about level with it) for it to shine
 function drawGall(x, y, near, g = ctx) {                                                         // the gall itself, drawn with the items
   const k = near === undefined ? gallNear(x, y) : near;

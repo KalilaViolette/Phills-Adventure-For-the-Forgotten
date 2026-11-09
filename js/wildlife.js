@@ -8,25 +8,25 @@
 // hitbox. They're drawn with everything else at their depth, so the dark under the trees falls on them too.
 const WILD = {
   // ground walkers: cross the range with pauses. pause: [frame, min s, max s] choices
-  deer:     { kind: 'walker', speed: 16, anim: ['walk_1', 'walk_2', 'walk_3', 'walk_4', 'walk_5', 'walk_6', 'walk_7', 'walk_8'], fps: 8.3, pauses: [['stand', 1.5, 3], ['graze', 3, 6], ['graze', 3, 6]], every: [40, 90], flee: 170, fleeSpeed: 110, alert: 'alert', fawn: 0.6,   // fawn: how often a spotted fawn tags along behind her (10/19/2026)
-              // my traced set (10/19/2026): an 8 frame walk, a 6 frame run when she bolts, and grazing as a little cycle
-              // the run has its own beat (10/20/2026): run_2 is the leap with all four feet off the ground, held about
+  deer:     { kind: 'walker', speed: 16, anim: ['walk_1', 'walk_2', 'walk_3', 'walk_4', 'walk_5', 'walk_6', 'walk_7', 'walk_8'], fps: 8.3, pauses: [['stand', 1.5, 3], ['graze', 3, 6], ['graze', 3, 6]], every: [40, 90], flee: 170, fleeSpeed: 110, alert: 'alert', fawn: 0.6,   // fawn: how often a spotted fawn tags along behind her
+              // traced: an 8 frame walk, a 6 frame run when she bolts, and grazing as a little cycle
+              // the run has its own beat: run_2 is the leap with all four feet off the ground, held about
               // twice as long so the hang time reads, the push off before it and the landing after a touch longer than the rest
               fleeAnim: ['run_1', 'run_2', 'run_3', 'run_4', 'run_5', 'run_6'], fleeFps: 10, fleeDur: [0.09, 0.18, 0.09, 0.07, 0.07, 0.08],
-              cycles: { graze: { enter: [['graze_1', 0.3]], loop: [['graze_2', 0.45], ['graze_3', 0.45]], exit: [['graze_4', 0.35]] } } },   // the fawn has the same 20 frames as the doe now (traced, 10/20/2026)
+              cycles: { graze: { enter: [['graze_1', 0.3]], loop: [['graze_2', 0.45], ['graze_3', 0.45]], exit: [['graze_4', 0.35]] } } },   // the fawn has the same 20 frames as the doe
   fox:      { kind: 'walker', speed: 44, anim: ['slink_1', 'slink_2', 'slink_3', 'slink_4'], fps: 7, pauses: [['slink_1', 0.6, 1.4]], every: [70, 150], flee: 140, fleeSpeed: 120 },
   hedgehog: { kind: 'walker', speed: 9, anim: ['walk_1', 'walk_2'], fps: 4, pauses: [['walk_1', 1, 3]], every: [30, 70], scare: 70, scareFrame: 'curl', scareT: 3 },
   cat:      { kind: 'walker', speed: 26, anim: ['walk_1', 'walk_2', 'walk_3', 'walk_4'], fps: 5, pauses: [['sit', 2, 4], ['sit_2', 0.5, 1], ['sit', 2, 5]], every: [45, 100] },
   raccoon:  { kind: 'walker', speed: 22, anim: ['walk_1', 'walk_2', 'walk_3'], fps: 5, pauses: [['sit', 1, 2], ['rummage', 2, 5]], every: [60, 130], flee: 110, fleeSpeed: 80 },
   pigeon:   { kind: 'walker', speed: 14, anim: ['walk', 'peck_1'], fps: 4, pauses: [['peck_1', 0.3, 0.6], ['peck_2', 0.3, 0.6], ['peck_1', 0.3, 0.5]], every: [25, 60], flyOff: 100, flyAnim: ['fly_1', 'fly_2'] },
-  raccoonbig: { kind: 'walker', speed: 34, anim: ['walk_1', 'walk_2', 'walk_3'], fps: 4, pauses: [['sit', 2, 4], ['rummage', 2, 5]], every: [60, 130], flee: 150, fleeSpeed: 110, sprite: 'raccoonbig' },   // the picnic's, drawn the size it is to him (Scale.md, 10/18/2026)
+  raccoonbig: { kind: 'walker', speed: 34, anim: ['walk_1', 'walk_2', 'walk_3'], fps: 4, pauses: [['sit', 2, 4], ['rummage', 2, 5]], every: [60, 130], flee: 150, fleeSpeed: 110, sprite: 'raccoonbig' },   // the picnic's, drawn the size it is to him
   pigeonbig: { kind: 'walker', speed: 20, anim: ['walk', 'peck_1'], fps: 4, pauses: [['peck_1', 0.3, 0.6], ['peck_2', 0.3, 0.6], ['peck_1', 0.3, 0.5]], every: [25, 60], flyOff: 130, flyAnim: ['fly_1', 'fly_2'], sprite: 'pigeonbig' },
   mouse:    { kind: 'walker', speed: 70, anim: ['scurry_1', 'scurry_2'], fps: 10, pauses: [['scurry_1', 0.4, 1.5]], every: [20, 50], flee: 60, fleeSpeed: 110 },
   beetle:   { kind: 'walker', speed: 7, anim: ['walk_1', 'walk_2'], fps: 5, pauses: [['walk_1', 1, 3]], every: [10, 30] },
   inchworm: { kind: 'walker', speed: 4, anim: ['crawl_1', 'crawl_2'], fps: 1.6, pauses: [['crawl_1', 1, 2]], every: [15, 40] },
   squirrel2:{ kind: 'walker', speed: 95, anim: ['run_1', 'run_2'], fps: 9, pauses: [['sit', 1, 2.5]], every: [25, 70], flee: 110, fleeSpeed: 150, farSprite: 'squirrelfar' },
-  rabbit:   { kind: 'hopper', every: [25, 60], flee: 130, hopH: [12, 18], hopSpeed: [80, 170] },   // true size now (10/19/2026): bigger hops
-  // the Greenhouse's (10/18/2026)
+  rabbit:   { kind: 'hopper', every: [25, 60], flee: 130, hopH: [12, 18], hopSpeed: [80, 170] },   // true size: bigger hops
+  // the Greenhouse's
   ladybug:  { kind: 'walker', speed: 5, anim: ['walk_1', 'walk_2'], fps: 6, pauses: [['walk_1', 1, 3]], every: [15, 40] },
   woodlouse:{ kind: 'walker', speed: 8, anim: ['walk_1', 'walk_2'], fps: 7, pauses: [['walk_1', 0.6, 2]], every: [15, 40] },
   toad:     { kind: 'hopper', every: [30, 70], flee: 60 },
@@ -42,9 +42,9 @@ const WILD = {
   bat:      { kind: 'flier', speed: 70, anim: ['fly_1', 'fly_2'], fps: 9, wave: [22, 2.4], jitter: 14, every: [8, 20] },
   moth:     { kind: 'moth', every: [4, 10] },
   // in the water
-  mallard:  { kind: 'swimmer', speed: 18, anim: ['swim_1', 'swim_2'], fps: 2, ducklings: 3, kidStart: 46, kidGap: 22, kidYellow: 0.15, alts: [['parkduck', 0.25, 1], ['buffduck', 0.12, 1]], pauses: [['dabble', 1.2, 2.2]], every: [35, 80] },   // about her real size now (10/19/2026): the ducklings trail behind her tail
+  mallard:  { kind: 'swimmer', speed: 18, anim: ['swim_1', 'swim_2'], fps: 2, ducklings: 3, kidStart: 46, kidGap: 22, kidYellow: 0.15, alts: [['parkduck', 0.25, 1], ['buffduck', 0.12, 1]], pauses: [['dabble', 1.2, 2.2]], every: [35, 80] },   // about her real size: the ducklings trail behind her tail
   fish:     { kind: 'fish', every: [8, 20] },
-  fishswim: { kind: 'flier', speed: 34, anim: ['swim_1', 'swim_2'], fps: 5, wave: [6, 1.2], every: [6, 16], sprite: 'fish', farSprite: 'fishfar' },   // bluegill: about real size in his pane, smaller in the far water (10/19/2026)
+  fishswim: { kind: 'flier', speed: 34, anim: ['swim_1', 'swim_2'], fps: 5, wave: [6, 1.2], every: [6, 16], sprite: 'fish', farSprite: 'fishfar' },   // bluegill: about real size in his pane, smaller in the far water
   fishschool: { kind: 'flock', speed: 26, anim: ['swim_1', 'swim_2'], fps: 5, n: 6, school: true, every: [9, 22], sprite: 'fish', farSprite: 'fishfar' },   // a little school swimming together (the deep water felt empty)
 };
 const WILD_SHEET = 'art/wildlife/wildlife.png';
@@ -63,7 +63,7 @@ function setupWildlife() {
 // where Phill is, in a layer's own pixels (a layer at f scrolls slower, so the same spot sits nearer the middle)
 const toLayerX = (x, f) => x * f + 320 * (1 - f), toLayerY = (y, f) => y * f + 180 * (1 - f);
 
-// on the room's own ground (10/27/2026): an animal in the room itself walks the ground it's on, up and down its bumps
+// on the room's own ground: an animal in the room itself walks the ground it's on, up and down its bumps
 // and slopes and along one way roots, and turns round at a wall or a rock, or a drop, instead of walking a straight line
 // through them. Its size comes from its picture
 function wildSize(w) {

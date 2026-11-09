@@ -1,5 +1,5 @@
 'use strict';
-// ---------- notes from his journal (10/30/2026) ----------
+// ---------- notes from his journal ----------
 // When a quest shows up in his journal, a step of one gets done, or a whole one's finished, a little note slides in
 // at the top of the screen for a few seconds, so the player knows the journal changed without having to look:
 //   New in his journal: The beetle's work

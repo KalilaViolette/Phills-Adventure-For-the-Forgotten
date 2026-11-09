@@ -1,5 +1,5 @@
 'use strict';
-// ---------- debug tools in the menu (10/17/2026): god mode, flying, no clip and the rest, at the front of the
+// ---------- debug tools in the menu: god mode, flying, no clip and the rest, at the front of the
 // menu under their own headers. None of it is saved: a reload puts everything back to normal ----------
 const DBG = { god: false, fly: false, noclip: false, stam: false, freeze: false, ignore: false, where: false, speed: 1, perf: false, heart: null };
 const FLY_SPEED = 220;                                                               // px a second, twice that with jump held
@@ -56,10 +56,10 @@ render = function (a) {
   ctx.restore();
 };
 
-// frame times (the performance audit, 10/18/2026): how long each frame really takes on whatever it's running on, so
-// the scenery's drawing can be measured on my phone and computer before anything about it changes. Show > Frame times
-// puts the numbers in the corner: frames a second, the drawing and its parts (the scenery layers, the lights, the
-// enemies, Phill, the HUD) and the game's own steps. Copy times saves them room by room as a text file to send.
+// frame times: how long each frame really takes on whatever it's running on, so the scenery's drawing can be measured
+// on a phone and a computer before anything about it changes. Show > Frame times puts the numbers in the corner: frames
+// a second, the drawing and its parts (the scenery layers, the lights, the enemies, Phill, the HUD) and the game's own
+// steps. Copy times saves them room by room as a text file.
 // The parts are only how long the browser took to be told to draw them; a slow phone shows up in the frames a second
 const PERF = { last: 0, win: [], rooms: {}, part: null };
 const PERF_PARTS = ['scenery', 'lights', 'enemies', 'phill', 'hud'];
@@ -132,7 +132,7 @@ function perfReport() {
     P.worn = 0; P.loose = 0; P.looseBits = 0; P.maxHealth = world.maxHealth; P.health = P.maxHealth;
     P.en = enMax(); P.stam = 100; P.winded = false; P.guardOut = false; P.gbreak = 0; say('all better');
   });
-  // his heart, for trying how the squeak grows with it (10/18/2026). Not saved: off goes back to the save's own heart
+  // his heart, for trying how the squeak grows with it. Not saved: off goes back to the save's own heart
   const heartB = mk('#gCheat', 'Heart: save', () => { DBG.heart = DBG.heart == null ? 1 : DBG.heart >= 3 ? null : DBG.heart + 1; heartB.textContent = 'Heart: ' + (DBG.heart == null ? 'save' : DBG.heart); heartB.classList.toggle('on', DBG.heart != null); say(DBG.heart == null ? "the save's own" : 'heart ' + DBG.heart); }, true);
   cheat.appendChild(unlock);                                                        // (unlock last in the row)
   // enemies
@@ -150,7 +150,7 @@ function perfReport() {
     if (typeof foesAllBack === 'function') foesAllBack();
     foes.length = 0; spawnFoes(); say('they\'re back');
   });
-  // spawn one: any enemy, at a level (10/17/2026). The level is how many regions out from Rootwood it acts like:
+  // spawn one: any enemy, at a level. The level is how many regions out from Rootwood it acts like:
   // one more attack for each, up to everything it has. "This room's" is what one placed here would get
   const SPAWN = [['Rootwood', [['cap', 'bottle cap'], ['can', 'soda can'], ['spinner', 'maple spinner'], ['wrapper', 'candy wrapper'], ['gum', 'chewed gum'], ['juice', 'juice box'],
       ['fork', 'plastic fork'], ['rings', 'six-pack rings'], ['lace', 'shoelace'], ['reacher', 'the reacher'], ['nwing', 'night wing']]],
@@ -205,7 +205,7 @@ function perfReport() {
   const SPEEDS = [1, 0.5, 0.25, 2];
   const spd = mk('#gShow', 'Speed 1x', () => { DBG.speed = SPEEDS[(SPEEDS.indexOf(DBG.speed) + 1) % SPEEDS.length]; });
   spd.classList.add('tog');
-  const TIMES = [undefined, 'day', 'dawn', 'dusk', 'night'];                        // the time of day outside, for trying the sky and the dark at each (10/28/2026). Off: the story's own
+  const TIMES = [undefined, 'day', 'dawn', 'dusk', 'night'];                        // the time of day outside, for trying the sky and the dark at each. Off: the story's own
   const tm = mk('#gShow', 'Time: story', () => { DBG.time = TIMES[(TIMES.indexOf(DBG.time) + 1) % TIMES.length]; });
   tm.classList.add('tog');
   function sync() {

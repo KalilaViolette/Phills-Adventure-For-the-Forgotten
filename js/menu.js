@@ -1,11 +1,11 @@
 'use strict';
-// ---------- the title menu (10/17/2026): Continue, New game, Load, The story, Options and Controls over the title
+// ---------- the title menu: Continue, New game, Load, The story, Options and Controls over the title
 // card. Keyboard, mouse, controller and touch all work it: up and down (or the stick, the d-pad, W and S) to move, Enter,
 // Space, Z or Cross to pick, Esc, Backspace or Circle to go back, left and right to change an option. Tab moves through it
 // too, and the picked row really has the focus, so a screen reader follows along. Three save slots (world.js). A music
 // box plays the home tune once there's been a click or a key (browsers won't play anything before that). The tests skip
 // it (window.__testSkipTitle): clicking the start screen or any key just starts, like before. The menu stays hidden till
-// the first key, click, tap or controller button (10/20/2026), so the painting shows on its own first. Moving the mouse
+// the first key, click, tap or controller button, so the painting shows on its own first. Moving the mouse
 // or a stick doesn't count ----------
 // the controls, one view for the keyboard and one for a controller (the touch buttons are laid out like the controller).
 // The pause menu shows them too (pause.js)
@@ -36,7 +36,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
     return true;
   }
 
-  // ---- the story: just the setup, the rest is for playing (10/17/2026)
+  // ---- the story: just the setup, the rest is for playing
   const STORY = [
     "Phill is a little green plush. He lives in a cozy house with his kid, who loves him to bits.",
     "One sunny morning the back door's left open. Phill waddles out into the yard to see what's out there, and a crow spots something small and green in the grass. It snatches him up and carries him off over the fence, into the park.",
@@ -90,7 +90,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
     return { label, value: val || (() => { const t = (b() && b().textContent) || ''; return (t.split(/:\s*| /).pop() || '').replace(/^./, c => c.toUpperCase()); }),
       act: () => { if (b()) b().click(); }, hide: () => !b() };
   };
-  // a phone or a tablet (touch, no mouse): only there do the touch controls and the buzz show up in Options (10/17/2026)
+  // a phone or a tablet (touch, no mouse): only there do the touch controls and the buzz show up in Options
   const handheld = () => matchMedia('(hover: none) and (pointer: coarse)').matches;
   // a volume, 0 to 10. Music at 0 turns the music off, and turning it up again turns it back on
   const volOpt = (k, label) => {
@@ -115,7 +115,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
         { label: 'The story', act: () => show('story', { page: 0 }) },
         { label: 'Options', act: () => show('options') },
         { label: 'Controls', act: () => show('controls') },
-        { label: 'Load a save file', act: () => pickSaveFile((w, why) => {          // (a save brought from another device, or a backup: 10/29/2026)
+        { label: 'Load a save file', act: () => pickSaveFile((w, why) => {          // (a save brought from another device, or a backup)
           if (!w) { if (why !== 'none') show('filebad', { why }); return; }
           if (readSlot(saveSlot)) show('confirm', { n: saveSlot, kind: 'file', w }); else { loadFromFile(w, saveSlot); go(); }
         }) },
@@ -202,13 +202,13 @@ const titleMenu = window.titleMenu = (() => {                                // 
         e.stopPropagation(); wake(); if (e.pointerType) setLast(e.pointerType === 'touch' ? 'touch' : 'mouse');
         const arr = e.target.closest && e.target.closest('.tm-arr'), pp = e.target.closest && e.target.closest('.tm-pips');
         focus(i, true);
-        if (pp && items[i].setTo && e.detail !== 0) { items[i].setTo(pipAt(pp, e)); if (sfx.tick) sfx.tick(); if (api.open) show(screen, opts, false, true); return; }   // (a click on the bars sets it right there: left of where it is turns it down, right of it up, 10/29/2026)
+        if (pp && items[i].setTo && e.detail !== 0) { items[i].setTo(pipAt(pp, e)); if (sfx.tick) sfx.tick(); if (api.open) show(screen, opts, false, true); return; }   // (a click on the bars sets it right there: left of where it is turns it down, right of it up)
         if (arr && e.detail !== 0) side(+arr.dataset.d); else pick();                 // (the little arrows on an option turn it that way)
       });
       b.addEventListener('focus', () => { if (at !== i) { at = i; mark(); } });       // (Tab, or a screen reader, moving the focus)
     }
     focus(at, true);
-    place();                                                                          // (every screen: the picture's edges fade by where it is now. In Options, going full screen left them where the picture used to be, 10/17/2026)
+    place();                                                                          // (every screen: the picture's edges fade by where it is right then, so going full screen in Options doesn't leave them behind)
   }
   function mark() { root.querySelectorAll('.tm-item').forEach((b, k) => b.classList.toggle('on', k === at)); }
   function focus(i, quiet) {

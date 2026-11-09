@@ -1,5 +1,5 @@
 'use strict';
-// ---------- saves and settings from before the game had its name (10/20/2026) ----------
+// ---------- saves and settings from before the game had its name ----------
 // they were kept under the working title's keys: copied over to the new ones once, the old ones left where they were
 try {
   const OLD = 'phill-metro-', keys = [];   // (the working title)
@@ -13,7 +13,7 @@ const T = 16, STEP = 1 / 120;
 const C = document.getElementById('c'), ctx = C.getContext('2d');
 let S = 1, offX = 0, offY = 0;
 function resize() {
-  const st = document.getElementById('stage'), box = { width: st.clientWidth, height: st.clientHeight };   // (its own size, not how it sits on the screen: full screen on a phone held upright turns it on its side, 10/17/2026)
+  const st = document.getElementById('stage'), box = { width: st.clientWidth, height: st.clientHeight };   // (its own size, not how it sits on the screen: full screen on a phone held upright turns it on its side)
   const dpr = window.devicePixelRatio || 1;
   C.width = Math.max(1, Math.round(box.width * dpr)); C.height = Math.max(1, Math.round(box.height * dpr));
   S = Math.max(1, Math.round(C.height / 360));
@@ -77,7 +77,7 @@ const TUNE_ROWS = [
   ['downCooldown', 'Wait before another down swing in the air', 0.2, 2.5, 0.05, ' s'],
   ['pixelSnap', 'Snap movement to art pixels (0 off, 1 on)', 0, 1, 1, ''],
   ['pressSwing', 'Swing on the press, hold on to charge the next (0 off, 1 on)', 0, 1, 1, ''],
-  // the combat feel try-outs (10/31/2026), from what Hollow Knight and Silksong do (Notes: Combat feel research 10-31-2026). All off is the game as it was
+  // the combat feel try-outs, from what Hollow Knight and Silksong do. All off is the game as it was
   ['feelHurt', 'Feel: getting hurt is a big moment, a longer freeze, a sharp shake, a harder knock back (0 off, 1 on)', 0, 1, 1, ''],
   ['feelKill', 'Feel: the knockout is its own moment, a hitch, a shake, thrown the way it was hit (0 off, 1 on)', 0, 1, 1, ''],
   ['feelHits', 'Feel: plain hits, no shake, he bounces back off it, the flash fades out (0 off, 1 on)', 0, 1, 1, ''],
@@ -87,7 +87,7 @@ const TUNE_ROWS = [
 ];
 const tune = { ...DEFAULTS };
 // TUNE_V goes up when defaults change on purpose: saved numbers from before that for those few don't win over the new
-// ones (10/16/2026: stamina's only for dodging now, so the roll's cost and the refill changed)
+// ones (stamina's only for dodging, so the roll's cost and the refill changed)
 const TUNE_V = 2, TUNE_NEW = { 2: ['enRegen', 'enDelay', 'rollCost', 'airDodgeCost'] };
 try {
   const s = JSON.parse(localStorage.getItem('phill-forgotten-tune') || 'null');

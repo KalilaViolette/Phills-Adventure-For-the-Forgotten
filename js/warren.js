@@ -1,6 +1,6 @@
 'use strict';
 // ---------- the Warren: the toys' town dug out under the Old Oak ----------
-// (10/14/2026) An old toy chest got buried under the oak years ago, tipped over and spilled the toys out,
+// An old toy chest got buried under the oak years ago, tipped over and spilled the toys out,
 // and when the Grime started taking toys over, the ones it hadn't got yet dug in. The chest's their front gate, and
 // the only way in. At first the Nutcracker won't let a stranger through. Tock, a wind-up mouse Phill helps three times
 // out in the park, vouches for him. Everyone gets scrubbed at the gate, every time. Inside, the town warms up to him
@@ -100,7 +100,7 @@ function trust() {
 }
 const inWarren = () => room && room.def.region === 'warren';
 let moleAway = false;
-// ---------- who's where this time (10/15/2026) ----------
+// ---------- who's where this time ----------
 // every time he comes into the Warren from outside it's a new visit: a different lot asleep in the bunks (townsfolk
 // with no names, never anyone he has to talk to: anyone with a shop or a job stays at it), and one of the
 // five who keep getting Grime on them is in quarantine while the other four are about the town, better. They always
@@ -170,7 +170,7 @@ function warrenNpcFrame(n, now) {
   if (n.pose && n.pose.t > 0) fr = n.pose.frame;
   return fr;
 }
-// ---------- Mabel, Clank and Peg at work (10/31/2026) ----------
+// ---------- Mabel, Clank and Peg at work ----------
 // Like the beetle by the roots: when Phill isn't close by, each gets on with their own job, facing the way the room
 // puts them (f), round and round. When he comes up, or they're talking, they turn to him as before.
 // Mabel sews a few stitches, bites the thread off and holds the mend up to see it. Clank turns a screw (little sparks
@@ -342,8 +342,8 @@ drawBreaks = () => {
 };
 
 // ---------- what he can use: everyone in the room, the hole in the oak, a molehill, Tock out in the park ----------
-// the way in: the hollow at the foot of the oak, at the bottom of the fall (10/15/2026). It was a hole up into
-// the oak at the roots with the toys' bootlace hanging out of it: give a spot rope: true to have the lace back somewhere
+// the way in: the hollow at the foot of the oak, at the bottom of the fall. Give a spot rope: true to have the toys'
+// bootlace hanging there
 const HOLES = { oakfall: { x: 37 * 16, y: 106 * 16, w: 40 } };
 const MOLE_STOPS = {                                                                     // molehills out in the park, once the mole's home
   undercroft: { x: 40.5 * 16, y: 22 * 16, name: 'under the oak, in rootwood' },
@@ -428,7 +428,7 @@ function setupWarrenRoom() {
   if (d.train) room.train = { x: (d.train.x0 + d.train.x1) / 2, y: d.train.y, dir: 1, wait: 0, x0: d.train.x0, x1: d.train.x1, chug: 0 };
   if (inWarren() && !['chest', 'deepdig'].includes(room.id) && trust() < 4 && world.flags.warrenOpen) room.escort = { x: P.x - 50, y: P.y, f: 1, moving: false };
   // Tock, out in the park
-  const sp = d.tock ? { x: d.tock.x, y: d.tock.y, caps: d.tock.caps.map(c => c / T), key: d.tock.key } : TOCK_SPOTS[room.id];   // (a room drawn from layers says where, in pixels, 10/27/2026)
+  const sp = d.tock ? { x: d.tock.x, y: d.tock.y, caps: d.tock.caps.map(c => c / T), key: d.tock.key } : TOCK_SPOTS[room.id];   // (a room drawn from layers says where, in pixels)
   world.tockSpots = world.tockSpots || {};
   if (sp && !world.tockSpots[room.id] && (world.tockMet || 0) < 3 && world.has.gear) {
     const n = (world.tockMet || 0) + 1;
@@ -436,7 +436,7 @@ function setupWarrenRoom() {
     addActor('tock', { kind: 'rw', x: sp.x, y: sp.y, frame: n === 1 ? 'tock_cower' : n === 2 ? 'tock_tangled' : 'tock_rundown', layer: 'back', flip: false });
     if (n === 1) {
       room.tock.state = 'cornered';
-      for (const cx of sp.caps.slice(0, world.flags.soldierDown ? 3 : 1)) addFoe('cap', cx * T, sp.y, 'tock');   // (one cap cornering him before the tin soldier's down, three after: the first fight in the game was six, 10/23/2026)
+      for (const cx of sp.caps.slice(0, world.flags.soldierDown ? 3 : 1)) addFoe('cap', cx * T, sp.y, 'tock');   // (one cap cornering him before the tin soldier's down, three after: the first fight in the game was six)
     }
     if (n === 3) room.tockKey = { x: sp.key.x, y: sp.key.y };
   }
@@ -538,8 +538,8 @@ function buttonShop(n, who, items, after) {
       const s = items[picked];
       if (!s) return true;
       if ((world.buttons || 0) < s.cost) { scene.steps.splice(scene.i + 1, 0, sayN(n, s.short || "That's not enough buttons.")); return true; }
-      // what it buys is saved with the buttons it costs (the save audit, 10/17/2026), so a reload in the middle of the
-      // talk after can't keep one without the other. buy() is only the talk and the show
+      // what it buys is saved with the buttons it costs, so a reload in the middle of the talk after can't keep one
+      // without the other. buy() is only the talk and the show
       world.buttons -= s.cost; if (s.grant) s.grant(); sfx.paper(); saveWorld();
       scene.steps.splice(scene.i + 1, 0, ...s.buy());
       return true;
@@ -763,7 +763,7 @@ const PATIENT_LINES = {
     well: [["*squeak* Out. No puddles today. I'm being so good."], ["Fleece says that's the fourth time. I say it was the third."], ["There was a puddle on the way here. I didn't hop in it. I wanted to."]] },
 };
 for (const k of PATIENTS) WSCENES[k] = n => [...walkUp(n), sayN(n, ...pick(PATIENT_LINES[k][n.sick ? 'sick' : 'well']))];
-// more of the town (10/15/2026)
+// more of the town
 WSCENES.pip = n => [...walkUp(n), sayN(n, ...(!world.flags.metPip ? ['*fweet* Mind the line. She\'s due at the far buffer in about a minute. Same as always.',
   "Two buffers and a lot of track between them. No stations. I keep her on time anyway.", "Somebody has to. If the train stops, folk start thinking everything's stopped."]
   : pick([['Right on time. *fweet*'], ["The wagon takes Rex's dirt down to the far end. Then it comes back. Then it goes again."], ['I had a whole set once. Hills, a tunnel, a little station with a clock. The kid lost the station first.'], ["Don't ride her. She's not that kind of train. Well. She is. But don't."]]))), run(() => { world.flags.metPip = true; saveWorld(); })];
@@ -815,13 +815,13 @@ WSCENES.mole = n => {
   const steps = walkUp(n);
   if (world.has.supply_candles && !given('candles')) return [...steps, sayN(n, '*snf* Wax. Birthday candles, by the smell.'), ...deliverSteps(n, 'candles', ["Good. I'll melt them into the cracks by the walled up tunnel. Fresh wax holds.", "...Thanks."])];
   if (!world.flags.metMoleHome) {
-    world.flags.metMoleHome = true; world.moleStops = world.moleStops || {}; world.moleStops.moleshop = true; saveWorld();   // his own hole's always one he'll take you back to (10/15/2026)
+    world.flags.metMoleHome = true; world.moleStops = world.moleStops || {}; world.moleStops.moleshop = true; saveWorld();   // his own hole's always one he'll take you back to
     steps.push(sayN(n, '*snf* You. Soap and bedroom.', "I don't say thanks. Never have. Ask anybody.",
       "But if you ever need to get somewhere down here, under the park, knock on a molehill. I'll come up and take you. I've got holes everywhere.",
       "Only places I've dug, mind. And only ones you've been."));
     return steps;
   }
-  // 10/16/2026: Phill can't talk, so the mole reads the question off his face. Told once, then it's in the rotation
+  // Phill can't talk, so the mole reads the question off his face. Told once, then it's in the rotation
   if (!world.flags.moleHereJoke) { world.flags.moleHereJoke = true; saveWorld(); steps.push(sayN(n, ...MOLE_HERE_JOKE)); return steps; }
   steps.push(sayN(n, ...pick([MOLE_HERE_JOKE, ["*snf* Knock on the molehill if you're going somewhere."], ["That wall at the bottom of the town. I dug that tunnel. [worried] I sealed it, too. Don't ask."], ['The toys took me in when the Grime got my place. So I dig for them. Fair trade.'], ["[happy] Spoons. Best thing for digging. Don't let anyone tell you different."]])));
   return steps;
@@ -852,7 +852,7 @@ SCENES.molehill = () => {
   return steps;
 };
 // in his workshop he's standing right there, so knocking on his hill gets him from where he is, not up out of it
-// (10/15/2026: a second mole came up out of the hill). Going somewhere, he walks over and dives in first
+// (a second mole came up out of the hill). Going somewhere, he walks over and dives in first
 function moleHomeKnock(ms, mn, known, name) {
   const steps = [walkTo(ms.x - 2 * T), faceTo(ms.x), pose('reach', 0.15), run(() => sfx.tok()), pose(null), wait(0.12), pose('reach', 0.15), run(() => sfx.tok()), pose(null), wait(0.35),
     faceTo(mn.x), run(() => sfx.moleSniff())];
@@ -899,9 +899,8 @@ const moleArriveHome = (ms, mn) => [
 // the cave-in, broken open: the mole's free
 const _breakOpenW = breakOpen;
 // The rescue waits till it can start: he's in the room, nothing else is going on (the map open, a scene), and he's on his
-// feet. It used to try once half a second after the last hit, and if the map was open right then it never happened,
-// not even coming back (the progression audit, 10/17/2026). Coming back to a broken cave-in with the mole still in
-// it, the rescue starts then too
+// feet, so the map being open at the wrong moment never loses it. Coming back to a broken cave-in with the mole still
+// in it, the rescue starts then too
 let moleWaitT = 0;
 breakOpen = b => { _breakOpenW(b); if (b.id === 'cavein') moleWaitT = 0.5; };
 const _updMole = update;

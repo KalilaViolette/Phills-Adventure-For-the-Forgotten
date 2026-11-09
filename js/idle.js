@@ -13,7 +13,7 @@ const idleState = { still: 0, wait: IDLE_WAIT[0], last: null, long: 0 };
 const rndIn = (a, b) => a + Math.random() * (b - a);
 const ilerp = (a, b, k) => a + (b - a) * k;
 
-// the crayon he draws with (10/30/2026): before the crow takes him he has the whole box, red and all. The crow's snatch
+// the crayon he draws with: before the crow takes him he has the whole box, red and all. The crow's snatch
 // spills them over the park, so after that he only draws with the ones he's found again, and with none found yet he
 // doesn't draw at all (standing or sitting)
 const IDLE_CRAYONS = { crayon_black: '#3a3640', crayon_rootwood: '#8fd88a', crayon_pond: '#7aa8f0', crayon_playground: '#f0a060', crayon_oak: '#c89060',
@@ -170,7 +170,7 @@ const IDLE_BITS = {
   // sits down facing us, gets his map out and looks at it. Can't make it out, squints, turns it round till it's
   // upside down (no better), turns it back. Then it goes on the floor and he gets on his knees over it, side on,
   // tracing a way round it with his finger, stopping to think, tracing some more, and a little nod like he's got it
-  // now before he puts it away (10/15/2026)
+  // now before he puts it away
   map: {
     ok: () => !!world.has.crayon_black,
     steps: () => {
@@ -190,7 +190,7 @@ const IDLE_BITS = {
   },
   // sits down facing us, gets his picture book out, looks at the cover, turns it upside down, no better. He can't
   // read, he just likes the pictures: open in his lap he turns the pages, throws his hands up happy at one, turns
-  // some more (10/15/2026)
+  // some more
   book: {
     ok: () => !!world.has.backpack,
     steps: () => {
@@ -259,7 +259,7 @@ function startIdleBit(name) {
   const d = IDLE_BITS[name], steps = d.steps();
   const strap = () => { sfx.bump(); };
   // straps his sword and shield on his back first (unless they're already there), and leaves them there after: nothing's
-  // around, so they stay put away till he swings or raises the shield (10/20/2026). The sword doodle needs the sword out
+  // around, so they stay put away till he swings or raises the shield. The sword doodle needs the sword out
   if (!d.held && !P.sheathed) steps.unshift(ib('b_stow', 0.22, strap));
   if (world.has.gear) P.sheathed = !d.held;
   const b = { name, steps, back: !d.held, i: -1, st: 0, t: 0, room, facing0: P.facing, dy: 0, paper: name === 'sit', zt: 0, nt: 0 };

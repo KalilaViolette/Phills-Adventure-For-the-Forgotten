@@ -1,5 +1,5 @@
 'use strict';
-// ---------- touch controls: a gamepad drawn over the game for phones and tablets (10/17/2026) ----------
+// ---------- touch controls: a gamepad drawn over the game for phones and tablets ----------
 // An analog stick on the left (a circle; the stick follows his thumb, and the circle comes to wherever the thumb lands
 // on that side) and the buttons on the right. They press the same keys the keyboard would (see input.js), so
 // nothing else in the game knows the difference. It comes up on its own on a touchscreen and stays hidden on a computer;
@@ -53,9 +53,9 @@ const touchUI = (() => {
   let R = 46, RR = 40;                                                              // how far each stick goes from its middle (css px)
   let home = [0, 0], rhome = [0, 0];
   hudDY = 0;
-  function layout() {                                                               // (10/17/2026: every button a circle the same size)
+  function layout() {                                                               // (every button a circle the same size)
     const W0 = el.clientWidth, H0 = el.clientHeight; if (!W0 || !H0) return;
-    // kept in from the phone's sides (10/23/2026), where a swipe in from the edge is the phone's back gesture and a
+    // kept in from the phone's sides, where a swipe in from the edge is the phone's back gesture and a
     // thumb on a button there kept setting it off. Turned on its side in full screen, the phone's sides are the
     // game's top and bottom, so the gap goes there instead
     const rot = document.body.classList.contains('rot');
@@ -90,7 +90,7 @@ const touchUI = (() => {
     base.style.margin = -rad + 'px 0 0 ' + -rad + 'px';
     if (stickId === null) { base.style.left = home[0] + 'px'; base.style.top = home[1] + 'px'; }
     rhome = [W - sx, sy]; rbase.style.left = (gx + W - sx - rad) + 'px'; rbase.style.top = (gy + sy - rad) + 'px';
-    // the shoulder buttons again, round the right stick where the thumb already is (10/17/2026): L2 up and to
+    // the shoulder buttons again, round the right stick where the thumb already is: L2 up and to
     // the left of it, the shield to its left, the swing down and to the left, R2 up and to the right. The ones up top stay
     const rd = rad + u * 0.62, ring = [['l2', -113], ['guard', -154], ['atk', 160], ['r2', -30]];
     for (const [a, deg] of ring) {
@@ -113,11 +113,10 @@ const touchUI = (() => {
   const PRESS = { jump: 'jumpP', atk: 'atkP', dodge: 'dodgeP', guard: 'guardP', squeak: 'squeakP', spin: 'spinP', spark: 'sparkP', bash: 'bashP', map: 'mapP', up: 'upP', down: 'downP', lock: 'lockP' };
   // (L2 is the shield bash and R2 the spark, the same as on the controller. L3 does nothing yet)
   const DPAD = { dup: 'up', ddown: 'down', dleft: 'left', dright: 'right' };
-  // Each thing holding an action is kept track of on its own (the input audit, 10/17/2026): there are two Swing buttons,
-  // and letting go of either one let go of the swing even with the other still held, so a charge went off early. It's
-  // only let go once the last thing holding it lets go. src: which button (or the stick, or '*' to drop them all). It's
-  // held as its own name ('T:' and the action), not as a keyboard key, so a key held on the keyboard and a touch button
-  // don't let go of each other either
+  // Each thing holding an action is kept track of on its own: there are two Swing buttons, and letting go of one while
+  // the other's still held mustn't let go of the swing, or a charge goes off early. It's only let go once the last thing
+  // holding it lets go. src: which button (or the stick, or '*' to drop them all). It's held as its own name ('T:' and
+  // the action), not as a keyboard key, so a key held on the keyboard and a touch button don't let go of each other either
   const held = {};
   function key(act, down, src = 'x') {
     if (DPAD[act]) act = DPAD[act];
@@ -144,7 +143,7 @@ const touchUI = (() => {
     knob.style.transform = `translate(${dx}px, ${dy}px)`;
     const ax = dx / R, ay = dy / R;
     key('left', ax < -0.3, 'stick'); key('right', ax > 0.3, 'stick');
-    window.touchTilt = Math.abs(ax);                                                // (how far over: a soft push walks, 10/27/2026)
+    window.touchTilt = Math.abs(ax);                                                // (how far over: a soft push walks)
     key('up', ay < -0.55, 'stick'); key('down', ay > 0.55, 'stick');
   }
   function stickHome() {
@@ -177,8 +176,7 @@ const touchUI = (() => {
   }
   rbase.addEventListener('pointerdown', e => { if (rid !== null) return; e.preventDefault(); rid = e.pointerId; rbase.setPointerCapture(e.pointerId); rbase.classList.add('on'); if (!started) begin(); rstick(e); });
   rbase.addEventListener('pointermove', e => { if (e.pointerId === rid) { e.preventDefault(); rstick(e); } });
-  // (letting go of the right stick, or hiding the touch controls with it held: the input audit, 10/17/2026, found a
-  // keyboard press hiding them left its aim on till that finger came up)
+  // (letting go of the right stick, or hiding the touch controls with it held, so a keyboard press hiding them doesn't leave its aim on till that finger comes up)
   function rstickHome() { if (rid !== null) try { rbase.releasePointerCapture(rid); } catch (e) {} rid = null; aim.on = 0; aim.x = aim.y = 0; rknob.style.transform = ''; rbase.classList.remove('on'); }
   for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) rbase.addEventListener(ev, e => { if (e.pointerId !== rid) return; rid = null; aim.on = 0; aim.x = aim.y = 0; rknob.style.transform = ''; rbase.classList.remove('on'); });
   const pollPad0 = pollPad;                                                          // (read after the controller each frame, the same way its right stick is)
@@ -194,7 +192,7 @@ const touchUI = (() => {
     if (inp.aim) inp.any = 1;
   };
 
-  // a quick double tap of the shield keeps it held up (10/17/2026), so the right thumb's free for the right stick
+  // a quick double tap of the shield keeps it held up, so the right thumb's free for the right stick
   // to point it. One more tap lowers it. Either shield button does it
   let guardLatch = false, guardTapAt = -9, guardDownAt = 0;
   const now = () => performance.now() / 1000;
@@ -221,12 +219,12 @@ const touchUI = (() => {
     const act = b.dataset.act; let id = null;
     b.addEventListener('pointerdown', e => {
       e.preventDefault(); id = e.pointerId; b.setPointerCapture(e.pointerId); b.classList.add('on');
-      if (buzz && navigator.vibrate) try { navigator.vibrate(12); } catch (er) {}              // a little buzz for each press (10/17/2026: phones that can, Android mostly. iPhones can't from a web page)
-      if (act === 'menu') { if (window.pauseMenu) { useDevice('touch'); pauseMenu.toggle(); } return; }   // (the menu: the pause menu, 10/29/2026. Everything that was in the strip under the game is in it now)
+      if (buzz && navigator.vibrate) try { navigator.vibrate(12); } catch (er) {}              // a little buzz for each press (phones that can, Android mostly. iPhones can't from a web page)
+      if (act === 'menu') { if (window.pauseMenu) { useDevice('touch'); pauseMenu.toggle(); } return; }   // (the menu: the pause menu, with everything from the strip under the game in it)
       if (act === 'max') { maxUI.toggle(); return; }
       if (act === 'l3') return;
       if (act === 'guard') { guardDown(b); return; }
-      key(act === 'r2' ? 'spark' : act === 'l2' ? 'bash' : act, true, b);   // (R2: static spark, 10/18/2026. L2: the shield bash, 10/31/2026)
+      key(act === 'r2' ? 'spark' : act === 'l2' ? 'bash' : act, true, b);   // (R2: static spark. L2: the shield bash)
     });
     const up = e => { if (e.pointerId !== id) return; id = null; b.classList.remove('on'); if (act === 'guard') { guardUp(b); return; } if (!['menu', 'max', 'l3'].includes(act)) key(act === 'r2' ? 'spark' : act === 'l2' ? 'bash' : act, false, b); };
     for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) b.addEventListener(ev, up);
@@ -258,11 +256,11 @@ const touchUI = (() => {
   bz.addEventListener('click', () => { buzz = !buzz; bz.textContent = 'Buzz: ' + (buzz ? 'on' : 'off'); try { localStorage.setItem('phill-forgotten-buzz', buzz ? 'on' : 'off'); } catch (e) {} if (buzz && navigator.vibrate) try { navigator.vibrate(20); } catch (e) {} bz.blur(); });
   tb.parentNode.insertBefore(bz, tb);
   show(active);
-  if (active) { const n = document.getElementById('startHow'); if (n) n.textContent = 'Tap here to start'; }   // (by its id: the first line in there is the subtitle now)
+  if (active) { const n = document.getElementById('startHow'); if (n) n.textContent = 'Tap here to start'; }   // (by its id: the first line in there is the subtitle)
   return { show, layout, get active() { return active; } };
 })();
 
-// ---------- maximize: the game filling the whole screen (10/17/2026). On a phone it goes sideways: full screen
+// ---------- maximize: the game filling the whole screen. On a phone it goes sideways: full screen
 // and locked to landscape where the browser allows it, and where it doesn't (an iPhone, or inside a viewer that won't go
 // full screen) the page fills the screen and, held upright, turns the game on its side so it's still landscape
 const maxUI = (() => {

@@ -1,11 +1,11 @@
 'use strict';
-// ---------- the thread behind his sword (10/31/2026, a feel try-out: tune.feelTrail) ----------
+// ---------- the thread behind his sword (a feel try-out: tune.feelTrail) ----------
 // While a swing is out, the end of the blade leaves a crescent of thread behind it along the way it went. The newest
 // part is solid and the older part frays into a few loose fibers, and it's gone a little over a tenth of a second
 // after. It starts as the swing's hits do, so it follows the blade instead of leading it, and it's drawn out to where
 // the swing really reaches (the same lines the hits use), so it shows him how far he can hit from.
 // From Hollow Knight's slash: a crescent, solid at the front edge and breaking up behind, up 0.05s full and 0.05s as
-// wisps (Notes: Combat feel research 10-31-2026). Pixel by pixel so it stays as crisp as the rest of the art
+// wisps. Pixel by pixel so it stays as crisp as the rest of the art
 const TRAIL = (() => {
   const LIFE = 0.13, SOLID = 0.05;                 // how long a bit of it lasts, and how long it's solid before it frays
   const THICK = [0.06, 0.2];                       // how thick the band is, of the blade out to its reach: at its tail, and at its newest

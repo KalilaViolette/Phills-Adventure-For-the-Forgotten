@@ -64,7 +64,7 @@ function buildRoom(def) {
   if (typeof practiceHints === 'function') practiceHints(r);
   const code = { '.': 0, '#': 1, '=': 2, '^': 3, '~': 4, '%': 5 };   // ~ deep water, % a slick of Grime (hurts like thorns, but nothing to bounce off)
   def.tiles.forEach((row, y) => { for (let x = 0; x < def.w; x++) r.map[y * def.w + x] = code[row[x]] || 0; });
-  // the natural ground (10/15/2026): where the ground's edge runs through a tile (a bump, dirt packed in a corner, a
+  // the natural ground: where the ground's edge runs through a tile (a bump, dirt packed in a corner, a
   // ledge's rounded lip) the room file has that tile pixel by pixel, so he stands on what's drawn
   r.detail = null;
   if (def.detail) {
@@ -75,10 +75,10 @@ function buildRoom(def) {
       r.detail[idx] = m;
     });
   }
-  // one-way slopes (10/15/2026): a line along the top of something drawn, like the squirrel's root. He walks up and
+  // one-way slopes: a line along the top of something drawn, like the squirrel's root. He walks up and
   // down it, jumps up through it from underneath, and drops through it with down and jump, same as a shelf
-  // (a side way, 10/27/2026: a slope the room marks in rampsUp is one he only walks onto holding up, so walking along
-  // the main way he passes where it branches off. Landing on it or already on it, it's like any other)
+  // (a side way: a slope the room marks in rampsUp is one he only walks onto holding up, so walking along the main way
+  // he passes where it branches off. Landing on it or already on it, it's like any other)
   const sideWays = new Set(def.rampsUp || []);
   r.ramps = (def.ramps || []).map((pts, i) => [pts, sideWays.has(i)]).filter(([p]) => p.length > 1).map(([pts, up]) => {
     const x0 = pts[0][0], x1 = pts[pts.length - 1][0], ys = new Float32Array(x1 - x0 + 1); let k = 0;
@@ -205,7 +205,7 @@ function updateTrans(dt) {
     if (Rooms.ready(trans.to)) { enterRoom(trans.to, trans.door); trans.state = 'in'; trans.t = 0; }
   } else if (trans.state === 'in') { trans.t += dt; if (trans.t >= FADE) trans.state = 'none'; }
 }
-// ---------- a doorway that's a hole in the back wall (10/27/2026) ----------
+// ---------- a doorway that's a hole in the back wall ----------
 // Walking at one, he turns his back to us and walks up into it, smaller as he goes and lost in the dark, then the room
 // changes. Coming in through one he walks out of it toward us, then turns the way the door faces. The door's walkIn
 // (from the room builder): turn, the spot on the floor in front of it; into, where he's gone; scale, his size there
@@ -243,8 +243,8 @@ function enterRoom(id, doorId) {
   placePlayer(at.x, at.y, at.f);
   P.walkIn = null; if (d && d.walkIn) startWalkIn(d, true);           // in through a hole in the back wall: out of it toward us
   // still falling from the room above: he carries on at the speed he was going, and the splat counts only how far he's
-  // really fallen (10/15/2026: dropping a few tiles down into the mole's workshop he splatted, because a
-  // way in from the top used to count as a 400 px fall already). A long fall through a few rooms still adds up
+  // really fallen, so dropping a few tiles into a room from the top doesn't splat him. A long fall through a few rooms
+  // still adds up
   if (d && d.falling) { P.vy = Math.min(tune.maxFall, Math.max(vy0, 120)); P.ground = false; P.fallTop = at.y - fell; }
   clearParts(); motes.length = 0; itemPops.length = 0; bubble = null;
   endScene(); clearActors(); P.held = null; P.pinned = null; P.slowT = 0; P.paper = null; P.crayon = null; sceneFade.a = 0; letterbox.a = 0;

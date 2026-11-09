@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the beetle working on Phill's sword, all of it seen (10/31/2026) ----------
+// ---------- the beetle working on Phill's sword, all of it seen ----------
 // Bringing the beetle what the next step needs: Phill hands it over and the beetle gets it ready first, where you can
 // see how it's used (the oak gall: he cracks it in his jaws, drops the bits in an acorn cap of water and stirs till the
 // water's gone dark). Then Phill hands over his sword. The beetle holds it up and turns it in his jaws, taken with how
@@ -173,8 +173,8 @@ const SWORDWORK = (() => {
   return { steps, reset, state: S, drawSword, drawCap, PROCESS, scuttleTo };
 })();
 
-// the beetle's scene (it was in js/scenes/rootwood.js): meeting him, what each step needs, a later step's thing brought
-// too soon, trading, and the work itself (SWORDWORK.steps)
+// the beetle's scene: meeting him, what each step needs, a later step's thing brought too soon, trading, and the work
+// itself (SWORDWORK.steps)
 SCENES.beetle = npc => {
   SWORDWORK.reset();
   const side = P.x > npc.x ? 1 : -1;
@@ -209,7 +209,7 @@ SCENES.beetle = npc => {
   steps.push(ask('beetle', 'Well? Want me to?', [job.offer, 'not yet'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0 || picked !== 0) return true;
-    // done in the same save as it's used up (the save audit, 10/17/2026): the work after is only for show
+    // done in the same save as it's used up: the work after is only for show
     const from = swordLevel(); world.sword = from + 1; sfx.pickup(); saveWorld();
     const at = P.x - side * 2.75 * T;                                                     // he comes over to Phill for it
     scene.steps.splice(scene.i + 1, 0, bars(true), SWORDWORK.scuttleTo(at), faceTo(at), ...SWORDWORK.steps(npc, job, from, from + 1), bars(false), sayTop('beetle', '*tk tk* There. Go hit something.'), run(() => { npcPose = null; SWORDWORK.reset(); }),

@@ -72,7 +72,7 @@ function render(alpha) {
   const main = Assets.get(room.def.art.main), front = room.def.art.front && Assets.get(room.def.art.front);
   const far = room.def.art.far && Assets.get(room.def.art.far);
   if (far) { const f = room.def.art.farF; drawView(far, Math.round(camX * f), Math.round(camY * f)); }   // the background, scrolling slower: depth
-  const layers = room.def.art.layers || [];   // (a layer's x and y: where its picture starts, cut to what the screen can ever show of it, 10/29/2026. A layer's fy: it moves up and down at that instead of f, 10/17/2026. fy 1 pins it to the room's heights)
+  const layers = room.def.art.layers || [];   // (a layer's x and y: where its picture starts, cut to what the screen can ever show of it. A layer's fy: it moves up and down at that instead of f. fy 1 pins it to the room's heights)
   const tod = room.def.outside ? timeOfDay() : 'day';
   layers.forEach((L, i) => { if (L.f < 1) { const im = Assets.get((L.times && L.times[tod]) || L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('L' + i, camX, camY); } });   // parallax layers, farthest first, with whatever lives in each
   if (main) drawView(typeof REACT !== 'undefined' ? REACT.mainFor(main) : main, camX, camY);   // (with any parts that give taken out, drawn just after: js/react.js)
@@ -134,7 +134,7 @@ function render(alpha) {
 
   ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.textAlign = 'center';
   const placed = [];                                                            // (where the ones already drawn this frame are, so a wrapped one doesn't land on top of another)
-  for (const p of popups) {                                                     // wrapped to a width, and kept on screen (11/02/2026: long ones ran off the side)
+  for (const p of popups) {                                                     // wrapped to a width, and kept on screen (long ones ran off the side)
     ctx.font = p.big ? '600 16px "Pixelify Sans", ui-monospace, monospace' : '600 8px "Pixelify Sans", ui-monospace, monospace';
     const pt = fmtKeys(p.text), lh = p.big ? 18 : 10;
     if (p.wrapped !== pt) { p.wrapped = pt; p.lines = wrapLines(pt, p.big ? 300 : 200); p.w = Math.max(...p.lines.map(l => ctx.measureText(l).width)); }
@@ -186,7 +186,7 @@ function render(alpha) {
     ctx.translate(-camX, -camY); ctx.lineWidth = 1 / S;
     ctx.strokeStyle = dodgeSafe() ? '#5ff0ff' : '#7cff8a'; ctx.strokeRect(bodyL(P.x), P.y - P.h, bodyR(P.x) - bodyL(P.x), P.h);
     if (P.spinBox && P.spinT > 0) { const b = P.spinBox; ctx.strokeStyle = '#ff6b6b'; ctx.strokeRect(b.l, b.t, b.r - b.l, b.b - b.t); }   // the spin's blade, on whichever side it is
-    for (const f of foes) {                                                       // the enemies (10/16/2026): orange where touching it hurts, gray where it doesn't right now, red where an attack is reaching, pink for their shots
+    for (const f of foes) {                                                       // the enemies: orange where touching it hurts, gray where it doesn't right now, red where an attack is reaching, pink for their shots
       if (f.state === 'down' || f.state === 'hidden') continue;
       const b = foeBox(f); if (b.l < -900) continue;
       const safe = f.state === 'stagger' || (FOE[f.kind].harmless && FOE[f.kind].harmless(f));
@@ -263,7 +263,7 @@ function groundShadow(x, y, maxDrop, rx) {
   }
 }
 let bodyAt = null;                 // where and how his body was last drawn (the charge glow goes right over it)
-// one of his 64 x 64 frames at x, y. His sheets have the empty space cut out (10/29/2026): a frame is [x, y, anchor, left,
+// one of his 64 x 64 frames at x, y. His sheets have the empty space cut out: a frame is [x, y, anchor, left,
 // top, width, height], just the part with anything in it, drawn at its spot in the cell. Turned (tumbling, rolling,
 // swimming on a slant) it's put back in a whole cell first, so the turn picks exactly the pixels it always did
 const cellCv = document.createElement('canvas'); cellCv.width = cellCv.height = 64;
@@ -276,7 +276,7 @@ function drawCell(c, im, fr, x, y) {
   c.drawImage(cellCv, 0, 0, 64, 64, x, y, 64, 64);
 }
 function body(im, fr, x, y) { drawCell(ctx, im, fr, x, y); bodyAt = { t: ctx.getTransform(), x, y }; }
-// walking into a hole in the back wall (10/27/2026): smaller the further in he is, and going the color of the dark in
+// walking into a hole in the back wall: smaller the further in he is, and going the color of the dark in
 // there till he's gone. Coming out, the same the other way
 const walkInCv = document.createElement('canvas'); walkInCv.width = walkInCv.height = 64;
 function drawWalkIn(im, meta, fr, px, py, q) {
@@ -351,15 +351,15 @@ function drawPhill(px, py, q) {
   if (P.charge > 0 && !name.startsWith('hang')) {     // glowing as the energy builds
     const gs = getGhost(), full = P.charge >= tune.chargeTime;
     const k = full ? 0.35 + 0.25 * Math.sin(P.charge * 30) : 0.08 + 0.25 * (P.charge / tune.chargeTime) + 0.06 * Math.sin(P.charge * 22);
-    // drawn exactly where and how his body just was (10/16/2026: it was always drawn standing upright at the
-    // plain walking spot, so swimming on a slant, turning or jabbing low it sat off him at the wrong angle)
+    // drawn exactly where and how his body just was, so swimming on a slant, turning or jabbing low it sits on him at
+    // the right angle
     if (gs && bodyAt) {
       const sh = full ? (Math.random() < 0.5 ? -0.5 : 0.5) : 0;
       ctx.save(); ctx.setTransform(bodyAt.t); ctx.globalAlpha = Math.max(0, k);
       drawCell(ctx, gs, fr, bodyAt.x + sh, bodyAt.y); ctx.restore(); ctx.globalAlpha = 1;
     }
   }
-  if (P.gbreak > 0) for (let i = 0; i < 3; i++) { const a = P.gbreak * 9 + i * 2.1; ctx.fillStyle = '#ffd36b'; ctx.fillRect(q(px + Math.cos(a) * 9) - 1, q(py - 42 + Math.sin(a) * 2.5), 2, 2); }   // (a bit lower than they were: the bars are over his head now)
+  if (P.gbreak > 0) for (let i = 0; i < 3; i++) { const a = P.gbreak * 9 + i * 2.1; ctx.fillStyle = '#ffd36b'; ctx.fillRect(q(px + Math.cos(a) * 9) - 1, q(py - 42 + Math.sin(a) * 2.5), 2, 2); }   // (low enough to clear the bars over his head)
   if (P.splat > SPLAT[0] && P.splat < SPLAT[2]) for (let i = 0; i < 3; i++) { const a = P.splat * 8 + i * 2.1; ctx.fillStyle = '#ffd36b'; ctx.fillRect(q(px + P.facing * 12 + Math.cos(a) * 8) - 1, q(py - 22 + Math.sin(a) * 2.5), 2, 2); }
   drawGuardMeter(px, py, q);
   if (P.guardLock && inp.guardH) {                                  // the lock, just past the end of the shield's bar over his head
@@ -370,14 +370,14 @@ function drawPhill(px, py, q) {
   if (P.blockT > 0) { ctx.fillStyle = 'rgba(255,255,230,0.8)'; ctx.fillRect(q(px + P.facing * 14) - 1, q(py - 30), 2, 12); }
 }
 
-// the shield's stamina and his own, floating over his head (10/16/2026, like The Adventures of Elliot does
-// the shield's): where my eyes are in a fight, not up in the corner. A little shield and its bar, and under it his
-// stamina (the rolls), cut into a piece per roll so it's easy to see how many are left. Each shows while it's in use
-// or not full, and fades out a moment after it fills. Broken, the shield's cracked and its bar refills gray up to the
-// notch where the guard comes back (tune.guardBack)
+// the shield's stamina and his own, floating over his head (like The Adventures of Elliot does the shield's): where
+// your eyes are in a fight, not up in the corner. A little shield and its bar, and under it his stamina (the rolls),
+// cut into a piece per roll so it's easy to see how many are left. Each shows while it's in use or not full, and fades
+// out a moment after it fills. Broken, the shield's cracked and its bar refills gray up to the notch where the guard
+// comes back (tune.guardBack)
 // A little see-through most of the time (so they don't hide something coming down at him, or shout over every
 // background), fully solid for a moment when they matter: a block, the shield low or broken, out of breath, down to
-// the last roll (10/16/2026)
+// the last roll
 const METER_SEE = 0.8;
 let guardMeterT = 0, enMeterT = 0, meterLast = 0, guardHotT = 0, enHotT = 0;
 function drawGuardMeter(px, py, q) {
@@ -392,7 +392,7 @@ function drawGuardMeter(px, py, q) {
   if (guardMeterT > 0) {
     const k = Math.max(0, Math.min(1, P.stam / 100)), broken = P.gbreak > 0 || P.guardOut;
     ctx.globalAlpha = Math.min(1, guardMeterT / 0.3) * solid(guardHotT);
-    // a plain traditional shield (10/16/2026: it doesn't have to be his lid). o outline, h the light rim, f the
+    // a plain traditional shield (it doesn't have to be his lid). o outline, h the light rim, f the
     // face, s the shaded rim. Broken, it's split by a crack (x: a gap) and goes red
     const SHIELD = broken
       ? ['...ooo...', 'ooohhfooo', 'ohhfffxso', 'ohfffxfso', 'ohfxxffso', 'ohxffffso', 'oxfffffso', '.ohfffso.', '..ohfso..', '...ofo...', '....o....']
@@ -555,11 +555,11 @@ function drawHud() {
     ctx.fillText(String(world[coin] || 0), ax + 14, ay + 8);
     acornFlash = Math.max(0, acornFlash - 1 / 60);
   }
-  // (his stamina and the shield's are over his head now: drawGuardMeter)
+  // (his stamina and the shield's are over his head: drawGuardMeter)
   drawSpecialIcons();
 }
 // the special moves he's learned, top right: each one darkens and fills back in like a clock while it's waiting to be
-// ready again, and flashes red if he tries it too soon (a friend's playtest, 10/14/2026)
+// ready again, and flashes red if he tries it too soon
 function drawSpecialIcons() {
   if (typeof specialCD === 'undefined') return;
   const have = ['squeak', 'spin', 'burst'].filter(k => can(k));
@@ -650,7 +650,7 @@ function drawAmbient(camX, camY, glowPass) {
   if (kinds.includes('bubbles') && count('bub') < 18) motes.push({ k: 'bub', x: rnd(0, VW), y: VH + rnd(0, 40), vy: rnd(-26, -12), ph: rnd(0, 6), s: Math.random() < 0.3 ? 2 : 1 });
   if (kinds.includes('leaves') && count('leaf') < 10) motes.push({ k: 'leaf', x: rnd(-20, VW), y: rnd(-60, -4), vy: rnd(14, 26), ph: rnd(0, 6), col: ['#5aa84a', '#8fd06a', '#c8b04a', '#3f8a48'][Math.floor(rnd(0, 4))] });
   if (kinds.includes('spores') && count('spore') < 22) motes.push({ k: 'spore', x: rnd(0, VW), y: rnd(0, VH), vx: rnd(-2, 2), vy: rnd(-5, -2), ph: rnd(0, 6), c: Math.random() < 0.7 ? '170,240,200' : '230,220,160' });
-  if (kinds.includes('moths') && room.def.glowworms && !count('moth'))   // a moth or two round each group of glowworms (10/27/2026)
+  if (kinds.includes('moths') && room.def.glowworms && !count('moth'))   // a moth or two round each group of glowworms
     for (const gr of glowGroups()) for (let j = 0; j < (gr.n > 40 ? 2 : 1); j++) motes.push({ k: 'moth', g: gr, x: rnd(gr.x0, gr.x1), y: rnd(gr.y0, gr.y1), tx: 0, ty: 0, t: 0, ph: rnd(0, 6) });
   if (kinds.includes('fireflies') && count('ff') < 14) {
     const fy0 = room.pxH - 340;
@@ -702,8 +702,8 @@ function drawAmbient(camX, camY, glowPass) {
     }
   }
 }
-// the underground rooms' little moving things (10/17/2026, the underground look): glow worm beads twinkling, and
-// water dripping from a crack in the roof with a ripple where it lands, and the plants' glowing bulbs and beads. The room file says where (glowworms, drips, frontglow)
+// the underground rooms' little moving things: glow worm beads twinkling, and water dripping from a crack in the roof
+// with a ripple where it lands, and the plants' glowing bulbs and beads. The room file says where (glowworms, drips, frontglow)
 const dripState = [];
 let glowT = performance.now();
 function drawUnderground(camX, camY) {
@@ -740,7 +740,7 @@ function drawUnderground(camX, camY) {
     }
   });
 }
-// a painted room's plants (10/27/2026): each row of the picture slides sideways by whole pixels, nothing at the anchor
+// a painted room's plants: each row of the picture slides sideways by whole pixels, nothing at the anchor
 // row (where it grows from, or hangs from) and the most at the far end, so the pixels stay crisp. It sways on its own,
 // and when he walks through it it's pushed aside and springs back. [piece, layer, anchor x, anchor y, sway px, speed, part px, phase]
 const plantState = new Map();
@@ -769,7 +769,7 @@ function drawPlants(layer, camX, camY) {
     }
   });
 }
-// a painted room's light layers (10/27/2026), each breathing slowly at its own pace. Most are part of the room, so
+// a painted room's light layers, each breathing slowly at its own pace. Most are part of the room, so
 // they're drawn behind him (and cut out of the dark, so they still shine through it); one marked front is drawn
 // over everything, him too. g is where to draw, ox/oy what's taken off the room's x/y there, op how, cam the camera
 function glowEach(camX, camY, front, fn) {
@@ -785,7 +785,7 @@ function glowEach(camX, camY, front, fn) {
 }
 function drawGlowLayers(g, ox, oy, front, op, camX = ox, camY = oy) {
   glowEach(camX, camY, front, (im, r, a, blend) => {
-    // a light layer can say how it's laid over the room (11/02/2026): screen lightens like light falling on it, multiply
+    // a light layer can say how it's laid over the room: screen lightens like light falling on it, multiply
     // darkens like shade, normal is just drawn over (haze). Those are part of the room's look, not lights in the dark, so
     // they never open the dark up. Without one it adds light the way it always has
     const own = blend && blend !== 'lighter';
@@ -825,7 +825,7 @@ function drawGlow(camX, camY) {
   }
 }
 
-// ---------- the time of day outside (10/28/2026) ----------
+// ---------- the time of day outside ----------
 // rooms under the open sky work at any time of day. The game picks day, dawn, dusk or night by where the story is
 // (STORY_TIMES), the sky shows its own picture for that time, and the rest of the room gets the time's tint and dark.
 // DBG.time overrides it (the Time button in the debug strip)
@@ -905,12 +905,12 @@ function hiddenByCover(x, y) {
   }
   return false;
 }
-// a painted room's own picture for a wall that breaks or a gate (10/27/2026): the room file names it under skins by
+// a painted room's own picture for a wall that breaks or a gate: the room file names it under skins by
 // the flag that opens it, and it's drawn where it was painted till then, in place of the game's own drawing
 function drawSkin(key, jx) {
   let n = room.def.skins && room.def.skins[key];
   const fx = room.def.skinfx && room.def.skinfx[key], now = performance.now() / 1000;
-  if (n && fx && fx.frames) n = fx.frames[Math.floor(now * fx.fps) % fx.frames.length];   // a strip of frames playing in a loop (10/27/2026)
+  if (n && fx && fx.frames) n = fx.frames[Math.floor(now * fx.fps) % fx.frames.length];   // a strip of frames playing in a loop
   const r = n && room.def.art.pieces && room.def.art.pieces[n];
   const im = r && Assets.get(room.def.art.pack + '#piece_' + n);
   if (!im) return false;
@@ -977,7 +977,7 @@ function drawSceneText() {
   ctx.textAlign = 'left'; ctx.globalAlpha = 1;
 }
 
-// the near side of something he goes under or into (10/28/2026), drawn over him: it hides what's under it, fades
+// the near side of something he goes under or into, drawn over him: it hides what's under it, fades
 // away while he's inside its box and comes back when he's out. The room file: reveals [[piece, [x0, y0, x1, y1]], ...]
 const revealK = {};
 let revealT = 0;
@@ -995,8 +995,8 @@ function drawReveals() {
   }
 }
 
-// the near layer, see-through round him (the picnic tree's near leaves and limbs, 10/18/2026: keep the tree full
-// but still see him clearly). frontFade: [radius, how much of it's left right over him]
+// the near layer, see-through round him (like the picnic tree's near leaves and limbs: keep the tree full but still
+// see him clearly). frontFade: [radius, how much of it's left right over him]
 let frontFadeCv = null, frontFadeK = 0;
 function drawFrontFaded(front, at, camX, camY, px, py) {
   const [rad, keep] = room.def.frontFade;

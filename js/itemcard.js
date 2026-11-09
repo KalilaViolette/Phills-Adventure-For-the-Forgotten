@@ -1,5 +1,5 @@
 'use strict';
-// ---------- what he's found (10/30/2026) ----------
+// ---------- what he's found ----------
 // Picking up something that's meant for someone, a window comes up over the game saying what it is, what it's for,
 // and who to take it to and where they are, with a button to say he's got it. The game waits till it's pressed.
 // The words are kept here, one entry an item, so the inventory can say the same things when it's made.
@@ -22,7 +22,7 @@ const ITEM_INFO = {
     who: 'Take it to the beetle, under the oak in Rootwood.', where: 'roots',
     draw: (x, y, g) => drawGall(x, y, 1, g), used: () => swordLevel() >= 1,
   },
-  // what the Warren needs, from Tock's board (10/30/2026)
+  // what the Warren needs, from Tock's board
   supply_battery: {
     name: 'A battery',
     found: "A battery with some juice left in it. Clank's been saying the night lights are nearly flat.",
@@ -119,7 +119,7 @@ takeItem = it => {
   if (ITEM_INFO[it.id]) { itemCard.pending++; setTimeout(() => { itemCard.pending--; itemCard.show(it.id); }, 1000); }   // (pending: a journal note waits for it too)
 };
 
-// ---- on his map: who's waiting on him (10/30/2026). A quest step can say whose face goes on his map and where
+// ---- on his map: who's waiting on him. A quest step can say whose face goes on his map and where
 // (map: { face, x, y } with the step's room), and while it's the step he's on, that face shows there, moving a little
 // so it catches the eye, with a gold ring going out from it now and then. Only in rooms he's been in. The faces are
 // drawn here, a few pixels each, one for each character as they're needed: MAP_FACES
@@ -147,7 +147,7 @@ function drawMapWants(toMap) {
   }
 }
 // two faces close together on the map (Clank and Mabel are both on Mend Lane, and the whole Warren is small on it)
-// would sit on top of each other, so they're pushed apart sideways until there's room for both (10/30/2026)
+// would sit on top of each other, so they're pushed apart sideways until there's room for both
 function spreadMapWants(marks) {
   const GAP = 16, H = 11;
   for (let pass = 0; pass < 8; pass++) {

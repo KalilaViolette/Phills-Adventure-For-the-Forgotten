@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the pause menu (10/29/2026) ----------
+// ---------- the pause menu ----------
 // Esc or P on the keyboard, Options on a controller, the pause button on a phone. The game stops right away. Where
 // there's room for it, Phill turns to us and sits down right where he is, the camera moves in closer on him, and he
 // keeps doing his little sitting things (a doodle, his book, his map, a stretch) on their own clock while the menu's
@@ -7,11 +7,10 @@
 // crawling, hanging, in the middle of a swing, in a scene, with an enemy right next to him) he stays just as he was
 // and the camera still moves in. The menu sits on whichever side of the screen he isn't on: next to a room's edge the
 // camera can't keep him on his side, so the menu goes to the other one. Closing it, he puts away whatever he had out,
-// gets up, the camera eases back, and the game picks up where it was. The painter's concept: Art\Menu\Pause Menu
-// Concept 01 - 10-29-2026.
-// It's the game's one menu now, too (10/29/2026): the strip that was under the game is hidden and everything in it is
-// in here. Pause, Sound, Display, Controls, Tuning (Tab opens it straight there) and Dev (go to, cheats, enemies, what
-// to show). Anything with a list to pick from is a dropdown.
+// gets up, the camera eases back, and the game picks up where it was.
+// It's the game's one menu, too: the strip under the game is hidden and everything in it is in here. Pause, Sound,
+// Display, Controls, Tuning (Tab opens it straight there) and Dev (go to, cheats, enemies, what to show). Anything
+// with a list to pick from is a dropdown.
 const pauseMenu = window.pauseMenu = (() => {
   const api = { open: false };
   const ZOOMS = [['Gentle', 1.8], ['Closer', 2.4], ['Close up', 3]];
@@ -38,8 +37,8 @@ const pauseMenu = window.pauseMenu = (() => {
   const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const pips = v => `<span class="pm-pips" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i class="${i < v ? 'f' : ''}"></i>`).join('')}</span>`;
   const cap = t => String(t).replace(/^./, c => c.toUpperCase());
-  // the buttons that used to be in the strip under the game (it's hidden now: everything's in here). Each one's
-  // still there and still does the work; a row here just presses it and shows what it says
+  // the buttons from the strip under the game (it's hidden: everything's in here). Each one's still there and still
+  // does the work; a row here just presses it and shows what it says
   const CYCLES = { Speed: ['1x', '0.5x', '0.25x', '2x'], Time: ['story', 'day', 'dawn', 'dusk', 'night'], Touch: ['auto', 'on', 'off'] };
   const mirror = b => {
     if (!b.dataset.pmLabel) b.dataset.pmLabel = b.textContent.trim();             // (its own name: a button whose words change when it's on keeps the name it started with)
@@ -69,7 +68,7 @@ const pauseMenu = window.pauseMenu = (() => {
     return { label, choices: () => opts.map(o => ({ label: cap(o.textContent), value: o.value, group: group(o) })), current: () => now().value, show: () => name(now()),
       choose: v => { cursor[sel.id] = opts.findIndex(o => o.value === v); if (shut) closeNow(); sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); } };
   };
-  // the tuning's numbers under headings, so each one's easy to find (10/29/2026: they were one long list)
+  // the tuning's numbers under headings, so each one's easy to find (they were one long list)
   const TUNE_GROUPS = [
     ['Walking and running', ['runSpeed', 'accelTime', 'decelTime', 'slowWalk', 'keyWalk', 'backSpeed', 'crawlSpeed']],
     ['Jumping and falling', ['jumpHeight', 'apexTime', 'jumpCut', 'coyote', 'jumpBuffer', 'fallMult', 'maxFall', 'splatHeight', 'airAccelTime', 'airDecelTime']],
@@ -142,7 +141,7 @@ const pauseMenu = window.pauseMenu = (() => {
       const pad = document.getElementById('pad');
       return [{ label: 'Showing', value: () => view, act: flip, left: flip, right: flip, table: view, note: pad ? pad.textContent : '' }];
     },
-    // the tuning (it was its own drawer, on Tab): every number, left and right to change it, held down it keeps going
+    // the tuning: every number, left and right to change it, held down it keeps going
     tuning: () => {
       const row = ([key, label, mn, mx, stp, unit]) => {
         const turn = d => () => { tune[key] = Math.min(mx, Math.max(mn, Math.round((tune[key] + d * stp) / stp) * stp)); saveTune(); refreshTune(); };
@@ -158,7 +157,7 @@ const pauseMenu = window.pauseMenu = (() => {
       if (rest.length) { out.push({ head: 'Other' }); rest.forEach(r => out.push(row(r))); }
       return out.concat([{ head: ' ' }, { label: 'Reset to defaults', act: () => resetTune() }]);
     },
-    // his journal (10/29/2026): the quests he's started and the ones he's done, out of js/quests.js. Picking one shows
+    // his journal: the quests he's started and the ones he's done, out of js/quests.js. Picking one shows
     // the steps he's done and the one he's on (never the ones after it)
     quests: () => {
       if (typeof QUEST === 'undefined') return [];
@@ -181,7 +180,7 @@ const pauseMenu = window.pauseMenu = (() => {
       if (out.length === 1) out.push({ head: 'Nothing in his journal yet' });
       return out;
     },
-    // his things (10/30/2026): what he's carrying for someone (what it is and who to take it to, the same words as the
+    // his things: what he's carrying for someone (what it is and who to take it to, the same words as the
     // window when he found it: js/itemcard.js), then his crayons and his memories. Picking one shows more about it
     things: () => {
       const out = [], open = id => thingOpen[id];
@@ -546,7 +545,7 @@ const pauseMenu = window.pauseMenu = (() => {
   api.key = e => {
     if (!api.open) {
       if ((e.code === 'Escape' || e.code === 'KeyP') && !e.repeat && !ownsKeys(e.target) && canOpen()) { e.preventDefault(); useDevice('key'); open(); return true; }
-      if (e.code === 'Tab' && started && canOpen()) { e.preventDefault(); if (!e.repeat) { useDevice('key'); open(false, 'tuning'); } return true; }   // (Tab: straight to the tuning, the way it used to open its own drawer)
+      if (e.code === 'Tab' && started && canOpen()) { e.preventDefault(); if (!e.repeat) { useDevice('key'); open(false, 'tuning'); } return true; }   // (Tab: straight to the tuning)
       return false;
     }
     if (ownsKeys(e.target)) return false;

@@ -2,7 +2,7 @@
 // ---------- the world state: the only thing that lasts from room to room, and what gets saved ----------
 // Rooms themselves are thrown away when Phill leaves them. Anything that has to be remembered
 // (what he's picked up, what he's learned, which gates are open) lives here instead. It's tiny.
-// three save slots (the title menu, 10/17/2026). Slot 1 keeps the old save's name, so a save from before carries on.
+// three save slots (the title menu). Slot 1 keeps the old save's name, so a save from before carries on.
 // The last slot played is remembered and is the one Continue picks up
 const SAVE_SLOTS = 3;
 const slotKey = n => n === 1 ? 'phill-forgotten-save' : 'phill-forgotten-save-' + n;
@@ -35,7 +35,7 @@ const NEW_WORLD = () => ({
   marks: [],                        // things marked on his map after the squirrel told him where they are
   pins: {}, wearing: [], slots: 2,  // pins and buttons he owns, the ones he's wearing, and how many he can wear
   sword: 0,                         // the beetle's work on his sword, how many steps of js/sword.js are done: 0 plain, 1 the oak gall's stain, 2 cherry, 3 etched
-  swordV: 2,                        // (saves from before 10/30/2026 counted 1 cherry and 2 etched, with no oak gall: checkSave moves them up one)
+  swordV: 2,                        // (saves from before the oak gall counted 1 cherry and 2 etched: checkSave moves them up one)
   cotton: 0,                        // cotton tufts bought (three make a puff)
   playSec: 0,                       // time played (shown on the save slots)
   savedAt: 0,                       // when it was last saved
@@ -49,7 +49,7 @@ function loadWorld() {
   return false;
 }
 
-// ---------- checking a save, and putting back anything a reload cut off (the save audit, 10/17/2026) ----------
+// ---------- checking a save, and putting back anything a reload cut off ----------
 // A save from an older build fills in whatever it's missing from a new game. One that's broken (a room that doesn't
 // exist, a list that isn't a list) isn't offered at all: the slot shows empty, and its text is kept under its own name
 // (the slot's name plus -unreadable) so starting over in that slot doesn't lose it
@@ -69,11 +69,11 @@ function checkSave(s) {
   if (s.door !== undefined && s.door !== null && typeof s.door !== 'string') return null;
   const out = Object.assign(w, s);
   if (s.swordV === undefined) {                                                              // a save from before the oak gall: what the beetle did for acorns is one step later now,
-    out.swordV = 2;                                                                          // and the gall counts as found and used (10/30/2026)
+    out.swordV = 2;                                                                          // and the gall counts as found and used
     if (out.sword > 0) { out.sword = Math.min(3, out.sword + 1); out.has.gall = true; }
   }
   out.piles = out.piles.filter(p => isObj(p) && roomOk(p.room) && Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.n));
-  out.marks = out.marks.filter(m => isObj(m) && roomOk(m.room) && Number.isFinite(m.x) && Number.isFinite(m.y));     // the same for what's marked on his map (a broken one stopped the game opening the map: the fix check, 10/18/2026)
+  out.marks = out.marks.filter(m => isObj(m) && roomOk(m.room) && Number.isFinite(m.x) && Number.isFinite(m.y));     // the same for what's marked on his map (a broken one stopped the game opening the map: the fix check)
   out.wearing = [...new Set(out.wearing.filter(id => typeof id === 'string'))];
   if (out.rest !== null && !(isObj(out.rest) && roomOk(out.rest.room))) out.rest = null;      // a resting spot that's no good: just forgotten
   if (!roomOk(out.room)) {                                                                    // a room that isn't there: back to where he rested, if there's one
@@ -132,14 +132,14 @@ const MOVES = {
   spark: () => !!world.learned.spark,         // static spark: a ranged shot (the Greenhouse, not built yet)
   flop: () => !!world.learned.flop,           // the belly flop (the Hive, not built yet)
 };
-// The glide comes later than the cape (10/23/2026): he ties the cape on at the oak, but it's only a cape till he learns
+// The glide comes later than the cape: he ties the cape on at the oak, but it's only a cape till he learns
 // to glide with it in the Canopy, riding on Purl's back. The Canopy isn't built yet, so for now the cape still glides
 // from the start (or the Pond's and the Playground's glide gates would shut him in). Once it's built: true here, and
 // world.learned.glide set by the ride
 const GLIDE_IN_CANOPY = false;
 const can = m => unlockAll || (MOVES[m] ? MOVES[m]() : false);
 
-// ---------- keeping saves safe (10/29/2026) ----------
+// ---------- keeping saves safe ----------
 // The saves live in the browser's own storage for this site. Two things look after them:
 // - the browser's asked to keep that storage for good, so it won't clear it on its own when the computer or phone is
 //   low on space (some do, phones most of all). Clearing the browser's data by hand still clears it

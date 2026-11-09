@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the beetle at work (10/31/2026) ----------
+// ---------- the beetle at work ----------
 // When nobody's talking to him, the stag beetle by the roots works round his door like a beetle smith would. He gnaws a
 // bit of wood into shape with his jaws, knocks it on the ground to hear if it's sound, holds it up to the light through
 // his spectacles, gnaws a bit more, then lifts his wing cases and buzzes the shavings off. Then he scuttles over to his

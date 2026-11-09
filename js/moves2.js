@@ -1,5 +1,5 @@
 'use strict';
-// ---------- static spark and the belly flop (10/18/2026: the combat kit audit) ----------
+// ---------- static spark and the belly flop ----------
 // Both are his to learn later (the spark in the Greenhouse, the flop in the Hive, neither built yet). "Unlock all moves"
 // turns them on to try. Nothing here gives back loose fluff: that's still what close hits are for.
 

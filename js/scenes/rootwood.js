@@ -26,13 +26,11 @@ SCENES.blackCrayon = () => [
 ];
 
 // sitting on the cushion: move to get up, M to get his map out, or the shield button for his pins, all without standing up first
-// A note stays up over him the whole time he's sitting saying what each button does. It used to be a popup that was
-// gone in a second, so a friend couldn't find how to put pins on (playtest, 10/14/2026)
+// A note stays up over him the whole time he's sitting saying what each button does, so how to put pins on is easy to find
 let restNote = null;
-// little things he does sitting there when nothing's pressed (10/27/2026), made from the sitting pictures he has: a
+// little things he does sitting there when nothing's pressed, made from the sitting pictures he has: a
 // doodle on his paper, a stretch and a rub of his eyes, his map or his book, and now and then nodding off for a short nap. 7 seconds of
-// nothing before each (REST_WAIT; standing it's 20 and then 12), never the same one twice in a row, anything pressed stops it. The ones that need
-// new pictures (leaning back on his hands, kicking his feet, looking round) are on the to do list
+// nothing before each (REST_WAIT; standing it's 20 and then 12), never the same one twice in a row, anything pressed stops it
 const HUH = 'huh';                       // (in place of go: the ? over his head for that step, the same one as standing, idle.js)
 const RS = (f, d, go) => go === HUH ? { f, d, huh: true } : { f, d, go };
 const REST_BITS = {
@@ -56,7 +54,7 @@ const REST_BITS = {
     return s;
   },
 };
-// his map and his picture book, read sitting there (10/27/2026): the same as the standing ones, but from the sitting
+// his map and his picture book, read sitting there: the same as the standing ones, but from the sitting
 // pictures with his sword and shield laid down beside him (rs_), and the map goes flat on the floor in front of him
 // and he traces round it facing us instead of turning side on
 const restTurnOver = (s, kind) => s.push(RS(`rs_${kind}_turn_1`, 0.14, () => sfx.rustle(0.3)), RS(`rs_${kind}_turn_2`, 0.14), RS(`rs_${kind}_up_1`, 0.9), RS(`rs_${kind}_up_2`, 1.3, HUH),
@@ -64,7 +62,7 @@ const restTurnOver = (s, kind) => s.push(RS(`rs_${kind}_turn_1`, 0.14, () => sfx
 const restHold = (s, kind, d) => { for (let t = 0, k = 0; t < d; t += 0.6, k++) s.push(RS(`rs_${kind}_${k % 2 ? 2 : 1}`, 0.6)); };
 const restGetOut = kind => [RS('rs_sit', 0.25), RS('rs_reach', 0.3, () => sfx.rustle(0.4)), RS('rs_pull_' + kind, 0.25)];
 const restPutAway = () => [RS('rs_reach', 0.3, () => sfx.rustle(0.3)), RS('rs_sit', 0.3), RS('sit_3', 0.3)];
-// leaning back on his hands, kicking his feet, looking round the room (10/31/2026): the three that were waiting on
+// leaning back on his hands, kicking his feet, looking round the room: the three that were waiting on
 // pictures of their own
 REST_BITS.lean = () => {
   const s = [RS('sit_lean_1', 0.5)];
@@ -79,7 +77,7 @@ REST_BITS.kick = () => {
   return s;
 };
 REST_BITS.look = () => [RS('sit_round_l', 1.1), RS('sit_3', 0.35), RS('sit_round_r', 1.2), RS('sit_3', 0.3), RS('sit_round_l', 0.6), RS('sit_3', 0.5)];
-// scratching the side of his head, puzzling something over (10/31/2026)
+// scratching the side of his head, puzzling something over
 REST_BITS.scratch = () => {
   const s = [RS('sit_3', 0.2)];
   for (let k = 0, n = Math.round(rndIn(5, 8)); k < n; k++) s.push(RS('sit_scratch_1', 0.14), RS('sit_scratch_2', 0.14));
@@ -93,7 +91,7 @@ REST_BITS.map = () => {
   s.push(RS('rs_map_puzzled', 1.3, HUH), RS('rs_map_1', 0.35));
   restTurnOver(s, 'map');
   s.push(RS('rs_map_lay', 0.45, () => sfx.rustle(0.4)), RS('rs_map_lay', 0.25));
-  const trace = n => { for (let k = 0; k < n; k++) for (let i = 1; i <= 8; i++) s.push(RS('rs_mtrace_' + i, 0.15, i === 1 && k % 2 === 0 ? () => sfx.rustle(0.15) : null)); };   // (small circles, 10/27/2026)
+  const trace = n => { for (let k = 0; k < n; k++) for (let i = 1; i <= 8; i++) s.push(RS('rs_mtrace_' + i, 0.15, i === 1 && k % 2 === 0 ? () => sfx.rustle(0.15) : null)); };   // (small circles)
   trace(3);
   s.push(RS('rs_map_lay', 0.4), RS('rs_mthink', 1.6, HUH), RS('rs_map_lay', 0.35));
   trace(4);
@@ -115,7 +113,7 @@ REST_BITS.book = () => {
   return s;
 };
 const restPick = () => [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', 'stretch', 'nap', ...['lean', 'kick', 'look', 'scratch'].filter(n => restHas({ lean: 'sit_lean_1', kick: 'sit_kick_1', look: 'sit_round_l', scratch: 'sit_scratch_1' }[n])), ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
-const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after (10/27/2026)
+const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after
 const restSit = () => {
   let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;
   const stopBit = () => { if (!bit) return; bit = null; P.paper = null; P.crayon = null; P.restHuh = false; P.story = { kind: 'scene', frame: 'sit_3', t: 0 }; };
@@ -237,7 +235,7 @@ SCENES.squirrel = npc => {
   return steps;
 };
 
-// ---- the beetle under the oak: his scene is in js/swordwork.js now (10/31/2026), with the work on Phill's sword all seen
+// ---- the beetle under the oak: his scene is in js/swordwork.js, with the work on Phill's sword all seen
 function squirrelFirst(npc) {
   return [
     bars(true), walkTo(npc.x - 4.5 * T), faceTo(npc.x),

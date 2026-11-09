@@ -5,8 +5,8 @@
 const PB_DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 4, chargedchop: 4, chargedwhirl: 4 };
 const me = () => ({ l: bodyL(P.x), r: bodyR(P.x), t: P.y - P.h, b: P.y });
 // mult: how hurt it is by this hit (the marionette and the kite up out of reach take half). It goes in before the hit's
-// taken off, so whether it's beaten, or into its second half, goes by what the hit really did (the enemy audit
-// 10/17/2026: they were being beaten with a quarter of a hit left, and a combo's extra wasn't halved)
+// taken off, so whether it's beaten, or into its second half, goes by what the hit really did (never beaten with a
+// quarter of a hit left, and a combo's extra is halved too)
 function pbHit(box, a, hurtBox, onHit, mult = 1) {          // his sword reaching one of them
   const b = boss;
   if (b.state === 'falling' || b.down || b.ending) return;
@@ -80,7 +80,7 @@ const pbWalls = () => { if (boss.walled) for (const [x0, y0, x1, y1] of boss.def
 // rams along the water. Hit it from the pads, or bounce down off its sail.
 BOSS_KINDS.sailboat = {
   soundStates: ['aim'],                                                   // when a squeak startles it (boss.js bossHeard)
-  name: 'the toy sailboat', hp: 34,                                                    // (44 down to 34, 10/23/2026: he has no sword work yet when he gets here)
+  name: 'the toy sailboat', hp: 34,                                                    // (on the low side: he has no sword work yet when he gets here)
   song: 'sailboat', phase2: 'it trims its sail and picks up speed', downText: 'the sailboat is down', starsY: 118,
   wakeSound: () => { sfx.creak(); setTimeout(() => sfx.boom(), 300); }, downSound: () => { sfx.creak(); sfx.splash(2); },
   setup(def) { pbSetup(def, { vx: 0, y: def.y + 6 }); },
@@ -152,11 +152,10 @@ BOSS_KINDS.sailboat = {
 // ---------------------------------------------------------------- the tangle
 // A mass of old fishing line hanging off the sunken branch, Phill swimming round it. Whips its loose lines at him (parry
 // one and the knot loosens: hit it then), swings its lure round in a big circle, and reels him in close.
-// It fights back against being hacked at (a friend's playtest, 10/14/2026: it couldn't move, so you could float there
-// mashing attack and the spin, healing off it as you went). Outside an opening, hits only do half. Three hits in quick
-// succession and it pulls all its lines tight: they lash out all round the knot (roll away or parry it), and the knot
-// stays pulled tight for a couple of seconds where the sword just glances off. Hits while it's loose (staggered) count
-// full and never set it off
+// It fights back against being hacked at, so you can't just float there mashing attack and the spin, healing off it as
+// you go. Outside an opening, hits only do half. Three hits in quick succession and it pulls all its lines tight: they
+// lash out all round the knot (roll away or parry it), and the knot stays pulled tight for a couple of seconds where the
+// sword just glances off. Hits while it's loose (staggered) count full and never set it off
 const TANGLE_POKES = 3, TANGLE_POKE_TIME = 1.8, TANGLE_BRISTLE_WIND = 0.45, TANGLE_BRISTLE_R = 84, TANGLE_TIGHT = 2.2;
 BOSS_KINDS.tangle = {
   soundStates: ['lure'],                                                   // when a squeak startles it (boss.js bossHeard)
@@ -321,7 +320,7 @@ BOSS_KINDS.swan = {
       }
       case 'stagger': if (b.t >= b.stagT) { bossState('idle'); b.cd = 0.5; } break;
     }
-    // (bumping into the float itself doesn't hurt: it's a pool toy. Only the slam, the bite and the waves do. It was janky)
+    // (bumping into the float itself doesn't hurt: it's a pool toy. Only the slam, the bite and the waves do)
   },
   hits(box, a) { pbHit(box, a, this.hurtBox(), () => { sfx.hiss(); for (let i = 0; i < 5; i++) part(boss.x + (Math.random() * 2 - 1) * 30, boss.y - 30, (Math.random() * 2 - 1) * 60, -40, 0.4, '#f0f4f8', 1, -10); }); },
   squeaked(x, y, r) { const b = boss; if (!boxReach(this.hurtBox(), x, y, r + 10) || b.state === 'stagger' || b.air) return false; pbStagger(0.7); return true; },

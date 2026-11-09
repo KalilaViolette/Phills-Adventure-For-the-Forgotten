@@ -1,5 +1,5 @@
 'use strict';
-// ---------- soft pieces: caps, shelf fungi, a fallen branch, hanging roots, anything that gives when he lands on it (11/07/2026, anchors 11/09/2026) ----------
+// ---------- soft pieces: caps, shelf fungi, a fallen branch, hanging roots, anything that gives when he lands on it ----------
 // A one way piece the room marks soft (its sag, in px) isn't solid ground. The room file says where it's anchored
 // (read off what it touches when the room's built, Rooms/rootwood_planes.py soft_rules): held where it grows from (the
 // trunk a bracket comes out of, the earth a root hangs from, the stem under a cap), resting where it lies on something

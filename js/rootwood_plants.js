@@ -1,5 +1,5 @@
 'use strict';
-// ---------- Rootwood's plant traps (10/17/2026) ----------
+// ---------- Rootwood's plant traps ----------
 // Plants that grew down here and eat whatever wanders too close. Based on real meat eating plants but made
 // for under the oak. They never move and each has just one attack (no extra moves by region like the rest), they're
 // rare (most rooms have none), and cut down they stay down for good (world.flags 'cut_<room>_<i>').
@@ -12,7 +12,7 @@ function plantSetup(f, d) {
 }
 function plantDown(f) { world.flags[plantCut(f)] = true; }
 
-// ---- the plant traps' own sounds (10/17/2026): each one sounds like what it is. The wind ups are
+// ---- the plant traps' own sounds: each one sounds like what it is. The wind ups are
 // quiet, just enough for someone careful to catch; the catches are meant to make you panic. Built from the same tiny
 // synth as the rest (audio.js), with a few more pieces: envelopes with an attack, a growl (a waveshaper), and things
 // timed a little apart
@@ -119,7 +119,7 @@ function drawPlantScare() {
   g.addColorStop(0, 'rgba(60,0,8,0)'); g.addColorStop(1, `rgba(60,0,8,${(0.75 * Math.min(1, k)).toFixed(2)})`);
   ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); ctx.restore();
 }
-// his own frames while one's got him (10/17/2026): the trap says which of his pictures to show, or to hide
+// his own frames while one's got him: the trap says which of his pictures to show, or to hide
 // him (when he's all the way inside it and it draws the bits of him that stick out)
 function plantPose(f, name) { P.plantBy = f; P.plantFrame = name; P.plantHide = false; }
 function plantHide(f) { P.plantBy = f; P.plantFrame = null; P.plantHide = true; }

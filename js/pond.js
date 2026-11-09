@@ -60,15 +60,15 @@ function swimStep(dt, dir) {
   if (!inW) { if (P.swim) leaveWater(); if (P.sinkT) P.sinkT = 0; return false; }
   if (!can('swim')) return sinkStep(dt);
   if (!P.swim) enterWater();
-  if (P.hurtT > 0) P.hurtT = Math.max(0, P.hurtT - dt);                       // knocked back by a hit: it wears off in the water too (it never ran out in here, and with charging from the press it ate every swing after a hit: 10/16/2026)
+  if (P.hurtT > 0) P.hurtT = Math.max(0, P.hurtT - dt);                       // knocked back by a hit: it wears off in the water too, or with charging from the press it would eat every swing after a hit
   const surf = surfaceAt(P.x, P.y - 8);
   const atTop = surf !== null && P.y - 12 <= surf + 6;               // his back's just under the surface
   // the swing still works in the water
-  const guarding = guardHeld();                                                   // the lid up under water (10/15/2026): slower behind it, no swinging
-  // 8 ways under water (10/16/2026: fighting in the water was too hard with only left and right). He swims on
+  const guarding = guardHeld();                                                   // the lid up under water: slower behind it, no swinging
+  // 8 ways under water (fighting in the water was too hard with only left and right). He swims on
   // the diagonals, and the swing, the charged swing and the lid all point whichever of the 8 ways is held. The right
   // stick points them on its own while the left one goes on swimming. With just the direction keys they point it and
-  // he swims that way behind it, slower (10/15/2026)
+  // he swims that way behind it, slower
   const mx = dir, my = (inp.down ? 1 : 0) - (inp.up ? 1 : 0);
   let av = inp.aim && (inp.aimX || inp.aimY) ? [inp.aimX, inp.aimY] : mx || my ? [mx, my] : [P.facing, 0];
   const al = Math.hypot(av[0], av[1]); P.aimV = [av[0] / al, av[1] / al];
@@ -99,7 +99,7 @@ function swimStep(dt, dir) {
   }
   if (P.atk) { const a = P.atk, info = ATK[a.type]; a.t += dt; if (atkLive(a)) doHits(); if (a.t >= info.frames[info.frames.length - 1]) P.atk = null; }
   const midSwing = P.atk && P.atk.t < ATK[P.atk.type].off;
-  if (inp.aim) { if (P.aimV[0] && !midSwing) P.facing = Math.sign(P.aimV[0]); }            // the right stick turns him that way, any of the 8, while the left one swims (10/16/2026)
+  if (inp.aim) { if (P.aimV[0] && !midSwing) P.facing = Math.sign(P.aimV[0]); }            // the right stick turns him that way, any of the 8, while the left one swims
   else if (dir && !midSwing) P.facing = dir;
   // jump: out of the water at the top, or a strong kick up from underneath
   if (P.jumpBufT > 0) {
@@ -112,7 +112,7 @@ function swimStep(dt, dir) {
   }
   const swingBusy = P.atk && P.atk.t < ATK[P.atk.type].off;                      // (a swing commits him here too: the dash waits for its hitting part to be over)
   if (swingBusy && P.dodgeBufT > 0) P.dodgeBufT = Math.max(P.dodgeBufT, ATK[P.atk.type].off - P.atk.t + 0.05);
-  if (P.dodgeBufT > 0 && !swingBusy && P.rollCD <= 0) {                          // the dash: whichever of the 8 ways he's swimming (10/16/2026: it only went left or right), or straight ahead
+  if (P.dodgeBufT > 0 && !swingBusy && P.rollCD <= 0) {                          // the dash: whichever of the 8 ways he's swimming (it only went left or right), or straight ahead
     P.dodgeBufT = 0;
     if (spend('roll')) {
       const dl = Math.hypot(mx, my), ux = dl ? mx / dl : P.facing, uy = dl ? my / dl : 0, sp = P.tiredDodge ? 220 : 320;   // (out of breath: a short, slow one)
@@ -129,7 +129,7 @@ function swimStep(dt, dir) {
   P.swimLunge = Math.max(0, (P.swimLunge || 0) - dt);
   if (P.swimDash <= 0 && P.swimLunge <= 0) P.vx += (tvx - P.vx) * Math.min(1, dt * 6);
   if (P.swimLunge <= 0 && P.swimDash <= 0) P.vy += (tvy - P.vy) * Math.min(1, dt * 4);
-  if (surf !== null && P.y - 12 < surf + 2 && P.vy < 0) { P.vy = 0; if (!bodyHit(P.x, surf + 14 - P.h, surf + 14)) P.y = surf + 14; }   // bobbing along the top, head out (not down into a ledge just under the surface: the sunken toys, 10/16/2026)
+  if (surf !== null && P.y - 12 < surf + 2 && P.vy < 0) { P.vy = 0; if (!bodyHit(P.x, surf + 14 - P.h, surf + 14)) P.y = surf + 14; }   // bobbing along the top, head out (not down into a ledge just under the surface: the sunken toys)
   const n = Math.max(1, Math.ceil(Math.max(Math.abs(P.vx), Math.abs(P.vy)) * dt / 4));
   const vxWas = P.vx;
   fitBody();                                                                    // leveling out from a dive next to a wall: out of it first
@@ -143,7 +143,7 @@ function swimStep(dt, dir) {
     for (let r = Math.floor((P.y - 66) / T); r <= Math.floor(P.y / T) + 1; r++) {          // he grabs the edge and pulls himself up, up to about 3 tiles above the water (he couldn't get up onto the root by the lily pads)
       const t0 = tile(c, r), up = tile(c, r - 1);
       if ((t0 === 1 || t0 === 2) && up !== 1 && up !== 4 && r * T >= P.y - 66) {
-        if (r * T < P.y - P.h && boxSolid(P.x - HW + 2, r * T - 6, P.x + HW - 2, P.y - P.h)) break;   // something over his head (the log's top end in the lily pads): he can't pull himself up through it (a friend's playtest, 10/14/2026)
+        if (r * T < P.y - P.h && boxSolid(P.x - HW + 2, r * T - 6, P.x + HW - 2, P.y - P.h)) break;   // something over his head (the log's top end in the lily pads): he can't pull himself up through it
         const nx = c * T + T / 2;
         if (!boxSolid(nx - HW, r * T - STAND_H, nx + HW, r * T)) { P.x = nx; P.y = r * T; leaveWater(); P.ground = true; P.vy = 0; P.landT = 0.08; puff(P.x, P.y, 4, 30); splash(P.x - dir * 10, surf, 5, 0.6); return true; }
       }
@@ -157,9 +157,8 @@ function swimStep(dt, dir) {
   }
   {
     // which way he's pointed, kept as one angle all the way round (0 right, pi left) and turned smoothly toward where
-    // he's going. Which way he faces comes from it, so it only flips over once he's past straight up or down. It used to
-    // be a tilt on top of which way he faced, and circling the stick, the moment he faced the other way at the bottom
-    // or the top of the circle he was drawn upside down for a few frames before it caught up (10/16/2026)
+    // he's going. Which way he faces comes from it, so it only flips over once he's past straight up or down, and
+    // circling the stick never draws him upside down for a few frames at the top or bottom
     const wrap = v => Math.atan2(Math.sin(v), Math.cos(v));
     let th, snap = false;
     if (P.atk && P.atk.ax !== undefined) { th = Math.atan2(P.atk.ay, P.atk.ax); snap = P.atk.t < 0.03; }   // a swing points him straight away
@@ -223,7 +222,7 @@ function startSqueak() {
   if (!world.flags.squeakedOnce) { world.flags.squeakedOnce = true; saveWorld(); }
 }
 const SQUEAK_R = 84, SQUEAK_FORGET = 5;
-// What a squeak does grows with him (10/18/2026). Early on it's a fright, not a weapon: no damage, it doesn't
+// What a squeak does grows with him. Early on it's a fright, not a weapon: no damage, it doesn't
 // clear shots (the fluff burst does that), the litter flinches for a moment (that's the opening for the sword), something
 // in the middle of a heavy attack doesn't flinch at all, and a boss only jumps when it's caught in its moment (boss.js
 // bossHeard). His heart (world.heart, 0 for now: the heart powers aren't in yet) takes it further, till at the end it's
@@ -247,8 +246,8 @@ function updateSqueaks(dt) {
       if (Math.hypot(cx - s.x, cy - s.y) > r + 8) continue;
       s.hit.add(f);
       if (FOE[f.kind].squeaked) { FOE[f.kind].squeaked(f, s); continue; }                     // some of them take a squeak their own way
-      // they get used to it (a friend's playtest, 10/14/2026): the first squeak stings and stuns, the next ones only
-      // stun for less and less, and a fourth in a row they just shrug off. It wears off again after a few quiet seconds
+      // they get used to it: the first squeak stings and stuns, the next ones only stun for less and less, and a fourth
+      // in a row they just shrug off. It wears off again after a few quiet seconds
       const res = f.squeakRes || 0;
       f.squeakRes = res + 1; f.squeakResT = SQUEAK_FORGET;
       if (res >= 3) { popup(cx, b.t - 8, 'used to it', '#cfd6e6'); continue; }
@@ -277,25 +276,24 @@ function heard(f, r = 300) {
   return typeof cam !== 'undefined' && f.x > cam.x - 16 && f.x < cam.x + VW + 16 && f.y > cam.y - 16 && f.y < cam.y + VH + 32
     && Math.abs(P.x - f.x) < r && Math.abs(P.y - f.y) < r;
 }
-// landed: its walk is the ground it's on now. Anything that walks the ground, not just the real jumpers: a sponge that
-// started out in the water sank to the bottom with the walk it had up where it started, two pixels wide, and sprang
-// straight up and down for good (the enemy audit, 10/17/2026)
+// landed: its walk is the ground it's on now. Anything that walks the ground, not just the real jumpers, so something
+// that starts out in the water and sinks to the bottom walks the bottom, not a sliver of where it started
 function landRange(f) { if (FOE[f.kind].free) return; const r = patrol(f.x, f.y); if (r[1] >= r[0]) f.range = r; }
 // a tile's top a hopper can land on: a one-way shelf, or plain ground whose tile hasn't been reshaped by the natural
-// ground's pixels (where it has, the pixels say where the top really is, and groundY already found it). It was landing
-// on the old tile line in the air over a rounded top (the terrain audit, 10/17/2026)
+// ground's pixels (where it has, the pixels say where the top really is, and groundY already found it), so it never
+// lands on a tile line in the air over a rounded top
 function coarseFloor(x, gy) { const c = Math.floor(x / T), r = Math.round(gy / T), v = tile(c, r); if (v === 2) return true; return v === 1 && !(room.detail && room.detail[r * room.W + c]); }
 function hopFoe(f, dt, grav = 700) {               // something in the air: falls, lands on the ground (or a pad)
   const wet = isWater(f.x, f.y - 6);
   f.vy = Math.min(f.vy + grav * (wet ? 0.25 : 1) * dt, wet ? 90 : 500);
   if (FOE[f.kind].leaps) {                          // a real jumper (the frog): it can land up on a ledge, so a hop isn't kept to the run it started on. Walls still stop it
     let nx = f.x + (f.hopVX || 0) * dt;
-    const hw = FOE[f.kind].hw || 8;                   // the real ground's shape, not just its tiles (it was hopping into the slopes and bumps, 10/16/2026)
+    const hw = FOE[f.kind].hw || 8;                   // the real ground's shape, not just its tiles, so it doesn't hop into the slopes and bumps
     if (boxSolid(nx - hw + 2, f.y - 12, nx + hw - 2, f.y - 4)) { nx = f.x; f.hopVX = 0; }
     f.x = Math.max(2 * T, Math.min(room.pxW - 2 * T, nx));
   } else f.x = Math.max(f.range[0], Math.min(f.range[1], f.x + (f.hopVX || 0) * dt));
   const prev = f.y; f.y += f.vy * dt;
-  if (FOE[f.kind].leaps) {                           // coming down beside a ledge it was clear of a moment ago: slide out of its side, not into it (the teeth were ending up inside the fountain's rim: the audit rerun, 10/16/2026)
+  if (FOE[f.kind].leaps) {                           // coming down beside a ledge it was clear of a moment ago: slide out of its side, not into it
     const hw = FOE[f.kind].hw || 8, inside = x => boxSolid(x - hw + 2, f.y - 12, x + hw - 2, f.y - 4);
     if (inside(f.x)) for (let d = 1; d <= 2 * hw; d++) { const s2 = [-1, 1].find(s2 => !inside(f.x + s2 * d)); if (s2) { f.x += s2 * d; f.hopVX = 0; break; } }
   }
@@ -309,12 +307,12 @@ function hopFoe(f, dt, grav = 700) {               // something in the air: fall
   }
   if (f.vy > 0) { const gy = Math.floor(f.y / T) * T; if (gy >= prev - 0.01 && coarseFloor(f.x, gy)) { f.y = gy; f.vy = 0; f.air = false; landRange(f); return true; } }
   else if (tile(Math.floor(f.x / T), Math.floor((f.y - 14) / T)) === 1) f.vy = 0;          // bumped its head
-  if (f.y > room.pxH + 30) { f.y = f.y0; f.x = f.x0; f.vy = 0; f.air = false; if (!FOE[f.kind].free) f.range = patrol(f.x, f.y); return true; }   // fell out the bottom: back where it started, and landed (a frog was left mid hop for good, 10/16/2026)
+  if (f.y > room.pxH + 30) { f.y = f.y0; f.x = f.x0; f.vy = 0; f.air = false; if (!FOE[f.kind].free) f.range = patrol(f.x, f.y); return true; }   // fell out the bottom: back where it started, and landed (a frog was left mid hop for good)
   return false;
 }
 const near = (f, dx, dy) => phillAround() && !(P.story && !P.story.free) && Math.abs(P.x - f.x) < dx && Math.abs(P.y - f.y) < dy;
 const strike = (f, box, cost = 18, dmg = 1) => {
-  if (f.state !== 'down') { f.atkBox = box; f.atkT = 0.08; }                          // for the hitbox view: this attack's reach, while it's live (10/16/2026)
+  if (f.state !== 'down') { f.atkBox = box; f.atkT = 0.08; }                          // for the hitbox view: this attack's reach, while it's live
   if (f.state === 'down' || f.hitP || !phillAround() || (P.story && !P.story.free) || !artHit(f, box)) return null;   // not in the middle of a little scene. (On him, and on the part of it that's drawn there: artHit)
   f.hitP = true; const out = foeStrike(f.x, f.kind, { cost, dmg, y: (box.t + box.b) / 2, heavy: f.heavy });
   if (out === 'parried') { foeStagger(f, 1.4); f.vel = -f.f * 140; }
@@ -327,7 +325,7 @@ const baseState = (f, dt) => {                     // the states every one of th
   if (f.state === 'hurt' && f.t >= 0.25) { setFoeState(f, 'walk'); f.cd = 0.5; }
 };
 const DOWN_FRAME = { down: '_down', stagger: '_dizzy' };
-// ---- bits the Pond's new attacks share (10/16/2026)
+// ---- bits the Pond's new attacks share
 function ringOut(x, y, r, col = '#d8f0f4', n = 14) { for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2; part(x + Math.cos(a) * 4, y + Math.sin(a) * 2, Math.cos(a) * r / 0.3, Math.sin(a) * r / 0.6, 0.3, col, 1, 0); } }
 // a drop of water flung at him (a wring, a splash). wet: soaks him (slow and dripping, like getting wrung out)
 const waterDrop = (f, x, y, vx, vy, g = 300, wet = false) => shots.push({ kind: 'drop', col: '#9cd4e8', x, y, vx, vy, g, from: f, reflected: false, t: 0,
@@ -339,7 +337,7 @@ const bubbleShot = (f, x, y, vx, vy, opts = {}) => shots.push(Object.assign({ ki
   draw: sh => { if (sh.spr) { spr(sh.spr + (Math.floor(sh.t * 3) % 2 + 1), sh.x, sh.y, false); return; } ctx.strokeStyle = '#d8f4f0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(sh.x, sh.y, sh.r, 0, Math.PI * 2); ctx.stroke(); ctx.fillStyle = '#ffffff'; ctx.fillRect(Math.round(sh.x - sh.r * 0.5), Math.round(sh.y - sh.r * 0.6), 1, 1); } }, opts));
 
 Object.assign(FOE, {
-  // the rubber duck: waddles back and forth, then lowers its head and charges. Newer (10/16/2026): if the charge runs
+  // the rubber duck: waddles back and forth, then lowers its head and charges. Newer: if the charge runs
   // into a wall or the end of its ground it turns and charges straight back, a squeak up close that sends a ring out
   // along the ground (jump it), and a leap that comes down on him with a splash
   duck: { hp: 5, hw: 11, h: 20, acorns: [1, 2], walker: true,
@@ -383,7 +381,7 @@ Object.assign(FOE, {
     frame: f => ({ walk: 'duck_walk_' + (Math.floor(f.t * 7) % 2 + 1), wind: 'duck_wind', turnwind: 'duck_wind', charge: 'duck_charge', puff: 'duck_squeak', squeak: 'duck_squeak', crouch: 'duck_wind', leap: 'duck_leap',
       down: 'duck_down', stagger: 'duck_dizzy', rest: 'duck_walk_1', hurt: 'duck_walk_1' })[f.state] || 'duck_walk_1' },
 
-  // the fishing bobber: bobs at the top of the water, ducks under, pops up near him and spits. Newer (10/16/2026): it
+  // the fishing bobber: bobs at the top of the water, ducks under, pops up near him and spits. Newer: it
   // casts its hook at him and reels him in, three quick spits in a row, and (from under) pops right up under him
   bobber: { hp: 4, hw: 7, h: 14, acorns: [1, 2], free: true,
     setup(f) { const s = surfaceAt(f.x, f.y + 4); f.sy = s === null ? f.y : s; f.y = f.sy; f.homeX = f.x; },
@@ -406,7 +404,7 @@ Object.assign(FOE, {
       } else if (f.state === 'under') {                                                    // out of sight, drifting over toward him
         const tx = Math.max(f.homeX - 7 * T, Math.min(f.homeX + 7 * T, P.x - Math.sign(dx || 1) * 50));
         const nx = f.x + Math.sign(tx - f.x) * Math.min(Math.abs(tx - f.x), 90 * dt);
-        if (isWater(tx, f.sy + 4) && isWater(nx + Math.sign(tx - f.x) * 7, f.sy + 4)) f.x = nx;           // (only through water: it used to slip straight through a stump or a rock in the way and come up inside it)
+        if (isWater(tx, f.sy + 4) && isWater(nx + Math.sign(tx - f.x) * 7, f.sy + 4)) f.x = nx;           // (only through water, never through a stump or a rock in the way)
         if (f.t >= 0.9) { setFoeState(f, 'aim'); f.y = f.sy; splash(f.x, f.sy, 6, 0.6); f.f = Math.sign(dx) || f.f; }
       } else if (f.state === 'sneak') {                                                    // the same, but right under him...
         const tx = Math.max(f.homeX - 8 * T, Math.min(f.homeX + 8 * T, P.x));
@@ -458,7 +456,7 @@ Object.assign(FOE, {
     },
     frame: () => 'bobber_bob_1' },
 
-  // the plastic bag: drifts toward him like a jellyfish, then billows out at him. Newer (10/16/2026): a billow that
+  // the plastic bag: drifts toward him like a jellyfish, then billows out at him. Newer: a billow that
   // lands half the time wraps it round him (mash free before it squeezes), it rides a gust in a swoop across at him,
   // and it blows itself up and bursts the air out at him, shoving him back
   bag: { hp: 4, hw: 10, h: 22, acorns: [1, 1], free: true,
@@ -469,7 +467,7 @@ Object.assign(FOE, {
       baseState(f, dt);
       const dx = P.x - f.x, dy = (P.y - 20) - (f.y - 16), d = Math.hypot(dx, dy);
       if (f.state === 'walk') {
-        // round walls now, not through them (10/16/2026: it was floating inside the rock a lot and looked buried)
+        // round walls, not through them, so it never sits inside the rock looking buried
         if (near(f, 200, 160)) { flyTo(f, P.x, P.y - 4, 26, dt); f.f = Math.sign(dx) || f.f; }
         else flyTo(f, f.hx, f.hy, 14, dt);
         freeMove(f, 0, Math.sin(f.t * 2) * 8 * dt);
@@ -486,7 +484,7 @@ Object.assign(FOE, {
         }
         if (f.t >= 0.8) { setFoeState(f, 'walk'); f.cd = 1.6 + Math.random(); }
       } else if (f.state === 'wrap') {                                                  // wrapped round him, squeezing
-        if (!pinnedBy(f)) { setFoeState(f, 'stagger'); f.stagT = 1.2; releaseClear(f, 24, -10); return; }   // he got out: it's left crumpled up for a moment, somewhere open (it was being put inside the rock, the terrain audit 10/17/2026)
+        if (!pinnedBy(f)) { setFoeState(f, 'stagger'); f.stagT = 1.2; releaseClear(f, 24, -10); return; }   // he got out: it's left crumpled up for a moment, somewhere open
         f.x = P.x; f.y = P.y + 6;
         if (f.t >= 1.6) { P.pinned = null; hurt(f.x, 'bag', 1); setFoeState(f, 'walk'); f.cd = 2; releaseClear(f, 20, -30); }
       } else if (f.state === 'gustup') {                                                // caught on a gust, it goes up...
@@ -520,7 +518,7 @@ Object.assign(FOE, {
     },
     frame: f => ({ walk: 'bag_drift_' + (Math.floor(f.t * 2) % 2 + 1), billow: f.t > 0.35 ? 'bag_billow' : 'bag_drift_2', gustup: 'bag_drift_2', gust: 'bag_gust', inflate: 'bag_inflate', blast: 'bag_billow', down: 'bag_down', stagger: 'bag_dizzy' })[f.state] || 'bag_drift_1' },
 
-  // the wind-up tin frog: sits, crouches, hops at him in arcs. Newer (10/16/2026): a high hop that comes down in a
+  // the wind-up tin frog: sits, crouches, hops at him in arcs. Newer: a high hop that comes down in a
   // belly flop and sends a shock along the ground (jump it), three quick hops in a row, and (a region out, so every
   // Pond frog) a huge leap right up off the screen that comes down where he is, its shadow on the ground the warning
   frog: { hp: 5, hw: 9, h: 14, acorns: [1, 2], leaps: true,
@@ -544,7 +542,7 @@ Object.assign(FOE, {
         strike(f, foeBox(f), 16); return;
       }
       if (f.state === 'walk' && f.cd <= 0) {
-        const on = near(f, 220, 80), sees = near(f, 220, 130);                            // it sees him up on a ledge a few tiles above too, and hops up after him (the audit rerun, 10/16/2026: it hopped off the other way and lost him)
+        const on = near(f, 220, 80), sees = near(f, 220, 130);                            // it sees him up on a ledge a few tiles above too, and hops up after him
         const m = choose([[2, 'crouch'], [hasMove(f, 2) && on ? 1.2 : 0, 'flopcrouch'], [hasMove(f, 3) && on ? 1.2 : 0, 'triple'], [hasMove(f, 4) && near(f, 18 * T, 8 * T) ? 0.9 : 0, 'bigcrouch']]);
         f.f = sees ? (Math.sign(P.x - f.x) || f.f) : (Math.random() < 0.5 ? -1 : 1);
         if (!m) { f.cd = 0.3; return; }
@@ -555,7 +553,7 @@ Object.assign(FOE, {
         if (on) f.f = Math.sign(P.x - f.x) || f.f;
         f.flop = f.state === 'flopcrouch'; f.quick = false;
         setFoeState(f, 'hop'); f.air = true; f.vy = f.flop ? -380 : high ? -380 : up ? -320 : -260;
-        f.hopVX = on ? Math.max(-130, Math.min(130, (P.x - f.x) / (2 * -f.vy / 700))) : f.f * 70;   // after him, it aims to come down on him (it was overshooting him every time, 10/16/2026)
+        f.hopVX = on ? Math.max(-130, Math.min(130, (P.x - f.x) / (2 * -f.vy / 700))) : f.f * 70;   // after him, it aims to come down on him instead of overshooting
         if (on && Math.abs(f.hopVX) < 30) f.hopVX = f.f * 30;
         sfx.hop();
       } else if (f.state === 'bigcrouch') { if (f.t >= 0.55) { setFoeState(f, 'sky'); sfx.boing(); puff(f.x, f.y, 6, 40); f.tx = P.x; } }
@@ -578,7 +576,7 @@ Object.assign(FOE, {
     },
     frame: f => (f.air ? (f.flop && f.vy > -100 ? 'frog_flop' : 'frog_hop') : ({ crouch: 'frog_crouch', flopcrouch: 'frog_crouch', bigcrouch: 'frog_crouch', quake: 'frog_flop', down: 'frog_down', stagger: 'frog_dizzy' })[f.state] || 'frog_sit') },
 
-  // the soggy sponge: soaks up plain swings, squishes down and springs at him. Newer (10/16/2026): it wrings itself out
+  // the soggy sponge: soaks up plain swings, squishes down and springs at him. Newer: it wrings itself out
   // at him (a drop of that soaks him through, slow and dripping), tumbles end over end at him, and (in the Pond and
   // further, not the sunk roots) jumps up and pounds down, the water bursting out along the ground both ways (jump it)
   sponge: { hp: 5, hw: 10, h: 16, acorns: [2, 3], soak: true,
@@ -621,7 +619,7 @@ Object.assign(FOE, {
     },
     frame: f => (f.air ? (f.vy < 0 ? 'sponge_spring' : f.pound ? 'sponge_pound' : 'sponge_idle_1') : ({ squish: 'sponge_squish', poundcrouch: 'sponge_squish', tumblewind: 'sponge_squish', wring: 'sponge_wring', tumble: 'sponge_roll_' + (Math.floor(f.spin || 0) % 2 + 1), rest: 'sponge_dizzy', splash: 'sponge_pound', down: 'sponge_down', stagger: 'sponge_dizzy' })[f.state] || 'sponge_idle_' + (Math.floor(f.t * 2) % 2 + 1)) },
 
-  // the bendy straw: slithers along the ground, coils up and lunges. Newer (10/16/2026): spits a blob at him through
+  // the bendy straw: slithers along the ground, coils up and lunges. Newer: spits a blob at him through
   // itself, arches up into a hoop and flips right over him to lunge from behind, and (a region out) blows a stream of
   // bubbles that drift after him
   straw: { hp: 4, hw: 14, h: 8, acorns: [1, 1], walker: true,
@@ -692,7 +690,7 @@ Object.assign(FOE, {
           const mx = tx - f.x, my = ty - f.y, ml = Math.hypot(mx, my) || 1;
           fishMove(f, mx / ml * Math.min(ml, 85 * dt), my / ml * Math.min(ml, 85 * dt));
           f.f = Math.sign(dx) || f.f;                                                        // always its tin face toward him
-          if (f.state === 'walk' && f.cd <= 0 && d < 170) {                                // its newer three (10/16/2026): two lunges in a row, bubble mines, and a corkscrew
+          if (f.state === 'walk' && f.cd <= 0 && d < 170) {                                // its newer three: two lunges in a row, bubble mines, and a corkscrew
             const m = choose([[d < 150 ? 2 : 0, 'aim'], [hasMove(f, 3) ? 1.2 : 0, 'mineaim'], [hasMove(f, 4) ? 1.2 : 0, 'spinaim']]);
             if (m) { setFoeState(f, m); f.again = false; sfx.ticking(); }
           }
@@ -734,7 +732,7 @@ Object.assign(FOE, {
         if (block === 'wall') {                                                              // nose first into the mud: it knocks itself silly
           foeStagger(f, 1.8); sfx.clank(); shakeT = 0.12; shakeA = 1.5; puff(f.x + f.f * 12, f.y - 8, 6, 30, '#5a4a3a');
           if (!world.flags.fishBonk) { world.flags.fishBonk = true; popup(f.x, f.y - 34, 'it knocked itself silly', '#ffd36b'); }
-        } else if ((block === 'air' || f.t >= 0.45) && hasMove(f, 2) && !f.again && Math.random() < 0.6) { f.again = true; setFoeState(f, 'reaim'); }   // and straight round for another (10/16/2026)
+        } else if ((block === 'air' || f.t >= 0.45) && hasMove(f, 2) && !f.again && Math.random() < 0.6) { f.again = true; setFoeState(f, 'reaim'); }   // and straight round for another
         else if (block === 'air' || f.t >= 0.45) setFoeState(f, 'turn');
       } else if (f.state === 'turn') {                                                       // tin's slow to turn round: its back's to him for a moment
         const k = Math.max(0, 1 - f.t / 0.5);
@@ -763,13 +761,13 @@ Object.assign(FOE, {
     setup(f) { f.y -= 6; f.hx = f.x; f.hy = f.y; f.vx = 0; f.vy = 0; f.pt = Math.random() * 0.8; f.last = [f.x, f.y]; },
     box: f => (f.state === 'puff' ? { l: f.x - 11, r: f.x + 11, t: f.y - 20, b: f.y + 4 } : { l: f.x - 9, r: f.x + 9, t: f.y - 20, b: f.y + 12 }),
     harmless: f => ['puff', 'grab', 'hold', 'slap'].includes(f.state),
-    // (before he's learned the squeak it says to leave it for now, not to use something he hasn't got: the teaching audit, 10/18/2026)
+    // (before he's learned the squeak it says to leave it for now, not to use something he hasn't got)
     deflectText: () => can('squeak') ? 'the sword just squishes into it. maybe give it a fright' : "the sword just squishes into it. nothing he has gets through. swim round it for now",
     hint: () => can('squeak') ? 'a squeak ({squeak}) might give it a fright' : 'something would have to give it a fright. later, maybe',
     deflect: f => f.state !== 'puff' && f.state !== 'down',
     keepState: f => f.state === 'puff',                                                    // hits don't cut the puff short
     squeaked(f) {
-      if (f.state === 'down' || f.state === 'puff') return;                               // (already puffed: squeaking again doesn't keep it up longer, 10/18/2026)
+      if (f.state === 'down' || f.state === 'puff') return;                               // (already puffed: squeaking again doesn't keep it up longer)
       sfx.inflate(); puff(f.x, f.y - 8, 6, 30, '#faea8a');
       setFoeState(f, 'puff'); f.vx = 0; f.vy = 0;
       if (!world.flags.glovePuff) { world.flags.glovePuff = true; popup(f.x, f.y - 40, 'it puffed right up', '#ffd36b'); }
@@ -786,7 +784,7 @@ Object.assign(FOE, {
       if (f.state === 'stagger') { f.last = [f.x, f.y]; return; }
       const dx = P.x - f.x, dy = (P.y - 8) - (f.y - 2), d = Math.hypot(dx, dy) || 1;
       const hunting = P.swim && phillAround() && !(P.story && !P.story.free) && d < 260;
-      // its newer three (10/16/2026): a grab that holds on and squeezes (mash free), a slap, and a cloud of Grime
+      // its newer three: a grab that holds on and squeezes (mash free), a slap, and a cloud of Grime
       if (f.state === 'walk' && hunting && f.cd <= 0 && d < 110) {
         const m = choose([[hasMove(f, 2) && d < 70 ? 1.3 : 0, 'grabwind'], [hasMove(f, 3) && d < 40 ? 1.3 : 0, 'slapwind'], [hasMove(f, 4) ? 1 : 0, 'inkwind']]);
         if (m) { setFoeState(f, m); f.f = Math.sign(dx) || f.f; f.vx = f.vy = 0; m === 'inkwind' ? sfx.inflate() : sfx.squelch ? sfx.squelch() : sfx.splort(); }
@@ -806,7 +804,7 @@ Object.assign(FOE, {
         if (f.t >= 1.6) { P.pinned = null; hurt(f.x, 'glove', 1); setFoeState(f, 'walk'); f.cd = 1.8; }
         f.last = [f.x, f.y]; return;
       }
-      if (f.state === 'slapwind') { f.f = Math.sign(dx) || f.f; if (d > 20) fishMove(f, f.f * 40 * dt, Math.sign(dy) * Math.min(Math.abs(dy), 20 * dt));   /* drifting in on the wind up: the drawn slap reaches about 17 out (10/16/2026) */ if (f.t >= 0.35) { setFoeState(f, 'slap'); sfx.swish(); } f.last = [f.x, f.y]; return; }
+      if (f.state === 'slapwind') { f.f = Math.sign(dx) || f.f; if (d > 20) fishMove(f, f.f * 40 * dt, Math.sign(dy) * Math.min(Math.abs(dy), 20 * dt));   /* drifting in on the wind up: the drawn slap reaches about 17 out */ if (f.t >= 0.35) { setFoeState(f, 'slap'); sfx.swish(); } f.last = [f.x, f.y]; return; }
       if (f.state === 'slap') {                                                          // swung round flat at him
         if (f.t < 0.2) strike(f, { l: Math.min(f.x, f.x + f.f * 36), r: Math.max(f.x, f.x + f.f * 36), t: f.y - 8, b: f.y + 14 }, 18);
         if (f.t >= 0.45) { setFoeState(f, 'walk'); f.cd = 1.4 + Math.random() * 0.5; }
@@ -878,7 +876,7 @@ Object.assign(FOE, {
           turnTo(aimAng(), 2.2);
           const want = d < 110 ? -30 : d > 190 ? 35 : 0;                                   // keeping its distance
           fishMove(f, dx / d * want * dt, dy / d * want * dt + Math.sin(f.t * 1.5) * 4 * dt);
-          if (f.state === 'walk' && f.cd <= 0 && d < 260 && pikeSees(f)) {                // its newer three (10/16/2026): a dart that bounces off the mud once, glass shards, and shattering into two halves that dart at him
+          if (f.state === 'walk' && f.cd <= 0 && d < 260 && pikeSees(f)) {                // its newer three: a dart that bounces off the mud once, glass shards, and shattering into two halves that dart at him
             const m = choose([[2, 'aim'], [hasMove(f, 3) && d < 240 ? 1.2 : 0, 'shardwind'], [hasMove(f, 4) && d < 220 ? 1 : 0, 'splitwind']]);
             setFoeState(f, m); f.bounced = false; sfx.creak();
           }
@@ -898,7 +896,7 @@ Object.assign(FOE, {
         const out = strike(f, { l: f.x - 14, r: f.x + 14, t: f.y - 15, b: f.y - 2 }, 22);
         if (f.state !== 'dart') { f.last = [f.x, f.y]; return; }                           // parried: it's reeling
         if (out === 'blocked') { setFoeState(f, 'glide'); f.ldx = -f.ldx * 0.6; f.ldy = -f.ldy * 0.6; }
-        else if (block === 'wall' && hasMove(f, 2) && !f.bounced) {                        // glances off the mud once and keeps going (10/16/2026)
+        else if (block === 'wall' && hasMove(f, 2) && !f.bounced) {                        // glances off the mud once and keeps going
           f.bounced = true; f.x -= f.ldx * 3; f.y -= f.ldy * 3;
           if (fishBlock(f.x + f.ldx * 8, f.y, FOE.pike.fit) === 'wall') f.ldx = -f.ldx; if (fishBlock(f.x, f.y + f.ldy * 8, FOE.pike.fit) === 'wall') f.ldy = -f.ldy;
           if (Math.sign(f.ldx) && Math.sign(f.ldx) !== f.f) { f.f = Math.sign(f.ldx); }
@@ -995,7 +993,7 @@ Object.assign(FOE, {
           const w = Math.sin(f.t * 6) * 22;                                                 // wiggling its way over
           fishMove(f, (dx / d * 70 - dy / d * w) * dt, (dy / d * 70 + dx / d * w) * dt);
           f.f = Math.sign(dx) || f.f;
-          if (f.state === 'walk' && f.cd <= 0 && d < 200) {                                 // its newer three (10/16/2026): a glob of gum spat at him, a band it stretches out to snare him, and a bubble it traps him in
+          if (f.state === 'walk' && f.cd <= 0 && d < 200) {                                 // its newer three: a glob of gum spat at him, a band it stretches out to snare him, and a bubble it traps him in
             const m = choose([[d < 60 ? 2 : 0, 'lunge'], [hasMove(f, 2) && d > 60 ? 1.2 : 0, 'spitwind'], [hasMove(f, 3) && d < 54 && Math.abs(dy) < 30 ? 1.3 : 0, 'bandwind'], [hasMove(f, 4) && d > 50 && d < 180 ? 1 : 0, 'blowwind']]);
             if (m === 'lunge') { setFoeState(f, 'lunge'); f.ldx = dx / d; f.ldy = dy / d; sfx.hiss(); }
             else if (m) { setFoeState(f, m); f.f = Math.sign(dx) || f.f; sfx.squelch ? sfx.squelch() : sfx.splort(); }
@@ -1045,7 +1043,7 @@ Object.assign(FOE, {
       if ((f.state === 'walk' || f.state === 'lunge') && hunting && P.inv <= 0 && !dodgeSafe() && overlap(foeBox(f), { l: bodyL(P.x), r: bodyR(P.x), t: P.y - P.h, b: P.y })) {
         f.last = [f.x, f.y]; setFoeState(f, 'latch'); P.leech = f; f.dt = 0; sfx.splort();
         if (!world.flags.leechStuck) { world.flags.leechStuck = true; popup(P.x, P.y - 40, 'it\'s stuck on. shake it off', '#ffd36b'); }
-        else if (!world.flags.leechHint) { world.flags.leechHint = true; popup(P.x, P.y - 40, fmtKeys('a quick dash ({dodge}) should shake it off'), '#ffd36b'); }   // the second time it says how to get it off (10/16/2026)
+        else if (!world.flags.leechHint) { world.flags.leechHint = true; popup(P.x, P.y - 40, fmtKeys('a quick dash ({dodge}) should shake it off'), '#ffd36b'); }   // the second time it says how to get it off
         return;
       }
       f.last = [f.x, f.y];
@@ -1063,7 +1061,7 @@ Object.assign(FOE, {
 });
 // a gum leech stuck on him is drawn over him, on his back (it'd be hidden behind him otherwise)
 function drawOnPhill(px, py) {
-  // gum on his feet, and a candy wrapper wrapped round him (10/16/2026)
+  // gum on his feet, and a candy wrapper wrapped round him
   if (P.slowT > 0 && P.slowBy === 'gum') { ctx.fillStyle = '#c44a84'; ctx.fillRect(Math.round(px) - 8, Math.round(py) - 3, 6, 3); ctx.fillRect(Math.round(px) + 2, Math.round(py) - 3, 6, 3); ctx.fillStyle = '#ffb4d2'; ctx.fillRect(Math.round(px) - 7, Math.round(py) - 3, 2, 1); ctx.fillRect(Math.round(px) + 3, Math.round(py) - 3, 2, 1); }
   const w = P.slowT > 0 && P.slowBy && P.slowBy.kind === 'wrapper' && P.slowBy.state === 'wrap' ? P.slowBy : null;
   if (w) spr('wrapper_wrap', Math.round(px) + Math.round(Math.sin(w.t * 30)), Math.round(py) - 16, P.facing > 0);

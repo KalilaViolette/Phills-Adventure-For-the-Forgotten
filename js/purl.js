@@ -1,11 +1,11 @@
 'use strict';
-// ---------- Purl in the story scenes (10/30/2026) ----------
+// ---------- Purl in the story scenes ----------
 // The knitted stoat, as an actor a scene moves around: her frames from the test run's sheet (art/purl/purl_frames.js),
 // her tail drawn live the same way the test run does it (four links that trail her and whip round when she turns), and
 // her yarn from the plum tip of her tail to the butt of her hook. Her lines are composed, every word in its place, and
 // her sound is the hook catching: *snik*. The first scene with her is the first meeting, while Phill draws with the
 // black crayon he's just found (SCENES.blackCrayon, js/scenes/rootwood.js)
-// her faces for talking (10/31/2026): a line can say [amused], [worried] and so on (talk.js), and while it's on, any
+// her faces for talking: a line can say [amused], [worried] and so on (talk.js), and while it's on, any
 // frame of hers that has that face drawn shows it instead. One entry a facing and face, 'left:amused': the picture
 // they're on, and where each frame's cell is on it by her frame number on purl_proto.png ({ 166: [x, y] }), the cells
 // the same size as hers. None picked yet, so it's empty and she keeps the face she always had
@@ -140,7 +140,7 @@ const purlRun = (pts, speed = 190) => {
   };
 };
 
-// ---- the first meeting (10/30/2026, from Purl.md, "The first meeting"). She heard the branch crack and saw him fall.
+// ---- the first meeting. She heard the branch crack and saw him fall.
 // She shows up on the root above him while he's scribbling with the black crayon he's just found, says her piece, and
 // she's gone up the root before he can nod. Nothing falls from the top of the oak and gets up, then she sees he's all plush
 const PURL_MEET = {                                                                     // under the oak (rooms/rootwood/roots.js): the big root arching over the way in

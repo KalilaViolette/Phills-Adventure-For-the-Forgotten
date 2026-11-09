@@ -1,24 +1,24 @@
 'use strict';
-// ---------- Purl, a test run (10/23/2026) ----------
+// ---------- Purl, a test run ----------
 // A course in the treetops to try how she moves before the Canopy's built: her bound, the hook thrown at a knot to yank
 // herself to it (tap) or swing from it (hold), the yarn reeling back in while she runs, the thrust, and her two ways of
 // mending: winning loose yarn back by hitting back fast (the rally), and sitting to crochet herself closed when she's
 // got a breather (sewing, which uses spare yarn). On its own page, so nothing in the game is touched.
 // Her frames are made by Source/Sprites/purl_proto_sheet.py.
 //
-// The second pass (10/23/2026): she's a quick, agile stoat, so she moves like one. She jumps higher than she is tall,
+// The second pass: she's a quick, agile stoat, so she moves like one. She jumps higher than she is tall,
 // gets up to speed at once and turns on the spot. A jump pressed a moment early or a moment after running off an edge
 // still counts. Coming up short of a ledge, she pulls herself up onto it. Against a trunk she scampers up a little,
 // slides down slowly, and kicks off it with a jump. A yank flings her up and over the knot with the speed it gave her,
 // and the yarn's back almost at once, so the next throw is ready. Up on the stick aims the hook higher.
 //
-// The third pass (10/23/2026): her attacks, built to her frames. On the ground, the thrust, the chop and the spin
+// The third pass: her attacks, built to her frames. On the ground, the thrust, the chop and the spin
 // chain into a combo; up and attack is the uppercut, which flips her into the air and launches whatever it hits; in
 // the air, a wheeling slash she can do again, a small uppercut that pops her higher, and down for a plunge that
 // bounces her back up off whatever she lands on; down on the ground is the low sweep (a slide first if she's
 // running), and down again sweeps back the other way. Every swing has its hit on the frame the art marks.
 //
-// The fourth pass (10/23/2026): the ground attack is a sweeping slash in two halves that join end to end
+// The fourth pass: the ground attack is a sweeping slash in two halves that join end to end
 // (down from behind her to low in front, then back up the same way), so pressing again and again swings back and
 // forth without a stop; holding the button follows with the slam, a short hop with both paws on the hook coming down
 // hard. In the air a hit holds her still for a moment. The dodge (Circle) is her thing: a quick roll with a moment
@@ -31,7 +31,7 @@
 // one way while backing off the other. R1 attack, Circle dodge, Square sew, R2 the hook, Triangle for an ability later.
 // And she's never still in the air: every moment there has a frame that moves.
 //
-// The fifth pass (10/23/2026): her tail is drawn here, not in the frames. Each frame says where the tail starts and
+// The fifth pass: her tail is drawn here, not in the frames. Each frame says where the tail starts and
 // which way its first link points (tr, td, from purl_proto_sheet.py); a chain of four links hangs off that, pulled
 // toward the frame's pose but a little behind it, so it trails her through a run, whips round when she turns and
 // swings out on a jump, and the plum at its end goes on moving after she stops. The yarn runs from the live tip.
@@ -85,7 +85,7 @@ const ATTACKS = {
 // and a last run to the end. The first part has a floor far below it that catches a miss; past that, real drops.
 // Two places to run: the course (the default), and a blockout of the Canopy's first two rooms at game scale,
 // the long bough and the first gap, laid out from the room briefs, to try the spacing before any art is made
-// (purl.html?room=canopy, 10/23/2026)
+// (purl.html?room=canopy)
 const ROOM = (new URLSearchParams(location.search).get('room') || 'course') === 'canopy' ? 'canopy' : 'course';
 const W = ROOM === 'canopy' ? 256 : 222, H = ROOM === 'canopy' ? 60 : 40;
 const tiles = new Uint8Array(W * H);                     // 0 open, 1 solid wood, 2 a twig (stand on it from above)
@@ -739,10 +739,10 @@ function drawPurl() {
   const dx = pl.dx - Math.round(cam.x), dy = pl.dy - Math.round(cam.y);
   P.frameNow = pl.name + ' ' + pl.k + ' ' + pl.fac;
   // a join between two clips while she's moving fast leaves the frame before as a faint afterimage for two screen
-  // frames (a smear, the way a fast swing is drawn), so the change of pose reads as motion and not a cut (10/23/2026)
+  // frames (a smear, the way a fast swing is drawn), so the change of pose reads as motion and not a cut
   if (lastDrawn && lastDrawn.name !== pl.name && (Math.hypot(P.vx, P.vy) > 150 || P.atk || P.roll > 0 || P.airDodge > 0)) ghost = { i: lastDrawn.i, dx: lastDrawn.dx, dy: lastDrawn.dy, t: 2 };
   lastDrawn = { name: pl.name, i: fr.i, dx: pl.dx, dy: pl.dy };
-  // the yarn, tail to hook: the hook's in her left paw, so facing left the yarn's in front of her, facing right behind her, and behind her tail too (10/30/2026)
+  // the yarn, tail to hook: the hook's in her left paw, so facing left the yarn's in front of her, facing right behind her, and behind her tail too
   const yarn = () => { if (hook.state === 'home' && fr.pts && fr.pts.hook_butt) drawYarn(tailTip(), { x: pl.dx + fr.pts.hook_butt[0], y: pl.dy + fr.pts.hook_butt[1] }, 4); };
   if (pl.fac === 'right') yarn();
   drawTail();
@@ -796,7 +796,7 @@ function drawWorld() {
     ctx.fillStyle = '#2a1c10'; ctx.fillRect(px - 1, py - 1, 2, 2);
   }
   // what the hook will catch: every knot in reach gets a faint ring, and the one a throw goes to now gets bright
-  // brackets round it and a dotted line out to it from her, so it's never a guess (10/23/2026)
+  // brackets round it and a dotted line out to it from her, so it's never a guess
   const target = hook.state === 'home' && !P.sewing ? pickKnot() : null, now = performance.now();
   for (const k of knots) {
     if (k === target || Math.hypot(k.x - P.x, k.y - (P.y - 30)) > TUNE.reach) continue;

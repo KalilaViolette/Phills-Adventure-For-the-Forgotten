@@ -1,5 +1,5 @@
 'use strict';
-// ---------- touch controls for Purl's test run (10/23/2026) ----------
+// ---------- touch controls for Purl's test run ----------
 // The same kind of gamepad the game has (js/touch.js), drawn over the page on phones and tablets: a stick on the left
 // that comes to wherever the thumb lands, and four buttons on the right in a diamond, laid out the way the controller
 // has them (jump on cross at the bottom, the hook on circle, the thrust on square, sewing on triangle). Each button holds

@@ -1,9 +1,9 @@
 'use strict';
 // ---------- the Greenhouse: the old glass greenhouse up the hill behind the playground ----------
-// The plan from 10/18/2026 (Greenhouse.md in the notes). The Bramble has it worse in here than anywhere in the
-// park. Static spark is learned in the bed of lamb's ear (he rolls through the fuzzy leaves and comes out all
-// staticky), and it cuts the Bramble. The cape flap is learned up in the roof, watching a butterfly come out of its
-// chrysalis on a warm pipe. The bumblebee on the orchid shelf sells what it knows for seeds.
+// The Bramble has it worse in here than anywhere in the park. Static spark is learned in the bed of lamb's ear (he
+// rolls through the fuzzy leaves and comes out all staticky), and it cuts the Bramble. The cape flap is learned up in
+// the roof, watching a butterfly come out of its chrysalis on a warm pipe. The bumblebee on the orchid shelf sells
+// what it knows for seeds.
 // Loaded after warren.js: it hooks into the room's setup, its items and its events.
 
 (() => {

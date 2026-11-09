@@ -6,7 +6,7 @@ const itemPops = [];            // items flying up over his head as he picks the
 let bubble = null;              // his thought bubble: { ids, t, dur }
 const STORY_TIME = { wake: 3.0, sit: 0.6, reach: 0.34, shake: 1.15, nod: 0.75, watch: 2.0 };
 // waking up in his room: eyes open (a blink), groggy, lifts his head, sits up still groggy, sits, a big stretch and a
-// yawn, rubs his eye, up (curled up asleep now, 10/16/2026)
+// yawn, rubs his eye, up (curled up asleep now)
 const WAKE_STEPS = [[0.15, 'lie_open'], [0.25, 'lie_1'], [0.45, 'lie_open'], [0.75, 'lie_bleary'], [0.95, 'wake_lift'], [1.25, 'wake_up'], [1.45, 'sit_3'],
   [2.05, 'stretch'], [2.25, 'stretch_down'], [2.35, 'rub_1'], [2.45, 'rub_2'], [2.55, 'rub_1'], [2.65, 'rub_2'], [2.8, 'sit_3'], [2.92, 'sit_1'], [3.0, 'turn']];
 
@@ -190,9 +190,8 @@ function updateBall(dt) {
 
 // ---------- hints on the wall ----------
 const flagged = id => !!(world.has[id] || world.learned[id] || world.flags[id]);
-// a move he's learned but hasn't tried yet keeps its note till he does (the teaching audit, 10/18/2026): the note the
-// lesson put up went with the room, so walking out before trying it lost it for good. Every room he walks into puts it
-// back, over him, until he's done it once
+// a move he's learned but hasn't tried yet keeps its note till he does: every room he walks into puts it back, over
+// him, until he's done it once, so walking out before trying it doesn't lose it
 const PRACTICE = [
   { learned: 'charge', done: 'chargedOnce', text: 'hold {atk} to wind up. let go when it flashes' },
   { learned: 'rollslash', done: 'bigSwingOnce', text: '{dodge} to roll, then {atk} out of it: the big swing' },
@@ -200,8 +199,8 @@ const PRACTICE = [
   { learned: 'spin', done: 'spunOnce', text: '{spin}: spin. it turns cranks' },
   { learned: 'burst', done: 'burstOnce', text: '{down} + {squeak}: fluff burst. it blows sand away' },
 ];
-// what he knows, for the Controls lists (the teaching audit, 10/18/2026): each move once he has it, how to do it and
-// what it's for. {names} turn into the keyboard's or the controller's buttons
+// what he knows, for the Controls lists: each move once he has it, how to do it and what it's for. {names} turn into
+// the keyboard's or the controller's buttons
 const KNOWN_MOVES = [
   { has: () => world.has.gear, name: 'Parry', how: 'tap {guard} right as a hit gets to him', what: 'knocks it off balance: an opening' },
   { has: () => world.has.gear, name: 'Bounce', how: '{down} + {atk} in the air', what: 'bounces off whatever is under him' },
@@ -237,8 +236,8 @@ function practiceHints(r) {
 function updateHints(dt) {
   for (const h of room.hints) {
     if (h.sit) { h.a = Math.max(0, Math.min(1, h.a + (h.show ? 3 : -3) * dt)); continue; }   // the note over him while he sits at a resting spot
-    if (h.life !== undefined && h.a > 0) h.life -= dt;                                  // (a note that's only up a few seconds once it shows. It waited on a flag nothing ever set, so they never went: 10/18/2026)
-    const on = (h.life === undefined || h.life > 0) && (!h.after || flagged(h.after)) && (!h.until || !flagged(h.until)) && (!h.untilDone || !flagged(h.untilDone)) && (!P.story || P.story.free)   // a free scene (like the frog waiting for him to try the squeak) still shows its notes: that one never showed (a friend's playtest, 10/14/2026)
+    if (h.life !== undefined && h.a > 0) h.life -= dt;                                  // (a note that's only up a few seconds once it shows)
+    const on = (h.life === undefined || h.life > 0) && (!h.after || flagged(h.after)) && (!h.until || !flagged(h.until)) && (!h.untilDone || !flagged(h.untilDone)) && (!P.story || P.story.free)   // a free scene (like the frog waiting for him to try the squeak) still shows its notes
       && P.x > h.l && P.x < h.r && P.y > h.t && P.y <= h.b + 1;
     h.a = Math.max(0, Math.min(1, h.a + (on ? 3 : -3) * dt));
   }

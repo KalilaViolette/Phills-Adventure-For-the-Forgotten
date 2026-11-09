@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the Greenhouse's litter: the Grime got into the gardening things (10/18/2026) ----------
+// ---------- the Greenhouse's litter: the Grime got into the gardening things ----------
 // A seed packet, a plastic plant pot, a plant label, a twist tie, a gardening glove and a sprinkler head. Region level 2,
 // so each has five attacks (the first always, the rest by hasMove), every one with its own wind up. Each has one the
 // shield doesn't answer (HEAVY: the red !!). Helpers (near, strike, baseState, heard, hopFoe) are in pond.js, freeMove in
@@ -54,7 +54,7 @@ Object.assign(FOE, {
       if (f.state === 'stagger' || f.state === 'hurt') { if (f.yoff < 0) hopArc(f, dt); return; }
       const dx = P.x - f.x, adx = Math.abs(dx), dy = P.y - f.y, on = near(f, 260, 90);
       if (f.state === 'walk') {
-        walkAbout(f, dt, 42, 75);                                                           // (10/31/2026: it hung about at 50, which is just inside where the fan of seeds and the high throw start, so up close it only ever hopped or burst. At 75 it can do all five)
+        walkAbout(f, dt, 42, 75);                                                           // (it hung about at 50, which is just inside where the fan of seeds and the high throw start, so up close it only ever hopped or burst. At 75 it can do all five)
         if (on && f.cd <= 0 && Math.abs(dy) < 40) {
           const m = choose([[adx < 80 ? 1.4 : 0, 'hopwind'], [hasMove(f, 2) && adx > 50 && adx < 200 ? 1.3 : 0, 'tear'], [hasMove(f, 3) && adx > 60 && adx < 220 ? 1 : 0, 'scatterwind'],
             [hasMove(f, 4) && adx > 70 && adx < 200 ? 1 : 0, 'rise'], [hasMove(f, 5) && adx < 120 ? 0.9 : 0, 'burstwind']]);

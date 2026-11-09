@@ -12,7 +12,7 @@ function updateCam(dt) {
   const tg = cam.target, ta = tg && tg.actor && actors[tg.actor];
   const fx = ta ? ta.x : tg && tg.x != null ? tg.x : P.x + cam.look;
   let fy = ta ? ta.y + 60 : tg && tg.y != null ? tg.y + 60 : P.y;
-  if (!tg && typeof bossCamY === 'function') { const y = bossCamY(); if (y != null) fy = y; }   // a boss fight can hold the view up or down (the Bramble heart keeps its floor in sight, 10/18/2026)
+  if (!tg && typeof bossCamY === 'function') { const y = bossCamY(); if (y != null) fy = y; }   // a boss fight can hold the view up or down (the Bramble heart keeps its floor in sight)
   // a room narrower or shorter than the screen sits in the middle of it
   const tx = W <= VW ? (W - VW) / 2 : Math.max(0, Math.min(W - VW, fx - VW / 2));
   // the normal view stops a little under the floor (viewBottom); the rest only shows while he's looking down.

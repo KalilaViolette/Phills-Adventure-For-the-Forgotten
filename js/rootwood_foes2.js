@@ -1,5 +1,5 @@
 'use strict';
-// ---------- Rootwood's new foes (10/15/2026) ----------
+// ---------- Rootwood's new foes ----------
 // The maple spinner (the first trip's flyer), the shoelace (in the burrow and the root lattice), and the first two of
 // the Grime's nightmare things, the reacher and the night wing (the grime pool). Unlike the older litter these go after
 // him: the flyers follow him round the room and steer round whatever's in the way, the shoelace follows him along the
@@ -74,7 +74,7 @@ Object.assign(FOE, {
           if (m) { f.lead = m === 'lead'; setFoeState(f, m === 'lead' ? 'whirl' : m); if (heard(f)) sfx.whirl(); f.side = Math.sign(f.x - P.x) || 1; }
         }
       } else if (f.state === 'whirl') {                                            // winding up: it lifts a little, spinning faster, still sliding over him
-        const tx = f.lead ? P.x + Math.max(-70, Math.min(70, P.vx * 0.5)) : P.x;      // (the leading one aims where he's going, 10/16/2026)
+        const tx = f.lead ? P.x + Math.max(-70, Math.min(70, P.vx * 0.5)) : P.x;      // (the leading one aims where he's going)
         freeMove(f, Math.sign(tx - f.x) * Math.min(Math.abs(tx - f.x), (f.lead ? 70 : 30) * dt), -18 * dt);
         if (f.t >= 0.5) { setFoeState(f, 'drop'); f.vy = 80; f.y0d = f.y; sfx.whoosh(); }
       } else if (f.state === 'sweepwind') {                                        // tipping over on its side, down to his height off to one side of him
@@ -150,8 +150,8 @@ Object.assign(FOE, {
         if (on) { sp = 84; if (Math.abs(dx) > 26) dir = Math.sign(dx); }
         else if (Math.abs(f.x - f.home) > 5 * T) dir = Math.sign(f.home - f.x);           // nothing to chase: it noses about near where it lives
         f.f = dir;
-        if (on && f.cd <= 0 && P.ground && Math.abs(dy) < 24) {                          // its newer two (10/16/2026): a lasso that drags him in, and a whirl that hits both sides
-          // (each from where its drawing really reaches him, 10/16/2026: the lash 54 px, the lasso about 95 with its throw, the whirl 34 either side)
+        if (on && f.cd <= 0 && P.ground && Math.abs(dy) < 24) {                          // its newer two: a lasso that drags him in, and a whirl that hits both sides
+          // (each from where its drawing really reaches him: the lash 54 px, the lasso about 95 with its throw, the whirl 34 either side)
           const m = choose([[Math.abs(dx) < 58 && Math.sign(dx || f.f) === f.f ? 2 : 0, 'coil'], [hasMove(f, 3) && Math.abs(dx) > 60 && Math.abs(dx) < 100 ? 1.4 : 0, 'throwwind'], [hasMove(f, 4) && Math.abs(dx) < 40 ? 1.4 : 0, 'whirlwind']]);
           if (m) { if (m !== 'coil') f.f = Math.sign(dx) || f.f; setFoeState(f, m); if (heard(f)) sfx.hiss(); return; }   // (the lash only at his feet while he's on them: jump and it rears instead)
         }
@@ -263,7 +263,7 @@ Object.assign(FOE, {
         f.reachNow = f.reach * Math.min(1, f.t / 0.12);
         if (f.t < 0.3) {
           const out = strike(f, { l: f.x - 11, r: f.x + 11, t: s - f.reachNow - 14, b: s - 6 }, 22);
-          if (out === 'hit' && hasMove(f, 3) && P.health > 0 && Math.random() < 0.5) {       // it hangs on to him and shakes (10/16/2026): mash to get loose before it squeezes
+          if (out === 'hit' && hasMove(f, 3) && P.health > 0 && Math.random() < 0.5) {       // it hangs on to him and shakes: mash to get loose before it squeezes
             f.caught = true; pinHim(f, 7); setFoeState(f, 'hold'); f.reachNow = f.reach; tellOnce('reacherHold', f, 'mash to wriggle free', f.reach + 20); return;
           }
           if (out === 'hit') { P.vx = 0; P.vy = -430; P.hurtT = Math.max(P.hurtT, 0.25); f.caught = true; tellOnce('reacherFling', f, 'it flung him', f.reach + 20); }
@@ -363,7 +363,7 @@ Object.assign(FOE, {
         if (on) {
           f.orb += dt * 1.0 * f.odir;
           flyTo(f, P.x + Math.cos(f.orb) * 96, P.y - 52 + Math.sin(f.orb) * 34, 125, dt);
-          if (f.state === 'walk' && f.cd <= 0 && d < 220 && sightLine(f.x, f.y, P.x, P.y - 18)) {   // its newer two (10/16/2026): a shriek that shoves him back, and a spray of shadow quills
+          if (f.state === 'walk' && f.cd <= 0 && d < 220 && sightLine(f.x, f.y, P.x, P.y - 18)) {   // its newer two: a shriek that shoves him back, and a spray of shadow quills
             const m = choose([[d < 200 ? 2 : 0, 'fold'], [hasMove(f, 2) && d < 120 ? 1.3 : 0, 'shriek'], [hasMove(f, 3) && d > 70 ? 1.3 : 0, 'quillwind']]);
             if (m) { setFoeState(f, m); f.n = 0; sfx.screech(); }
           }

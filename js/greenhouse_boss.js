@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the Bramble heart (10/18/2026) ----------
+// ---------- the Bramble heart ----------
 // Where the Bramble's thickest, a great knot of it against the far wall, wrapped round an old garden gnome full of Grime
 // that holds it all together. The sword just tangles in it. Strands are wrapped across the gnome: the static spark
 // frays one and a second spark snaps it, and with them all gone the knot pulls open and the gnome's showing. That's

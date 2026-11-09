@@ -7,7 +7,7 @@
 // with a spray of sand that rolls out both ways (jump it), and spins in place kicking sand at you.
 BOSS_KINDS.top = {
   soundStates: ['skateWind'],                                                   // when a squeak startles it (boss.js bossHeard)
-  name: 'the spinning top', hp: 22,                                                   // (26 down to 22, 10/23/2026: he has no sword work yet when he gets here)
+  name: 'the spinning top', hp: 22,                                                   // (on the low side: he has no sword work yet when he gets here)
   song: 'top', phase2: 'it spins faster', downText: 'the spinning top is down', starsY: 70,
   wakeSound: () => { sfx.whirl(); setTimeout(() => sfx.whirl(), 200); }, downSound: () => { sfx.thud(); sfx.clunk(); },
   setup(def) { pbSetup(def, { vx: 0, bumps: 0 }); },
@@ -39,7 +39,7 @@ BOSS_KINDS.top = {
         b.x += Math.sign(dx) * 40 * dt * fast; b.x = Math.max(lo, Math.min(hi, b.x));
         if (b.cd <= 0) {
           const r = Math.random();
-          if (r < 0.45) { bossState('skateWind'); b.f = Math.sign(dx) || 1; b.bumps = 0; b.charges = 1 + Math.floor(Math.random() * 3); sfx.whirl(); popup(b.x, b.y - 80, '!', '#ff6b5a', true); }   // charges back and forth one to three times before it wobbles, so you can't just wait by the wall for it (a friend's playtest, 10/14/2026)
+          if (r < 0.45) { bossState('skateWind'); b.f = Math.sign(dx) || 1; b.bumps = 0; b.charges = 1 + Math.floor(Math.random() * 3); sfx.whirl(); popup(b.x, b.y - 80, '!', '#ff6b5a', true); }   // charges back and forth one to three times before it wobbles, so you can't just wait by the wall for it
           else if (r < 0.75) { bossState('hopWind'); bossBigTell(b.x, b.y - 80); }
           else { bossState('storm'); sfx.whirl(); }
         }
@@ -235,7 +235,7 @@ BOSS_KINDS.clown = {
     const b = boss;
     if (b.state === 'stagger') {                                                              // slumped on its spring: anywhere on it counts
       const h = this.headBox(), bb = this.boxBox(), all = { l: Math.min(h.l, bb.l), r: Math.max(h.r, bb.r), t: h.t, b: bb.b };
-      if (swingOn(box, all)) { pbHit(box, a, all); return; }                               // (the whole of it: a hit on just the box was being thrown away, the enemy audit 10/17/2026)
+      if (swingOn(box, all)) { pbHit(box, a, all); return; }                               // (the whole of it, not just the box)
     }
     if (b.out > 0.45 && swingOn(box, this.headBox())) { pbHit(box, a, this.headBox()); return; }
     if (swingOn(box, this.boxBox())) { a.hit.add('boss'); a.stopLunge = true; spark(P.x + P.facing * 16, P.y - 20); sfx.tok(); P.recoilT = 0.1; P.recoilV = -P.facing * 200; if (a.type === 'down') pogo(); if (!b.told) { b.told = 1; popup(P.x, P.y - 54, 'knock knock. hit the clown, not the box', '#cfd6e6'); } }

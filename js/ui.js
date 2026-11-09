@@ -58,7 +58,7 @@ document.getElementById('muteBtn').addEventListener('click', e => { audio(); mut
 const musicBtn = document.getElementById('musicBtn');
 musicBtn.textContent = music.on ? 'Music on' : 'Music off';
 musicBtn.addEventListener('click', () => { music.toggle(); musicBtn.textContent = music.on ? 'Music on' : 'Music off'; });
-// the music and effects volumes (10/17/2026), the same ones as the title menu's Options
+// the music and effects volumes, the same ones as the title menu's Options
 (() => {
   const row = document.querySelector('#gSound .row');
   for (const [k, name] of [['music', 'Music'], ['sfx', 'Effects']]) {
@@ -68,7 +68,7 @@ musicBtn.addEventListener('click', () => { music.toggle(); musicBtn.textContent 
     const r = l.querySelector('input'); r.value = Math.round(VOL[k] * 10);
     r.addEventListener('input', () => { setVolume(k, r.value / 10); if (k === 'sfx' && sfx.tick) sfx.tick(); });
     // let go with the mouse or a finger: back to the game. With the arrow keys it stays picked so each press moves it
-    // again (it let go after the first, and the next press walked Phill: the fix check, 10/18/2026). Esc or Enter lets go
+    // again (it let go after the first, and the next press walked Phill: the fix check). Esc or Enter lets go
     r.addEventListener('pointerup', () => setTimeout(() => r.blur(), 0));
     r.addEventListener('keydown', e => { if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') { e.preventDefault(); e.stopPropagation(); r.blur(); } });
   }

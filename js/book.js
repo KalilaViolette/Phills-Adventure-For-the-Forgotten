@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the pictures in his picture book (10/29/2026) ----------
+// ---------- the pictures in his picture book ----------
 // Sitting with his book open in his lap, every page he turns has new pictures on it, the kind of cute things you'd
 // find in a children's picture book. The first two pages are the sun and the fish that are drawn into his frames;
 // after that the game draws each new pair on the open pages, over the frame, only where the pages show (not under his

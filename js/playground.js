@@ -5,8 +5,8 @@
 // stuffing that knocks everything back and blows sand away).
 
 const specialCost = base => (wearing('party_hat') ? Math.round(base * 0.65) : base);
-// each special move has its own wait before it can be used again, shown by its little icon on the screen (a friend's
-// playtest, 10/14/2026: the squeak in particular could be spammed). Trying one that isn't ready just flashes its icon
+// each special move has its own wait before it can be used again, shown by its little icon on the screen, so the squeak
+// can't be spammed. Trying one that isn't ready just flashes its icon
 const specialCD = { squeak: 0, spin: 0, burst: 0 }, specialFlash = { squeak: 0, spin: 0, burst: 0 };
 const WATCH_WAIT = 0.65;   // the pocket watch pin: the special moves come back about a third sooner
 const watchK = () => (wearing('watch') ? WATCH_WAIT : 1);
@@ -45,9 +45,8 @@ function startSpin() {
 }
 // The sword's on one side of him at a time as he whirls (the frames swap every 0.06 s), so it only hits on the side the
 // sword's on: turn on the hitboxes (H) and the red box follows the blade round. Each thing it hits takes a full hit the
-// first time, and the hits after that in the same spin are weaker (a friend's playtest, 10/14/2026: three or four full
-// hits in a blink was too strong, the tangle especially). Shots it catches get knocked back the way they came but at a
-// random angle, not aimed like a shield parry
+// first time, and the hits after that in the same spin are weaker, since three or four full hits in a blink is too
+// strong. Shots it catches get knocked back the way they came but at a random angle, not aimed like a shield parry
 const SPIN_REACH = 46, SPIN_HALF = 0.06, SPIN_AFTER = 0.35;
 function spinSide() { return Math.floor(P.spinT / SPIN_HALF) % 2 ? -1 : 1; }   // matches the frame: odd is the L picture, the blade out to the left
 function spinBox() {
@@ -64,7 +63,7 @@ function updateSpins(dt) {
       if (f.state === 'down' || f.state === 'hidden' || !fresh(f) || !overlap(box, foeBox(f))) continue;
       const n = s.hits.get(f) || 0; s.hits.set(f, n + 1); s.last.set(f, s.t);
       const fb = foeBox(f);
-      if (specialDeflected(f, 'spin', (fb.l + fb.r) / 2, (fb.t + fb.b) / 2)) continue;    // what the sword glances off, the spin does too (10/18/2026)
+      if (specialDeflected(f, 'spin', (fb.l + fb.r) / 2, (fb.t + fb.b) / 2)) continue;    // what the sword glances off, the spin does too
       foeHurt(f, (n ? SPIN_AFTER : 1) * swordBonus(), Math.sign((fb.l + fb.r) / 2 - P.x || 1) * (n ? 70 : 140), (fb.l + fb.r) / 2, (fb.t + fb.b) / 2, !n); if (!n) rally();
     }
     if (boss && typeof bossHits === 'function' && fresh('boss')) {
@@ -124,7 +123,7 @@ function updateBursts(dt) {
       if (f.state === 'down' || f.state === 'hidden' || s.hit.has(f)) continue;
       const b = foeBox(f), cx = (b.l + b.r) / 2, cy = (b.t + b.b) / 2;
       if (Math.hypot(cx - s.x, cy - s.y) > r + 8) continue;
-      s.hit.add(f); if (specialDeflected(f, 'burst', cx, cy)) continue;                  // what the sword glances off, the burst does too (10/18/2026)
+      s.hit.add(f); if (specialDeflected(f, 'burst', cx, cy)) continue;                  // what the sword glances off, the burst does too
       if (!foeHurt(f, 1, Math.sign(cx - s.x || 1) * 300, cx, cy)) foeStagger(f, 0.9);
     }
     for (const b of room.breaks) {
@@ -140,7 +139,7 @@ function updateBursts(dt) {
 }
 
 // ---------- the Playground's litter and the Forgotten ----------
-// ---- bits the Playground's new attacks share (10/16/2026)
+// ---- bits the Playground's new attacks share
 const CONFETTI = ['#f05a5a', '#f0d040', '#5ab0f0', '#70d070', '#d070d0'];
 function confettiShot(f, x, y, vx, vy, g, i) {
   const c = CONFETTI[i % CONFETTI.length];
@@ -154,7 +153,7 @@ function screechShot(f, sc = 1) {
 }
 
 Object.assign(FOE, {
-  // wind-up chattering teeth: hop about, then come snapping at him. Newer (10/16/2026): half the time a chomp that lands
+  // wind-up chattering teeth: hop about, then come snapping at him. Newer: half the time a chomp that lands
   // clamps on and hangs on (mash free), a skitter along the ground at him, and three chomps in a row
   teeth: { hp: 4, hw: 9, h: 14, acorns: [1, 2], leaps: true,
     box: f => (f.state === 'bite' ? { l: -999, r: -998, t: -999, b: -998 } : { l: f.x - 9, r: f.x + 9, t: f.y - 14, b: f.y }),
@@ -210,7 +209,7 @@ Object.assign(FOE, {
     },
     frame: f => ({ walk: 'teeth_walk_' + (Math.floor(f.t * 8) % 2 + 1), wind: 'teeth_wind', chomp: 'teeth_chomp', skitwind: 'teeth_wind', skitter: 'teeth_skitter', bite: 'teeth_bite', down: 'teeth_down', stagger: 'teeth_dizzy', rest: 'teeth_walk_1' })[f.state] || 'teeth_walk_1' },
 
-  // a little jack-in-the-box: sits there shut, then pops out at him when he's close. Newer (10/16/2026): its head springs
+  // a little jack-in-the-box: sits there shut, then pops out at him when he's close. Newer: its head springs
   // right out on its spring and comes after him, the box hops at him lid shut, and it bursts open in a shower of confetti
   jack: { hp: 5, hw: 10, h: 18, acorns: [1, 2],
     box: f => (f.state === 'pop' || f.state === 'burst' ? { l: f.x - 10, r: f.x + 10, t: f.y - 44, b: f.y } : f.state === 'spring' || f.state === 'reel' ? { l: f.x - 10, r: f.x + 10, t: f.y - 30, b: f.y } : { l: f.x - 10, r: f.x + 10, t: f.y - 18 + f.yoff, b: f.y + f.yoff }),
@@ -220,10 +219,10 @@ Object.assign(FOE, {
       if (f.yoff < 0 && f.state !== 'hop') hopArc(f, dt);
       const dx = P.x - f.x, adx = Math.abs(dx);
       if (f.state === 'walk' && f.cd <= 0 && near(f, 9 * T, 60)) {
-        const m = choose([[adx < 44 ? 2 : 0, 'peek'], [hasMove(f, 2) && adx < 110 ? 1.3 : 0, 'springpeek'], [hasMove(f, 3) && adx > 40 ? 1 : 0, 'hopwind'], [hasMove(f, 4) && adx < 80 ? 1.1 : 0, 'burstpeek']]);   // the pop from close enough for it to reach (it went off from 70, at nothing, and its drawn head only reaches about 12 out: 10/16/2026)
+        const m = choose([[adx < 44 ? 2 : 0, 'peek'], [hasMove(f, 2) && adx < 110 ? 1.3 : 0, 'springpeek'], [hasMove(f, 3) && adx > 40 ? 1 : 0, 'hopwind'], [hasMove(f, 4) && adx < 80 ? 1.1 : 0, 'burstpeek']]);   // the pop from close enough for it to reach (its drawn head only reaches about 12 out)
         if (m) { setFoeState(f, m); sfx.ticking(); f.f = Math.sign(dx) || f.f; }
       }
-      else if (f.state === 'peek') { if (adx > 18) groundStep(f, f.f, 60, dt); if (f.t >= 0.45) { setFoeState(f, 'pop'); sfx.boing(); } }   // shuffling in as it ticks: the head only reaches about 12 out (10/16/2026). Not into touching him, that hurts on its own
+      else if (f.state === 'peek') { if (adx > 18) groundStep(f, f.f, 60, dt); if (f.t >= 0.45) { setFoeState(f, 'pop'); sfx.boing(); } }   // shuffling in as it ticks: the head only reaches about 12 out. Not into touching him, that hurts on its own
       else if (f.state === 'pop') { if (f.t < 0.2) strike(f, { l: Math.min(f.x - 14, f.x + f.f * 46), r: Math.max(f.x + 14, f.x + f.f * 46), t: f.y - 50, b: f.y - 10 }, 20); if (f.t >= 1.0) { setFoeState(f, 'walk'); f.cd = 1.4; } }   // the head comes out toward him
       else if (f.state === 'springpeek' && f.t >= 0.4) { setFoeState(f, 'spring'); sfx.boing(); f.hx = f.x; f.hy = f.y - 36; }
       else if (f.state === 'spring') {                                                   // its head out on the spring, coming after him (it only reaches so far)
@@ -264,7 +263,7 @@ Object.assign(FOE, {
     },
     frame: f => ({ walk: 'jack_closed', peek: 'jack_peek', springpeek: 'jack_peek', burstpeek: 'jack_swell', pop: 'jack_pop', burst: 'jack_pop', hopwind: 'jack_closed', hop: 'jack_hop', down: 'jack_down', stagger: 'jack_dizzy', hurt: 'jack_pop' })[f.state] || 'jack_closed' },
 
-  // a sand bucket on goo legs: waddles, tips back and lobs a clump of sand. Newer (10/16/2026): up close it slams a little
+  // a sand bucket on goo legs: waddles, tips back and lobs a clump of sand. Newer: up close it slams a little
   // spade down on him, it heaps up a wall of sand and shoves it along the ground at him, and it flips itself upside down
   // and comes down right over him, trapping him under it (mash free)
   bucket: { hp: 5, hw: 10, h: 22, acorns: [1, 2], walker: true,
@@ -288,7 +287,7 @@ Object.assign(FOE, {
         const sx = f.x + f.f * 10, sy = f.y - 24, tx = P.x, ty = P.y - 16, time = Math.max(0.5, Math.min(0.95, Math.abs(tx - sx) / 220));
         shots.push({ kind: 'sand', x: sx, y: sy, vx: (tx - sx) / time, vy: (ty - sy) / time - 0.5 * 600 * time, g: 600, from: f, reflected: false, t: 0 });
       } else if (f.state === 'dump' && f.t >= 0.4) { setFoeState(f, 'walk'); f.cd = 1.8 + Math.random(); }
-      else if (f.state === 'raise' && f.t < 0.4) { if (adx > 18) groundStep(f, f.f, 40, dt); }   // stepping in with the spade up: the drawn spade lands about 15 out (10/16/2026)
+      else if (f.state === 'raise' && f.t < 0.4) { if (adx > 18) groundStep(f, f.f, 40, dt); }   // stepping in with the spade up: the drawn spade lands about 15 out
       else if (f.state === 'raise') { setFoeState(f, 'slam'); sfx.slam(); puff(f.x + f.f * 22, f.y, 5, 30, '#c4a674'); }
       else if (f.state === 'slam') {                                                     // the spade brought down hard in front of it
         if (f.t < 0.15) strike(f, { l: Math.min(f.x + f.f * 6, f.x + f.f * 38), r: Math.max(f.x + f.f * 6, f.x + f.f * 38), t: f.y - 30, b: f.y }, 20);
@@ -339,7 +338,7 @@ Object.assign(FOE, {
     },
     frame: f => ({ walk: 'bucket_walk_' + (Math.floor(f.t * 5) % 2 + 1), tip: 'bucket_tip', dump: 'bucket_dump', raise: 'bucket_raise', slam: 'bucket_slam', pile: 'bucket_tip', shove: 'bucket_dump', flipwind: 'bucket_tip', flip: 'bucket_flip', trap: 'bucket_flip', down: 'bucket_down', stagger: 'bucket_dizzy' })[f.state] || 'bucket_walk_1' },
 
-  // a jump rope: snakes along, rears up, and whips. Newer (10/16/2026): skips at him, the loop sweeping the ground twice
+  // a jump rope: snakes along, rears up, and whips. Newer: skips at him, the loop sweeping the ground twice
   // (jump it), throws a lasso and drags him in, and cracks twice in a row
   rope: { hp: 4, hw: 16, h: 8, acorns: [1, 1], walker: true,
     update(f, dt) {
@@ -392,7 +391,7 @@ Object.assign(FOE, {
     },
     frame: f => ({ walk: 'rope_slither_' + (Math.floor(f.t * 7) % 2 + 1), coil: 'rope_coil', whip: 'rope_whip', skipwind: 'rope_coil', skip: (f.t % 0.6) < 0.3 ? 'rope_loop_1' : 'rope_loop_2', lassowind: 'rope_coil', lasso: 'rope_lasso', reel: 'rope_whip', down: 'rope_down', stagger: 'rope_dizzy', rest: 'rope_slither_1' })[f.state] || 'rope_slither_1' },
 
-  // a party balloon full of Grime: drifts toward him, swells up and pops in a splash of the stuff. Newer (10/16/2026): it
+  // a party balloon full of Grime: drifts toward him, swells up and pops in a splash of the stuff. Newer: it
   // gets up over him and drops a splat of Grime, whips him with its string, and splits into three little balloons that
   // come after him
   balloon: { hp: 1, hw: 8, h: 22, acorns: [1, 1], free: true,
@@ -405,9 +404,9 @@ Object.assign(FOE, {
       const dx = P.x - f.x, dy = (P.y - 22) - (f.y - 18);
       if (f.state === 'walk' || f.state === 'stagger' || f.state === 'hurt') {
         // up high it can see a long way: it spots him from much farther off than the ground foes do, and once it has
-        // it keeps after him till he's well out of reach (a friend's playtest, 10/14/2026)
+        // it keeps after him till he's well out of reach
         if (near(f, 360, 260)) f.chase = true; else if (!near(f, 480, 340)) f.chase = false;
-        // round walls now, not through them (10/16/2026)
+        // round walls, not through them
         if (f.chase && f.state === 'walk') flyTo(f, P.x, P.y - 4, 30, dt);
         else flyTo(f, f.hx, f.hy, 12, dt);
         freeMove(f, 0, Math.sin(f.t * 2.4) * 10 * dt);
@@ -452,7 +451,7 @@ Object.assign(FOE, {
     frame: f => `balloon${f.ci || 0}_` + ({ walk: 'float_' + (Math.floor(f.t * 2) % 2 + 1), swell: 'swell', splitwind: 'swell', dropaim: 'float_1', drop: 'float_2', stringwind: 'float_1', string: 'float_2', down: 'down', stagger: 'float_1', hurt: 'float_1' }[f.state] || 'float_1') },
 
   // a party horn on goo feet: blows a screech that rolls along the ground at him (jump it, or parry it back). Newer
-  // (10/16/2026): up close its paper tongue shoots out and pokes him, three short toots in a row, and a cone of confetti
+  //: up close its paper tongue shoots out and pokes him, three short toots in a row, and a cone of confetti
   horn: { hp: 5, hw: 10, h: 12, acorns: [1, 2],
     update(f, dt) {
       baseState(f, dt);
@@ -460,7 +459,7 @@ Object.assign(FOE, {
       if (f.state === 'walk') {
         if (near(f, 260, 50) && f.cd <= 0) {
           const m = choose([[adx > 40 ? 2 : 0.4, 'aim'], [hasMove(f, 2) && adx < 50 ? 2.2 : 0, 'pokewind'], [hasMove(f, 3) && adx > 50 ? 1.1 : 0, 'aim3'], [hasMove(f, 4) && adx < 130 ? 1 : 0, 'conewind']]);
-          if (m) { f.f = Math.sign(P.x - f.x) || f.f; f.toots = m === 'aim3' ? 3 : 1; setFoeState(f, m); if (m === 'aim' || m === 'aim3') sfx.inhale(); }   // a breath in before it blows: its only wind up with a pose and no sound (10/16/2026)
+          if (m) { f.f = Math.sign(P.x - f.x) || f.f; f.toots = m === 'aim3' ? 3 : 1; setFoeState(f, m); if (m === 'aim' || m === 'aim3') sfx.inhale(); }   // a breath in before it blows: its only wind up with a pose and no sound
         }
       } else if ((f.state === 'aim' || f.state === 'aim3') && f.t >= (f.state === 'aim3' ? 0.4 : 0.5)) { setFoeState(f, 'blow'); screechShot(f, f.toots > 1 ? 0.7 : 1); }
       else if (f.state === 'blow') {
@@ -604,8 +603,8 @@ updatePond = dt => { updateSpecialCD(dt); _updatePond(dt); if (spins.length) upd
 const _setupPondRoom = setupPondRoom;
 setupPondRoom = () => { spins.length = 0; bursts.length = 0; _setupPondRoom(); };
 
-// ---------- the slide (a friend's playtest, 10/14/2026): walk off the top of the deck and he sits down on it and
-// goes, arms up. Speeds up as it steepens, slows a bit on the flat at the bottom, and shoots him off the end ----------
+// ---------- the slide: walk off the top of the deck and he sits down on it and goes, arms up. Speeds up as it
+// steepens, slows a bit on the flat at the bottom, and shoots him off the end ----------
 const chuteAt = (c, t) => [c.x0 + (c.x1 - c.x0) * t, c.y0 + (c.y1 - c.y0) * (3 * t * t - 2 * t * t * t)];
 const CHUTE_SIT = 7;            // his bottom sits this far up from the middle of the trough, down in the bed
 function chuteStart(dir) {

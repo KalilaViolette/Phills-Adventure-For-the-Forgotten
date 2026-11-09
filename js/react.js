@@ -1,8 +1,8 @@
 'use strict';
-// ---------- the parts of a painted room that give when he lands on them (10/31/2026) ----------
-// From the To do list, "Surfaces that react": a mushroom cap squashes a little and springs back when he lands on it,
-// moss presses down, and spores puff up when he jumps off a cap. Only the part that moves is cut out (the cap, not its
-// stem; the moss, not the ground under it), and it stays fixed where it joins, the stem top or the moss's base.
+// ---------- the parts of a painted room that give when he lands on them ----------
+// A mushroom cap squashes a little and springs back when he lands on it, moss presses down, and spores puff up when he
+// jumps off a cap. Only the part that moves is cut out (the cap, not its stem; the moss, not the ground under it), and
+// it stays fixed where it joins, the stem top or the moss's base.
 // Which parts, cut from the room's own painting, and what's under each, are made by Sprites/react_pieces.py
 // (js/react_pieces.js). The painting under a part still has the part in it, so while one moves, a patch of what's
 // under it goes down first (made up from the painting round it: the trunk carrying on under the cap's edge, the
@@ -11,7 +11,7 @@
 // How each kind moves:
 //   squash   flattens toward where it joins and spreads a little, a few times smaller each bounce (amt: how far)
 //   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
-//            (amt: how far it turns, free: which end is free, 1 right, -1 left) (10/31/2026)
+//            (amt: how far it turns, free: which end is free, 1 right, -1 left)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
@@ -77,8 +77,8 @@ const REACT = (() => {
   }
   return { update, draw, mainFor, live, here };
 })();
-// ---------- leaves kicked up crawling (10/31/2026) ----------
-// From the same To do list item: crawling through the leaves under the fallen log on the litter path, he scuffs a few
+// ---------- leaves kicked up crawling ----------
+// The leaves: crawling through the leaves under the fallen log on the litter path, he scuffs a few
 // up behind him that flutter and land again. The colors are the lit leaves on that floor in the painting (the darker
 // ones disappear against it). Each lasts till it's back down on the floor, so none fall through it. Where: a box
 // in the room's pixels (x0, x1, y0, y1, where his feet are)

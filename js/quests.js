@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the quests: the main story, side quests and the contracts on Tock's board (10/29/2026) ----------
+// ---------- the quests: the main story, side quests and the contracts on Tock's board ----------
 // Everything the journal knows is in this one list, so a new story beat is a few lines here, not code somewhere else.
 // The journal (Quests in the pause menu) works out where every quest is from the save itself: nothing extra is kept.
 // Dev's Story progress puts the save at any step, and changes the flags to match (js/questlog.js).

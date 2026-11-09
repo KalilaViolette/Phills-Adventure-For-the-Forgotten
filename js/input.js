@@ -24,13 +24,13 @@ function useDevice(d) {
     : '<span>Hold <b>B</b> while moving to walk</span><span><b>Z</b> jump</span><span>Walk into a low gap to crawl under it</span><span>Fall past a ledge and hold toward it to grab it. <b>Up</b> climbs, <b>Down</b> lets go</span><span><b>Down + Z</b> drop through shelves</span><span>Hold <b>Up</b> or <b>Down</b> to look around</span><span><b>C</b> roll (once he figures it out)</span><span><b>X</b> swing, <b>V</b> shield (once he has them)</span><span><b>F</b> squeak (once he learns it)</span><span><b>G</b> spin (once he learns it)</span><span><b>M</b> map</span>';
 }
 let started = false, paused = false, showBoxes = false, showDebug = false;
-// the page's own controls that use the arrow keys and typing themselves (the input audit, 10/17/2026)
+// the page's own controls that use the arrow keys and typing themselves
 const ownsKeys = t => !!t && t.nodeType === 1 && (t.isContentEditable || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && !['button', 'submit', 'reset', 'checkbox', 'radio'].includes(t.type)));
 window.addEventListener('keydown', e => {
   if (window.pauseMenu && pauseMenu.key(e)) return;                     // the pause menu: Esc or P opens it, and while it's up it takes every key (pause.js)
-  if (e.code === 'Tab') { if (!started && window.titleMenu && titleMenu.open) return; e.preventDefault(); if (started && !e.repeat) toggleTune(); return; }   // (on the title menu Tab moves through it. Held down it opens once: the input audit, 10/17/2026)
+  if (e.code === 'Tab') { if (!started && window.titleMenu && titleMenu.open) return; e.preventDefault(); if (started && !e.repeat) toggleTune(); return; }   // (on the title menu Tab moves through it. Held down it opens once)
   if (e.code === 'KeyH' && started) { showBoxes = !showBoxes; return; }
-  if (e.code === 'F3') { e.preventDefault(); showDebug = !showDebug; return; }   // G is the spin now (a friend's playtest, 10/14/2026), so what's loaded is F3 or its button
+  if (e.code === 'F3') { e.preventDefault(); showDebug = !showDebug; return; }   // G is the spin, so what's loaded is F3 or its button
   if (ownsKeys(e.target)) return;   // a slider (or a box to type in) that's picked takes its own keys: the arrows were moving Phill instead of the volume
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code) && !tuneOpen()) e.preventDefault();
   if (!started) { if (!(window.titleMenu && titleMenu.open)) begin(); return; }   // (the title menu takes the keys itself)
@@ -51,7 +51,7 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => keys.delete(e.code));
 // picking a slider (or a box to type in) takes the keyboard off him: game keys already held down stop counting and
-// presses not used yet are dropped, so he doesn't keep walking while the volume's being set (the fix check, 10/18/2026).
+// presses not used yet are dropped, so he doesn't keep walking while the volume's being set (the fix check).
 // Touch buttons ('T:') and the controller carry on. Holding a key through leaving it again needs a fresh press
 window.addEventListener('focusin', e => {
   if (!ownsKeys(e.target)) return;
@@ -98,7 +98,7 @@ function pollPad() {
   const padEl = document.getElementById('pad');
   if ((gp && gp.index + '|' + gp.id) !== padId) {
     padId = gp ? gp.index + '|' + gp.id : null;
-    prevBtn.length = 0; padPrevY = 0;   // a new controller (or the same one back) starts fresh: one held as it comes back counts as pressed, same as the first time (the input audit: what the old one had down swallowed it)
+    prevBtn.length = 0; padPrevY = 0;   // a new controller (or the same one back) starts fresh: one held as it comes back counts as pressed, same as the first time, instead of being swallowed by what the old one had down
     padEl.textContent = gp ? 'Controller: ' + gp.id.replace(/\(.*?\)/g, '').trim().slice(0, 40) : (padBlocked ? 'Controllers are blocked in this viewer: open the downloaded file' : 'No controller yet');
     padEl.className = gp ? '' : 'none';
   }
@@ -107,7 +107,7 @@ function pollPad() {
   const ax = gp ? gp.axes[0] || 0 : 0, ay = gp ? gp.axes[1] || 0 : 0;
   const k = act => keys.has('T:' + act) || KEYMAP[act].some(c => keys.has(c));   // (a touch button holds 'T:' and its action: touch.js)
   if (gp && !started && !(window.titleMenu && titleMenu.open)) { for (let i = 0; i < gp.buttons.length; i++) if (pressed(i)) { begin(); break; } }
-  if (gp && started && pressed(9) && !tuneOpen()) { if (window.pauseMenu) pauseMenu.toggle(); }   // Options: the pause menu (10/29/2026: it was the tuning, which is on Tab and the button under the game)
+  if (gp && started && pressed(9) && !tuneOpen()) { if (window.pauseMenu) pauseMenu.toggle(); }   // Options: the pause menu (the tuning is on Tab and the button under the game)
   if (tuneOpen()) { tunePad(gp, b, pressed, ay); }
   else if (window.pauseMenu && pauseMenu.open) { pauseMenu.pad(gp, b, pressed, ax, ay); }
   else {
@@ -119,7 +119,7 @@ function pollPad() {
     padDir = want && (want === padDir || Math.abs(ax) > 0.85 || now - padWantT >= 60) ? want : 0;
     inp.left = k('left') || b(14) || padDir < 0 ? 1 : 0;
     inp.right = k('right') || b(15) || padDir > 0 ? 1 : 0;
-    // how fast he goes (10/27/2026): the stick's tilt, from a slow walk just past the middle to the run he has now at full
+    // how fast he goes: the stick's tilt, from a slow walk just past the middle to the run he has now at full
     // tilt, smooth all the way. The d-pad and the arrow keys are a run, or a walk holding the walk key (B)
     const keyed = KEYMAP.left.some(c => keys.has(c)) || KEYMAP.right.some(c => keys.has(c)) || b(14) || b(15);   // (the arrow keys or the d-pad)
     const tilt = keyed ? 1 : padDir ? Math.abs(ax) : window.touchTilt > 0 ? window.touchTilt : 1;          // (or the stick on the touch screen)
@@ -128,15 +128,15 @@ function pollPad() {
     inp.up = k('up') || b(12) || ay < -0.55 ? 1 : 0;
     inp.down = k('down') || b(13) || ay > 0.55 ? 1 : 0;
     inp.jumpH = k('jump') || b(0) ? 1 : 0;
-    // the right stick turns him to face the way it's pushed (10/16/2026: it used to hold the shield out that
-    // way). His legs go on taking the left stick, so he can swing while backing off, and L1 holds the shield out the way
-    // he's facing. Up or down with it points the swing (and the shield) up or down, like the direction keys do
+    // the right stick turns him to face the way it's pushed. His legs go on taking the left stick, so he can swing
+    // while backing off, and L1 holds the shield out the way he's facing. Up or down with it points the swing (and the
+    // shield) up or down, like the direction keys do
     const rx = gp ? gp.axes[2] || 0 : 0, ry = gp ? gp.axes[3] || 0 : 0;
     inp.aim = Math.hypot(rx, ry) > 0.5 ? 1 : 0;
     inp.aimX = inp.aim && Math.abs(rx) > 0.4 ? Math.sign(rx) : 0;
     inp.aimUp = inp.aim && ry < -0.55 && Math.abs(rx) < 0.75 ? 1 : 0;
     inp.aimDown = inp.aim && ry > 0.55 && Math.abs(rx) < 0.75 ? 1 : 0;
-    inp.aimY = inp.aim && Math.abs(ry) > 0.4 ? Math.sign(ry) : 0;                      // (under water the lid points all 8 ways, 10/16/2026)
+    inp.aimY = inp.aim && Math.abs(ry) > 0.4 ? Math.sign(ry) : 0;                      // (under water the lid points all 8 ways)
     inp.guardH = k('guard') || b(4) ? 1 : 0;
     inp.atkH = k('atk') || b(5) ? 1 : 0;
     if (pressed(0)) inp.jumpP = 1;
@@ -148,9 +148,9 @@ function pollPad() {
     if (pressed(8) || pressed(17)) inp.mapP = 1;
     if (pressed(4)) inp.guardP = 1;
     if (pressed(3)) inp.squeakP = 1;
-    if (pressed(7)) inp.sparkP = 1;                                // R2: static spark (10/18/2026)
-    if (pressed(6)) inp.bashP = 1;                                 // L2: the shield bash (10/31/2026)
-    if (pressed(2)) inp.spinP = 1;                                 // square: the spin, its own button (a friend's playtest, 10/14/2026)
+    if (pressed(7)) inp.sparkP = 1;                                // R2: static spark
+    if (pressed(6)) inp.bashP = 1;                                 // L2: the shield bash
+    if (pressed(2)) inp.spinP = 1;                                 // square: the spin, its own button
     padPrevY = ay;
     if (gp) for (let i = 0; i < 16; i++) if (pressed(i)) { inp.any = 1; useDevice('pad'); }
     if (gp && (Math.abs(ax) > 0.5 || Math.abs(ay) > 0.5 || padDir || inp.aim)) useDevice('pad');   // (a soft push that moves him, or just the right stick, counts too)

@@ -1,6 +1,6 @@
 'use strict';
-// ---------- bringing them home (10/31/2026) ----------
-// The toys-come-home rule (Warren.md): lost toys out in the park, and Phill bringing them back to the Warren, where
+// ---------- bringing them home ----------
+// The toys-come-home rule: lost toys out in the park, and Phill bringing them back to the Warren, where
 // they stay and the town shows it. This is that as one kind of quest, so each new one is a few lines in HOMECOMING
 // and nothing else: the pieces lying out in the park, whoever in the town knows them, and what changes once they're
 // home. The game does the rest the same way every time:
@@ -20,7 +20,7 @@
 //   lines    what they say: first (shown the first one), more (with some still out there), all (taking them all back)
 //   home     where they live after, and how they're drawn there: { room, x, y, draw(g, x, y, t) }
 const HOMECOMING = [
-  // the paper dolls (Warren.md, "The paper dolls"): a chain of five torn apart and blown round the Playground. Mabel
+  // the paper dolls: a chain of five torn apart and blown round the Playground. Mabel
   // tapes them back together, and they live on the wall by Tock's board. Where the pieces are isn't picked yet, so
   // none are out, and the lines and the doll pictures are first goes
   {

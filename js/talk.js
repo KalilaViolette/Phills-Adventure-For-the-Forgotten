@@ -2,9 +2,9 @@
 // ---------- talking ----------
 // Everyone but Phill talks. Their words come up a letter at a time in a box at the bottom, with a little sound for
 // their voice. X goes on. Phill answers by nodding or shaking his head.
-// Each of them talks at their own pace with their own sound (a friend's playtest, 10/14/2026: they all sounded like
-// the same voice): the squirrel fast and chittery, the snail slow and low, and so on. A sound written into a line
-// between stars (*chk chk*, *brrrup*) shows in their color without the stars, and makes that noise as it comes up
+// Each of them talks at their own pace with their own sound, so they don't all sound like the same voice: the squirrel
+// fast and chittery, the snail slow and low, and so on. A sound written into a line between stars (*chk chk*,
+// *brrrup*) shows in their color without the stars, and makes that noise as it comes up
 let talk = null;
 const VOICE = {
   squirrel: { name: 'squirrel', col: '#e8b07a', speed: 62, every: 2, blip: () => sfx.chitter(1), noise: () => { sfx.chitter(1.5); setTimeout(() => sfx.chitter(1.6), 70); setTimeout(() => sfx.chitter(1.4), 140); } },
@@ -14,11 +14,11 @@ const VOICE = {
   monkey: { name: 'old monkey', col: '#e0b070', speed: 46, every: 3, blip: () => sfx.monkeyTalk(), noise: () => sfx.clang() },
   owl: { name: 'owl', col: '#d8c0a0', speed: 36, every: 4, blip: () => sfx.owlTalk(), noise: () => sfx.hoot() },
   crow: { name: 'the crow', col: '#b0a0e0', speed: 40, every: 3, blip: () => sfx.crowTalk(), noise: () => sfx.caw(0.7) },
-  bear: { name: 'the bear', col: '#d8b88a', speed: 32, every: 3, blip: () => sfx.bearTalk(), noise: () => sfx.bearTalk() },   // (10/20/2026: no name yet, he never got one)
+  bear: { name: 'the bear', col: '#d8b88a', speed: 32, every: 3, blip: () => sfx.bearTalk(), noise: () => sfx.bearTalk() },   // (no name yet, he never got one)
 };
 // "*kraa* There." -> the text without the stars, and where the sound words are in it
 // A face written into a line in square brackets ([amused], [worried], [idle] for back to normal) isn't shown either:
-// it's where the speaker's face changes, as the words get to it (10/31/2026). It lasts till the next one or the end
+// it's where the speaker's face changes, as the words get to it. It lasts till the next one or the end
 // of the talk. Anyone with that face drawn shows it (talkFace below), anyone without just keeps their own
 function parseTalk(raw) {
   let text = '', spans = [], at = -1, faces = [];
@@ -57,7 +57,7 @@ const say = (who, ...lines) => t => {
   if (t === 0) startTalk(who, lines);
   return !talk;
 };
-// the same, with the box at the top of the screen, for when Phill's down at the bottom and would be under it (10/30/2026)
+// the same, with the box at the top of the screen, for when Phill's down at the bottom and would be under it
 const sayTop = (who, ...lines) => t => {
   if (t === 0) startTalk(who, lines, { top: true });
   return !talk;

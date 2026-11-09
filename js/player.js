@@ -28,7 +28,7 @@ const CRITICAL = 0.3;   // at or under this much of his health he's hurting
 const critical = () => P.health / P.maxHealth <= CRITICAL;
 
 const hasHeadroom = h => !boxSolid(P.x - HW, P.y - h, P.x + HW, P.y);   // (standing up: the standing box, where he'll be)
-// crawling down a slope out from under something low (10/27/2026): his feet are where his belly rests, a little way down
+// crawling down a slope out from under something low: his feet are where his belly rests, a little way down
 // the slope, so the standing box always caught the slope beside him and he crawled on to the bottom. Standing up there
 // is judged the way he stands on a slope walking: his feet on the highest ground under him (a step up at most), the
 // standing box clear over that, and a step on clear too (or he'd stand up at the edge of something low, walk into it
@@ -40,9 +40,9 @@ function slopeStand() {
   for (const x of [P.x, P.x + P.facing * 3]) if (boxSolid(x - HW, y - STAND_H, x + HW, y - 1)) return false;
   P.y = y; return true;
 }
-// lying down, crawling or swimming, his box runs from his feet to the end of his nose (10/15/2026: it was the
-// standing width, so his head went into walls). Measured off the frames: crawling, 11 px behind where he stands and 31
-// in front; swimming, 21 behind and 22 in front. Straight up or down in the water (dive) he's narrow again
+// lying down, crawling or swimming, his box runs from his feet to the end of his nose, so his head doesn't go into
+// walls. Measured off the frames: crawling, 11 px behind where he stands and 31 in front; swimming, 21 behind and 22 in
+// front. Straight up or down in the water (dive) he's narrow again
 const CRAWL_BACK = 11, CRAWL_FRONT = 31, SWIM_BACK = 21, SWIM_FRONT = 22, CRAWL_MID = (CRAWL_FRONT - CRAWL_BACK) / 2;
 const lying = () => (P.swim && !P.dive) || (P.crawl && !P.swim);
 function bodyExt() {                                     // [behind, in front] of where he stands
@@ -63,7 +63,7 @@ function bodyHit(x, top, bot) {
   if (P.crawl && !P.swim) return boxSolid(restL(x), top, restR(x), bot) || boxSolid(bodyL(x), top, bodyR(x), bot - CRAWL_LIFT);
   return boxSolid(bodyL(x), top, bodyR(x), bot);
 }
-// stuck inside something, however he got there (10/15/2026: rolled up under a low roof he ended up in it, and the
+// stuck inside something, however he got there (rolled up under a low roof he ended up in it, and the
 // landing kept lifting him 3 px a frame till he was out the top of the room). Out to the nearest spot he fits, sideways
 // or down before up (push him the way there's nothing solid), never more than 24 px
 const UNSTICK = (() => {
@@ -73,7 +73,7 @@ const UNSTICK = (() => {
 })();
 function unstick() {
   // only something in him above his feet counts: feet a pixel or two into the ground is just standing (the landing and the
-  // step up sort that out). The case in my video was his head in the roof (10/15/2026)
+  // step up sort that out). The usual case is his head in the roof
   if (P.hang || P.cling || P.held || P.reach || P.ko > 0 || !bodyHit(P.x, P.y - P.h, P.y - STEP_UP)) return false;
   if (P.ground && !P.crawl && !P.swim && P.roll <= 0 && P.dash <= 0) {        // on the ground with no room to stand: down on his belly if that fits
     const h0 = P.h; P.crawl = true; P.h = ROLL_H;
@@ -97,12 +97,12 @@ function fitBody() {
     if (!bodyHit(P.x + s * k, P.y - P.h, P.y)) { P.x += s * k; return; }
   }
 }
-// a bump on a wall's face (10/15/2026): since the natural ground the walls have little bumps on them, and
+// a bump on a wall's face: since the natural ground the walls have little bumps on them, and
 // he could hop up a wall bump by bump without the velcro. A bump is a few pixels of ground under one side of his feet
 // with the wall going on up right beside them. That isn't somewhere he can stand: he slides off it, away from the wall.
 // Floors, slopes, the dirt packed into corners and the lips of ledges all have more under him or no wall beside them,
 // so they're the same as before. Returns which way he slides off (0: it's real ground)
-// (11/09/2026) the same goes for the face of something leaning, like a dead tree's trunk: the wall beside his feet
+// the same goes for the face of something leaning, like a dead tree's trunk: the wall beside his feet
 // doesn't go straight up, it leans back the higher it goes. NUB_LEAN is how far back per pixel up it can lean and still
 // count as a wall, so ground steeper than that is a face he slides down, and anything gentler he can still stand on
 const NUB_MAX = 4, NUB_WALL = [8, 14, 20, 26], NUB_LEAN = 0.5;
@@ -124,11 +124,11 @@ function nubAt(x, y) {
   return walls >= 2 ? -s : 0;
 }
 const onRamp = () => P.dropT <= 0 && rampY(P.x, P.y, 0.6, 0.6) !== null;   // standing on a one-way slope
-// walking onto a side way (a slope the room marks as one, rampsUp) takes holding up, unless he's on one already: the main way goes on past it (10/27/2026)
+// walking onto a side way (a slope the room marks as one, rampsUp) takes holding up, unless he's on one already: the main way goes on past it
 const sideOk = () => inp.up || (P.dropT <= 0 && rampY(P.x, P.y, 0.6, 0.6) !== null && rampY(P.x, P.y, 3.5, 0.6, true) === null && !boxSolid(restL(P.x), P.y, restR(P.x), P.y + 3.5));   // (on it, and not where it comes down onto the main way's ground, a few px under his feet)
 // only the main way catches him for a moment after he walks off an edge (a dip in the root's back put him down onto a side way's end)
 const mainCatch = () => !P.ground && P.coyoteT > 0 && P.vy >= 0 && !sideOk();
-// walking with down held: he keeps to the lower way where the ground forks (10/27/2026)
+// walking with down held: he keeps to the lower way where the ground forks
 const keepLow = () => inp.down && !P.crawl && !P.swim && !P.atk && P.roll <= 0 && P.dash <= 0 && (inp.left || inp.right) && !(inp.left && inp.right);
 // ground (solid or another slope) 2 to 14 px under where he stands on a one-way slope, with room for him there: the lower way at a fork
 function lowerWay() {
@@ -152,16 +152,16 @@ function groundBelow() {
   return P.dropT <= 0 && Math.abs(P.y - Math.round(P.y / T) * T) < 0.01 && boxHas(restL(P.x), P.y, restR(P.x), P.y + 1, 2);
 }
 
-// moving him through the room a pixel at a time, so he meets the ground exactly where it's drawn (10/15/2026: the
-// natural ground isn't whole tiles any more). Walking into a little rise he steps up onto it (STEP_UP), and walking
-// over the top of one or down a dip he stays planted (the snap down in update)
+// moving him through the room a pixel at a time, so he meets the ground exactly where it's drawn (the natural ground
+// isn't whole tiles). Walking into a little rise he steps up onto it (STEP_UP), and walking over the top of one or down
+// a dip he stays planted (the snap down in update)
 const STEP_UP = 6, STEP_UP_AIR = 3, STEP_DOWN = 7;
 // getting down to crawl because the way on is too low to stand (on a slope, where the usual check by his feet can't see
 // it coming): only if he'd fit lying down there
 function crawlInto(nx, ny) {
   const h0 = P.h;
   P.crawl = true; P.h = ROLL_H;
-  if (bodyHit(nx, ny - P.h, ny)) { P.crawl = false; P.h = h0; return false; }     // back to however tall he was (10/15/2026: mid roll this stood him up into the roof)
+  if (bodyHit(nx, ny - P.h, ny)) { P.crawl = false; P.h = h0; return false; }     // back to however tall he was (mid roll this stood him up into the roof)
   P.crawlDist = 0; P.vx *= 0.4; puff(P.x, P.y, 3, 20); sfx.land();
   return true;
 }
@@ -173,10 +173,10 @@ function moveX(dx) {
     const d = Math.min(1, left) * s; left -= Math.abs(d);
     const nx = P.x + d;
     if (P.ground && P.dropT <= 0 && room.ramps.length) {                     // along a one-way slope, or stepping up onto one
-      const on = onRamp(), sy = on || !keepLow() ? rampY(nx, P.y, on ? 4 : 0.5, STEP_UP, !sideOk()) : null;   // (down held: walking on past where one starts, 10/27/2026)
+      const on = onRamp(), sy = on || !keepLow() ? rampY(nx, P.y, on ? 4 : 0.5, STEP_UP, !sideOk()) : null;   // (down held: walking on past where one starts)
       if (sy !== null) {
         if (!bodyHit(nx, sy - P.h, sy)) { P.x = nx; P.y = sy; continue; }
-        // the slope runs up under something too low to stand: he gets down and crawls on up it (10/15/2026),
+        // the slope runs up under something too low to stand: he gets down and crawls on up it,
         // and only stops where there's no room even lying down. Walking on at the same height put him under the slope
         if (!P.crawl && !P.swim && !P.atk && P.roll <= 0 && P.dash <= 0 && P.charge <= 0 && crawlInto(nx, sy)) { P.x = nx; P.y = sy; continue; }
         if (on) { P.vx = 0; return; }
@@ -200,7 +200,7 @@ function moveX(dx) {
     }
     if (stepped) continue;
     // a little rise with a low roof over it: too low to stand up on, room to crawl up onto it. He gets down and crawls,
-    // the same as walking into a low gap (the terrain audit, 10/17/2026: he stopped there, and only a roll got him through)
+    // the same as walking into a low gap (he stopped there, and only a roll got him through)
     if (P.ground && !P.crawl && !P.swim && !P.atk && P.roll <= 0 && P.dash <= 0 && P.charge <= 0 && !(typeof DBG !== 'undefined' && (DBG.fly || DBG.noclip))) {
       for (let k = 1; k <= up && !stepped; k++) if (!nubAt(nx, P.y - k) && crawlInto(nx, P.y - k)) { P.x = nx; P.y -= k; stepped = true; }
     }
@@ -256,7 +256,7 @@ function moveY(dy) {
         }
         let y = Math.ceil(ny);
         for (let k = 0; k < 3 && bodyHit(P.x, y - P.h, y); k++) y++;
-        if (!bodyHit(P.x, y - P.h, y)) P.y = Math.max(y, P.y - Math.abs(d));   // (wedged with no room under him either: stays put rather than being pushed down into the floor, 10/16/2026)
+        if (!bodyHit(P.x, y - P.h, y)) P.y = Math.max(y, P.y - Math.abs(d));   // (wedged with no room under him either: stays put rather than being pushed down into the floor)
         P.vy = 0; return false;
       }
       P.y = ny;
@@ -277,7 +277,7 @@ function snapDown() {
 
 // blocking costs shield stamina. Run out and the guard breaks: lid knocked aside, dazed and open for a moment. After
 // the first bit of it (GBREAK_FREE) he can roll out of the daze, or swing, instead of standing there
-// (10/16/2026: rolling's the escape, and it costs a roll). The shield stays off till its bar's back to half either way
+// (rolling's the escape, and it costs a roll). The shield stays off till its bar's back to half either way
 const GBREAK = 1.1, GBREAK_FREE = 0.33;
 function blockHit(cost, fromX) {
   P.stam -= cost * (wearing('thimble') ? 0.6 : 1) * shieldBlock(); P.stamDelay = 1.0;   // the thimble pin: blocks cost less (and a tougher shield, js/upgrades.js)
@@ -297,17 +297,17 @@ function dodgeSafe() {
   return false;
 }
 // true when the hit really landed. False when it didn't (mid roll, still flashing from the last hit): then whatever came
-// with it, a grab, a slow, a pull, doesn't happen either (the enemy audit, 10/17/2026: the sand bucket was pinning him
+// with it, a grab, a slow, a pull, doesn't happen either (the sand bucket was pinning him
 // through a roll that the hit itself missed)
 function hurt(fromX, kind, dmg = 1) {
   if (P.inv > 0 || dodgeSafe() || P.respawnT > 0 || P.ko > 0 || P.chute) return false;   // nothing gets him on the way down the slide
   if (mapView) closeMapNow();
   // his fluff: what this hit knocks out he can still win back by fighting. Anything still loose from the hit before is
-  // locked in now: it wears his most health down until he sews himself up at a resting spot
-  // (10/23/2026: not till the tin soldier's down. Before that a puff he didn't win back is just gone, so the rally gets learned before it costs anything)
+  // locked in: it wears his most health down until he sews himself up at a resting spot
+  // (not till the tin soldier's down. Before that a puff he didn't win back is just gone, so the rally gets learned before it costs anything)
   if (P.loose > 0 && world.flags.soldierDown) { P.worn = Math.min(world.maxHealth - 1, P.worn + P.loose); P.maxHealth = world.maxHealth - P.worn; }
   P.loose = Math.min(dmg, P.health); P.looseBits = 0; P.looseT = tune.rallyTime; P.looseMax = tune.rallyTime;
-  // the first time any's knocked loose, a note over him says what it is (the teaching audit, 10/18/2026: it only ever said
+  // the first time any's knocked loose, a note over him says what it is (it only ever said
   // so after he'd already won some back). It stays up till he's won a puff back once
   if (P.loose > 0 && P.health > 0 && !world.flags.rallyTold && !world.flags.ralliedOnce && world.has.gear && room) {
     world.flags.rallyTold = true; saveWorld();
@@ -335,24 +335,24 @@ function hurt(fromX, kind, dmg = 1) {
 // reach: how long a down swing can still catch the ground under him for a bounce
 const ATK = {
   side: { name: 'slash', frames: [0.06, 0.13, 0.24, 0.34], on: 0.06, off: 0.15, lunge: [0.04, 0.17] },
-  up:   { name: 'up', frames: [0.05, 0.13, 0.30], on: 0.05, off: 0.16, reach: 16 },   // reach: more past the drawn blade than a plain swing (keeps what each one reached before its hits followed the sword, 10/16/2026)
+  up:   { name: 'up', frames: [0.05, 0.13, 0.30], on: 0.05, off: 0.16, reach: 16 },   // reach: more past the drawn blade than a plain swing (keeps what each one reached before its hits followed the sword)
   down: { name: 'down', frames: [0.04, 0.12, 0.28], on: 0.04, off: 0.13, reach: 0.12 },   // only the swing itself bounces: the sword hanging down afterward doesn't count
   low:  { name: 'low', frames: [0.06, 0.13, 0.30], on: 0.07, off: 0.16, lunge: [0.05, 0.14] },
   // out of a roll or air dodge: he throws everything into it and carries on in the direction he was going
   rollslash: { name: 'rollslash', frames: [0.05, 0.15, 0.27, 0.42], on: 0.05, off: 0.2, lunge: [0, 0.22], lungeSpeed: 210, float: 0.16, reach: 10 },
   // the charged attack: everything he's got, a huge sweep out in front
   charged: { name: 'rollslash', frames: [0.06, 0.18, 0.32, 0.5], on: 0.06, off: 0.26, lunge: [0.02, 0.26], lungeSpeed: 270, float: 0.2, reach: 26, charged: true },
-  // lying down (10/15/2026): a jab along the floor out past his nose, low and long
+  // lying down: a jab along the floor out past his nose, low and long
   crawl: { name: 'crawlatk', frames: [0.07, 0.15, 0.27, 0.36], on: 0.07, off: 0.18 },
-  // the combo (10/16/2026): the slash, then a chop, then a whirl, each press soon after the last. He's a plush,
+  // the combo: the slash, then a chop, then a whirl, each press soon after the last. He's a plush,
   // so they're clumsy: the chop flops him forward onto it, the whirl takes him round too far and leaves him seeing stars
   chop: { name: 'chop', frames: [0.09, 0.16, 0.28, 0.40], on: 0.09, off: 0.22, lunge: [0.07, 0.17], lungeSpeed: 90 },
   whirl: { name: 'whirl', frames: [0.10, 0.17, 0.24, 0.38, 0.52], on: 0.10, off: 0.26, shove: 260 },
-  // the combo's charged steps (10/16/2026: swing, swing, charge should be a charged whirl): the chop and the
+  // the combo's charged steps (swing, swing, charge should be a charged whirl): the chop and the
   // whirl with everything he's got behind them. Charged from rest it's still the big sweep above (charged)
   chargedchop: { name: 'chop', frames: [0.08, 0.16, 0.31, 0.48], on: 0.08, off: 0.26, lunge: [0.05, 0.2], lungeSpeed: 220, float: 0.2, reach: 16, charged: true },
   chargedwhirl: { name: 'whirl', frames: [0.08, 0.15, 0.23, 0.38, 0.58], on: 0.08, off: 0.3, lunge: [0.04, 0.2], lungeSpeed: 120, reach: 16, shove: 340, charged: true },   // (frame 3 is frame 2 drawn the other way round: the back half of going round)
-  // the shield bash (10/31/2026): on its own button once he's sure of his sword and shield (the second set on). Braces,
+  // the shield bash: on its own button once he's sure of his sword and shield (the second set on). Braces,
   // shoves the shield out in front with his whole weight, pulls it back. Mostly a shove, to make room
   shbash: { name: 'shbash', frames: [0.08, 0.18, 0.34], on: 0.08, off: 0.18, lunge: [0.06, 0.16], lungeSpeed: 150, shove: 300 },
   // mastered, the combo goes on two more: the shield shoved in first and the sword through low behind it, then the
@@ -364,15 +364,15 @@ const ATK = {
 // (the third set), two more after the whirl
 const COMBO_GAP = 0.4;
 const comboList = () => swordSet() >= 3 ? ['side', 'chop', 'whirl', 'bashcut', 'bashfin'] : ['side', 'chop', 'whirl'];
-// how well he handles the sword and shield (10/31/2026), world.swordSkill: 1 clumsy (early on: loves them, no idea how to
+// how well he handles the sword and shield, world.swordSkill: 1 clumsy (early on: loves them, no idea how to
 // use them), 2 sure of it (the swings he's always had, and the shield bash), 3 mastered (the combo's two shield swings).
-// Not set: the swings he's always had and no bash, the game as it was. Who moves him up, and when, isn't picked yet: the
-// dev tab sets it. Only the pictures change between sets (Sprites/sword_sets.py): the hits come from the frames he's
-// always had, so every enemy's tuning holds
+// Not set: the swings he's always had and no bash. Who moves him up, and when, isn't picked yet: the dev tab sets it.
+// Only the pictures change between sets (Sprites/sword_sets.py): the hits come from the frames he's always had, so
+// every enemy's tuning holds
 const swordSet = () => world.swordSkill || 0;
-// the feel try-out (10/31/2026): the swings that let him turn round early (the bigger combo swings stay locked)
+// the feel try-out: the swings that let him turn round early (the bigger combo swings stay locked)
 const QUICK_TURN = new Set(['side', 'up', 'low', 'down']);
-// the feel try-out (10/31/2026), what each sword set changes when it's on: clumsy swings again a bit slower, bounces
+// the feel try-out, what each sword set changes when it's on: clumsy swings again a bit slower, bounces
 // back off what he hits more and moves it less, mastered quicker and steadier. Like Silksong's crests, the same character tuned three ways
 const SKILL_FEEL = { 1: { wait: 0.42, bounce: 20, push: 0.75, hold: 0.03 }, 2: { wait: 0.36, bounce: 15, push: 1, hold: 0.04 }, 3: { wait: 0.30, bounce: 10, push: 1, hold: 0.05 } };   // (mastered pushes no further than sure on the way through the combo: tested, more push sent things out of reach and walking back in got him hurt. Its big shove is the combo's last swing)
 const skillFeel = () => (tune.feelSkill && SKILL_FEEL[swordSet()]) || null;
@@ -385,9 +385,9 @@ function skillFrame(n) {
 }
 // the lid up with nothing else going on (crawling and swimming use it; on his feet it's worked out where he moves)
 const guardHeld = () => inp.guardH && !P.atk && P.gbreak <= 0 && !P.guardOut;
-// his own stamina (separate from the shield's): only the roll and the air dodge use it (10/16/2026: swings
-// costing it too meant mashing a few swings spent the roll he needed, and running dry left him unable to swing back.
-// Swings are free now, held back by how long they take, and enemies keep attacking through plain hits instead).
+// his own stamina (separate from the shield's): only the roll and the air dodge use it, so mashing a few swings never
+// spends the roll he needs and running dry never leaves him unable to swing back. Swings are free, held back by how
+// long they take, and enemies keep attacking through plain hits instead.
 // A full bar is three rolls. Rolling with less than a roll's worth left still rolls, just a short, clumsy one that's
 // barely untouchable, so pressing it never does nothing
 const COST = { roll: 'rollCost', airdodge: 'airDodgeCost' };
@@ -403,9 +403,9 @@ function spend(what) {
   if (P.en <= 0) { P.winded = true; P.enDelay = tune.enDelay + 0.6; }
   return true;
 }
-// charging starts the moment the button goes down (10/16/2026: it used to swing first, then charge). A press
-// only waits like that when a charged swing could come of it: on his feet with nothing else held, or in the water.
-// Up or down with it, in the air, crawling, straight out of a roll: it swings on the press like it always did
+// charging starts the moment the button goes down. A press only waits like that when a charged swing could come of
+// it: on his feet with nothing else held, or in the water. Up or down with it, in the air, crawling, straight out of a
+// roll: it swings on the press
 const CHARGE_SHOW = 0.1;                                                         // (a quick tap doesn't flash the charging pose first)
 function holdToCharge() {
   if (!can('charge') || P.story || P.crawl || P.hang || P.cling || P.reach || P.roll > 0 || P.dash > 0 || P.ko > 0 || guardHeld()) return false;
@@ -426,7 +426,7 @@ function startAttack(type) {
     P.atkCD = Math.max(0.55, ATK[type].frames[ATK[type].frames.length - 1] + 0.05); sfx.clack(); sfx.bigswing(); if (type === 'chargedwhirl') sfx.whirl(); puff(P.x - P.facing * 10, P.y, 12, 80); shakeT = 0.12; shakeA = 2;
     for (let i = 0; i < 18; i++) { const a = (i / 18) * Math.PI * 2; addPart({ x: P.x + P.facing * 14, y: P.y - 26, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, life: 0.25, max: 0.25, c: i % 2 ? '#fff6d8' : '#ffd36b', s: 2, g: 0 }); }
   } else if (type === 'rollslash') { sfx.bigswing(); puff(P.x - P.facing * 8, P.y, 6, 50); } else if (type === 'shbash') sfx.bump(); else if (type === 'bashfin') sfx.bigswing(); else sfx.swing();
-  // a swing in the air holds him about where he was for a moment (10/16/2026): not stopped dead, just going up
+  // a swing in the air holds him about where he was for a moment: not stopped dead, just going up
   // or down a lot slower while it's out. Less each swing till he lands again, so mashing it can't keep him up there
   if (!P.ground && !P.swim && !P.hang && !P.cling && (type === 'side' || type === 'chop' || type === 'up')) {
     const k = [1, 0.65, 0.35, 0.15][Math.min(3, P.hangN || 0)] * tune.airHang;
@@ -437,7 +437,7 @@ function startAttack(type) {
 function isCharged(t) { return !!(ATK[t] && ATK[t].charged); }
 const CHARGED_STEP = ['charged', 'chargedchop', 'chargedwhirl'];               // charged on each step of the combo: the big sweep, the chop, the whirl
 const atkLive = a => a.t >= ATK[a.type].on && a.t < ATK[a.type].off;
-// where the sword is: the lines out from his hand that this frame's picture says (10/16/2026: the hits go where
+// where the sword is: the lines out from his hand that this frame's picture says (the hits go where
 // the sword goes, so each swing matters). Each one's stretched past the drawn blade by tune.swordReach (it's drawn short,
 // for a plush, and his reach is what every enemy's tuned around) and fattened a few pixels either side (SWORD_R)
 const SWORD_R = 5;
@@ -448,7 +448,7 @@ function swordLines() {
   const ox = Math.round(P.x) - (P.facing > 0 ? 30.5 : 33.5), oy = Math.round(P.y) - META.baseline, extra = (tune.swordReach ?? 14) + (ATK[a.type].reach || 0) + (a.level || 0) * 10;
   return hits.map(([hx, hy, tx, ty]) => { const dx = tx - hx, dy = ty - hy, L = Math.hypot(dx, dy) || 1, k = (L + extra) / L; return [ox + hx, oy + hy, ox + hx + dx * k, oy + hy + dy * k]; });
 }
-// a charged swing marks its sweep as it goes (combat readability, 10/17/2026): across the lines this frame's picture
+// a charged swing marks its sweep as it goes (combat readability): across the lines this frame's picture
 // gives (the arc the blade's going through), from where the drawn blade ends out to the edge of where it hits (its
 // stretch, plus SWORD_R). Once per picture and place. Just the picture of it (fx.js): the hits don't look at it
 function sweepMark() {
@@ -477,7 +477,7 @@ function attackBox() {
   const ls = swordLines();
   if (ls) { let l = 1e9, r = -1e9, t = 1e9, b = -1e9; for (const [x0, y0, x1, y1] of ls) { l = Math.min(l, x0, x1); r = Math.max(r, x0, x1); t = Math.min(t, y0, y1); b = Math.max(b, y0, y1); } return { l: l - SWORD_R, r: r + SWORD_R, t: t - SWORD_R, b: b + SWORD_R }; }
   const side = (x0, x1, t, b) => ({ l: Math.min(P.x + f * x0, P.x + f * x1), r: Math.max(P.x + f * x0, P.x + f * x1), t: P.y + t, b: P.y + b });
-  if (P.swim) {                                                    // under water: out the way it's pointed, any of 8 (10/16/2026). Level, it's what it was: low and long out ahead
+  if (P.swim) {                                                    // under water: out the way it's pointed, any of 8. Level, it's low and long out ahead
     const ax = a.ax ?? f, ay = a.ay ?? 0, big = a.type === 'charged' ? 1.35 : 1, cx = P.x + ax * 20 * big, cy = P.y - 9 + ay * 20 * big;
     const hx = (ax && ay ? 23 : ax ? 26 : 19) * big, hy = (ax && ay ? 23 : ay ? 26 : 19) * big;
     return { l: cx - hx, r: cx + hx, t: cy - hy, b: cy + hy };
@@ -510,13 +510,12 @@ function update(dt) {
     else P.atkPress = true;
   }
   if (inp.dodgeP) P.dodgeBufT = 0.1;
-  if (P.slowT > 0 && (inp.atkP || inp.jumpP)) P.slowT = Math.max(0, P.slowT - 0.3);   // wrapped up or gummed: every press shakes some of it off (10/16/2026)
+  if (P.slowT > 0 && (inp.atkP || inp.jumpP)) P.slowT = Math.max(0, P.slowT - 0.3);   // wrapped up or gummed: every press shakes some of it off
   if (inp.lockP && inp.guardH && !P.guardOut) { P.guardLock = !P.guardLock; sfx.lock(); }
-  // the parry window starts when the lid can actually come up (the combat review, 10/17/2026: pressed during a swing, its
-  // window ran out before the swing was done, so it never got a chance). Pressed mid swing, it waits for the swing's
-  // hitting part to end (a little while at most), then the window opens
-  // The cooldown only starts when a window actually opens (the input audit, 10/17/2026): a press mid swing let go before
-  // the lid could come up used to spend it anyway, so a fresh press right as the swing ended couldn't parry
+  // the parry window starts when the lid can actually come up. Pressed mid swing, it waits for the swing's hitting part
+  // to end (a little while at most), then the window opens, so the press still gets its chance.
+  // The cooldown only starts when a window actually opens: a press mid swing let go before the lid could come up doesn't
+  // spend it, so a fresh press right as the swing ends can still parry
   if (inp.guardH && can('parry') && !P.guardWas && P.parryCD <= 0 && !P.guardOut && P.gbreak <= 0) {
     if (P.atk && P.atk.t < ATK[P.atk.type].off) P.parryQ = Math.min(0.3, ATK[P.atk.type].off - P.atk.t + 0.05);
     else { P.parryT = tune.parryWindow; P.parryCD = 0.35; }
@@ -524,7 +523,7 @@ function update(dt) {
   P.guardWas = inp.guardH;
   if (!inp.guardH) P.guardLock = false;
   const upP = inp.upP, mapP = inp.mapP;
-  if (inp.squeakP) { P.squeakBuf = 0.15; P.squeakDown = !!inp.down; } if (inp.spinP) P.spinBuf = 0.15;   // (squeakDown: down held as it was pressed means the burst, whatever's held by the time it goes)           // (kept a moment, like the other presses: one made during a hit's little pause was being lost, the combat review 10/17/2026)
+  if (inp.squeakP) { P.squeakBuf = 0.15; P.squeakDown = !!inp.down; } if (inp.spinP) P.spinBuf = 0.15;   // (squeakDown: down held as it was pressed means the burst, whatever's held by the time it goes)           // (kept a moment, like the other presses, so one made during a hit's little pause isn't lost)
   if (inp.sparkP) P.sparkBuf = 0.15;
   if (inp.bashP) P.bashBuf = 0.15;
   inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.sparkP = inp.bashP = 0;
@@ -541,8 +540,8 @@ function update(dt) {
     if (!P.swim && Math.random() < dt * (P.soggyT > 2 ? 9 : 4)) part(P.x + (Math.random() * 2 - 1) * 8, P.y - 6 - Math.random() * 22, (Math.random() * 2 - 1) * 6, 30, 0.5, Math.random() < 0.5 ? '#9cd4e8' : '#c4e6f0', 1, 400);
   }
   P.leapT = Math.max(0, (P.leapT || 0) - dt);
-  // rally only lasts a few seconds after the hit (a friend's playtest, 10/14/2026: he could get hit, walk off a few
-  // screens and win it all back off the next enemy). Hit back in time or it's gone: the loose fluff gets worn in
+  // rally only lasts a few seconds after the hit, so he can't get hit, walk off a few screens and win it all back off
+  // the next enemy. Hit back in time or it's gone: the loose fluff gets worn in
   if (P.loose > 0 && !(P.story && !P.story.free) && P.ko <= 0) {
     P.looseT = (P.looseT || 0) - dt;
     if (P.looseT <= 0) {
@@ -562,7 +561,7 @@ function update(dt) {
   if (P.gbreak <= 0) {
     if (P.stamDelay > 0) P.stamDelay -= dt;
     else P.stam = Math.min(100, P.stam + (inp.guardH && !P.guardOut ? tune.stamRegen * 0.1 : tune.stamRegen) * dt);
-    if (P.guardOut && P.stam >= tune.guardBack) { P.guardOut = false;   // (half the bar, 10/16/2026: it was all of it, and with more enemies and faster fights that was too long without it)
+    if (P.guardOut && P.stam >= tune.guardBack) { P.guardOut = false;   // (half the bar: with more enemies and faster fights, waiting for all of it is too long without the shield)
       sfx.lock(); popup(P.x, P.y - 54, 'guard back', '#cfd6e6'); }
   }
   const dir = inp.right - inp.left;
@@ -591,7 +590,7 @@ function update(dt) {
     if (P.splat >= SPLAT[4]) P.splat = 0;
     stepWorld(dt); return;
   }
-  if (P.pinned) {                                    // held (the reacher's grab, the rings' snag, 10/16/2026): mash anything to wriggle loose before it squeezes
+  if (P.pinned) {                                    // held (the reacher's grab, the rings' snag): mash anything to wriggle loose before it squeezes
     const pn = P.pinned;
     if (P.jumpBufT > 0 || P.atkBufT > 0 || P.dodgeBufT > 0) { pn.left--; P.jumpBufT = P.atkBufT = P.dodgeBufT = 0; puff(P.x, P.y - 18, 2, 30); sfx.squeak(); }
     if (pn.left <= 0 || !pn.by || pn.by.state === 'down' || !foes.includes(pn.by) || P.health <= 0) { P.pinned = null; P.inv = Math.max(P.inv, 0.5); if (pn.left <= 0) { pn.freed = true; popup(P.x, P.y - 54, 'wriggled free', '#cfd6e6'); } }
@@ -604,9 +603,9 @@ function update(dt) {
   if (squeakP && (!P.story || P.story.free) && P.squeakCD <= 0 && P.charge <= 0) { P.squeakBuf = 0; startSpecial(null, P.squeakDown); }     // the squeak, or the fluff burst (down)
   else if (spinP && (!P.story || P.story.free) && P.squeakCD <= 0 && P.charge <= 0) { P.spinBuf = 0; startSpecial('spin'); }   // the spin, on its own button
   P.sparkBuf = Math.max(0, (P.sparkBuf || 0) - dt);
-  P.bashBuf = Math.max(0, (P.bashBuf || 0) - dt);   // the shield bash (10/31/2026): on his feet, nothing else going on
+  P.bashBuf = Math.max(0, (P.bashBuf || 0) - dt);   // the shield bash: on his feet, nothing else going on
   if (P.bashBuf > 0 && (!P.story || P.story.free) && P.ground && !P.atk && P.atkCD <= 0 && P.charge <= 0 && !P.crawl && !P.swim && P.roll <= 0 && P.dash <= 0 && P.gbreak <= 0) { P.bashBuf = 0; startAttack('shbash'); P.combo = 0; }
-  if (P.sparkBuf > 0 && (!P.story || P.story.free) && P.charge <= 0 && !(P.sparkCD > 0)) { P.sparkBuf = 0; startSpark(); }   // static spark (10/18/2026)
+  if (P.sparkBuf > 0 && (!P.story || P.story.free) && P.charge <= 0 && !(P.sparkCD > 0)) { P.sparkBuf = 0; startSpark(); }   // static spark
   updateSparkMove(dt);
   if (swimStep(dt, dir)) { stepWorld(dt); return; }                                 // in deep water: swimming, or sinking if he isn't waterproof
 
@@ -633,7 +632,7 @@ function update(dt) {
       else if (bodyHit(x0, y0 - P.h, y0)) P.facing = f0;                     // or not at all if that doesn't fit either
     }
     if (turnTo && !busy) P.facing = turnTo;
-    const guarding = guardHeld();                                           // the lid up lying down (10/15/2026): shuffling along slower behind it
+    const guarding = guardHeld();                                           // the lid up lying down: shuffling along slower behind it
     const target = P.atk ? 0 : dir * tune.crawlSpeed * (guarding ? 0.5 : 1) * (dir && dir === -P.facing ? tune.backSpeed : 1), dv = target - P.vx;
     P.vx += Math.sign(dv) * Math.min(Math.abs(dv), 900 * dt);
     P.vy = Math.min(P.vy + g * dt, tune.maxFall);
@@ -643,9 +642,9 @@ function update(dt) {
     if (hasHeadroom(STAND_H) && !P.atk) { P.crawl = false; P.h = STAND_H; puff(P.x, P.y, 3, 20); }
     else if (!P.atk && P.ground && slopeStand()) { P.crawl = false; P.h = STAND_H; puff(P.x, P.y, 3, 20); }
     else if (P.crawl && !P.atk && P.ground && dir === P.facing && bodyHit(P.x + dir, P.y - P.h, P.y)) {
-      // his nose is up against something and there's room to stand a little way along his body (10/17/2026:
-      // out from under the bed, nose on the nightstand, his feet still under the bed's edge and no way to get up): he
-      // gets up where his body is instead of where his feet are
+      // his nose is up against something and there's room to stand a little way along his body (out from under the bed,
+      // nose on the nightstand, his feet still under the bed's edge): he gets up where his body is instead of where his
+      // feet are
       for (let k = 1; k <= CRAWL_FRONT - HW; k++) {
         const x = P.x + dir * k;
         if (!boxSolid(x - HW, P.y - STAND_H, x + HW, P.y) && boxSolid(x - HW, P.y, x + HW, P.y + 2)) { P.x = x; P.crawl = false; P.h = STAND_H; P.vx = 0; puff(P.x, P.y, 3, 20); break; }
@@ -678,26 +677,25 @@ function update(dt) {
   } else {
     const guarding = inp.guardH && !P.atk && P.gbreak <= 0 && !P.guardOut;
     const midSwing = P.atk && P.atk.t < (tune.feelTurn && QUICK_TURN.has(P.atk.type) ? 0.1 : ATK[P.atk.type].off);   // (the feel try-out: a plain swing frees him to turn after 0.1s, the way Hollow Knight does)
-    if (inp.aimX && !midSwing && P.facing !== inp.aimX) { P.facing = inp.aimX; if (P.ground && Math.abs(P.vx) < 40) P.turnT = 0.06; }   // the right stick turns him that way, on the ground or in the air (10/16/2026)
+    if (inp.aimX && !midSwing && P.facing !== inp.aimX) { P.facing = inp.aimX; if (P.ground && Math.abs(P.vx) < 40) P.turnT = 0.06; }   // the right stick turns him that way, on the ground or in the air
     const locked = midSwing || inp.aim || (guarding && P.guardLock);   // facing holds mid swing, while the right stick's held, or when the guard's locked with R3
     if (dir && !locked && dir !== P.facing) {
       if (P.ground && Math.abs(P.vx) < 40) P.turnT = 0.06;
       if (P.ground && Math.abs(P.vx) > 120) puff(P.x - P.facing * 4, P.y, 3, 30);
       P.facing = dir;
     }
-    let target = dir * (guarding ? Math.min(tune.guardSpeed, tune.runSpeed * (inp.pace || 1)) : P.charge >= CHARGE_SHOW ? tune.runSpeed * 0.3 : tune.runSpeed * (inp.pace || 1));   // (pace: how far the stick's pushed, 10/27/2026)
-    if (inp.aim && dir && dir === -P.facing) target *= tune.backSpeed;                     // going backwards (facing one way with the right stick, walking the other): slower (10/16/2026)
+    let target = dir * (guarding ? Math.min(tune.guardSpeed, tune.runSpeed * (inp.pace || 1)) : P.charge >= CHARGE_SHOW ? tune.runSpeed * 0.3 : tune.runSpeed * (inp.pace || 1));   // (pace: how far the stick's pushed)
+    if (inp.aim && dir && dir === -P.facing) target *= tune.backSpeed;                     // going backwards (facing one way with the right stick, walking the other): slower
     if (P.soggyT > 0) target *= 0.55;
     if (P.slowT > 0) target *= 0.5;                                                           // a candy wrapper round him, or gum on his feet                                                         // soaked through: heavy, and slow till he's dripped dry
     // backing up with the guard locked: he's nervous about stepping off an edge he can't see. Hold back long enough and he goes
-    // (10/31/2026: how far down it looks under his heel. It was 6, and on the painted rooms' steeper slopes, like the root in
-    // the squirrel's hollow, the ground falls more than that in the width of his foot, so backing down one he froze at
-    // every step. A real drop is far deeper than this)
+    // (how far down it looks under his heel: on the painted rooms' steeper slopes, like the root in the squirrel's
+    // hollow, the ground falls a fair way in the width of his foot, and that isn't an edge. A real drop is far deeper)
     P.teeter = false;
     if ((inp.aim || (guarding && P.guardLock)) && P.ground && dir && dir === -P.facing) {
       const heel = P.x + dir * (HW - 2) + dir * 2;
       const deep = P.y + EDGE_DEEP;
-      if (!boxSolid(heel - 1, P.y, heel + 1, deep) && !boxHas(heel - 1, P.y, heel + 1, deep, 2) && !(room.ramps.length && rampY(heel, P.y, EDGE_DEEP, STEP_UP) !== null)) {   // nothing under his heel (it read the tile row his feet were in, and on ground that sits a hair high, a flat floor counted as an edge). A shelf or a one-way slope under it is ground too: backing along the hollow's root he froze every few steps, the terrain audit 10/17/2026
+      if (!boxSolid(heel - 1, P.y, heel + 1, deep) && !boxHas(heel - 1, P.y, heel + 1, deep, 2) && !(room.ramps.length && rampY(heel, P.y, EDGE_DEEP, STEP_UP) !== null)) {   // nothing under his heel (from his feet down, so a flat floor that sits a hair high isn't an edge). A shelf or a one-way slope under it is ground too
         P.edgeT += dt;
         if (P.edgeT < tune.edgeHesitate) { target = 0; P.vx = 0; P.teeter = true; if (P.edgeT - dt <= 0) sfx.teeter(); }
       } else P.edgeT = 0;
@@ -716,13 +714,13 @@ function update(dt) {
         P.crawl = true; P.h = ROLL_H; P.crawlDist = 0; P.vx *= 0.4; puff(P.x, P.y, 3, 20); sfx.land();
       }
     }
-    // a fork (10/27/2026): with down held walking on, he takes the lower way. On a one-way slope with ground just under
+    // a fork: with down held walking on, he takes the lower way. On a one-way slope with ground just under
     // it (where it branches off the floor or another slope), he steps down off it onto that
     if (keepLow() && P.ground && P.dropT <= 0 && P.jumpBufT <= 0 && onRamp() && lowerWay()) { P.dropT = 0.12; P.y += 1; P.ground = false; P.coyoteT = 0; }
     if (P.jumpBufT > 0 && (P.ground || P.coyoteT > 0) && !P.crawl) {
       if (inp.down && P.ground && onShelf()) { P.dropT = 0.22; P.y += 1; P.ground = false; P.jumpBufT = 0; P.coyoteT = 0; }
       else doJump();
-    } else if (P.jumpBufT > 0 && inp.down && canFlop()) startFlop();                      // the belly flop: {down} + {jump} in the air (before the flap, 10/18/2026)
+    } else if (P.jumpBufT > 0 && inp.down && canFlop()) startFlop();                      // the belly flop: {down} + {jump} in the air (before the flap)
     else if (P.jumpBufT > 0 && !P.ground && P.coyoteT <= 0 && !P.crawl && can('flap') && !P.flapUsed && !P.swim && P.hurtT <= 0) doFlap();   // the cape flap: one more jump in midair
     if (!P.jumpHeld && P.vy < 0 && P.cut === false) { P.vy *= tune.jumpCut; P.cut = true; }
     // the big swing's little hang: slows his fall, and gives a bit of extra lift if he's still rising (the roll leap).
@@ -779,7 +777,7 @@ function update(dt) {
         }
       }
     }
-    // a swing commits him (10/16/2026): the roll comes out once the swing's hitting part is over, not
+    // a swing commits him: the roll comes out once the swing's hitting part is over, not
     // through it. The press waits for it
     const swingBusy = P.atk && P.atk.t < ATK[P.atk.type].off;
     if (swingBusy && P.dodgeBufT > 0) P.dodgeBufT = Math.max(P.dodgeBufT, ATK[P.atk.type].off - P.atk.t + 0.05);
@@ -792,7 +790,7 @@ function update(dt) {
       } else if (!P.dashUsed) {
         P.dash = (wearing('dfwing') ? 0.2 : 0.15) * (P.tiredDodge ? 0.6 : 1); P.dashTired = P.tiredDodge; P.rollDir = d; P.facing = d; P.dashUsed = true; P.vy = 0; P.h = ROLL_H; P.ghostT = 0; P.airHang = null;
         P.atk = null; P.dodgeBufT = 0; P.rollCD = 0.35; sfx.airdodge();
-        P.fallTop = P.y;                                                               // the air dodge catches him: the splat height counts from here, the same as a glide (10/21/2026)
+        P.fallTop = P.y;                                                               // the air dodge catches him: the splat height counts from here, the same as a glide
         if (!world.flags.airDodgedOnce) { world.flags.airDodgedOnce = true; saveWorld(); }
         puff(P.x - d * 6, P.y - 10, 12, 90, '#ffffff', 70);
       }
@@ -899,7 +897,7 @@ function update(dt) {
   stepWorld(dt);
 }
 
-// a room can say a spot isn't a ledge, when it looks like one to the grab but isn't one in the picture (10/27/2026: under
+// a room can say a spot isn't a ledge, when it looks like one to the grab but isn't one in the picture (under
 // the oak, the big root's face where the root toe joins it, which is inside the toe's walk-through body). noGrab: boxes
 // [x0, y0, x1, y1] the corner he'd hang from can't be in
 function noGrab(cx, cy) {
@@ -917,7 +915,7 @@ function tryGrab(dir) {
   for (const col of cols) if (grabAt(dir, col, edge)) return true;
   return rampGrab(dir, edge);
 }
-// a ledge in a room with pixel ground, found where the painted edge really is (10/27/2026): the tiles' edges almost
+// a ledge in a room with pixel ground, found where the painted edge really is: the tiles' edges almost
 // never line up with a painted root's broken end, so the tile grab refused real ledges there. A ledge is a top with
 // wood or earth under it (a face, not a thin piece), still about that high 12 px in, open air on his side of it
 function pixelGrab(dir, edge) {
@@ -943,7 +941,7 @@ function pixelGrab(dir, edge) {
   }
   return false;
 }
-// the end of a one-way slope is a ledge too (10/15/2026): the squirrel's root's curl, the tip of the grime pool's
+// the end of a one-way slope is a ledge too: the squirrel's root's curl, the tip of the grime pool's
 // root. Facing right he can catch a slope's left end, facing left its right end, the same reach and room as a tile ledge
 function rampGrab(dir, edge) {
   if (!room.ramps || !room.ramps.length) return false;
@@ -965,7 +963,7 @@ function rampGrab(dir, edge) {
 }
 // in a room with pixel ground (the painted rooms), a ledge the tiles see has to be a ledge in the pixels too: a top at
 // the tile's top edge just inside the wall, and still about that high 12 px further in. A curved wall is a staircase in
-// tiles, and he was catching the corners of the steps and hanging on air (the hollow's block, 10/26/2026)
+// tiles, and he was catching the corners of the steps and hanging on air (the hollow's block)
 function realLedge(dir, cx, cy) {
   if (!room.detail) return true;
   const topAt = x => { for (let yy = cy - 4; yy <= cy + 6; yy++) if (solidPx(x, yy)) return yy; return null; };
@@ -985,7 +983,7 @@ function grabAt(dir, col, edge) {
     if (noGrab(cx, cy)) continue;
     const l = dir > 0 ? cx - 2 * HW : cx, r = dir > 0 ? cx : cx + 2 * HW;
     // his hands and body need clear ground (to the pixel), but whether the drop's too short to bother is judged by
-    // the tiles like always, so a lump of packed dirt at the bottom of the wall doesn't stop the grab (10/15/2026)
+    // the tiles like always, so a lump of packed dirt at the bottom of the wall doesn't stop the grab
     const room = !boxSolid(l, cy - 12, r, cy + HANG_FEET - 12) && !boxHas(l, cy + 1, r, cy + HANG_FEET + 6, 1) && !boxHas(l, cy + 1, r, cy + HANG_FEET + 6, 2) && !boxHas(l, cy + 1, r, cy + HANG_FEET + 6, 3);
     if (!room) continue;
     // the way back to the ledge has to be clear too
@@ -1014,7 +1012,7 @@ function rally() {
 function sewUp() { if (typeof foesAllBack === 'function') foesAllBack(); P.worn = 0; P.loose = 0; P.looseBits = 0; P.maxHealth = world.maxHealth; P.health = P.maxHealth; }
 const KO_TIME = 3.2;
 // the door he comes back at, knocked out with nowhere rested: the one he came in by, unless that's a hole in the floor
-// he climbed up through (10/17/2026: put back over the yo-yo's shaft's hole, he just fell straight back out of the room).
+// he climbed up through (put back over the yo-yo's shaft's hole, he just fell straight back out of the room).
 // Then a door at the side, or the room's own starting spot
 function koDoor() {
   const d = world.door && room.def.doors.find(o => o.id === world.door);
@@ -1046,13 +1044,13 @@ function updateKO(dt) {
     }
     if (world.rest) {
       Object.assign(P, { guardOut: false, stam: 100, en: enMax(), winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45, h: STAND_H });
-      // where he's going is saved along with the spill (the save audit, 10/17/2026): saved with this room still in it, a
-      // reload during the fade put him back where he went down instead of where he rested
+      // where he's going is saved along with the spill, so a reload during the fade puts him back where he rested, not
+      // where he went down
       sewUp(); world.room = world.rest.room; world.door = '@rest'; saveWorld(); trans.state = 'none'; goTo(world.rest.room, '@rest');
       return;
     }
     // in the middle of a boss fight: the room starts over, boss and all, the same as coming back from a resting spot
-    // (10/17/2026: put back at the door, the arena's wall was still up between him and the fight, so he got shoved into
+    // (put back at the door, the arena's wall was still up between him and the fight, so he got shoved into
     // the wall, and the boss kept all the damage it had taken)
     if (typeof bossLocked === 'function' && bossLocked()) {
       Object.assign(P, { guardOut: false, stam: 100, en: enMax(), winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45 });
@@ -1060,8 +1058,8 @@ function updateKO(dt) {
       return;
     }
     const kd = koDoor(), d = kd && room.def.doors.find(o => o.id === kd), at = d ? { x: d.x, y: d.y, f: d.f } : room.def.spawn || { x: P.safeX, y: P.safeY, f: P.facing };
-    // a fresh start on the spot, the same as coming in a door (the save audit): he used to be stood up but left swimming,
-    // so a knockout in deep water brought him back a full height swimmer. Now the water (or a low roof) decides again
+    // a fresh start on the spot, the same as coming in a door: the water (or a low roof) decides again whether he's
+    // swimming or standing, so a knockout in deep water doesn't bring him back a full height swimmer
     sewUp(); placePlayer(at.x, at.y, at.f);
     Object.assign(P, { stam: 100, en: enMax(), inv: 1.2, fadeIn: 0.45, story: null });
     cam.snap = true; saveWorld();
@@ -1103,8 +1101,8 @@ function updateHang(dt) {
     const room_ = cy => !boxSolid(h.cx + (h.dir > 0 ? 1 : -2 * HW - 3), cy - STAND_H, h.cx + (h.dir > 0 ? 2 * HW + 3 : -1), cy)
              && !boxSolid(P.x - HW, cy - STAND_H, P.x + HW, h.cy);
     let top = room_(h.cy);
-    // the ledge steps up again right past the edge (the rock in the grotto, 10/14/2026: he hung there and
-    // couldn't get up): climb onto the higher step instead, if there's room to stand on that
+    // the ledge steps up again right past the edge (like the rock in the grotto): climb onto the higher step instead,
+    // if there's room to stand on that
     if (!top && !h.ramp && boxSolid(h.cx + (h.dir > 0 ? 1 : -2 * HW - 3), h.cy - T, h.cx + (h.dir > 0 ? 2 * HW + 3 : -1), h.cy - 1) && room_(h.cy - T)) { h.cy -= T; top = true; }
     if (top) { h.climb = 0; h.y0 = P.y; P.jumpBufT = 0; puff(h.cx, h.cy, 5, 40); sfx.grab(); }
   }
@@ -1118,7 +1116,7 @@ function doJump() {
 // the cape flap (from the Greenhouse): one more jump in midair, the cape snapping down under him
 function doFlap() {
   P.vy = -jumpVel() * 0.9; P.flapUsed = true; P.jumpBufT = 0; P.jumpHeld = true; P.cut = false; P.dashUsed = false; P.flapT = 0.22;
-  P.fallTop = P.y;                                                                     // a fresh jump: the splat height counts from here, the same as a glide (10/21/2026)
+  P.fallTop = P.y;                                                                     // a fresh jump: the splat height counts from here, the same as a glide
   for (let i = 0; i < 10; i++) addPart({ x: P.x + (Math.random() * 2 - 1) * 12, y: P.y - 4, vx: (Math.random() * 2 - 1) * 70, vy: 40 + Math.random() * 60, life: 0.35, max: 0.35, c: i % 2 ? '#f4ecd8' : '#d8c8b0', s: 2, g: 0 });
   sfx.flap ? sfx.flap() : sfx.jump();
 }
@@ -1158,7 +1156,7 @@ function pogo() {
 }
 
 // his sword and shield go away on his back after a while with no fighting, and come straight back out the moment he
-// swings or raises the shield (10/20/2026). The wait only counts down while nothing's after him: no enemy close by,
+// swings or raises the shield. The wait only counts down while nothing's after him: no enemy close by,
 // no boss fight, and he's not just been hit
 const SHEATHE_AFTER = 10, CALM_X = 260, CALM_Y = 180;
 function inFight() {
@@ -1209,10 +1207,10 @@ function frameName() {
   if (P.swim && guardHeld()) return `swimguard_${Math.floor((P.swimDist || 0) / 8) % 2 + 1}_${f}`;   // the lid up under water
   if (P.swim) return Math.abs(P.vx) + Math.abs(P.vy) > 25 ? `swim_${(Math.floor((P.swimDist || 0) / 5) % 8) + 1}_${f}` : `float_${(Math.floor(performance.now() / 260) % 4) + 1}_${f}`;
   if (P.spinT > 0) return 'rollslash_2_' + (Math.floor(P.spinT / 0.06) % 2 ? 'L' : 'R');
-  const own = (n, or) => (META && META.frames[n + '_' + f] ? n : or) + '_' + f;   // (a picture of its own if the sheet has it: 10/31/2026)
+  const own = (n, or) => (META && META.frames[n + '_' + f] ? n : or) + '_' + f;   // (a picture of its own if the sheet has it)
   if ((P.squeakT > 0 || P.burstT > 0) && !P.atk) return own(P.burstT > 0 ? 'burst' : 'squeak', 'land');   // puffed up squeaking, or crouched and puffed out wide for the fluff burst
   if (P.reach) return 'rise_' + f;
-  if (P.cling) return own('hang_cling_' + (Math.floor((P.cling.t || 0) / 0.18) % 2 + 1), 'hang_2');   // stuck to the bark, feet scrabbling a little (10/31/2026)
+  if (P.cling) return own('hang_cling_' + (Math.floor((P.cling.t || 0) / 0.18) % 2 + 1), 'hang_2');   // stuck to the bark, feet scrabbling a little
   if (P.hang) {
     const h = P.hang;
     if (h.climb !== null) return h.climb / CLIMB_T < 0.6 ? 'climb_' + f : 'land_' + f;
@@ -1227,7 +1225,7 @@ function frameName() {
   if (P.crawl && guardHeld()) return `crawlguard_${Math.floor(P.crawlDist / 5) % 2 + 1}_${f}`;   // the lid up, a little wobble shuffling along
   if (P.crawl && P.lookT > 0) return (inp.up ? 'crawl_up_' : 'crawl_down_') + f;
   if (P.crawl) return `crawl_${(Math.floor(P.crawlDist / 1.75) % 16) + 1}_${f}`;
-  if (P.flop) return own(P.flop.phase === 'tuck' ? 'flop_tuck' : 'flop_drop', 'roll');   // the belly flop: tucked up, then flat out face down like a starfish all the way down (pictures of its own 10/31/2026: it was his roll)
+  if (P.flop) return own(P.flop.phase === 'tuck' ? 'flop_tuck' : 'flop_drop', 'roll');   // the belly flop: tucked up, then flat out face down like a starfish all the way down (pictures of its own, else his roll)
   if (P.flopLag > 0) return 'splat_2_' + f;                               // and flat on his tummy after
   if (P.sparkT > 0) return own('spark_' + (Math.floor(performance.now() / 70) % 2 + 1), 'land');   // fuzzing himself up for the spark, jiggling
   if (P.roll > 0) return 'roll_' + f;
@@ -1254,7 +1252,7 @@ function frameName() {
   if (P.landT > 0) return 'land_' + f;
   if (P.turnT > 0) return 'turn';
   if (P.teeter) return own('teeter_' + (Math.floor(P.edgeT / 0.12) % 2 + 1), 'walk_' + (Math.floor(P.edgeT / 0.09) % 2 ? 2 : 4));   // wobbling at the edge, arms going round
-  if (Math.abs(P.vx) > 20 && Math.abs(P.vx) < tune.runSpeed * 0.7) return `walk_${(Math.floor(P.runDist / 9) % 4) + 1}_${f}`;   // a walk at the slower paces (10/27/2026)
+  if (Math.abs(P.vx) > 20 && Math.abs(P.vx) < tune.runSpeed * 0.7) return `walk_${(Math.floor(P.runDist / 9) % 4) + 1}_${f}`;   // a walk at the slower paces
   if (Math.abs(P.vx) > 20) return `run_${(Math.floor(P.runDist / 11) % 4) + 1}_${f}`;
   if (P.lookT > 0) return (inp.up ? 'look_up_' : 'look_down_') + f;
   const cyc = [0.45, 0.25, 0.45, 0.25], tot = 1.4;

@@ -84,7 +84,7 @@ SCENES.flight = () => {
 // he runs for it, left along the branch, out onto the thin end. The crow calls after him and comes after him, too late
 SCENES.nest = def => {
   const c = def.crow;
-  if (!world.flags.wokeInNest) addActor('crow', { x: c.x, y: c.y, anim: ['perch_1', 'perch_2', 'perch_1', 'perch_1', 'perch_2'], fps: 1.3, layer: 'back' });   // only for the wake-up: after that it's out, and it comes back to land when he finds the cape (it was sitting there waiting)
+  if (!world.flags.wokeInNest) addActor('crow', { x: c.x, y: c.y, anim: ['perch_1', 'perch_2', 'perch_1', 'perch_1', 'perch_2'], fps: 1.3, layer: 'back' });   // only for the wake-up: after that it's out, and it comes back to land when he finds the cape
   const tw = def.art.pieces && def.art.pieces.twig;                                           // the thin end of the branch: drawn with the room, kept apart so it can fall
   if (!world.flags.branchSnapped) addActor('twig', tw ? { kind: 'twig', x: tw[0], y: tw[1], w: tw[2], h: tw[3], piece: def.art.pack + '#piece_twig', layer: 'back' } : { kind: 'twig', x: 4 * 16, y: 22 * 16, len: 10 * 16 + 2, layer: 'back' });
   if (world.flags.wokeInNest) return null;

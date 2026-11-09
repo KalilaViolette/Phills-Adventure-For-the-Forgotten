@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the journal: where every quest in js/quests.js is, worked out from the save (10/29/2026) ----------
+// ---------- the journal: where every quest in js/quests.js is, worked out from the save ----------
 // Nothing about the quests is saved on its own: a step is done when what it says is true in the save, so the journal
 // can never disagree with the game. Story progress (the dev tab) goes the other way: it puts the save at a step,
 // taking back what comes after it and doing what comes before, then starts the game again from there.

@@ -1,7 +1,7 @@
 'use strict';
 // ---------- sound (tiny synth, starts after the first click) ----------
 let actx = null, muted = false;
-// the volumes, music and effects apart (the title menu's Options, 10/17/2026). 0 to 1, kept between visits
+// the volumes, music and effects apart (the title menu's Options). 0 to 1, kept between visits
 const VOL = { music: 1, sfx: 1 };
 try { for (const k of ['music', 'sfx']) { const v = parseFloat(localStorage.getItem('phill-forgotten-vol-' + k)); if (v >= 0 && v <= 1) VOL[k] = v; } } catch (e) {}
 let sfxBus = null;
@@ -91,7 +91,7 @@ const sfx = {
   heavyWindup: () => { tone(180, 260, 0.45, 'sawtooth', 0.04); tone(360, 520, 0.45, 'triangle', 0.03); },
   slam: () => { tone(110, 45, 0.25, 'triangle', 0.18); noise(0.18, 600, 120, 0.12, 0.7); },
   lock: () => tone(660, 990, 0.06, 'square', 0.035),
-  // a hit landing, by what it's made of (10/17/2026: every hit was the same thump)
+  // a hit landing, by what it's made of, so a hit on wood doesn't sound like a hit on a bug
   hitTin: () => { tone(1900, 1500, 0.07, 'square', 0.03); tone(2900, 2600, 0.05, 'triangle', 0.025); noise(0.04, 6000, 3500, 0.04, 2); },
   hitGlass: () => { tone(2600, 2400, 0.12, 'sine', 0.035); tone(3900, 3700, 0.08, 'sine', 0.02); },
   hitPaper: () => { noise(0.07, 3800, 1800, 0.07, 0.8); noise(0.05, 2400, 1200, 0.05, 1.2); },
@@ -233,7 +233,7 @@ const sfx = {
 const music = (() => {
   let on = true, master = null, wet = null, timer = null, step = 0, nextT = 0, pass = 0, song = 'home', want = 'home', stingT = 0;
   // each song plays into its own bus (and its own send to the reverb), so changing songs can fade the old one out on its
-  // own, notes it already had lined up included, while the new one comes in at full (10/17/2026)
+  // own, notes it already had lined up included, while the new one comes in at full
   let bus = null, verb = null, atBar = false;                  // atBar: a change waiting for the old song's next bar
   const level = () => (on && !muted) ? 0.5 * VOL.music : 0;
   try { on = localStorage.getItem('phill-forgotten-music') !== 'off'; } catch (e) {}
@@ -426,9 +426,8 @@ const music = (() => {
       if (rand() < 0.5) { const tt = t0 + rand() * 3 * BEAT; for (let i = 0; i < 2 + Math.floor(rand() * 3); i++) voice(tt + i * 0.09, 3200 + rand() * 900, 'sine', 0.006, 0.07, out()); }   // birds outside
     }
   }
-  // the title: the home tune on a music box, quiet and roomy, out in the park at night (from the "A Warm Memory"
-  // sketch in Music studies, on the game's own instruments). A soft felt note under each bar and a few plucked chord notes, no
-  // drums. It goes round in three passes of 16 bars:
+  // the title: the home tune on a music box, quiet and roomy, out in the park at night. A soft felt note under each bar
+  // and a few plucked chord notes, no drums. It goes round in three passes of 16 bars:
   //   1: the music box alone with the tune, the plucks coming in for the second half
   //   2: the same, and where the tune stops to breathe a flute answers it with its last few notes
   //   3: barely there, the box playing the first half an octave down and every other bar, then back to the top
@@ -642,7 +641,7 @@ const music = (() => {
     for (const b of [1, 2]) for (const n of notes) musicbox(t0 + b * BEAT + (tired ? rand() * 0.04 : 0), n + 12, 0.007);
     const tune = WARREN_TUNE[bar % 8].split(' ');
     tune.forEach((n, e) => { if (n !== '.') musicbox(t0 + e * BEAT / 2 + (tired ? e * 0.012 : 0), N(n) + (tired && rand() < 0.12 ? -1 : 0), 0.038); });
-    // a bit livelier (10/15/2026): a light pluck on the "pah" of the oom-pah-pah, a thimble tapped on the
+    // a bit livelier: a light pluck on the "pah" of the oom-pah-pah, a thimble tapped on the
     // beat, and where the tune rests at the end of a bar, a soft note leading into the next one
     pluck(t0 + 2 * BEAT, N(root) + 19, 0.016);
     brush(t0, 0.010, 4200, 0.035); brush(t0 + BEAT, 0.005, 5600, 0.03); brush(t0 + 2 * BEAT, 0.006, 5600, 0.03);
@@ -660,10 +659,9 @@ const music = (() => {
     if (rand() < 0.6) { const tt = t0 + rand() * 4 * BEAT; voice(tt, 1400 + rand() * 600, 'sine', 0.012, 0.15, out()); }        // a drip
     if (bar % 4 === 2) { const tt = t0 + BEAT; brush(tt, 0.03, 220, 0.5); }                                                     // a gurgle, far off
   }
-  // the bear, meeting him (10/20/2026, from "The bear, meeting him" in Music studies): three beats instead of Home's four,
-  // a lower wooden lead instead of the music box, and the chord held under him instead of rolling. His little figure is
-  // a note said twice, a breath, then a step up and an answer. Friendly, nothing hiding in it yet. The flute answers him in
-  // the gaps the second time round
+  // the bear, meeting him: three beats instead of Home's four, a lower wooden lead instead of the music box, and the
+  // chord held under him instead of rolling. His little figure is a note said twice, a breath, then a step up and an
+  // answer. Friendly, nothing hiding in it yet. The flute answers him in the gaps the second time round
   const BEAR_CH = [['G2', 'G3 B3 D4'], ['E2', 'E3 G3 B3'], ['C2', 'C3 E3 G3'], ['D2', 'D3 F#3 A3'], ['G2', 'G3 B3 D4'], ['E2', 'E3 G3 B3'], ['A2', 'A3 C4 E4'], ['D2', 'D3 F#3 A3'],
                    ['G2', 'G3 B3 D4'], ['E2', 'E3 G3 B3'], ['C2', 'C3 E3 G3'], ['D2', 'D3 F#3 A3'], ['G2', 'G3 B3 D4'], ['C2', 'C3 E3 G3'], ['D2', 'D3 F#3 A3 C4'], ['G2', 'G3 B3 D4']];
   const BEAR_TUNE = ['B4 B4 . E5 - D5', 'B4 - - . . .', 'A4 A4 . D5 - C5', 'A4 - - . . D4', 'B4 B4 . E5 - G5', 'E5 - D5 . B4 .', 'C5 - A4 . B4 C5', 'D5 - - . . .',
@@ -699,7 +697,7 @@ const music = (() => {
     let S2 = SONGS[song]; BEAT = S2.beat; SWING = S2.swing;
     // behind (the page stopped running for a while but the sound card's clock didn't: a debugger pause, the browser
     // stalling it): the bars it missed are skipped without playing them, the song carrying on from where it would be
-    // by now. It used to play every one it missed all at once, the longer the pause the more (the performance audit, 10/18/2026)
+    // by now. Playing every missed bar at once would pile them all up, the longer the pause the more
     const late = actx.currentTime - 0.1;
     while (nextT < actx.currentTime + 0.3) {
       if (atBar && want !== song) {                              // a room change: the new song starts where the old one's bar ends

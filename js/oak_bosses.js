@@ -15,8 +15,8 @@ BOSS_KINDS.yoyo = {
     const b = boss, dx = P.x - b.x, fast = b.phase === 2 ? 1.3 : 1, lo = b.def.start + 2 * T, hi = b.def.end - 2 * T;
     b.t += dt; b.flash = Math.max(0, b.flash - dt); b.cd -= dt;
     switch (b.state) {
-      // (only once he's down near its floor: coming in at the top of the shaft it woke up and shut him in while he was still
-      // on the top shelf, a long way above it. The enemy audit's open question, checked 10/17/2026)
+      // (only once he's down near its floor, not when he comes in at the top of the shaft and is still on the top
+      // shelf, a long way above it)
       case 'dormant': if (Math.abs(dx) < 240 && P.y > b.base - 6 * T && P.ko <= 0 && !scene) { b.y = b.base - 150; playScene(pbIntro([b.x, b.y - 40])); } break;
       case 'wake': b.y = b.base - 150 + Math.sin(b.t * 20) * 4; break;
       case 'idle':                                                                           // hanging part way down, swaying over to him
@@ -86,7 +86,7 @@ BOSS_KINDS.yoyo = {
 // A big diamond kite caught in the high branches, its string snagged on a twig up and off to the left, a long tail of
 // rag bows. It swoops down along the branch on its string (duck it, or parry it and it tumbles into the twigs), snaps
 // its tail at you, and dives straight down where you stand. Tangled in the twigs it's open; up in the air it's half.
-// the rest of its tail (10/16/2026: the picture's tail stopped at the bottom of its cell, and the tail snap had nothing
+// the rest of its tail (the picture's tail stopped at the bottom of its cell, and the tail snap had nothing
 // drawn at all, so it hit by a plain box). Rag bows on a string, hanging and swaying, curling back on the wind up and
 // whipping across under it on the snap. Drawn in solid colors so the snap hits where the bows are
 function kiteTail(b, flip) {
@@ -150,10 +150,10 @@ BOSS_KINDS.kite = {
       case 'rise': b.y -= 240 * dt; if (b.y <= b.hy) { b.y = b.hy; bossState('idle'); b.cd = 0.4; } break;
       case 'tailWind': hover(); if (b.t >= 0.4 / fast) { bossState('tail'); sfx.whip(); } break;
       case 'tail': {                                                                         // its tail snaps down and across the branch under it
-        // it stays where it is once the tail's going (it used to keep drifting after him, so the tail followed him
-        // after he'd already stepped out of it. The enemy audit's open question, checked 10/17/2026). It aims during the wind up
+        // it stays where it is once the tail's going, so the tail doesn't follow him after he's already stepped out of
+        // it. It aims during the wind up
         b.hx = b.x; b.y += (b.hy + Math.sin(b.t * 2.2) * 12 - b.y) * Math.min(1, dt * 3);
-        const hb = { l: b.x - 70, r: b.x + 70, t: b.y + 10, b: b.y + 90 };   // (it hits where the tail's drawn now: kiteTail)
+        const hb = { l: b.x - 70, r: b.x + 70, t: b.y + 10, b: b.y + 90 };   // (it hits where the tail's drawn: kiteTail)
         if (b.t > 0.1 && b.t < 0.4 && !b.hitP && phillAround() && bossHit(hb)) { b.hitP = true; foeStrike(b.x, 'kite', { cost: 20 }); }
         if (b.t >= 0.6) { bossState('idle'); b.cd = 0.7; }
         break;

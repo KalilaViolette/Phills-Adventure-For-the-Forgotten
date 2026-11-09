@@ -4,7 +4,7 @@
 // branches, down in the flooded roots, in the pockets only an ability opens) and the odd dead end, so they come in
 // once he's ready for them. Helpers (near, strike, baseState, hopFoe) are in pond.js.
 // a big move goes a few pixels at a time, stopping where it meets something: one big step could land it clean on the far
-// side of a wall (the bag's gust, blocked a moment, then jumped 38 px through a tile, the terrain audit 10/17/2026)
+// side of a wall
 const freeMove = (f, dx, dy) => {
   const n = Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 3);
   if (n <= 1) return freeStep(f, dx, dy);
@@ -37,7 +37,7 @@ function ceilAbove(x, y) {
 }
 
 Object.assign(FOE, {
-  // a candy wrapper: flutters about on its twisted ends, lines up over him, and swoops down. Its newer tricks (10/16/2026):
+  // a candy wrapper: flutters about on its twisted ends, lines up over him, and swoops down. Its newer tricks:
   // a dive it pulls out of to make him flinch before the real one, a spin that flings scraps of foil, and (a region out)
   // a dive that wraps itself round him and slows him till he shakes it off
   wrapper: { hp: 3, hw: 10, h: 14, acorns: [1, 2], free: true,
@@ -57,7 +57,7 @@ Object.assign(FOE, {
           f.f = Math.sign(dx) || f.f; setFoeState(f, m === 'feintaim' ? 'aim' : m); f.feint = m === 'feintaim'; m === 'spin' ? sfx.whirl() : sfx.paper();
         }
       } else if (f.state === 'aim') {
-        if (f.t >= (f.again ? 0.28 : 0.4)) {                                                 // (after a feint 0.28 s, it was 0.18: the dive's a heavy now and needs time to read, 10/17/2026)
+        if (f.t >= (f.again ? 0.28 : 0.4)) {                                                 // (after a feint 0.28 s: the dive's a heavy and needs time to read)
           f.again = false;
           const d = Math.hypot(dx, P.y - 16 - f.y) || 1; f.vx = dx / d * 250; f.vy = (P.y - 16 - f.y) / d * 250; sfx.whoosh();
           setFoeState(f, f.feint ? 'feint' : 'dive'); f.feint = false;
@@ -76,7 +76,7 @@ Object.assign(FOE, {
         f.x = P.x; f.y = P.y - 6;
         if (P.slowT <= 0 || P.slowBy !== f || !phillAround()) {
           P.slowT = 0; setFoeState(f, 'stagger'); f.stagT = 0.9;
-          // shaken off up beside him, somewhere open: it was put back inside the ceiling in the low rooms up the oak (the audit rerun, 10/16/2026)
+          // shaken off up beside him, somewhere open, never back inside a low ceiling
           const b = -P.facing || 1, tries = [[b * 20, -40], [0, -40], [-b * 20, -40], [b * 20, -26], [-b * 20, -26], [0, -26], [b * 16, -14], [-b * 16, -14]];
           const ok = tries.find(([ox, oy]) => !boxSolid(P.x + ox - 10, P.y + oy - 18, P.x + ox + 10, P.y + oy - 6)) || [0, -6];
           f.x = P.x + ok[0]; f.y = P.y + ok[1]; puff(f.x, f.y, 4, 30, '#8a4ab4');
@@ -149,7 +149,7 @@ Object.assign(FOE, {
       }
       else if (f.state === 'walk') {                                                       // oozing after him, off its ledge too
         if (f.air) { if (airStep(f, dt)) f.air = false; return; }
-        if (f.cd <= 0 && near(f, 9 * T, 60)) {                                             // its newer tricks (10/16/2026): a sticky glob, a bubble, and (a region out) back up onto the ceiling
+        if (f.cd <= 0 && near(f, 9 * T, 60)) {                                             // its newer tricks: a sticky glob, a bubble, and (a region out) back up onto the ceiling
           const up = hasMove(f, 4) ? ceilAbove(f.x, f.y) : null;
           const m = choose([[hasMove(f, 2) && Math.abs(P.x - f.x) > 30 ? 1.5 : 0, 'spitwind'], [hasMove(f, 3) && Math.abs(P.x - f.x) > 50 ? 1 : 0, 'blow'], [up !== null && Math.abs(P.x - f.x) > 40 ? 1 : 0, 'climb']]);
           if (m) { f.f = Math.sign(P.x - f.x) || f.f; setFoeState(f, m); if (m === 'climb') { f.ceil = up; f.floorY = f.y; sfx.boing(); } else sfx.squelch ? sfx.squelch() : sfx.splort(); return; }
@@ -176,7 +176,7 @@ Object.assign(FOE, {
     } },
 
   // a juice box: squeezes itself and squirts a stream of Grime out of its straw (parry the drops right back). Newer
-  // (10/16/2026): an arc of it lobbed up over a wall or a ledge onto him, a slurp that sucks him in close for a burst
+  //: an arc of it lobbed up over a wall or a ledge onto him, a slurp that sucks him in close for a burst
   // in his face, and (a region out) a hop right on top of him
   juice: { hp: 4, hw: 8, h: 26, acorns: [2, 3],
     harmless: f => f.state === 'leap',
@@ -225,7 +225,7 @@ Object.assign(FOE, {
     frame: f => 'juice_' + ({ walk: 'idle_' + (Math.floor(f.t * 2.5) % 2 + 1), squeeze: 'squeeze', squirt: 'squirt', lobwind: 'lobwind', lob: 'lob', slurp: 'slurp', burst: 'squirt', leapwind: 'leapwind', leap: 'hop', hop: 'hop', down: 'down', stagger: 'dizzy', hurt: 'idle_1' }[f.state] || 'idle_1') },
 
   // a plastic fork on its tines, handle up behind it like a tail: it swings the handle over to stab, and the swing
-  // goes over its head first, so jumping over it doesn't help. Newer (10/16/2026): a low sweep of the handle along the
+  // goes over its head first, so jumping over it doesn't help. Newer: a low sweep of the handle along the
   // ground (jump it), a long lunge with the handle out like a lance, and (a region out) a vault right over him on its
   // handle to stab him in the back
   fork: { hp: 5, hw: 9, h: 28, acorns: [2, 3], walker: true,
@@ -235,13 +235,13 @@ Object.assign(FOE, {
       if (f.yoff < 0 && f.state !== 'vault') hopArc(f, dt);
       const dx = P.x - f.x, adx = Math.abs(dx);
       if (f.state === 'walk') {
-        if (!chaseWalk(f, dt, 40, 24)) {                                               // (right up to him: its tines and handle only reach about 25 px, now its hits are where it's drawn, 10/16/2026)
+        if (!chaseWalk(f, dt, 40, 24)) {                                               // (right up to him: its tines and handle only reach about 25 px, and its hits are where it's drawn)
           f.x += f.f * 32 * dt;
           if (f.x <= f.range[0]) { f.x = f.range[0]; f.f = 1; } else if (f.x >= f.range[1]) { f.x = f.range[1]; f.f = -1; }
         }
         if (f.cd <= 0 && near(f, 9 * T, 110)) {
           const level = Math.abs(P.y - f.y) < 30;
-          // each one only from where its drawing really reaches him (its hits are where it's drawn now, 10/16/2026): the stab
+          // each one only from where its drawing really reaches him (its hits are where it's drawn): the stab
           // reaches 23 px, the sweep 28, the lunge about 78 with its push forward (his body's 8 either side of him)
           const m = choose([[adx < 30 ? 2 : 0, 'wind'], [hasMove(f, 2) && adx < 34 && level ? 1.4 : 0, 'sweepwind'], [hasMove(f, 3) && adx > 40 && adx < 80 && level ? 1.4 : 0, 'lungewind'],
             [hasMove(f, 4) && adx > 20 && adx < 90 && level ? 1 : 0, 'vaultwind']]);   // the stab from where it reaches (was 120)
@@ -264,7 +264,7 @@ Object.assign(FOE, {
         if (f.t < 0.32) strike(f, { l: Math.min(f.x, f.x + f.f * 32), r: Math.max(f.x, f.x + f.f * 32), t: f.y - 22, b: f.y - 8 }, 20);
         if (f.t >= 0.55) { setFoeState(f, 'walk'); f.cd = 1.4 + Math.random() * 0.6; }
       } else if (f.state === 'vaultwind') { if (f.t >= 0.35) { setFoeState(f, 'vault'); f.vy = -340; f.hopVX = hopTo(f, P.x + f.f * 18, -340); f.yoff = -0.01; sfx.boing(); } }
-      else if (f.state === 'vault') {                                                     // up and over on its handle... (landing just behind him, close enough for the stab to reach: it was 34 px, past its tines)
+      else if (f.state === 'vault') {                                                     // up and over on its handle... (landing just behind him, close enough for the stab to reach)
         if (hopArc(f, dt)) { f.f = -f.f; setFoeState(f, 'backwind'); puff(f.x, f.y, 4, 30); if (heard(f)) sfx.land(); }
       } else if (f.state === 'backwind') { f.f = Math.sign(P.x - f.x) || f.f; if (f.t >= 0.2) { setFoeState(f, 'stab'); sfx.whoosh(); } }   // ...and round for a stab in his back
     },
@@ -272,7 +272,7 @@ Object.assign(FOE, {
 
   // six-pack rings curled into a hoop, rolling back and forth. The sword glances off while it rolls (bounce on it
   // from above, though). Rolling into a wall or off the end of its ground tips it over flat for a moment: hit it then.
-  // Only in the Old Oak, so it has all four (10/16/2026): the roll, a hop onto him, a loop flung out on a strand that
+  // Only in the Old Oak, so it has all four: the roll, a hop onto him, a loop flung out on a strand that
   // snags him and reels him in (mash free), and a loop thrown like a frisbee that comes back
   rings: { hp: 5, hw: 13, h: 28, acorns: [2, 3],
     deflectText: 'it just rolls on. wait till it tips over',

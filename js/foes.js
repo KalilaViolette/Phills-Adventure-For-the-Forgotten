@@ -9,12 +9,12 @@ const FOE = {
     box: f => (f.state === 'roll' || f.state === 'lie' ? { l: f.x - 10, r: f.x + 10, t: f.y - 20 + f.yoff, b: f.y + f.yoff } : { l: f.x - 7, r: f.x + 7, t: f.y - 26 + f.yoff, b: f.y + f.yoff }) },
 };
 const DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 3, chargedchop: 3, chargedwhirl: 3, shbash: 1, bashcut: 1, bashfin: 2 };
-// how many attacks an enemy has (10/16/2026): at least 3 in Rootwood, and one more for every region its room
+// how many attacks an enemy has: at least 3 in Rootwood, and one more for every region its room
 // is from Rootwood on the map. Each kind lists its attacks in order and a copy only uses the first f.moves of them.
 // Rootwood's own enemies got two new attacks each, so a few start with more than 3 (baseMoves)
 const REGION_DIST = { rootwood: 0, home: 0, pond: 1, playground: 1, oak: 1, warren: 1, greenhouse: 2, hive: 2 };
 const regionDist = r => REGION_DIST[r] ?? 2;
-// The start of the game (10/23/2026): Rootwood's first enemies only use the two attacks they're named for till the tin
+// The start of the game: Rootwood's first enemies only use the two attacks they're named for till the tin
 // soldier's down, and the first halves of the Pond and the Playground keep Rootwood's count (their second halves get the
 // extra one). A player meets one new trick at a time, and the rest come back as the story goes on
 const STARTERS = new Set(['cap', 'can', 'spinner']);
@@ -27,7 +27,7 @@ const movesFor = kind => {
   return (FOE[kind].baseMoves || 3) + (firstHalf() ? 0 : regionDist(room && room.def.region));
 };
 const hasMove = (f, n) => n <= (f.moves || 3);
-// an attack it's started, it finishes (10/16/2026: every enemy went down to button mashing, because a hit
+// an attack it's started, it finishes (every enemy went down to button mashing, because a hit
 // knocked it out of its wind-up). Hits in these states still hurt and flash but don't stop it. A parry, a wound up
 // swing or a roll swing still does. The number is how far into the state that starts: Rootwood's first three only hold
 // on for the back half of their wind-up, so the first enemies he meets stay gentle
@@ -61,12 +61,12 @@ function patrol(x, y) {
   while (l > 0 && isFloor(l - 1, row) && tile(l - 1, row - 1) !== 1) l--;
   while (r < room.W - 1 && isFloor(r + 1, row) && tile(r + 1, row - 1) !== 1) r++;
   // never right up against a doorway. Only where there is one on that side, though: the grime pool's juice box was
-  // being pushed four tiles in from the wall, right out of its foamed pocket and into the room (10/15/2026)
+  // being pushed four tiles in from the wall, right out of its foamed pocket and into the room
   const doorAt = e => room.def.doors.some(d => d.edge === e && y >= d.a - T && y <= d.b + 3 * T);
   let a = Math.max(l * T + 10, doorAt('left') ? 4 * T : T + 10), b = Math.min((r + 1) * T - 10, room.pxW - (doorAt('right') ? 4 * T : T + 10));
   // and not where the ground curves up into a step at the end: the moss bank's can hopped back onto the step's rounded
-  // foot and sat half sunk in it, since its tiles read as open floor (10/16/2026)
-  const sunk = x => boxSolid(x - 3, y - 12, x + 3, y - 3);                       // (down to 3 off the ground: a bottle cap poked into the foot of the litter path's rounded steps, now that they keep walking, the stuck sweep 10/17/2026)
+  // foot and sat half sunk in it, since its tiles read as open floor
+  const sunk = x => boxSolid(x - 3, y - 12, x + 3, y - 3);                       // (down to 3 off the ground, so a bottle cap at the foot of rounded steps keeps walking)
   while (b > a && sunk(b)) b -= 2;
   while (a < b && sunk(a)) a += 2;
   return [a, b];
@@ -90,9 +90,9 @@ function followBottom(f, dt) {                                                  
   const to = g * T, step = 140 * dt;                                              // up and down the steps smoothly, not in one jump
   f.y = Math.abs(to - f.y) <= step ? to : f.y + Math.sign(to - f.y) * step;
 }
-// ---- walking along the real ground (the shoelace first, 10/15/2026; every walker that follows him off its ledge,
-// 10/16/2026). Where something can put itself: the ground (or a mushroom, or a root's slope) under x near height y. A
-// step up of a tile is fine; thorns and the Grime pool aren't ground it'll go on
+// ---- walking along the real ground (the shoelace first, then every walker that follows him off its ledge). Where
+// something can put itself: the ground (or a mushroom, or a root's slope) under x near height y. A step up of a tile is
+// fine; thorns and the Grime pool aren't ground it'll go on
 function groundFoot(x, y) {
   let best = groundY(x, y, 10, 18);
   const ry = rampY(x, y, 10, 18); if (ry !== null && (best === null || ry < best)) best = ry;
@@ -108,7 +108,7 @@ function groundStep(f, dir, sp, dt) {
   const gy = groundFoot(probe, f.y);
   if (gy === null && (solidPx(probe, f.y - 2) || solidPx(probe, f.y - 12))) return 'wall';   // the ground goes on up past a step: a wall (or a ledge to spring up)
   if (gy === null || gy > f.y + 10) return 'edge';
-  if (gy < f.y - 18 || boxSolid(probe - 3, gy - 10, probe + 3, gy - 3)) return 'wall';   // (a few px of the ground's own rounded top isn't a wall: the stump's corner in the well read as one, and the cap sat on it for good, 10/16/2026)
+  if (gy < f.y - 18 || boxSolid(probe - 3, gy - 10, probe + 3, gy - 3)) return 'wall';   // (a few px of the ground's own rounded top isn't a wall: the stump's corner in the well read as one, and the cap sat on it for good)
   if (groundHazard(probe, gy)) return 'edge';
   f.x = nx; const here = groundFoot(nx, f.y); if (here !== null && here >= f.y - 18) f.y = here;
   return 'ok';
@@ -120,7 +120,7 @@ function airStep(f, dt) {
   f.vy = Math.min(f.vy + 800 * dt, 500);
   const hw = Math.max(5, (FOE[f.kind].hw || 8) - 3), inside = (x, y) => boxSolid(x - hw, y - 12, x + hw, y - 3);
   const nx = f.x + (f.hopVX || 0) * dt;
-  if (nx > 2 * T && nx < room.pxW - 2 * T && !boxSolid(nx - hw, f.y - 10, nx + hw, f.y - 2)) f.x = nx;   // (its whole width, not just the middle: it went down the side of the stump in the well and into it, 10/16/2026)
+  if (nx > 2 * T && nx < room.pxW - 2 * T && !boxSolid(nx - hw, f.y - 10, nx + hw, f.y - 2)) f.x = nx;   // (its whole width, not just the middle: it went down the side of the stump in the well and into it)
   const ny = f.y + f.vy * dt;
   if (f.vy > 0 && inside(f.x, ny) && !inside(f.x, f.y)) {                              // coming down beside a ledge: slide off its side rather than into it
     for (let d = 1; d <= 2 * hw + 4; d++) { const s2 = [Math.sign(f.hopVX || 0) || 1, -(Math.sign(f.hopVX || 0) || 1)].find(s2 => !inside(f.x + s2 * d, ny)); if (s2) { f.x += s2 * d; break; } }
@@ -129,14 +129,14 @@ function airStep(f, dt) {
     let gy = groundY(f.x, f.y, Math.ceil(f.vy * dt) + 2, 0);
     const row = Math.floor(ny / T); if (tile(Math.floor(f.x / T), row) === 2 && f.y <= row * T + 0.5 && ny >= row * T) gy = gy === null ? row * T : Math.min(gy, row * T);
     const ry = rampY(f.x, ny, 0.5, ny - f.y + 1); if (ry !== null && ry >= f.y - 0.5) gy = gy === null ? ry : Math.min(gy, ry);
-    if (gy !== null && gy <= ny + 0.5) { f.y = gy; f.vy = 0; f.air = false; if (!FOE[f.kind].free) { const r = patrol(f.x, f.y); if (r[1] >= r[0]) f.range = r; f.rt = 0.25; } return true; }   // its new ground's walk straight away: the cap in the moss bank lunged off the moment it landed and got pulled back to its old ledge's end, inside the step (10/16/2026)
+    if (gy !== null && gy <= ny + 0.5) { f.y = gy; f.vy = 0; f.air = false; if (!FOE[f.kind].free) { const r = patrol(f.x, f.y); if (r[1] >= r[0]) f.range = r; f.rt = 0.25; } return true; }   // its new ground's walk straight away: the cap in the moss bank lunged off the moment it landed and got pulled back to its old ledge's end, inside the step
   } else if (boxSolid(f.x - 5, ny - 12, f.x + 5, ny - 9)) { f.vy = 0; return false; }   // bumped its head
   f.y = ny;
   if (f.y > room.pxH + 30) { f.x = f.x0; f.y = f.y0; f.vy = 0; f.air = false; return true; }   // fell out the bottom: back where it started
   return false;
 }
 
-// a walker going after him off its own ledge (10/16/2026: most of them gave up the moment he stepped off).
+// a walker going after him off its own ledge (most of them gave up the moment he stepped off).
 // Up a step, down off an edge he's below, a hop up onto one he's on (up to about 3 tiles). Out of reach for 4 seconds,
 // it loses interest and walks back to where it started. `keep`: how close it wants to get (the bucket stays back to
 // throw). Returns false when there's nothing to chase and it's home, so the caller does its usual patrol
@@ -147,21 +147,21 @@ function chaseWalk(f, dt, sp, keep = 20) {
   if (on) tx = P.x;
   else if (f.lost < 4 && f.lastSeen !== undefined) tx = f.lastSeen;
   else if (f.lastSeen !== undefined && (Math.abs(f.x - f.x0) > 2 || Math.abs(f.y - f.y0) > T)) { tx = f.x0; home = true; }   // after a chase: back to where it was
-  else { f.lastSeen = undefined; return false; }                     // (its own back and forth never sends it home: it was walking 16px off, heading home, counting itself there and standing still for good, the stuck sweep 10/17/2026)
+  else { f.lastSeen = undefined; return false; }                     // (its own back and forth never sends it home, or it would head home from a few px off, count itself there and stand still for good)
   if (on) f.lastSeen = P.x;
   const dx = tx - f.x, ty = on ? P.y : f.lost < 4 ? f.y : f.y0, dy = ty - f.y;
   const settle = () => { f.x0 = f.x; f.y0 = f.y; f.lastSeen = undefined; f.homeT = 0; return false; };   // stays where it's got to and walks back and forth there
-  if (home && Math.abs(dx) <= 2) { if (Math.abs(dy) <= T) { f.lastSeen = undefined; return false; } return settle(); }   // home: back to its patrol (home but a level off, it can't get up: this is home now)
+  if (home && Math.abs(dx) <= 2) { if (Math.abs(dy) <= T) { f.lastSeen = undefined; return false; } return settle(); }   // home: back to its patrol (home but a level off, it can't get up: this is home from now on)
   if (Math.abs(dx) <= keep && !home) { if (on) f.f = Math.sign(dx) || f.f; return true; }
   const dir = Math.sign(dx); f.f = dir;
   const res = groundStep(f, dir, sp, dt);
-  if (res === 'edge') { if (dy > 8 || (on && Math.abs(dx) > 30 && safeDip(f, dir))) { f.air = true; f.vy = -110; f.hopVX = dir * Math.max(80, sp); } }   // (more than 8 down, not 20: a step down of a tile, too far to walk and not far enough to hop, left it standing at the top, the enemy audit 10/17/2026)   // a little hop off, so it clears a rounded edge (it was landing back on the corner over and over: the stump in the well)
-  else if (res === 'wall') { if (dy < -6 && dy > -3.5 * T && (f.hopCd || 0) <= 0) { f.air = true; f.vy = -360; f.hopVX = dir * 90; f.hopCd = 0.8; } }   // (more than 6 up, not 12: out of the far side of a dip it was stuck at the foot of the bank, the terrain audit 10/17/2026)
+  if (res === 'edge') { if (dy > 8 || (on && Math.abs(dx) > 30 && safeDip(f, dir))) { f.air = true; f.vy = -110; f.hopVX = dir * Math.max(80, sp); } }   // (more than 8 down: a step down of a tile is too far to walk and not far enough to hop)   // a little hop off, so it clears a rounded edge instead of landing back on the corner over and over
+  else if (res === 'wall') { if (dy < -6 && dy > -3.5 * T && (f.hopCd || 0) <= 0) { f.air = true; f.vy = -360; f.hopVX = dir * 90; f.hopCd = 0.8; } }   // (more than 6 up, so it gets out of the far side of a dip instead of sticking at the foot of the bank)
   if (home && (res === 'wall' || res === 'edge') && !f.air) { f.homeT = (f.homeT || 0) + dt; if (f.homeT > 1.5) return settle(); } else f.homeT = 0;   // can't find its way home: it makes do where it is
   return true;
 }
 
-// ---- bits the new attacks share (10/16/2026)
+// ---- bits the new attacks share
 // a hold: he's stuck where he is till he mashes his way out (see player.js) or it squeezes. `mash`: presses it takes
 function pinHim(f, mash = 6) { P.pinned = { by: f, left: mash, x: P.x, y: P.y }; P.vx = P.vy = 0; P.hurtT = 0; P.atk = null; return P.pinned; }
 const pinnedBy = f => !!P.pinned && P.pinned.by === f;
@@ -178,8 +178,8 @@ function releaseClear(f, dx, dy) {
   if (!placeClear(f, c) && f.okX !== undefined) { f.x = f.okX; f.y = f.okY; }
 }
 // a walker going after him across a dip in the ground (both sides the same height, a little hollow between): it goes
-// down and back up, as long as it's a short dip with ground to climb back out on and nothing nasty in it (the terrain
-// audit, 10/17/2026: they all stopped at the lip). Not a real drop, not a pit
+// down and back up, as long as it's a short dip with ground to climb back out on and nothing nasty in it, instead of
+// stopping at the lip. Not a real drop, not a pit
 function safeDip(f, dir) {
   const probe = f.x + dir * 14, gy = groundY(probe, f.y, 2 * T, 0);
   if (gy === null || gy - f.y > 2 * T || groundHazard(probe, gy)) return false;
@@ -192,8 +192,7 @@ function safeDip(f, dir) {
 // things that fly, kept out of the rock: where it last was clear, and if it's ended up inside something a moment (let go
 // somewhere tight, shoved), it goes back there
 const FLY_UNSTICK = new Set(['bag', 'wrapper', 'plane', 'balloon', 'nwing']);
-// let go of him: set down beside him on open ground, the side asked for first (it was being put inside the step or wall
-// next to him: the audit rerun, 10/16/2026)
+// let go of him: set down beside him on open ground, the side asked for first (never inside the step or wall next to him)
 function setBeside(f, d) {
   const hw = Math.max(4, (FOE[f.kind].hw || 8) - 2);
   for (const ox of [d, -d, d / 2, -d / 2, 0]) {
@@ -221,10 +220,10 @@ const hopTo = (f, x, vy0, g = 900) => (x - f.x) / Math.max(0.2, 2 * -vy0 / g);
 // can it stand at column c with its feet on the top of row `row`: open there, ground right under it, no thorns
 const isFloor = (c, row) => tile(c, row - 1) === 0 && (tile(c, row) === 1 || tile(c, row) === 2);
 
-// enemies come back once he's been three rooms away from theirs (10/14/2026: they came back too easily). It
-// used to count rooms walked into, so two rooms out and back brought them back. Now it's real distance: each room
-// remembers which of its foes were down when he left and the farthest he's been from it since, counted the shortest
-// way through the doors (the same doors his map is drawn from). Resting at a cushion brings everything back as before
+// enemies come back once he's been three rooms away from theirs, by real distance, so two rooms out and back doesn't
+// bring them back. Each room remembers which of its foes were down when he left and the farthest he's been from it
+// since, counted the shortest way through the doors (the same doors his map is drawn from). Resting at a cushion brings
+// everything back
 const foesDown = {};
 const FOE_BACK_DIST = 3;
 let roomLinks = null;
@@ -256,17 +255,17 @@ function roomsApart(a, b, most = 8) {
   }
   return most;
 }
-// the farther from the forest, the tougher the litter (a friend's playtest, 10/14/2026: they barely got harder). The
-// Pond's second half (past the waterproofing) and the Old Oak are the toughest so far. One-hit things stay one-hit
+// the farther from the forest, the tougher the litter. The Pond's second half (past the waterproofing) and the Old Oak
+// are the toughest so far. One-hit things stay one-hit
 const POND_DEEP = new Set(['deepwater', 'silt', 'fishline', 'grotto', 'sunken', 'drainmouth', 'foamline', 'swan', 'fenceside']);
 function regionToughness() {
   const r = room.def.region;
-  if (r === 'pond') return POND_DEEP.has(room.def.id) ? 2 : firstHalf() ? 1.2 : 1.6;          // (the first half was 1.5, 10/23/2026: Phill's no stronger there yet)
+  if (r === 'pond') return POND_DEEP.has(room.def.id) ? 2 : firstHalf() ? 1.2 : 1.6;          // (gentler in the first half: Phill's no stronger there yet)
   if (r === 'playground') return firstHalf() ? 1.2 : 1.6;
   return { rootwood: 1, home: 1, oak: 1.75, greenhouse: 2, hive: 2 }[r] || 1;
 }
-// Rootwood's enemies on the way to the tin soldier keep the health they had on 10/15/2026, before it went up by one or
-// two across the board; once he's down they have today's (10/23/2026, the start was getting too hard)
+// Rootwood's enemies on the way to the tin soldier keep their lower starting health, one or two less than everywhere
+// else, so the start isn't too hard; once he's down they have the full numbers
 const EARLY_HP = { cap: 3, can: 4, spinner: 2, wrapper: 2, juice: 3 };
 const foeHP = (k, kind) => {
   if (k.hp <= 1) return k.hp;
@@ -285,11 +284,11 @@ function spawnFoes() {
   foes.length = 0; shots.length = 0; drops.length = 0;
   (room.def.foes || []).forEach((d, i) => {
     const k = FOE[d.kind]; if (!k) return;
-    if (d.beat && !world.flags[d.beat]) return;                       // not here yet: it turns up once the story's got that far (10/23/2026)
+    if (d.beat && !world.flags[d.beat]) return;                       // not here yet: it turns up once the story's got that far
     if (gone && gone.has(i)) return;
     const f = { room: room.def.id, i, kind: d.kind, x: d.x, y: d.y, x0: d.x, y0: d.y, f: d.f || -1, hp: foeHP(k, d.kind), state: 'walk', t: 0, cd: 0.8 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: k.free ? [2 * T, room.pxW - 2 * T] : patrol(d.x, d.y) };
     f.moves = movesFor(d.kind);
-    if (d.asleep) { f.state = 'asleep'; f.wake = d.wake || 72; f.after = d.after; }   // lying still till he's met the one before it (the teaching audit, 10/18/2026): see updateFoes
+    if (d.asleep) { f.state = 'asleep'; f.wake = d.wake || 72; f.after = d.after; }   // lying still till he's met the one before it, so they come one at a time: see updateFoes
     keepClearOfDoors(f, k);
     if (k.setup) k.setup(f, d);                                       // (d: anything else the room says about this one, like the reacher's stretch of the pool)
     if (k.free && d.kind !== 'gum' && !k.ownSpot) {                  // a flyer never starts inside rock: nudged down (then up) till it's clear (ownSpot: it sorts out its own)
@@ -322,7 +321,7 @@ function keepClearOfDoors(f, k) {
   f.x = f.x0 = Math.max(pick[0], Math.min(pick[1], f.x));
 }
 const foeBox = f => { const k = FOE[f.kind]; if (k.box) return k.box(f); return { l: f.x - k.hw, r: f.x + k.hw, t: f.y - k.h + f.yoff, b: f.y + f.yoff }; };
-const phillAround = () => P.respawnT <= 0 && P.ko <= 0 && !P.hang && !P.held && !(typeof DBG !== 'undefined' && DBG.ignore);   // (the menu's Ignore him: as far as the enemies can tell he isn't there, 10/17/2026)
+const phillAround = () => P.respawnT <= 0 && P.ko <= 0 && !P.hang && !P.held && !(typeof DBG !== 'undefined' && DBG.ignore);   // (the menu's Ignore him: as far as the enemies can tell he isn't there)
 const guardUp = () => inp.guardH && !P.atk && !P.roll && !P.dash && P.hurtT <= 0 && P.gbreak <= 0 && !P.guardOut;
 let guardHeldRaw = false;                       // the shield button as pressed (input gets cleared during little scenes)
 function setFoeState(f, s) {
@@ -330,10 +329,10 @@ function setFoeState(f, s) {
   f.state = s; f.t = 0; f.hb = null; f.hitP = false;
   const hv = HEAVY[f.kind];
   if (hv && hv[0] === s) {                                                             // winding up the one the shield can't take: a red !! and a heavy sound
-    f.heavy = true; popup(f.x, f.y + (f.yoff || 0) - FOE[f.kind].h - 14, '!!', '#ff6b5a', true); if (!FOE[f.kind].ownWindup && (typeof heard !== 'function' || heard(f))) sfx.heavyWindup();   // (ownWindup: the plant traps make their own, quieter, 10/17/2026)
+    f.heavy = true; popup(f.x, f.y + (f.yoff || 0) - FOE[f.kind].h - 14, '!!', '#ff6b5a', true); if (!FOE[f.kind].ownWindup && (typeof heard !== 'function' || heard(f))) sfx.heavyWindup();   // (ownWindup: the plant traps make their own, quieter)
   } else if (!hv || !hv.includes(s)) f.heavy = false;                                  // (on to anything that isn't that attack: over)
 }
-// Every enemy has a move the shield doesn't answer (10/16/2026): a grab, a big slam, something from above.
+// Every enemy has a move the shield doesn't answer: a grab, a big slam, something from above.
 // These are the wind ups that start it. It's telegraphed (the red !! and a heavy sound), and a parry or a roll still
 // answers it, just not holding the shield up. A few have one already without this: the reacher grabs up from below,
 // the paper plane and the frog come down on top of him, the juice box lobs over the shield, and the spinner and the
@@ -343,11 +342,11 @@ const HEAVY = {                                                                 
   rings: ['snagwind', 'snag'], sponge: ['tumblewind', 'tumble'], duck: ['crouch', 'leap'], bobber: ['under', 'pop'], bag: ['billow'], straw: ['archwind', 'arch', 'lunge'],
   fishtoy: ['spinaim', 'corkscrew'], glove: ['grabwind', 'grab'], pike: ['aim', 'dart'], leech: ['bandwind', 'band'], teeth: ['skitwind', 'skitter'], jack: ['springpeek', 'spring'],
   bucket: ['flipwind', 'flip'], rope: ['lassowind', 'lasso'], balloon: ['stringwind', 'string'], horn: ['pokewind', 'poke'], ball: ['spin', 'roll'], shuttle: ['spinwind', 'spiral'],
-  wrapper: ['aim', 'feint', 'dive'], nwing: ['fold', 'dash', 'turn'],                  // (10/17/2026: the last two without one. The wrapper's dive, feint and all, and the night wing's dashes, a fresh !! before each)
+  wrapper: ['aim', 'feint', 'dive'], nwing: ['fold', 'dash', 'turn'],                  // (the last two without one. The wrapper's dive, feint and all, and the night wing's dashes, a fresh !! before each)
 };
-// what a block takes off the shield goes by how heavy the hit is (10/16/2026): three normal ones empty it, the
-// same as three rolls. Each attack's own number (what it was tuned at before) says which it is: the light ones (up to
-// 16) take 18, the normal ones (up to 20) take 30, anything bigger takes 45
+// what a block takes off the shield goes by how heavy the hit is: three normal ones empty it, the same as three rolls.
+// Each attack's own damage number says which it is: the light ones (up to 16) take 18, the normal ones (up to 20) take
+// 30, anything bigger takes 45
 const LIGHT_COST = 18, NORMAL_COST = 30, HEAVY_COST = 45;
 const weighCost = c => c <= 16 ? LIGHT_COST : c <= 20 ? NORMAL_COST : HEAVY_COST;
 
@@ -368,7 +367,7 @@ function foeStrike(srcX, kind, o) {
   if (o.soft) { P.vx = Math.sign(P.x - srcX || -P.facing) * 120; P.vy = -120; sfx.bump(); puff(P.x, P.y - 24, 4, 30); return 'bonk'; }   // the squirrel's acorns: a bonk, no harm done
   return hurt(srcX, kind, o.dmg || 1) ? 'hit' : 'avoided';                            // avoided: rolled through it, or still flashing from the last hit. No grab, no slow
 }
-// under water the lid points any of 8 ways (10/16/2026): it covers what comes at it from that side, about 70 degrees
+// under water the lid points any of 8 ways: it covers what comes at it from that side, about 70 degrees
 // either way of where it points. Where the hit came from: the attack's own height if it says, else the nearest one of that kind
 function foeStrikeWet(srcX, kind, o) {
   const A = P.aimV || [P.facing, 0], cx = P.x, cy = P.y - 9;
@@ -401,7 +400,7 @@ function updateFoes(dt) {
   updateImpacts(dt);
   for (const f of foes) {
     f.t += dt; f.flash = Math.max(0, f.flash - dt); f.cd -= dt; if (f.atkT > 0) f.atkT -= dt;
-    // one lying still, so the first of its kind can be met on its own (the teaching audit, 10/18/2026: three shoelaces at
+    // one lying still, so the first of its kind can be met on its own (three shoelaces at
     // once, or four swimmers, before he'd seen one). It wakes once the one before it (after: its number in the room) is
     // beaten, or he comes close (wake: how close), or it's hit. Asleep it does nothing and touching it doesn't hurt
     if (f.state === 'asleep') {
@@ -418,10 +417,10 @@ function updateFoes(dt) {
       else if ((f.stuckT = (f.stuckT || 0) + dt) > 0.3 && f.okX !== undefined) { f.x = f.okX; f.y = f.okY; f.stuckT = 0; }
     }
     if (f.shoveT > 0) f.shoveT -= dt; if (f.bumpGrace > 0) f.bumpGrace -= dt;
-    if (f.vel) {                                                                       // knocked back: it slides, and a wall stops it (a heavy hit had shoved a maple spinner into the rock for good, the enemy audit 10/17/2026)
+    if (f.vel) {                                                                       // knocked back: it slides, and a wall stops it (so a heavy hit can't shove it into the rock for good)
       const nx = Math.max(f.range[0], Math.min(f.range[1], f.x + f.vel * dt)), d = nx - f.x;
-      if (d) { const b = foeBox(f), fly = FOE[f.kind].free, into = (o) => fly ? boxSolid(b.l + o, b.t, b.r + o, b.b) : boxSolid(b.l + o + 1, b.t + 2, b.r + o - 1, b.b - 3); if (!into(d) || into(0)) f.x = nx; else f.vel = 0; }   // (already stuck in something: it's let move, so it can get out. Something flying checks its whole body, the same as its own flying does: a trimmed check left a spinner just touching the rock, where it couldn't fly on, the 10/18/2026 review)
-      f.vel *= Math.pow(0.01, dt); if (Math.abs(f.vel) < 2) f.vel = 0;          // (eases out over a few tenths: a hit moves it a real distance, not a twitch, the combat review 10/17/2026)
+      if (d) { const b = foeBox(f), fly = FOE[f.kind].free, into = (o) => fly ? boxSolid(b.l + o, b.t, b.r + o, b.b) : boxSolid(b.l + o + 1, b.t + 2, b.r + o - 1, b.b - 3); if (!into(d) || into(0)) f.x = nx; else f.vel = 0; }   // (already stuck in something: it's let move, so it can get out. Something flying checks its whole body, the same as its own flying does, or it could end up just touching the rock where it can't fly on)
+      f.vel *= Math.pow(0.01, dt); if (Math.abs(f.vel) < 2) f.vel = 0;          // (eases out over a few tenths: a hit moves it a real distance, not a twitch)
     }
     if (FOE[f.kind].walker) {                                                          // walkers that follow him off their ledge: keep their walk (what a hit can push them along) to the ground they're on now
       f.hopCd = (f.hopCd || 0) - dt;
@@ -430,8 +429,8 @@ function updateFoes(dt) {
     }
     const xWas = f.x;
     (FOE[f.kind].update || (f.kind === 'cap' ? updateCap : updateCan))(f, dt);
-    // just knocked back: for a moment it doesn't walk back in at him (it was chasing straight back into the gap the hit
-    // made, so he walked on into it). Its attacks still go: a wind up or a lunge it was already in carries on
+    // just knocked back: for a moment it doesn't walk back in at him, so the gap the hit made stays open. Its attacks
+    // still go: a wind up or a lunge it was already in carries on
     if (f.shoveT > 0 && !committed(f) && f.x !== xWas && Math.sign(f.x - xWas) === Math.sign(P.x - f.x) && !/lunge|charge|dive|pounce|dash|swoop|spring|roll|tumble/.test(f.state)) f.x = xWas;
     if (!FOE[f.kind].free && !(f.yoff < 0) && !f.air && f.state !== 'hidden' && tile(Math.floor(f.x / T), Math.floor((f.y - 2) / T)) !== 4) {   // along the natural ground's bumps (not in the water, not mid hop)
       const gy = groundY(f.x, f.y, 7, 7); if (gy !== null) f.y = gy;
@@ -448,7 +447,7 @@ const sameLevel = (f, up = 30) => Math.abs(P.y - f.y) < up;
 function updateCap(f, dt) {
   const k = FOE.cap, dx = P.x - f.x, adx = Math.abs(dx);
   if (f.yoff < 0) hopArc(f, dt);                                                     // (an old pounce in flight: it still comes down)
-  if (f.air) {                                                                        // really in the air: off a ledge after him, or the pounce. It lands on whatever's under it now (10/16/2026: the pounce was drawn as a hop at its own ledge's height, so off the mound it came down in midair, hung there, then went back up onto the mound)
+  if (f.air) {                                                                        // really in the air: off a ledge after him, or the pounce. It lands on whatever's under it, so a pounce off a mound comes down to the ground below instead of hanging in midair
     const landed = airStep(f, dt);
     if (f.state === 'pounce' && f.vy > -60) strike(f, { l: f.x - 10, r: f.x + 10, t: f.y - 16, b: f.y }, 18);
     if (landed && f.state === 'pounce') { puff(f.x, f.y, 4, 30); if (heard(f)) sfx.land(); setFoeState(f, 'rest'); }
@@ -462,11 +461,11 @@ function updateCap(f, dt) {
       }
       if (phillAround() && sameLevel(f, 40) && f.cd <= 0 && !(P.story && !P.story.free)) {
         const m = choose([[adx < 84 ? 3 : 0, 'wind'], [hasMove(f, 3) && adx > 40 && adx < 120 ? 2 : 0, 'crouch'], [hasMove(f, 4) && adx > 64 && adx < 13 * T ? 1.5 : 0, 'tip']]);
-        if (m) { f.f = Math.sign(dx) || f.f; setFoeState(f, m); f.again = false; m === 'tip' ? sfx.clank() : sfx.chitter(0.5); }   // the lunge from where it reaches (it was 110: snapping at nothing)
+        if (m) { f.f = Math.sign(dx) || f.f; setFoeState(f, m); f.again = false; m === 'tip' ? sfx.clank() : sfx.chitter(0.5); }   // the lunge from where it reaches, not from farther out snapping at nothing
       }
       break;
     case 'wind': if (f.t >= 0.42) { setFoeState(f, 'lunge'); sfx.swing(); } break;   // shudders, then...
-    case 'lunge': case 'snap2': {                                                     // ...scuttles forward and snaps (blocked: it snaps again, 10/16/2026)
+    case 'lunge': case 'snap2': {                                                     // ...scuttles forward and snaps (blocked: it snaps again)
       if (f.state === 'snap2' && f.t < 0.14) break;                                   // (a beat to gather itself)
       f.x = Math.max(f.range[0], Math.min(f.range[1], f.x + f.f * 220 * dt));
       f.hb = { l: f.x + (f.f > 0 ? 0 : -16), r: f.x + (f.f > 0 ? 16 : 0), t: f.y - 12, b: f.y }; f.atkBox = f.hb; f.atkT = 0.08;
@@ -481,7 +480,7 @@ function updateCap(f, dt) {
       }
       break;
     }
-    case 'crouch':                                                                     // bunches its legs up... (10/16/2026)
+    case 'crouch':                                                                     // bunches its legs up...
       if (f.t >= 0.35) {
         setFoeState(f, 'pounce'); f.air = true; f.vy = -300; f.yoff = 0; sfx.jump();
         const dy = Math.max(-50, P.y - f.y), tFly = (300 + Math.sqrt(300 * 300 + 2 * 800 * dy)) / 800;   // how long till it's down at his height
@@ -516,7 +515,7 @@ function updateCan(f, dt) {
       if (phillAround() && adx < 220 && Math.abs(P.y - f.y) < 140 && f.cd <= 0) {
         f.f = Math.sign(dx) || f.f;
         const level = Math.abs(P.y - f.y) < 30;
-        const m = adx < 50 ? choose([[1.2, 'hop'], [hasMove(f, 2) ? 1.5 : 0, 'shake']])           // too close: hops back, or shakes itself up and sprays him (10/16/2026)
+        const m = adx < 50 ? choose([[1.2, 'hop'], [hasMove(f, 2) ? 1.5 : 0, 'shake']])           // too close: hops back, or shakes itself up and sprays him
           : choose([[2, 'aim'], [hasMove(f, 3) && level && adx > 70 ? 1 : 0, 'tip']]);              // or tips over and rolls at him
         if (m === 'hop') { setFoeState(f, 'hop'); f.vy = -230; f.hopVX = -f.f * 90; sfx.jump(); }
         else if (m) { setFoeState(f, m); m === 'shake' ? sfx.splort() : m === 'tip' ? sfx.clank() : sfx.windup(); }
@@ -554,7 +553,7 @@ function updateCan(f, dt) {
 // ---- shots: Grime blobs (and the squirrel's practice acorns)
 function updateShots(dt) {
   for (const s of shots) {
-    if (s.dead) continue;                                                               // (used up: not one more move, hit or batted back hit before it's cleared away, the 10/18/2026 review)
+    if (s.dead) continue;                                                               // (used up: not one more move, hit or batted back hit before it's cleared away)
     s.t += dt; if (s.upd) s.upd(s, dt); if (s.dead) continue; s.vy += s.g * dt; s.x += s.vx * dt; s.y += s.vy * dt;
     if (boxSolid(s.x - 2, s.y - 2, s.x + 2, s.y + 2) || s.t > (s.life || 4) || s.y > room.pxH || (s.done && s.done(s))) {
       s.dead = true;
@@ -589,9 +588,8 @@ function reflectShot(s) {
   spark(s.x, s.y);
 }
 
-// how much a beaten foe drops (a friend's playtest, 10/14/2026: every foe always paid out, often three, and the shops
-// were cheap). Now it's often nothing, usually one, and two is rare. The tougher ones (the ones that used to drop two to
-// three) drop a bit more often. The acorn cap pin adds one whenever anything drops at all
+// how much a beaten foe drops: often nothing, usually one, and two is rare, so money means something in the shops.
+// The tougher ones drop a bit more often. The acorn cap pin adds one whenever anything drops at all
 const DROP_CHANCE = { small: 0.65, tough: 0.8 }, DROP_TWO = { small: 0.1, tough: 0.22 };
 function foeDropCount(f) {
   const tough = (FOE[f.kind].acorns || [1, 1])[1] >= 3 ? 'tough' : 'small';
@@ -601,10 +599,10 @@ function foeDropCount(f) {
   return n;
 }
 // ---- his sword reaching them
-// how it takes a hit, by what it's made of (the combat review, 10/17/2026): a bottle cap tips back on its rim, tin
-// rattles, paper and plastic film crinkle and twist, anything squishy squashes flat and springs back, cloth sways, the
-// glass bottle rattles with a glint, and hard plastic flexes. Drawn on top of what it's doing, not instead: it still
-// carries on with its attack (that's foeHurt's call), and its hits still go by its plain drawing (artHit)
+// how it takes a hit, by what it's made of: a bottle cap tips back on its rim, tin rattles, paper and plastic film
+// crinkle and twist, anything squishy squashes flat and springs back, cloth sways, the glass bottle rattles with a
+// glint, and hard plastic flexes. Drawn on top of what it's doing, not instead: it still carries on with its attack
+// (that's foeHurt's call), and its hits still go by its plain drawing (artHit)
 const MAT = { cap: 'tip', can: 'rattle', frog: 'rattle', reacher: 'rattle', jack: 'rattle', pike: 'glass',
   wrapper: 'crinkle', bag: 'crinkle', plane: 'crinkle', horn: 'crinkle', spinner: 'crinkle', shuttle: 'crinkle',
   sponge: 'squish', gum: 'squish', leech: 'squish', balloon: 'squish', ball: 'squish', glove: 'squish', duck: 'squish',
@@ -618,11 +616,11 @@ function foeReact(f, power, braced) {
 // knocked back (push) at x, y. opts: full (the whirl: its whole shove, not cut down), power (how hard it reads), shoveT
 function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
   if (f.state === 'down') return true;                                                  // already out: nothing more to give
-  if (f.state === 'asleep') { setFoeState(f, 'walk'); f.cd = 0.6; }                     // lying still (the teaching audit): a hit wakes it
-  // a plain hit makes it flinch, not stop (10/16/2026): swings are free now, so a hit that knocked it out of
-  // whatever it was doing (and held its next attack back) let mashing keep it from ever getting a turn. It takes the
-  // hit, gets nudged back, and carries on: its wind-up, its attack, its next attack when it was going to. A heavy hit
-  // (the charged swing, the roll swing) still knocks it out of things like before
+  if (f.state === 'asleep') { setFoeState(f, 'walk'); f.cd = 0.6; }                     // lying still: a hit wakes it
+  // a plain hit makes it flinch, not stop: swings are free, so if a hit knocked it out of whatever it was doing (and
+  // held its next attack back), mashing would keep it from ever getting a turn. It takes the hit, gets nudged back, and
+  // carries on: its wind-up, its attack, its next attack when it was going to. A heavy hit (the charged swing, the roll
+  // swing) still knocks it out of things
   const mid = committed(f), holds = !heavy;
   const power = opts.power ?? (heavy ? 1.8 : 1), braced = mid && !heavy;
   const opening = /stuck|stagger|dizzy|flat|lie|wobble|tangle/.test(f.state);              // (in an opening it hardly moves: hitting it out of reach of the next hit wasted the opening, the spinner stuck in the ground)
@@ -651,9 +649,9 @@ function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
   if (f.state !== 'stagger' && !FOE[f.kind].noHurt && !(FOE[f.kind].keepState && FOE[f.kind].keepState(f))) setFoeState(f, 'hurt');   // keepState: an opening a hit doesn't cut short
   return false;
 }
-// the spin and the fluff burst go by the same protection as the sword (10/18/2026: they were getting through
-// the closed glove, the fish from the front, the pike and the leech while they were free, the rolling rings). Whatever the
-// sword glances off right now, they glance off too, with the same tink and the same words the first time
+// the spin and the fluff burst go by the same protection as the sword (the closed glove, the fish from the front, the
+// pike and the leech while they're free, the rolling rings). Whatever the sword glances off right now, they glance off
+// too, with the same tink and the same words the first time
 const saysOf = t => typeof t === 'function' ? t() : t;                               // (what one says can depend on what he knows)
 function specialDeflected(f, type, x, y) {
   const k = FOE[f.kind]; if (!k.deflect || !k.deflect(f, { type, hit: new Set(), t: 0 })) return false;
@@ -668,17 +666,17 @@ function foeHits(box, a) {
     if (!overlap(box, fb) || !swordHits(fb)) continue;
     a.hit.add(f);
     const [cx, cy] = swordContact(fb);                                                  // where the blade really meets it
-    if (a.type !== 'rollslash') a.stopLunge = true;                                     // it connected: the swing's own pull forward stops there (it was carrying him on into it, the combat review 10/17/2026). The roll swing's meant to travel
+    if (a.type !== 'rollslash') a.stopLunge = true;                                     // it connected: the swing's own pull forward stops there, so it doesn't carry him on into it. The roll swing's meant to travel
     if (FOE[f.kind].deflect && FOE[f.kind].deflect(f, a)) {                             // something the sword just glances off right now
       impact(cx, cy, Math.sign(f.x - P.x) || P.facing, 1, 'armor'); foeReact(f, 0.6, true); sfx.tink(); if (a.type === 'down') pogo(); else { P.recoilT = 0.1; P.recoilV = -P.facing * 200; }
       if (!f.told) { f.told = 1; popup(f.x, f.y - 40, fmtKeys(saysOf(FOE[f.kind].deflectText) || 'it glances off'), '#cfd6e6'); }
       f.bounces = (f.bounces || 0) + 1;
-      if (FOE[f.kind].hint && f.bounces === 3) popup(f.x, f.y - 52, fmtKeys(saysOf(FOE[f.kind].hint)), '#ffd36b');   // still stuck on it after three: a plainer nudge (10/16/2026)
+      if (FOE[f.kind].hint && f.bounces === 3) popup(f.x, f.y - 52, fmtKeys(saysOf(FOE[f.kind].hint)), '#ffd36b');   // still stuck on it after three: a plainer nudge
       continue;
     }
     let dmg = ((DMG[a.type] || 1) + (a.level || 0)) * swordBonus();   // (a charged swing deep in the combo: one more for each step in)
     if (FOE[f.kind].soak && !isCharged(a.type) && a.type !== 'rollslash') { dmg *= 0.5; if (!f.told) { f.told = 1; popup(f.x, f.y - 34, 'it soaks it up', '#cfd6e6'); } }   // the sponge: plain swings barely dent it
-    const finisher = a.type === 'whirl' || a.type === 'bashfin';                                                 // the combo's last swing: its whole shove, so it buys him room (the combat review, 10/17/2026)
+    const finisher = a.type === 'whirl' || a.type === 'bashfin';                                                 // the combo's last swing: its whole shove, so it buys him room
     foeHurt(f, dmg, ATK[a.type].shove ? Math.sign(f.x - P.x || P.facing) * ATK[a.type].shove : P.facing * (isCharged(a.type) ? 220 + (a.level || 0) * 40 : a.type === 'chop' ? 150 : 120), cx, cy, isCharged(a.type) || a.type === 'rollslash',
       { full: finisher, power: isCharged(a.type) ? 1.8 + (a.level || 0) * 0.3 : finisher ? 1.5 : a.type === 'chop' ? 1.2 : 1, shoveT: finisher ? 0.35 : a.type === 'chop' ? 0.18 : undefined });   // the whirl shoves whatever it catches off him, either side
     f.bumpGrace = 0.3;
@@ -817,9 +815,9 @@ function swordContact(fb) {
   return [Math.max(fb.l, Math.min(fb.r, P.x + P.facing * 18)), Math.max(fb.t, Math.min(fb.b, P.y - 20))];
 }
 
-// ---- an enemy's hit is where its drawing is (10/16/2026) ----
+// ---- an enemy's hit is where its drawing is ----
 // An attack's box says where it's meant to reach. On its own that's a plain rectangle, often reaching where nothing's
-// drawn, so a hit could land before (or past) the jaws or the rope that's meant to be doing it. Now it only lands where
+// drawn, so a hit could land before (or past) the jaws or the rope that's meant to be doing it. So it only lands where
 // the box and Phill overlap AND the enemy, as it's drawn right then, is solid there: its picture's actual pixels (from
 // art/hitmasks.js), turned, flipped and stretched however it's drawn, plus anything it draws itself in solid color (a
 // rope, a whip). Its shadow and anything see-through don't count. Turned on enemy by enemy (ART_HITS), region by region
@@ -863,7 +861,7 @@ function artIn(rec, b) {
     const [a, bb, cc, dd, e, ff] = d.m, px = a * x + cc * y + e, py = bb * x + dd * y + ff;
     if (d.im) {
       if (px < d.dx || py < d.dy || px >= d.dx + d.dw || py >= d.dy + d.dh) continue;
-      const mk = sheetMask(d.im); if (!mk) return true;                          // (a picture we've no mask for: all of it counts)
+      const mk = sheetMask(d.im); if (!mk) return true;                          // (a picture with no mask: all of it counts)
       const u = Math.floor(d.sx + (px - d.dx) * d.sw / d.dw), v = Math.floor(d.sy + (py - d.dy) * d.sh / d.dh);
       if (mk.bits[v * mk.w + u]) return true;
     } else if (px >= d.x && px < d.x + d.w && py >= d.y && py < d.y + d.h) return true;
@@ -878,7 +876,7 @@ function artHit(f, box) {
   const rec = foePose(f); if (!rec.length) return true;
   return artIn(rec, { l: Math.max(box.l, body.l), r: Math.min(box.r, body.r), t: Math.max(box.t, body.t), b: Math.min(box.b, body.b) });
 }
-// the bosses the same way (10/16/2026): an attack of theirs only lands where what drawBoss() draws is on him. body: the
+// the bosses the same way: an attack of theirs only lands where what drawBoss() draws is on him. body: the
 // part of him it's checked against (walking into the tin soldier leaves him a little room), his whole body otherwise
 function bossHit(box, body) {
   body = body || { l: bodyL(P.x), r: bodyR(P.x), t: P.y - P.h, b: P.y };

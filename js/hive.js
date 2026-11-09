@@ -1,10 +1,10 @@
 'use strict';
 // ---------- the Hive: the wild bees' knothole in the Old Oak ----------
-// From New regions.md (Hive.md in the notes, building 10/18/2026). A piñata blew up into it and split, and the Grime
-// candy spilled out all through the hive. The guard bees at the mouth bump him back out till he shows he's here to
-// help. The bumblebee in the comb hall shows him the belly flop (it just drops), and the crust right after only breaks
-// under one. The honey on the stores' floor is slow going. The bees go about their work all through it, and never hurt
-// him. Loaded after the Greenhouse's files: it hooks into the room's setup, its items and its events.
+// A piñata blew up into it and split, and the Grime candy spilled out all through the hive. The guard bees at the mouth
+// bump him back out till he shows he's here to help. The bumblebee in the comb hall shows him the belly flop (it just
+// drops), and the crust right after only breaks under one. The honey on the stores' floor is slow going. The bees go
+// about their work all through it, and never hurt him. Loaded after the Greenhouse's files: it hooks into the room's
+// setup, its items and its events.
 
 (() => {
 // ---------- the region ----------

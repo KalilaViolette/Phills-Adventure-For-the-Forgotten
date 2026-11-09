@@ -1,5 +1,5 @@
 'use strict';
-// ---------- the Hive's bosses (New regions.md, Hive.md; 10/18/2026) ----------
+// ---------- the Hive's bosses ----------
 
 (() => {
 const S = n => { if (sfx[n]) sfx[n](); };

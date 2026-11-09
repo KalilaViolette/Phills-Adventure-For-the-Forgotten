@@ -7,7 +7,7 @@
 let boss = null;
 const BOSS_KINDS = {};          // the other regions' bosses add themselves here: { setup, update, hits, draw, name, hp, squeaked }
 const bossKind = () => boss && boss.def.kind && BOSS_KINDS[boss.def.kind];
-const SOL = { hp: 14, walk: 44, reach: 66, wind: 0.62, wind2: 0.46, thrust: 0.15, recover: 0.5, raise: 0.8, slam: 0.14, stagger: 2.2, combo2: 2 };   // (10/23/2026: 20 down to 14, down for 2.2 s not 1.8, thrusts in twos once he's wound up, not threes: the first boss was about six clean parries)
+const SOL = { hp: 14, walk: 44, reach: 66, wind: 0.62, wind2: 0.46, thrust: 0.15, recover: 0.5, raise: 0.8, slam: 0.14, stagger: 2.2, combo2: 2 };   // (20 down to 14, down for 2.2 s not 1.8, thrusts in twos once he's wound up, not threes: the first boss was about six clean parries)
 const BOSS_DMG = { side: 1, up: 1, low: 1, down: 1, rollslash: 2, charged: 4, chargedchop: 4, chargedwhirl: 4 };
 function setupBoss() {
   boss = null;
@@ -31,10 +31,10 @@ function bossArena() {
 // only a boss that's in the middle of its fight reacts to the squeak (squeaking near the beaten sailboat woke it
 // back up and it came at me). Not one that's beaten, sinking, or still asleep before the fight
 const bossFighting = () => !!(boss && boss.state !== 'dormant' && boss.state !== 'gone' && boss.state !== 'falling' && boss.state !== 'wake' && !boss.down && !world.flags[boss.def.flag]);
-// A squeak at a boss (10/18/2026): it used to knock every one of them off balance for most of a second, every
-// time, which made it the way out of anything. Now it only startles one caught in its moment, the wind-up its soundStates
-// names (a cannon being lined up, a honk being drawn in, a lure dangling), and anything else it shrugs off. His heart
-// takes it further later (squeakStage().bossAny). The fluff burst keeps the old rule: it's a push, not a noise
+// A squeak at a boss only startles one caught in its moment, the wind-up its soundStates names (a cannon being lined
+// up, a honk being drawn in, a lure dangling), and anything else it shrugs off. Knocking every boss off balance every
+// time would make it the way out of anything. His heart takes it further later (squeakStage().bossAny). The fluff burst
+// keeps the old rule: it's a push, not a noise
 function bossHeard(x, y, r, how) {
   if (!bossFighting()) return false;
   const k = bossKind();
@@ -56,13 +56,13 @@ function holdInArena() {
   if (bodyL(P.x) < a.l) { P.x += a.l - bodyL(P.x); if (P.vx < 0) P.vx = 0; }
   if (bodyR(P.x) > a.r) { P.x -= bodyR(P.x) - a.r; if (P.vx > 0) P.vx = 0; }
 }
-function bossState(s) { boss.state = s; boss.t = 0; boss.hb = null; boss.hitP = false; boss.snapped = false; boss.landed = false; }   // (each attack's own once-only latches start fresh too: a parried reel was leaving the next one's snap already used, the enemy audit 10/17/2026)
+function bossState(s) { boss.state = s; boss.t = 0; boss.hb = null; boss.hitP = false; boss.snapped = false; boss.landed = false; }   // (each attack's own once-only latches start fresh too, or a parried reel would leave the next one's snap already used)
 function bossWalls(on) {
   for (const [x0, y0, x1, y1] of boss.def.walls) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) room.map[y * room.W + x] = on ? 1 : 0;
   boss.walled = on;
 }
 const bossBox = () => ({ l: boss.x - 15, r: boss.x + 15, t: boss.y - 84, b: boss.y });
-// ---- every boss by Phill's rules now (10/16/2026: the boss combat audit) ----
+// ---- every boss by Phill's rules ----
 const swingOn = (box, hb) => overlap(box, hb) && swordHits(hb);                 // his hit lands where the sword is as it's drawn, like on the regular enemies
 const bossDmg = (table, a) => (table[a.type] || 1) + (a.level || 0);            // a charged step deep in the combo: one more for each step in
 function bossBigTell(x, y) { popup(x, y, '!!', '#ff6b5a', true); sfx.heavyWindup(); }   // winding up the move the shield can't take
@@ -70,10 +70,10 @@ function bossBigTell(x, y) { popup(x, y, '!!', '#ff6b5a', true); sfx.heavyWindup
 const bossHeavy = (x, kind, dmg, y) => foeStrike(x, kind, { cost: 34, heavy: true, dmg, y });
 const bossBumpOk = () => !(P.bumpSafe > 0);                                     // just after a block, bumping into it doesn't hurt him either
 // how close a point is to a box (for the squeak and the fluff burst: a ring reaches the boss's body, not just its middle
-// side to side. Five of them were reacting to a squeak way above or below them, the enemy audit 10/17/2026)
+// side to side, so a squeak way above or below a boss doesn't reach it)
 const boxReach = (hb, x, y, r) => Math.hypot(Math.max(hb.l - x, 0, x - hb.r), Math.max(hb.t - y, 0, y - hb.b)) <= r;
 // beaten: everything it had going stops for good. Its waves, lures and shots go, and it comes down if it was in the air
-// (a lure was still hurting him during the tangle's down scene, and a swan beaten mid bounce landed and slammed again)
+// (so a lure can't hurt him during a down scene, and a boss beaten mid bounce doesn't land and slam again)
 function bossEnd() {
   const b = boss; if (!b) return;
   b.waves = []; b.lures = []; b.shots = 0; b.lashEnd = null;
@@ -106,7 +106,7 @@ function updateBoss(dt) {
   switch (b.state) {
     case 'dormant':
       // no parry yet: the fight doesn't start (it can't be won: his tin only opens up when his bayonet's parried, and
-      // the arena would shut him in, the progression audit 10/17/2026). He stays asleep, Phill gets a nudge back and a hint
+      // the arena would shut him in). He stays asleep, Phill gets a nudge back and a hint
       if (P.x > b.def.start && P.ko <= 0 && !scene && !can('parry')) {
         P.x = Math.min(P.x, b.def.start - 6); if (P.vx > 0) P.vx = -60;
         if ((b.toldParry || 0) <= 0) { b.toldParry = 4; sfx.clank(); popup(P.x, P.y - 54, 'his tin is way too thick. the squirrel back in the hollow might know a way past that bayonet', '#cfd6e6'); }
@@ -137,7 +137,7 @@ function updateBoss(dt) {
     }
     case 'thrust': {
       b.x = Math.max(4 * T, Math.min(room.pxW - 4 * T, b.x + b.f * 260 * dt));
-      b.hb = { l: b.f > 0 ? b.x + 10 : b.x - SOL.reach, r: b.f > 0 ? b.x + SOL.reach : b.x - 10, t: b.y - 46, b: b.y - 6 };   // the thrust goes in low at him now (it's drawn that way: it went over his head)
+      b.hb = { l: b.f > 0 ? b.x + 10 : b.x - SOL.reach, r: b.f > 0 ? b.x + SOL.reach : b.x - 10, t: b.y - 46, b: b.y - 6 };   // the thrust goes in low at him, the way it's drawn
       if (!b.hitP && phillAround() && bossHit(b.hb)) {
         b.hitP = true;
         const out = foeStrike(b.x, 'soldier', { cost: 20 });                    // a normal hit to block: three in a row empties the shield, it doesn't break it
@@ -169,7 +169,7 @@ function updateBoss(dt) {
       b.hb = { l: b.f > 0 ? b.x : b.x - 50, r: b.f > 0 ? b.x + 50 : b.x, t: b.y - 64, b: b.y - 20 };
       if (!b.hitP && phillAround() && bossHit(b.hb)) {
         b.hitP = true;
-        if (bossHeavy(b.x, 'soldier', 2) === 'parried') { bossStagger(2.4); popup(b.x, b.y - 100, 'knocked flat', '#ffd36b'); break; }   // (the normal parry window now, not its own tighter one)
+        if (bossHeavy(b.x, 'soldier', 2) === 'parried') { bossStagger(2.4); popup(b.x, b.y - 100, 'knocked flat', '#ffd36b'); break; }   // (the normal parry window, not a tighter one of its own)
       }
       if (b.x < 4 * T + 2 || b.x > room.pxW - 4 * T - 2) {                        // into the wall: clang, dazed
         b.x = Math.max(4 * T, Math.min(room.pxW - 4 * T, b.x)); shakeT = 0.3; shakeA = 4; sfx.clank(); sfx.thud();
@@ -181,7 +181,7 @@ function updateBoss(dt) {
     case 'falling': break;
   }
   // walking into him hurts. Rolling doesn't: he's tall and there's a gap between his legs, so a roll (or crawling, or just
-  // coming up out of one) takes Phill under him to the other side (a friend's playtest, 10/14/2026)
+  // coming up out of one) takes Phill under him to the other side
   const under = P.roll > 0 || P.rollEndT > 0 || P.h <= ROLL_H;
   if (b.state !== 'stagger' && b.state !== 'falling' && b.state !== 'dormant' && !under && phillAround() && P.inv <= 0 && !dodgeSafe() && !P.story && bossBumpOk() && bossHit(bossBox(), { l: bodyL(P.x) + 3, r: bodyR(P.x) - 3, t: P.y - P.h + 4, b: P.y })) hurt(b.x, 'soldier', 1);
 }

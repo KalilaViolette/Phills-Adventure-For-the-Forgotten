@@ -1,6 +1,6 @@
 'use strict';
 // ---------- go to an area: a picker at the front of the menu that takes Phill straight to any room
-// (10/17/2026, for testing, on a phone too). Grouped by region, in the order you'd come to them ----------
+// (for testing, on a phone too). Grouped by region, in the order you'd come to them ----------
 const AREA_NAMES = {
   bedroom: 'bedroom', hallway: 'hallway', backyard: 'backyard',
   flight: 'the flight', nest: "the crow's nest", oakfall: 'the fall from the oak',
@@ -22,7 +22,7 @@ const AREA_NAMES = {
   brood: 'the nursery', waxworks: 'the waxworks', pinata: "the piñata's hall", queen: "the queen's chamber", propolis: 'the propolis wall',
   chest: 'the chest', maintunnel: 'the main tunnel', townsquare: 'the town square', mendlane: 'mend lane', bunks: 'the bunks', moleshop: "the mole's shop", listenpost: 'the listening post', deepdig: 'the deep dig',
 };
-const AREA_REGIONS = [['home', 'Home'], ['oak', 'The Old Oak'], ['rootwood', 'Rootwood'], ['pond', 'The Pond'], ['playground', 'The Playground'], ['warren', 'The Warren'], ['greenhouse', 'The Greenhouse'], ['hive', 'The Hive']];   // (the headers in the list, 10/17/2026)
+const AREA_REGIONS = [['home', 'Home'], ['oak', 'The Old Oak'], ['rootwood', 'Rootwood'], ['pond', 'The Pond'], ['playground', 'The Playground'], ['warren', 'The Warren'], ['greenhouse', 'The Greenhouse'], ['hive', 'The Hive']];   // (the headers in the list)
 const _enterRoom0 = enterRoom;
 enterRoom = function (id, doorId) {
   if (doorId === '@area') { const def = Rooms.get(id); const d = def && !def.spawn && (def.doors.find(o => !o.falling && !o.exitOnly && !o.swim) || def.doors[0]); doorId = d ? d.id : null; }

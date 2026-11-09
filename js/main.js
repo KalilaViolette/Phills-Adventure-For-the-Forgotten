@@ -37,9 +37,9 @@ function stepWorld(dt) {
 
 // ---------- start ----------
 // Each start owns the world it was started with and a number. Picking another slot while the first room is still
-// loading starts again with a new number, and the old wait sees it isn't the latest any more and gives up (the save
-// audit, 10/17/2026: the title's first load finishing late used to walk into the slot picked after it, a second time,
-// and start the bedroom wake up there). A room that won't load: back to where he rested, or it stops trying
+// loading starts again with a new number, and the old wait sees it isn't the latest any more and gives up, so a late
+// first load can't walk into the slot picked after it and start the bedroom wake up there a second time. A room that
+// won't load: back to where he rested, or it stops trying
 let startGen = 0;
 function startGame() {
   const gen = ++startGen, w = world;
