@@ -532,8 +532,9 @@ const pauseMenu = window.pauseMenu = (() => {
     const w = VW + (v.w - VW) * e, h = VH + (v.h - VH) * e, z = VW / w;
     S = sv.S * z; VW = w; VH = h;
     cam.x = cam.px = sv.x + (v.x - sv.x) * e; cam.y = cam.py = sv.y + (v.y - sv.y) * e; shakeT = 0;
+    if (typeof frontCam !== 'undefined') frontCam = { x: sv.x, y: sv.y, w: sv.VW, h: sv.VH };   // the layers in front stay as they were (render.js)
     try { render0(1); }
-    finally { S = sv.S; VW = sv.VW; VH = sv.VH; cam.x = sv.x; cam.y = sv.y; cam.px = sv.px; cam.py = sv.py; shakeT = sv.shakeT; }
+    finally { S = sv.S; VW = sv.VW; VH = sv.VH; cam.x = sv.x; cam.y = sv.y; cam.px = sv.px; cam.py = sv.py; shakeT = sv.shakeT; if (typeof frontCam !== 'undefined') frontCam = null; }
   };
   // while it's up, nothing that's drawn over the game shows (his health, words, the map, a talk box): only the room and him
   const hide = name => { const f = window[name]; if (typeof f !== 'function') return; window[name] = function () { if (api.open) return; return f.apply(this, arguments); }; };

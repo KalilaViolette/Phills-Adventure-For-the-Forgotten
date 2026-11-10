@@ -79,6 +79,7 @@ function render(alpha) {
   ctx.translate(-camX, -camY);
   if (typeof REACT !== 'undefined') REACT.draw();                             // a cap or moss he's just landed on, giving (js/react.js)
   drawCovers();
+  if (typeof SOFT !== 'undefined') SOFT.draw(ctx);                        // the soft pieces (caps, a branch, roots), bending under him (js/painted/soft.js)
   if (typeof drawWildlife === 'function') drawWildlife('back', camX, camY);   // animals in the room itself, behind everything that moves
   drawGlowLayers(ctx, 0, 0, false, 'lighter', camX, camY);                    // the room's own light, behind him
   drawPlants(1, camX, camY);                                                   // plants behind him, swaying
@@ -131,6 +132,7 @@ function render(alpha) {
   drawActors('back');
   if (!P.held && !P.hidden) { drawIdleGround(q); drawPhill(px2, py2 + (P.idleBit ? P.idleBit.dy : 0), q); drawIdleBits(q); }
   if (typeof drawOnPhill === 'function') drawOnPhill(px2, py2);                           // things stuck on him (the gum leech)
+  if (typeof SOFT !== 'undefined') SOFT.drawFront(ctx);                                 // the dent's walls round his feet in a mushroom's flesh (js/painted/soft.js)
 
   ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.textAlign = 'center';
   const placed = [];                                                            // (where the ones already drawn this frame are, so a wrapped one doesn't land on top of another)
@@ -158,7 +160,7 @@ function render(alpha) {
   if (typeof drawGallsShine === 'function') drawGallsShine();                            // the oak gall shining once he's right there with it (js/sword.js)
   if (layers.some(L => L.f > 1)) {                // close to the camera, sliding past faster than the room
     ctx.setTransform(S, 0, 0, S, offX, offY);
-    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) drawView(im, Math.round(camX * L.f) - (L.x || 0), Math.round(camY * (L.fy ?? L.f)) - (L.y || 0)); if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
+    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) { const v = frontAt(im, L, camX, camY); drawView(im, v[0], v[1]); } if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
     ctx.translate(-camX, -camY);
   }
 
@@ -241,6 +243,34 @@ function render(alpha) {
   }
   if (showDebug) drawDebug();
   ctx.restore();
+}
+// where a layer in front of the room starts on screen. It slides past at its own speed around the middle of
+// the view, the way it does with the 640 by 384 view it's painted for, so a smaller view (a short window, the menu's
+// close-up) doesn't push it up or sideways over him. A smaller view can see a little further along the layer than
+// the full view ever does, so it's held back from going past the layer's edges by up to that much and no more: a
+// layer that covers the view keeps its bottom and sides at the screen's edges, and a strip placed in the room
+// (grass along the bottom, a branch) stays where it was put instead of being pulled across the screen.
+// While the menu's close-up is moving in on him (frontCam is the view from before it), the layers stay where they were
+// in that view and are only seen bigger, so the close-up never brings one over him that wasn't there already
+const FRONT_REF_W = 640, FRONT_REF_H = 384;
+let frontCam = null;
+function frontAt(im, L, camX, camY) {
+  const c = frontCam;
+  if (!c) return frontIn(im, L, camX, camY, VW, VH);
+  const v = frontIn(im, L, c.x, c.y, c.w, c.h);
+  return [v[0] + Math.round(camX - c.x), v[1] + Math.round(camY - c.y)];
+}
+function frontIn(im, L, camX, camY, vw, vh) {
+  const fx = L.f, fy = L.fy ?? L.f;
+  const x = (camX + vw / 2) * fx - (fx - 1) * FRONT_REF_W / 2 - vw / 2 - (L.x || 0);
+  const y = (camY + vh / 2) * fy - (fy - 1) * FRONT_REF_H / 2 - vh / 2 - (L.y || 0);
+  return [Math.round(inEdges(x, im.width, vw, FRONT_REF_W, fx)), Math.round(inEdges(y, im.height, vh, FRONT_REF_H, fy))];
+}
+function inEdges(v, size, view, ref, f) {
+  const most = (f - 1) * Math.max(0, ref - view) / 2;                   // how much further a smaller view reaches
+  if (size < view || most <= 0) return v;
+  const held = Math.max(0, Math.min(size - view, v));
+  return v + Math.max(-most, Math.min(most, held - v));
 }
 // draws just the part of a room picture that's on screen
 function drawView(im, camX, camY) {
@@ -742,30 +772,96 @@ function drawUnderground(camX, camY) {
 }
 // a painted room's plants: each row of the picture slides sideways by whole pixels, nothing at the anchor
 // row (where it grows from, or hangs from) and the most at the far end, so the pixels stay crisp. It sways on its own,
-// and when he walks through it it's pushed aside and springs back. [piece, layer, anchor x, anchor y, sway px, speed, part px, phase]
+// and when he walks through it it's pushed aside and springs back. [piece, layer, anchor x, anchor y, sway px, speed, part px, phase,
+// flex, contact bands [y0, y1, x0, x1] in room pixels, kind] (older rooms leave the last three out)
 const plantState = new Map();
 let plantT = performance.now(), plantDt = 0;
+// how each kind of plant springs back once it's pushed, and how it bends (PLANT_BENDS). hz is the spring's own speed before damping
+// slows it, damp how quickly the swinging dies out (1 comes back without swinging past). A plant names its kind in the room
+// (Layers.json "kind"). One with no kind keeps the spring every plant had before (stiffness 60, damping 5.5) and the curve
+const PLANT_KINDS = {
+  grass: { hz: 1.6,  damp: 0.6,  bend: 'curve' },
+  broad: { hz: 1.25, damp: 0.55, bend: 'rooted' },
+  fern:  { hz: 0.95, damp: 0.85, bend: 'curve' },
+  tuft:  { hz: 1.8,  damp: 0.8,  bend: 'curve' },
+  moss:  { hz: 2.2,  damp: 1.0,  bend: 'curve' },
+};
+// how far along its height each row moves, 0 at the anchor and 1 at the far end (k is the row's share of the way there).
+// curve: bends along its whole length. rooted: the lower third holds and the blades above it curve, so a broad clump keeps a full crown
+const PLANT_BENDS = {
+  curve:  k => Math.pow(k, 1.4),
+  rooted: k => k < 0.3 ? 0 : Math.pow((k - 0.3) / 0.7, 1.4),
+};
+let plantFrom = null, plantTo = null, plantWarp = 0, plantWarpSeen = 0, plantAir = { ground: true, vy: 0 }, plantLand = 0;
+function warpPlants() { plantWarp++; }                             // anything that puts him somewhere without moving him there (a door, a respawn, a
+                                                                   //  scripted placing) calls this, so the plants don't see him travel the gap
 function drawPlants(layer, camX, camY) {
   const list = room.def.plants;
   if (!list) return;
-  if (layer === 1) { plantDt = Math.min(0.05, Math.max(0, (performance.now() - plantT) / 1000)); plantT = performance.now(); }   // (once a frame: the pass behind him comes first)
-  const now = performance.now() / 1000, dt = plantDt, pcs = room.def.art.pieces || {};
-  list.forEach(([n, lay, ax, ay, sway, speed, part, ph], i) => {
+  if (layer === 1) {                                                 // (once a frame: the pass behind him comes first)
+    const gap = Math.max(0, (performance.now() - plantT) / 1000); plantT = performance.now();
+    const long = gap > 0.25;                                         // a hitch over a quarter second: the plants hold still for it and lose that time,
+    plantDt = long ? 0 : gap;                                        //  then carry on from where he is now. Shorter ones are caught up in small steps
+    const at = { room: room.id, x: P.x, y: P.y, h: P.h };
+    // where he was at the start of this frame, so the plants see him move through the frame instead of jumping. After a warp, a new
+    // room or a long hitch he's just where he is now, nothing in between gets touched. (Moving further than he could is a backup)
+    const jumped = !plantTo || plantTo.room !== at.room || plantWarp !== plantWarpSeen || long || (Math.hypot(at.x - plantTo.x, at.y - plantTo.y) > 420 * plantDt + 8);
+    plantWarpSeen = plantWarp; plantFrom = jumped ? at : plantTo; plantTo = at;
+    plantLand = P.ground && !plantAir.ground && !jumped ? plantAir.vy : 0;   // (the frame he lands: how fast he was coming down)
+    plantAir = { ground: !!P.ground, vy: P.vy || 0 };
+  }
+  const now = performance.now() / 1000, dt = plantDt, pcs = room.def.art.pieces || {}, FEATHER = 6;
+  const from = plantFrom || { x: P.x, y: P.y, h: P.h }, to = plantTo || from;
+  list.forEach(([n, lay, ax, ay, sway, speed, part, ph, flex = 1, bands, kind], i) => {
     if (lay !== layer) return;
     const r = pcs[n], im = r && Assets.get(room.def.art.pack + '#piece_' + n);
-    if (!im || r[0] - camX > VW + 12 || r[1] - camY > VH || r[0] + r[2] - camX < -12 || r[1] + r[3] - camY < 0) return;
+    if (!r) return;
     const key = room.id + ':' + i;
-    let st = plantState.get(key); if (!st) { st = { o: 0, v: 0 }; plantState.set(key, st); }
-    let target = 0;                                                  // he's in it: pushed away from him, the closer the more
-    if (part > 0 && P.x + HW > r[0] - 4 && P.x - HW < r[0] + r[2] + 4 && P.y > r[1] && P.y - P.h < r[1] + r[3]) {
-      const dx = ax - P.x, w = r[2] / 2 + HW;
-      target = part * (dx === 0 ? -P.facing : Math.sign(dx)) * Math.max(0.35, 1 - Math.abs(dx) / w);
+    let st = plantState.get(key); if (!st) { st = { o: 0, v: 0, c: 0, side: 0, w: 1, in: false }; plantState.set(key, st); }
+    const reach = part * Math.max(1, r[3] / 14) * flex, lim = Math.max(4, r[3] * 0.35);   // (never past about a third of its height: sliding rows further stretches the blades into streaks)
+    const rec = PLANT_KINDS[kind], om = rec ? 2 * Math.PI * rec.hz : Math.sqrt(60), cd = rec ? 2 * rec.damp * om : 5.5;
+    const kick = om / Math.sqrt(60), press = om * om / 60;             // (scaled so a shove or a push carries about the same as with the old spring)
+    const shape = bands || [[r[1], r[1] + r[3] - 1, r[0], r[0] + r[2] - 1]];
+    const steps = Math.max(1, Math.ceil(dt / (1 / 120))), h = dt / steps;   // small steps, with him moved along between where he was and where he is
+    for (let s = 0; s < steps; s++) {
+      const u = (s + 1) / steps, px = from.x + (to.x - from.x) * u, py = from.y + (to.y - from.y) * u, top = py - to.h, L = px - HW, R = px + HW;
+      // how much of him is touching its leaves, 0 to 1: the picture's solid span in bands about 8 px tall (worked out when the room is
+      // built), easing off over a few pixels past their edges instead of stopping at a rectangle
+      // how much of him is in its leaves, 0 to 1: of his height (or the plant's, if it's shorter), how many rows overlap the leaves,
+      // each band counting less over the last few pixels past its sides. So jumping up out of it lets it go, and coming down presses it again
+      let touch = 0;
+      if (part > 0) {
+        let rows = 0;
+        for (const [y0, y1, x0, x1] of shape) {
+          const gap = Math.max(x0 - R, L - x1, 0), over = Math.min(y1, py) - Math.max(y0, top) + 1;
+          if (gap < FEATHER && over > 0) { const k = 1 - gap / FEATHER; rows += over * k * k * (3 - 2 * k); }
+        }
+        touch = Math.min(1, rows / Math.max(4, Math.min(to.h, r[3]) * 0.8));
+      }
+      const dx = ax - px, clear = Math.abs(dx) > HW;
+      // which way it's pushed: the side it's on once his body is clear of the stem. While he's over the stem it keeps the way it
+      // already went, and the change of side eases over a few frames, so the push never jumps
+      const want = clear ? Math.sign(dx) : (Math.sign(st.side) || Math.sign(dx) || -P.facing);
+      const close = Math.max(0.35, 1 - Math.abs(dx) / (r[2] / 2 + HW));
+      st.c += (touch - st.c) * Math.min(1, h * (touch > st.c ? 25 : 12));   // contact comes on quickly and lets go a little slower
+      st.side += (want - st.side) * Math.min(1, h * 9);
+      st.w += ((1 - 0.6 * st.c) - st.w) * Math.min(1, h * 6);             // the breeze quiets while he's in it, and comes back gradually
+      const target = reach * st.side * st.c * close;
+      if (st.c > 0.3 && !st.in) { st.in = true; st.v += ((P.vx || 0) * 0.5 * reach / 6 + (P.vy > 120 ? Math.sign(dx || -P.facing) * Math.min(P.vy, 500) * 0.25 * reach / 6 : 0)) * kick; }   // running into it shoves it his way, landing in it splays it out
+      if (st.c < 0.1) st.in = false;
+      st.v += (P.vx || 0) * 3 * h * reach / 6 * st.c * press;            // pushing on through keeps it bent ahead of him
+      st.v += Math.sign(st.side || dx || -P.facing) * Math.min(Math.abs(P.vy || 0), 400) * 1.5 * h * reach / 6 * st.c * press;   // going up or down through it rustles it away from him
+      if (s === 0 && plantLand > 120 && st.c > 0.1) st.v += Math.sign(st.side || dx || -P.facing) * Math.min(plantLand, 500) * 0.25 * reach / 6 * kick;   // and landing in it splays it
+      st.v += ((target - st.o) * om * om - st.v * cd) * h; st.o += st.v * h;
+      if (Math.abs(st.o) > lim) { st.o = Math.sign(st.o) * lim; st.v *= -0.3; }
     }
-    st.v += ((target - st.o) * 70 - st.v * 9) * dt; st.o += st.v * dt;   // a spring: a little wobble when he's gone
-    const sw = sway * Math.sin(now * speed * 2.4 + ph), far = Math.max(Math.abs(r[1] - ay), Math.abs(r[1] + r[3] - 1 - ay), 1);
+    // (kept moving off screen too, so it doesn't come back in an old pose)
+    if (!im || r[0] - camX > VW + 12 || r[1] - camY > VH || r[0] + r[2] - camX < -12 || r[1] + r[3] - camY < 0) return;
+    const bendAt = PLANT_BENDS[rec && rec.bend] || PLANT_BENDS.curve;
+    const sw = sway * Math.sin(now * speed * 2.4 + ph) * st.w, far = Math.max(Math.abs(r[1] - ay), Math.abs(r[1] + r[3] - 1 - ay), 1);
     for (let yy = 0; yy < r[3]; yy++) {
-      const k = Math.abs(r[1] + yy - ay) / far, dx = Math.round((sw + st.o) * k);
-      ctx.drawImage(im, 0, yy, r[2], 1, r[0] + dx, r[1] + yy, r[2], 1);
+      const k = Math.abs(r[1] + yy - ay) / far, ddx = Math.round(sw * k + st.o * bendAt(k));
+      ctx.drawImage(im, 0, yy, r[2], 1, r[0] + ddx, r[1] + yy, r[2], 1);
     }
   });
 }
