@@ -121,7 +121,20 @@ function checkItems() {
 }
 
 // ---------- room events ----------
+// Everything that looks at the room once a step. Each file adds its own part with onEvents(name, fn), and the parts
+// run in this list's order, whatever order the files load in. A part for a new file gets a name here first
+const EVENT_ORDER = ['room', 'pond', 'oak', 'warren', 'greenhouse', 'hive', 'bear', 'questNote', 'homecoming', 'react', 'soft'];
+const eventParts = {};
+function onEvents(name, fn) {
+  if (!EVENT_ORDER.includes(name)) throw new Error('onEvents: "' + name + '" has no place in EVENT_ORDER (js/story.js)');
+  if (eventParts[name]) throw new Error('onEvents: "' + name + '" was added twice');
+  eventParts[name] = fn;
+}
 function checkEvents(dt) {
+  for (const name of EVENT_ORDER) { const part = eventParts[name]; if (part) part(dt); }
+}
+// the room's own events: the boxes he walks into
+onEvents('room', () => {
   for (const e of room.events) {
     const inside = P.x > e.l && P.x < e.r && P.y > e.t && P.y <= e.b + 1;
     if (e.kind === 'snap' && !e.cawed && P.x < e.r && P.y > e.b + 30) crowNotices(e);   // went off the end without snapping it: it still hears him
@@ -148,7 +161,7 @@ function checkEvents(dt) {
       world.flags[e.flag] = true; saveWorld();
     }
   }
-}
+});
 // things a room sets up when he walks in, based on what's already happened
 function setupRoomThings() {
   for (const e of room.events) {

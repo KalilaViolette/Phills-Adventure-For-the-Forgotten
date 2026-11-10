@@ -45,7 +45,7 @@ const questNote = window.questNote = (() => {
     api.shown = n; showT = SHOW; place(); root.classList.add('on');
     if (sfx.paper) sfx.paper();
   }
-  // every frame the game's going (main.js calls checkEvents through update)
+  // every step the game's going (one of checkEvents' parts, js/story.js)
   function update(dt) {
     if (typeof QUEST === 'undefined' || !started || !room) return;
     if (showT > 0) { showT -= dt; if (showT <= 0) { root.classList.remove('on'); api.shown = null; } }
@@ -57,8 +57,7 @@ const questNote = window.questNote = (() => {
   api.update = update; api.quiet = quiet; api.compare = compare;
   return api;
 })();
-const _checkEventsNote = checkEvents;
-checkEvents = dt => { _checkEventsNote(dt); questNote.update(dt); };
+onEvents('questNote', dt => questNote.update(dt));
 // Story progress (the dev tab) changes a lot at once: that's not news
 const _questJump = QUEST.jump;
 QUEST.jump = (id, n) => { _questJump(id, n); questNote.queue.length = 0; questNote.quiet(); };

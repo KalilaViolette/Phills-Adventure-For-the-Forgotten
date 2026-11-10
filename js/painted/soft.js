@@ -228,5 +228,4 @@ const SOFT = (() => {
   }
   return { update, draw, drawFront, reset, state: () => st, get mode() { return mode; }, set mode(m) { mode = m; for (const k in st) st[k].xl = -1; } };
 })();
-const _checkEventsSoft = checkEvents;
-checkEvents = dt => { _checkEventsSoft(dt); SOFT.update(dt); };
+onEvents('soft', dt => SOFT.update(dt));

@@ -139,8 +139,7 @@ const HOME = window.HOME = (() => {
     if (h) { P.vx = 0; playScene(talkSteps(h, n)); return true; }
     return _interact();
   };
-  const _check = checkEvents;
-  checkEvents = dt => { _check(dt); update(); };
+  onEvents('homecoming', () => update());
   const _draw = drawNpc;
   drawNpc = () => { _draw(); draw(); };
   return { list: HOMECOMING, found, isHome, carrying, setPieces };

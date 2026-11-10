@@ -183,9 +183,7 @@ const _setupPondRoomG = setupPondRoom;
 setupPondRoom = () => { _setupPondRoomG(); setupGreenhouseRoom(); };
 
 // the first time he flaps, the hint about it can go. And the leak in the fern house: a drop now and then
-const _checkEventsG = checkEvents;
-checkEvents = dt => {
-  _checkEventsG(dt);
+onEvents('greenhouse', dt => {
   if (P.flapT > 0 && !world.flags.flappedOnce) { world.flags.flappedOnce = true; saveWorld(); }
   if (!inGreenhouse()) return;
   for (const e of room.events) {
@@ -193,5 +191,5 @@ checkEvents = dt => {
     e.t = (e.t || 0) - dt;
     if (e.t <= 0) { e.t = e.every * (0.7 + Math.random() * 0.6); part(e.x, e.y, 0, 60, 1.4, '#cfe8f0', 2, 380); }
   }
-};
+});
 })();

@@ -103,5 +103,4 @@ const KICKUP = (() => {
   }
   return { update, KICK };
 })();
-const _checkEventsReact = checkEvents;
-checkEvents = dt => { _checkEventsReact(dt); REACT.update(dt); KICKUP.update(dt); };
+onEvents('react', dt => { REACT.update(dt); KICKUP.update(dt); });

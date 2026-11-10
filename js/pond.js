@@ -1277,5 +1277,4 @@ SCENES.memoryBucket = it => [
 ];
 
 // crossing the creek the first time: the hint can go
-const _checkEventsPond = checkEvents;
-checkEvents = dt => { _checkEventsPond(dt); if (room.def.id === 'dragonfly' && !world.flags.crossedCreek && P.ground && P.x < 10 * T) flagWorld('crossedCreek'); };
+onEvents('pond', () => { if (room.def.id === 'dragonfly' && !world.flags.crossedCreek && P.ground && P.x < 10 * T) flagWorld('crossedCreek'); });

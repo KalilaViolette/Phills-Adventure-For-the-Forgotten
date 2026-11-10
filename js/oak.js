@@ -542,9 +542,7 @@ update = function (dt) {
 const _setupPondRoomOak = setupPondRoom;
 setupPondRoom = () => { _setupPondRoomOak(); setupOakRoom(); crowBackDue = room.id === 'nest' && !!world.has.cape && !world.flags.crowFriend; };
 // the first time he hangs on bark, or does the big swing, the hints about them can go
-const _checkEventsOak = checkEvents;
-checkEvents = dt => {
-  _checkEventsOak(dt);
+onEvents('oak', () => {
   if (P.cling && !world.flags.clungOnce) { world.flags.clungOnce = true; saveWorld(); }
   if (P.atk && P.atk.type === 'rollslash' && !world.flags.bigSwingOnce) { world.flags.bigSwingOnce = true; saveWorld(); }
-};
+});

@@ -178,8 +178,7 @@ function faceBearHome() {
   if (!a || a.pose || a.walk || room.def.id !== BEAR_AT.home.room) return;
   if (Math.abs(P.x - a.x) > 6) a.face = P.x < a.x ? 'L' : 'R';
 }
-const _checkEventsBear = checkEvents;
-checkEvents = dt => { _checkEventsBear(dt); checkBear(); checkInvite(); checkLeave(); faceBearHome(); };
+onEvents('bear', () => { checkBear(); checkInvite(); checkLeave(); faceBearHome(); });
 
 // ---- meeting him
 const bearDo = fn => run(() => { const a = actors.bear; if (a) fn(a); });

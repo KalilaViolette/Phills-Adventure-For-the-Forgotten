@@ -455,9 +455,7 @@ setupPondRoom = () => { _setupPondRoomW(); setupWarrenRoom(); };
 
 // ---------- every step: the scrub at the gate, the train, the escort, Tock's trouble, things to pick up ----------
 let warrenTick = 0;
-const _checkEventsW = checkEvents;
-checkEvents = dt => {
-  _checkEventsW(dt);
+onEvents('warren', dt => {
   warrenTick += dt;
   const d = room.def;
   // walking down to the lid: the Nutcracker turns him away, or Tock vouches for him
@@ -512,7 +510,7 @@ checkEvents = dt => {
   }
   if (room.id === 'listenpost' && P.x < 14 * T && Math.floor(warrenTick / 5.5) !== Math.floor((warrenTick - dt) / 5.5)) sfx.gurgle();
   for (const n of d.npcs || []) if (n.pose) { n.pose.t -= dt; if (n.pose.t <= 0) n.pose = null; }
-};
+});
 
 // ---------- buttons, picked up ----------
 const _takeItemW = takeItem;

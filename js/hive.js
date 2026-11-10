@@ -233,9 +233,7 @@ const _setupPondRoomH = setupPondRoom;
 setupPondRoom = () => { _setupPondRoomH(); setupHiveRoom(); };
 
 // honey: the drips, and slow going on a floor of it. The guards' bump wearing off
-const _checkEventsH = checkEvents;
-checkEvents = dt => {
-  _checkEventsH(dt);
+onEvents('hive', dt => {
   if (!inHive()) return;
   if (room.guardBump > 0) room.guardBump -= dt;
   for (const e of room.events) {
@@ -253,5 +251,5 @@ checkEvents = dt => {
   }
   if (P.ground && !inHoney) P.honeyJump = false;
   if (inHoney && P.ground) P.honeyJump = false;
-};
+});
 })();
