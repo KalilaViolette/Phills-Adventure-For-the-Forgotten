@@ -11,7 +11,7 @@
 // the same size as hers. None picked yet, so it's empty and she keeps the face she always had
 const PURL_FACES = window.PURL_FACES = {};
 const PURL = (() => {
-  const sheet = new Image(); sheet.src = 'art/purl/purl_proto.png';
+  const sheet = new Image(); sheet.src = 'art/purl/purl_proto.png' + (window.BUILD ? '?v=' + window.BUILD : '');
   const meta = () => window.PURL_FRAMES;
   // which picture of a clip, t seconds in (idle and run go round at their own pace, the rest play through by each frame's hold)
   function frameOf(clip, fac, t) {

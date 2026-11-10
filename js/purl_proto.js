@@ -666,8 +666,8 @@ function update(dt) {
 
 // ---------- drawing ----------
 const sheet = new Image(), hooksImg = new Image(); let meta = null;
-sheet.src = 'art/purl/purl_proto.png'; hooksImg.src = 'art/purl/purl_hooks.png';
-fetch('art/purl/purl_proto.json').then(r => r.json()).then(j => { meta = j; }).catch(() => {});
+sheet.src = 'art/purl/purl_proto.png' + (window.BUILD ? '?v=' + window.BUILD : ''); hooksImg.src = 'art/purl/purl_hooks.png' + (window.BUILD ? '?v=' + window.BUILD : '');
+fetch('art/purl/purl_proto.json' + (window.BUILD ? '?v=' + window.BUILD : '')).then(r => r.json()).then(j => { meta = j; }).catch(() => {});
 const cam = { x: 0, y: 0 };
 
 // which frame she's in: [animation, frame, facing], the in-between moves first (they're short), then what she's doing

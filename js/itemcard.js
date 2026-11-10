@@ -9,7 +9,7 @@
 //   who    who to take it to, and where   where: the room id, for the inventory's "where" later
 //   draw   how to draw its picture (x, y: its middle, g: where to draw it)
 //   used   true once it's been given or used up (it leaves his things then)
-const SUPPLY_SHEET = new Image(); SUPPLY_SHEET.src = 'art/warren/warren_sprites.png';      // (the town's needs are on the Warren's sheet)
+const SUPPLY_SHEET = new Image(); SUPPLY_SHEET.src = 'art/warren/warren_sprites.png' + (window.BUILD ? '?v=' + window.BUILD : '');      // (the town's needs are on the Warren's sheet)
 const supplyPic = name => (x, y, g) => {
   const f = window.WARREN_SPRITES && WARREN_SPRITES[name]; if (!f || !SUPPLY_SHEET.complete || !SUPPLY_SHEET.naturalWidth) return;
   g.drawImage(SUPPLY_SHEET, f[0], f[1], f[2], f[3], Math.round(x - f[4]), Math.round(y - f[5] + f[3] / 2), f[2], f[3]);
