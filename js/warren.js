@@ -250,9 +250,8 @@ function drawMolehill(x, y) {                                                   
   ctx.fillStyle = '#140c06'; ctx.beginPath(); ctx.ellipse(x + 1, y - 11, 6, 2.5, 0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#2e1e12'; ctx.fillRect(x - 5, y - 13, 11, 1);
 }
-const _drawNpcW = drawNpc;
-drawNpc = () => {
-  _drawNpcW();
+onNpcDraw('warren', next => {
+  next();
   const now = performance.now() / 1000, d = room.def;
   // the toy chest's lid: up as the door, or down flat as a bridge, or coming down
   if (d.lid) {
@@ -313,7 +312,7 @@ drawNpc = () => {
     if (Math.sin(now * 3 + s.x) > 0.97) twinkle(s.x, s.y - 14, 1);
   }
   if (room.tockKey && !world.has.tock_key) spr('tockkey', room.tockKey.x, room.tockKey.y + Math.round(Math.sin(now * 2.5)), false);
-};
+});
 
 // ---------- the chest's lid and the deep hatch, shut; the cave-in in the deep tunnels ----------
 const _drawGateLookW = typeof drawGateLook === 'function' ? drawGateLook : null;
@@ -450,8 +449,7 @@ function setupWarrenRoom() {
   if (ms && world.flags.moleHome) { world.moleStops = world.moleStops || {}; if (!world.moleStops[room.id]) { world.moleStops[room.id] = true; saveWorld(); } }
   if (world.moleIn && world.moleIn === room.id && ms) { world.moleIn = null; saveWorld(); playScene(SCENES.moleArrive(ms)); }
 }
-const _setupPondRoomW = setupPondRoom;
-setupPondRoom = () => { _setupPondRoomW(); setupWarrenRoom(); };
+onRoomSetup('warren', () => setupWarrenRoom());
 
 // ---------- every step: the scrub at the gate, the train, the escort, Tock's trouble, things to pick up ----------
 let warrenTick = 0;

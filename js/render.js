@@ -1038,7 +1038,26 @@ function drawPiles() {
     if (Math.sin(performance.now() / 300 + p.x) > 0.97) twinkle(p.x, p.y - 8, 1, COIN_COL[kind]);
   }
 }
+// Whoever's in the room, drawn. Parts of the world wrap the drawing with onNpcDraw(name, next => ...): each draws what
+// it adds before or after next(), or draws the one in the room its own way. They wrap in this list's order, the first
+// on the outside, whatever order the files load in
+const NPC_DRAW_ORDER = ['swordwork', 'beetle', 'homecoming', 'bear', 'hive', 'warren'];
+const npcDrawParts = {};
+let npcDrawChain = null;
+function onNpcDraw(name, fn) {
+  if (!NPC_DRAW_ORDER.includes(name)) throw new Error('onNpcDraw: "' + name + '" has no place in NPC_DRAW_ORDER (js/render.js)');
+  if (npcDrawParts[name]) throw new Error('onNpcDraw: "' + name + '" was added twice');
+  npcDrawParts[name] = fn; npcDrawChain = null;
+}
 function drawNpc() {
+  if (!npcDrawChain) {
+    let next = drawNpcItself;
+    for (let i = NPC_DRAW_ORDER.length - 1; i >= 0; i--) { const part = npcDrawParts[NPC_DRAW_ORDER[i]], inner = next; if (part) next = () => part(inner); }
+    npcDrawChain = next;
+  }
+  npcDrawChain();
+}
+function drawNpcItself() {
   const n = room.def.npc;
   if (!n || n.gone) return;
   const now = performance.now() / 1000, f = P.x > n.x ? 1 : -1;

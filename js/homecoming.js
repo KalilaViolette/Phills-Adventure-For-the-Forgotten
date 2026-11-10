@@ -140,7 +140,6 @@ const HOME = window.HOME = (() => {
     return _interact();
   };
   onEvents('homecoming', () => update());
-  const _draw = drawNpc;
-  drawNpc = () => { _draw(); draw(); };
+  onNpcDraw('homecoming', next => { next(); draw(); });
   return { list: HOMECOMING, found, isHome, carrying, setPieces };
 })();

@@ -179,8 +179,7 @@ function setupGreenhouseRoom() {
   if (d.chrysalis && !world.flags.learnedFlap) addActor('bfly', { kind: 'rw', x: d.chrysalis.x, y: d.chrysalis.y, frame: 'bfly_chrysalis', layer: 'back' });
   dripT = 0;
 }
-const _setupPondRoomG = setupPondRoom;
-setupPondRoom = () => { _setupPondRoomG(); setupGreenhouseRoom(); };
+onRoomSetup('greenhouse', () => setupGreenhouseRoom());
 
 // the first time he flaps, the hint about it can go. And the leak in the fern house: a drop now and then
 onEvents('greenhouse', dt => {

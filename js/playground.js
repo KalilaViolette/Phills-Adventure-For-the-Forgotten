@@ -600,8 +600,7 @@ drawPondFx = () => {
 };
 const _updatePond = updatePond;
 updatePond = dt => { updateSpecialCD(dt); _updatePond(dt); if (spins.length) updateSpins(dt); if (bursts.length) updateBursts(dt); };
-const _setupPondRoom = setupPondRoom;
-setupPondRoom = () => { spins.length = 0; bursts.length = 0; _setupPondRoom(); };
+onRoomSetup('playground', () => { spins.length = 0; bursts.length = 0; });
 
 // ---------- the slide: walk off the top of the deck and he sits down on it and goes, arms up. Speeds up as it
 // steepens, slows a bit on the flat at the bottom, and shoots him off the end ----------

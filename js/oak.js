@@ -539,8 +539,7 @@ update = function (dt) {
 };
 
 // ---------- hooking into the room ----------
-const _setupPondRoomOak = setupPondRoom;
-setupPondRoom = () => { _setupPondRoomOak(); setupOakRoom(); crowBackDue = room.id === 'nest' && !!world.has.cape && !world.flags.crowFriend; };
+onRoomSetup('oak', () => { setupOakRoom(); crowBackDue = room.id === 'nest' && !!world.has.cape && !world.flags.crowFriend; });
 // the first time he hangs on bark, or does the big swing, the hints about them can go
 onEvents('oak', () => {
   if (P.cling && !world.flags.clungOnce) { world.flags.clungOnce = true; saveWorld(); }

@@ -64,8 +64,7 @@ function drawBees() {
     ctx.fillStyle = '#2c1c3c'; ctx.fillRect(Math.round(cx) - 5, Math.round(cy) - 1, 10, 2);
   }
 }
-const _drawNpcH = drawNpc;
-drawNpc = () => { drawBees(); _drawNpcH(); };
+onNpcDraw('hive', next => { drawBees(); next(); });
 
 // ---------- the guards at the mouth ----------
 // he walks up, and they bump him back out, buzzing. There's a lump of the Grime candy stuck on their landing board.
@@ -229,8 +228,7 @@ function setupHiveRoom() {
   room.guardBump = 0; room.candyGone = false;
   applyGates(room, true);
 }
-const _setupPondRoomH = setupPondRoom;
-setupPondRoom = () => { _setupPondRoomH(); setupHiveRoom(); };
+onRoomSetup('hive', () => setupHiveRoom());
 
 // honey: the drips, and slow going on a floor of it. The guards' bump wearing off
 onEvents('hive', dt => {

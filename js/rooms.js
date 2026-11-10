@@ -252,7 +252,7 @@ function enterRoom(id, doorId) {
   world.room = id; world.door = d ? doorId : doorId === '@rest' || doorId === '@perch' ? doorId : null;
   if (def.mapAt) world.seen[id] = true;
   saveWorld();
-  spawnFoes(); talk = null; mapView = null; if (typeof setupBoss === 'function') setupBoss(); if (typeof setupRootwoodRoom === 'function') setupRootwoodRoom(); if (typeof setupPondRoom === 'function') setupPondRoom();
+  spawnFoes(); talk = null; mapView = null; if (typeof setupBoss === 'function') setupBoss(); if (typeof setupRootwoodRoom === 'function') setupRootwoodRoom(); setupRoomParts();
   music.play(def.music, 'bar');                                      // (room to room: the new song waits for the old one's bar)
   // this room and the ones next door stay loaded, everything else goes
   Rooms.keep(new Set([id, ...def.doors.map(o => o.to), ...(def.next || [])]));

@@ -1141,7 +1141,7 @@ function updatePond(dt) {
 function flagWorld(k) { world.flags[k] = true; saveWorld(); }
 
 // ---------- the Pond's rooms: set up when he walks in ----------
-function setupPondRoom() {
+onRoomSetup('pond', () => {
   const d = room.def;
   squeaks.length = 0; P.swim = isWater(P.x, P.y - 8) && can('swim'); if (P.swim) P.h = ROLL_H;
   if (d.region !== 'pond') return;
@@ -1154,7 +1154,7 @@ function setupPondRoom() {
     addActor('dragonfly', { kind: 'rw', x: df.x, y: df.y, hx: df.x, hy: df.y, anim: ['dragonfly_fly_1', 'dragonfly_fly_2'], fps: 18, layer: 'front', idle: !!world.flags.sawDragonfly });
     if (!world.flags.sawDragonfly) Object.assign(actors.dragonfly, { anim: null, frame: 'dragonfly_perch' });
   }
-}
+});
 
 // ---------- the dragonfly: darts sideways in midair. He watches it, and figures it out ----------
 SCENES.dragonfly = def => {

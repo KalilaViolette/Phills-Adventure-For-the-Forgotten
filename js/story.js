@@ -162,6 +162,18 @@ onEvents('room', () => {
     }
   }
 });
+// What each part of the world sets up when he walks into a room (rooms.js calls this once the room's built). Each
+// file adds its own part with onRoomSetup(name, fn), and they run in this list's order, whatever order the files load in
+const ROOM_SETUP_ORDER = ['playground', 'pond', 'oak', 'warren', 'greenhouse', 'hive', 'bear'];
+const roomSetupParts = {};
+function onRoomSetup(name, fn) {
+  if (!ROOM_SETUP_ORDER.includes(name)) throw new Error('onRoomSetup: "' + name + '" has no place in ROOM_SETUP_ORDER (js/story.js)');
+  if (roomSetupParts[name]) throw new Error('onRoomSetup: "' + name + '" was added twice');
+  roomSetupParts[name] = fn;
+}
+function setupRoomParts() {
+  for (const name of ROOM_SETUP_ORDER) { const part = roomSetupParts[name]; if (part) part(); }
+}
 // things a room sets up when he walks in, based on what's already happened
 function setupRoomThings() {
   for (const e of room.events) {

@@ -143,8 +143,7 @@ function setupBearRoom() {
 }
 // where things are in his home: the room file says (the painted home: bear = {x, y, seat, tally}), else the drawn room's spots
 const homeSpots = def => Object.assign({ x: BEAR_AT.home.x, y: BEAR_AT.home.y, seat: 23.5 * 16, tally: 11 * 16 }, (def && def.bear) || {});
-const _setupPondRoomBear = setupPondRoom;
-setupPondRoom = () => { _setupPondRoomBear(); setupBearRoom(); };
+onRoomSetup('bear', () => setupBearRoom());
 const bearClear = () => { const m = BEAR_AT.meet; return !foes.some(f => f.hp > 0 && f.state !== 'down' && Math.abs(f.x - m.x) < m.clear[0] && Math.abs(f.y - m.y) < m.clear[1]); };
 function checkBear() {
   const m = BEAR_AT.meet, a = actors.bear;
@@ -225,13 +224,12 @@ function drawBearLace(h, len) {
   ctx.fillStyle = '#2a2030'; ctx.fillRect(ex - 2, ey, 4, 6); ctx.fillStyle = '#9aa0b0'; ctx.fillRect(ex - 1, ey + 1, 2, 4);   // its plastic tip
 }
 const BEAR_LACE = 112;                                                                  // down to where Phill can reach it from the ground
-const _drawNpcB = drawNpc;
-drawNpc = () => {
-  _drawNpcB();
+onNpcDraw('bear', next => {
+  next();
   const h = room && room.def.bearhole;
   if (h && (bearLaceDown() || (actors.bear && inviteWaiting()))) drawBearLace(h, BEAR_LACE);   // (he came down it to wait for Phill)
   if (room && room.def.id === BEAR_BRIDGE.room && (bridgeUp() || world.flags.bearBridgeGone)) drawBearBridge(!bridgeUp());
-};
+});
 
 // ---- the way over the brambles: ready for when he asks Phill home (after Phill's first boss), the bear's laid two old wooden rulers end
 // to end over the thorns at the east edge, propped on two cotton reels in the bramble, with a ruler leaning up to it at

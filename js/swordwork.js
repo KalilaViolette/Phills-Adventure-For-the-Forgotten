@@ -79,11 +79,10 @@ const SWORDWORK = (() => {
       g.fillStyle = i % 2 ? '#5a4230' : '#7a5c40'; g.fillRect(Math.round(x + dx * (1 + k)), Math.round(y + dy * (1 + k * 0.5)), 2, 2);
     });
   }
-  const _drawNpc = drawNpc;
-  drawNpc = () => {
+  onNpcDraw('swordwork', next => {
     const n = beetleAt();
-    if (n && (S.turn || S.walk) && npcPose && npcPose.t > 0) { n.gone = true; try { _drawNpc(); } finally { n.gone = false; } spr(npcPose.frame, n.x, n.y, faceOf(n) > 0); }   // turned away from Phill to work
-    else _drawNpc();
+    if (n && (S.turn || S.walk) && npcPose && npcPose.t > 0) { n.gone = true; try { next(); } finally { n.gone = false; } spr(npcPose.frame, n.x, n.y, faceOf(n) > 0); }   // turned away from Phill to work
+    else next();
     if (!n) return;
     if (S.cap) drawCap(ctx, S.cap.x, n.y, S.cap.mix, S.cap.stain);
     if (S.ground) drawThing(ctx, S.ground, S.ground.x, n.y - 3, S.ground.f);
@@ -92,7 +91,7 @@ const SWORDWORK = (() => {
       if (S.held.byBlade) drawSword(ctx, h.x + h.f * 18, h.y, 0, -h.f, S.held.from, S.held.to, S.held.k, false);   // handing it back: the blade in his jaws, the grip held out to Phill
       else drawThing(ctx, S.held, h.x, h.y, h.f);                                                                   // by the grip, the blade out in front of him
     }
-  };
+  });
   const _drawPhill = drawPhill;
   drawPhill = (px, py, q) => {
     _drawPhill(px, py, q);

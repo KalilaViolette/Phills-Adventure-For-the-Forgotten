@@ -70,14 +70,13 @@ const BEETLE = (() => {
     }
   }
   const busy = () => talk || scene || cutscene || (npcPose && npcPose.t > 0);
-  const _drawNpc = drawNpc;
-  drawNpc = () => {
+  onNpcDraw('beetle', next => {
     const n = room && room.def.npc;
-    if (!n || n.kind !== 'beetle' || n.gone || busy() || !(window.RW_SPRITES && RW_SPRITES.beetle_chew_1)) { if (st && n === st.n) { st.last = performance.now() / 1000; st.x = n.x; } return _drawNpc(); }   // (a scene can move him: he carries on from there)
+    if (!n || n.kind !== 'beetle' || n.gone || busy() || !(window.RW_SPRITES && RW_SPRITES.beetle_chew_1)) { if (st && n === st.n) { st.last = performance.now() / 1000; st.x = n.x; } return next(); }   // (a scene can move him: he carries on from there)
     const { fr, flip } = step(n);
     for (const c of st.pile) { ctx.fillStyle = c.c; ctx.fillRect(c.x, c.y - 1, 1, 1); }
-    n.gone = true; try { _drawNpc(); } finally { n.gone = false; }        // (everything else drawn with whoever's there, without him)
+    n.gone = true; try { next(); } finally { n.gone = false; }        // (everything else drawn with whoever's there, without him)
     spr(fr, n.x, n.y, flip);
-  };
+  });
   return { get state() { return st; }, ROUTINE, SPOT };
 })();
