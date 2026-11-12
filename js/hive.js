@@ -26,13 +26,12 @@ Object.assign(VOICE, {
 const inHive = () => room && room.def.region === 'hive';
 
 // ---------- sprinkles: scooped up as he goes ----------
-const _takeItemH = takeItem;
-takeItem = it => {
+wrapPart('takeItem', 'hive', (next, it) => {
   if (it.kind === 'sprinkle') { world.has[it.id] = true; saveWorld(); it.got = 2; gainCoin('sprinkles', 1); twinkle(it.x, it.y - 6, 4, COIN_COL.sprinkles); sfx.sprinkle(); return; }
-  _takeItemH(it);
+  next(it);
   if (it.id === 'crayon_hive') { popup(P.x, P.y - 54, 'the yellow crayon', '#f4d038', true); setTimeout(() => sfx.idea(), 200); }
   if (it.id === 'memory_candle') setTimeout(() => { if (SCENES.memoryCandle) playScene(SCENES.memoryCandle(it)); }, 380);
-};
+});
 
 // ---------- the bees: going about their work, all through the hive ----------
 // each group flits about its stretch (x0..x1 round y). They're only drawn: they can't be hit and never touch him
@@ -64,7 +63,7 @@ function drawBees() {
     ctx.fillStyle = '#2c1c3c'; ctx.fillRect(Math.round(cx) - 5, Math.round(cy) - 1, 10, 2);
   }
 }
-onNpcDraw('hive', next => { drawBees(); next(); });
+wrapPart('drawNpc', 'hive', next => { drawBees(); next(); });
 
 // ---------- the guards at the mouth ----------
 // he walks up, and they bump him back out, buzzing. There's a lump of the Grime candy stuck on their landing board.
@@ -204,8 +203,7 @@ drawGateLook = gt => {
   }
   _drawGateLookH(gt);
 };
-const _drawSoftWallH = drawSoftWall;
-drawSoftWall = (b, jx) => {
+wrapPart('drawSoftWall', 'hive', (next, b, jx) => {
   if (b.look === 'crust') {                                                                 // old honey gone hard: pale gold, crystals, a crack or two
     const x0 = b.x0 * T + jx, y0 = b.y0 * T, w = (b.x1 - b.x0 + 1) * T, h = (b.y1 - b.y0 + 1) * T;
     const rnd = s => { const v = Math.sin(s * 127.1 + b.x0 * 311.7) * 43758.5453; return v - Math.floor(v); };
@@ -216,8 +214,8 @@ drawSoftWall = (b, jx) => {
     ctx.fillStyle = '#6a4a14'; for (let i = 0; i < w / 40; i++) { const cx = x0 + 10 + rnd(i + 33) * (w - 20); for (let k = 0; k < 8; k++) ctx.fillRect(Math.round(cx + Math.sin(k + i) * 3), y0 + 3 + k * 3, 1, 3); }
     return;
   }
-  _drawSoftWallH(b, jx);
-};
+  next(b, jx);
+});
 
 // ---------- setting up a room ----------
 function setupHiveRoom() {

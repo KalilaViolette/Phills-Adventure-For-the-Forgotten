@@ -250,7 +250,7 @@ function drawMolehill(x, y) {                                                   
   ctx.fillStyle = '#140c06'; ctx.beginPath(); ctx.ellipse(x + 1, y - 11, 6, 2.5, 0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#2e1e12'; ctx.fillRect(x - 5, y - 13, 11, 1);
 }
-onNpcDraw('warren', next => {
+wrapPart('drawNpc', 'warren', next => {
   next();
   const now = performance.now() / 1000, d = room.def;
   // the toy chest's lid: up as the door, or down flat as a bridge, or coming down
@@ -354,8 +354,7 @@ function moleStopHere() {
   if (room.def.molehill) return { x: room.def.molehill.x, y: room.def.molehill.y, name: room.def.molehill.name };
   return MOLE_STOPS[room.id] || null;
 }
-const _nearbyW = nearby;
-nearby = () => {
+wrapPart('nearby', 'warren', next => {
   if (room && room.def.npcs) {
     let best = null, bd = 1e9;
     for (const n of npcsHere()) {
@@ -364,7 +363,7 @@ nearby = () => {
     }
     if (best) return { kind: 'npc', npc: best };
   }
-  const n = _nearbyW();
+  const n = next();
   if (n) return n;
   const h = HOLES[room.id];
   if (h && Math.abs(P.x - h.x) < (h.w || 16) && Math.abs(P.y - h.y) < 12) return { kind: 'hole', label: '{up}: go in' };
@@ -372,9 +371,8 @@ nearby = () => {
   if (ms && world.flags.moleHome && Math.abs(P.x - ms.x) < 26 && Math.abs(P.y - ms.y) < 16) return { kind: 'molehill', label: '{up}: knock' };
   if (room.tock && room.tock.need && Math.abs(P.x - room.tock.x) < 44 && Math.abs(P.y - room.tock.y) < 30) return { kind: 'tockhelp', label: room.tock.n === 3 ? (world.has.tock_key ? '{up}: wind him up' : '{up}: look') : '{up}: help' };
   return null;
-};
-const _interactW = interact;
-interact = () => {
+});
+wrapPart('interact', 'warren', next => {
   const n = nearby();
   if (n && !scene) {
     if (n.kind === 'npc' && n.npc && WSCENES[n.npc.kind]) { P.vx = 0; const sc = WSCENES[n.npc.kind](n.npc); if (sc) playScene(sc); return true; }
@@ -383,8 +381,8 @@ interact = () => {
     if (n.kind === 'molehill') { P.vx = 0; playScene(SCENES.molehill()); return true; }
     if (n.kind === 'tockhelp') { P.vx = 0; playScene(room.tock.n === 3 ? SCENES.tockKey() : SCENES.tockStuck()); return true; }
   }
-  return _interactW();
-};
+  return next();
+});
 const _drawPromptW = drawPrompt;
 drawPrompt = (px, py, camX, camY) => {
   const n = nearby();
@@ -511,11 +509,10 @@ onEvents('warren', dt => {
 });
 
 // ---------- buttons, picked up ----------
-const _takeItemW = takeItem;
-takeItem = it => {
+wrapPart('takeItem', 'warren', (next, it) => {
   if (it.kind === 'button') { world.has[it.id] = true; saveWorld(); it.got = 2; gainCoin('buttons', 1); twinkle(it.x, it.y - 6, 4, COIN_COL.buttons); return; }
-  _takeItemW(it);
-};
+  next(it);
+});
 
 // ---------- little scene helpers ----------
 const WSCENES = {};
@@ -899,13 +896,12 @@ const _breakOpenW = breakOpen;
 // in it, the rescue starts then too
 let moleWaitT = 0;
 breakOpen = b => { _breakOpenW(b); if (b.id === 'cavein') moleWaitT = 0.5; };
-const _updMole = update;
-update = function (dt) {
-  _updMole(dt);
+wrapPart('update', 'warren', (next, dt) => {
+  next(dt);
   if (!room || room.id !== 'deepdig' || world.flags.moleHome || !actors.trapped || !room.breaks.some(b => b.id === 'cavein' && b.broken)) return;
   if ((moleWaitT -= dt) > 0) return;
   if (scene || cutscene || mapView || (typeof pinBoard !== 'undefined' && pinBoard) || P.story || P.ko > 0 || !P.ground || trans.state !== 'none' || P.pinned) return;
   playScene(SCENES.moleFree());
-};
+});
 
 })();

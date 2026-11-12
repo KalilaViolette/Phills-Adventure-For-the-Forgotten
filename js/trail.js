@@ -56,8 +56,7 @@ const TRAIL = (() => {
     }
     ctx.globalAlpha = sa;
   }
-  const _update = update;
-  update = function (dt) { const r = _update.apply(this, arguments); step(dt); return r; };
+  wrapPart('update', 'trail', (next, dt) => { const r = next(dt); step(dt); return r; });
   const _drawSweeps = drawSweeps;
   drawSweeps = function () { _drawSweeps.apply(this, arguments); draw(); };
   return { get pts() { return pts; }, LIFE };

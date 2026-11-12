@@ -1082,7 +1082,7 @@ const _foeFrame = foeFrame;
 foeFrame = f => (FOE[f.kind].frame ? FOE[f.kind].frame(f) : _foeFrame(f));
 
 // ---------- walls of Grime foam (the squeak pops them) and soft mud (a few whacks) ----------
-function drawSoftWall(b, jx) {
+function drawSoftWallItself(b, jx) {
   const x0 = b.x0 * T + jx, y0 = b.y0 * T, w = (b.x1 - b.x0 + 1) * T, h = (b.y1 - b.y0 + 1) * T, now = performance.now() / 1000;
   if (b.look === 'mud') {
     ctx.fillStyle = '#241a14'; ctx.fillRect(x0, y0, w, h);

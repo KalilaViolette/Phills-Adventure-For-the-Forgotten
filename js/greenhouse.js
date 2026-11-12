@@ -28,13 +28,12 @@ Object.assign(VOICE, {
 const inGreenhouse = () => room && room.def.region === 'greenhouse';
 
 // ---------- seeds: scooped up as he goes, like the other regions' money ----------
-const _takeItemG = takeItem;
-takeItem = it => {
+wrapPart('takeItem', 'greenhouse', (next, it) => {
   if (it.kind === 'seed') { world.has[it.id] = true; saveWorld(); it.got = 2; gainCoin('seeds', 1); twinkle(it.x, it.y - 6, 4, COIN_COL.seeds); return; }
-  _takeItemG(it);
+  next(it);
   if (it.id === 'crayon_greenhouse') { popup(P.x, P.y - 54, 'the pink crayon', '#f07aa8', true); setTimeout(() => sfx.idea(), 200); }
   if (it.id === 'memory_flower') setTimeout(() => { if (SCENES.memoryFlower) playScene(SCENES.memoryFlower(it)); }, 380);
-};
+});
 
 // ---------- a crackle of static round him (in the lesson) ----------
 function crackleAt(x, y, n = 6, r = 16) {

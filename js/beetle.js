@@ -70,7 +70,7 @@ const BEETLE = (() => {
     }
   }
   const busy = () => talk || scene || cutscene || (npcPose && npcPose.t > 0);
-  onNpcDraw('beetle', next => {
+  wrapPart('drawNpc', 'beetle', next => {
     const n = room && room.def.npc;
     if (!n || n.kind !== 'beetle' || n.gone || busy() || !(window.RW_SPRITES && RW_SPRITES.beetle_chew_1)) { if (st && n === st.n) { st.last = performance.now() / 1000; st.x = n.x; } return next(); }   // (a scene can move him: he carries on from there)
     const { fr, flip } = step(n);

@@ -104,7 +104,8 @@ function fitBody() {
 // so they're the same as before. Returns which way he slides off (0: it's real ground)
 // the same goes for the face of something leaning, like a dead tree's trunk: the wall beside his feet
 // doesn't go straight up, it leans back the higher it goes. NUB_LEAN is how far back per pixel up it can lean and still
-// count as a wall, so ground steeper than that is a face he slides down, and anything gentler he can still stand on
+// count as a wall, measured from where the face is lowest down, so ground steeper than that is a face he slides down,
+// and anything gentler (the foot of a bank, a slope he walks up) he can still stand on
 const NUB_MAX = 4, NUB_WALL = [8, 14, 20, 26], NUB_LEAN = 0.5;
 function nubAt(x, y) {
   let l = 0, r = 0;
@@ -115,11 +116,10 @@ function nubAt(x, y) {
   const sup = l + r;
   if (!sup || sup > NUB_MAX) return 0;
   const s = r >= l ? 1 : -1;
-  let walls = 0;                                         // (two of the four heights: a shelf growing out of the face leaves a notch in it, and that's still a face)
+  let walls = 0, d0 = HW + 4, k0 = NUB_WALL[0];           // (two of the four heights: a shelf growing out of the face leaves a notch in it, and that's still a face)
   for (const k of NUB_WALL) {
-    let wall = false;
-    for (let d = HW; d <= HW + 4 + k * NUB_LEAN && !wall; d++) wall = solidPx(x + s * d, y - k);
-    if (wall) walls++;
+    const far = d0 + (k - k0) * NUB_LEAN;                // as far as the face can have leaned back by this height
+    for (let d = HW; d <= far; d++) if (solidPx(x + s * d, y - k)) { if (!walls) { d0 = d; k0 = k; } walls++; break; }
   }
   return walls >= 2 ? -s : 0;
 }
@@ -491,7 +491,7 @@ function attackBox() {
   return { l: P.x - 20, r: P.x + 20, t: P.y - 10, b: P.y + 24 };   // as far as the sword actually reaches under him
 }
 
-function update(dt) {
+function updateItself(dt) {
   maskInput();
   if (P.held) {                                      // carried by something in a scene: he goes where it goes
     const a = actors[P.held];

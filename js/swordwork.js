@@ -79,7 +79,7 @@ const SWORDWORK = (() => {
       g.fillStyle = i % 2 ? '#5a4230' : '#7a5c40'; g.fillRect(Math.round(x + dx * (1 + k)), Math.round(y + dy * (1 + k * 0.5)), 2, 2);
     });
   }
-  onNpcDraw('swordwork', next => {
+  wrapPart('drawNpc', 'swordwork', next => {
     const n = beetleAt();
     if (n && (S.turn || S.walk) && npcPose && npcPose.t > 0) { n.gone = true; try { next(); } finally { n.gone = false; } spr(npcPose.frame, n.x, n.y, faceOf(n) > 0); }   // turned away from Phill to work
     else next();

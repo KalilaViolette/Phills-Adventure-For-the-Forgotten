@@ -60,8 +60,7 @@ function leafPile(b, w, h, rnd) {
 }
 
 // ---------- the walls the Old Oak and Rootwood's gated pockets are shut with ----------
-const _drawSoftWallOak = drawSoftWall;
-drawSoftWall = (b, jx) => {
+wrapPart('drawSoftWall', 'oak', (next, b, jx) => {
   const x0 = b.x0 * T + jx, y0 = b.y0 * T, w = (b.x1 - b.x0 + 1) * T, h = (b.y1 - b.y0 + 1) * T, now = performance.now() / 1000;
   const rnd = seed => { const s = Math.sin(seed * 127.1 + b.x0 * 311.7 + b.y0 * 74.7) * 43758.5453; return s - Math.floor(s); };
   if (b.look === 'web') {                                                                 // an old spider web, thick as felt
@@ -104,8 +103,8 @@ drawSoftWall = (b, jx) => {
     ctx.fillStyle = '#3e5a2e'; ctx.fillRect(x0 - 3, y0 + h - 6, 5, 3); ctx.fillRect(x0 + w - 2, y0 + h - 9, 5, 3);            // moss where it meets the mud
     return;
   }
-  _drawSoftWallOak(b, jx);
-};
+  next(b, jx);
+});
 
 // ---------- the litter that ends up in a tree ----------
 Object.assign(FOE, {
@@ -414,19 +413,17 @@ function setupOakRoom() {
     if (world.flyingIn) { const to = world.flyingIn; world.flyingIn = null; saveWorld(); playScene(SCENES.crowLand(to)); }
   }
 }
-const _nearbyOak = nearby;
-nearby = () => {
-  const n = _nearbyOak();
+wrapPart('nearby', 'oak', next => {
+  const n = next();
   if (n) return n;
   if (perchHere() && actors.crow && actors.crow.perch && Math.abs(P.x - actors.crow.x) < 44 && Math.abs(P.y - actors.crow.y) < 48) return { kind: 'perch' };
   return null;
-};
-const _interactOak = interact;
-interact = () => {
+});
+wrapPart('interact', 'oak', next => {
   const n = nearby();
   if (n && n.kind === 'perch' && !scene) { P.vx = 0; playScene(SCENES.crow()); return true; }
-  return _interactOak();
-};
+  return next();
+});
 SCENES.crow = () => {
   const c = actors.crow;
   const steps = [walkTo(c.x - 3 * T), faceTo(c.x), run(() => { c.anim = null; c.frame = 'perch_1'; c.flip = P.x < c.x; })];
@@ -530,13 +527,12 @@ SCENES.owl = npc => {
 // standing in the nest with nothing else going on. Only when he came into the nest that way (picking the cape up has its
 // own scene that's about to start, so it mustn't jump in ahead of it)
 let crowBackDue = false;
-const _updCrowBack = update;
-update = function (dt) {
-  _updCrowBack(dt);
+wrapPart('update', 'oak', (next, dt) => {
+  next(dt);
   if (!crowBackDue || !room || room.id !== 'nest' || !world.has.cape || world.flags.crowFriend) return;
   if (scene || cutscene || mapView || (typeof pinBoard !== 'undefined' && pinBoard) || P.story || P.ko > 0 || !P.ground || trans.state !== 'none' || P.pinned || P.swim) return;
   crowBackDue = false; playScene(SCENES.crowBack());
-};
+});
 
 // ---------- hooking into the room ----------
 onRoomSetup('oak', () => { setupOakRoom(); crowBackDue = room.id === 'nest' && !!world.has.cape && !world.flags.crowFriend; });

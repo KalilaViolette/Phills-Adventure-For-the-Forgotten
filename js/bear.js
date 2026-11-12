@@ -224,7 +224,7 @@ function drawBearLace(h, len) {
   ctx.fillStyle = '#2a2030'; ctx.fillRect(ex - 2, ey, 4, 6); ctx.fillStyle = '#9aa0b0'; ctx.fillRect(ex - 1, ey + 1, 2, 4);   // its plastic tip
 }
 const BEAR_LACE = 112;                                                                  // down to where Phill can reach it from the ground
-onNpcDraw('bear', next => {
+wrapPart('drawNpc', 'bear', next => {
   next();
   const h = room && room.def.bearhole;
   if (h && (bearLaceDown() || (actors.bear && inviteWaiting()))) drawBearLace(h, BEAR_LACE);   // (he came down it to wait for Phill)
@@ -292,10 +292,8 @@ function bearHere() {                                                           
   if (!a || a.peek || scene || room.def.id !== BEAR_AT.home.room || !world.flags.bearVisited) return null;
   return Math.abs(P.x - a.x) < 44 && Math.abs(P.y - a.y) < 30 ? a : null;
 }
-const _nearbyB = nearby;
-nearby = () => (laceHere() ? { kind: 'bearlace', label: '{up}: climb' } : bearHere() ? { kind: 'beartalk', label: '{up}: talk' } : _nearbyB());
-const _interactB = interact;
-interact = () => {
+wrapPart('nearby', 'bear', next => (laceHere() ? { kind: 'bearlace', label: '{up}: climb' } : bearHere() ? { kind: 'beartalk', label: '{up}: talk' } : next()));
+wrapPart('interact', 'bear', next => {
   if (bearHere() && !scene) { P.vx = 0; playScene(SCENES.bearChat()); return true; }
   const h = laceHere();
   if (h && !scene) {
@@ -303,8 +301,8 @@ interact = () => {
     playScene([walkTo(Math.min(h.x, room.def.doors.find(o => o.id === 'bearhole').x)), faceTo(h.x), pose('look_up', 0.45), pose('grab', 0.3), run(() => { sfx.rustle(0.6); goTo('bearhome', 'down'); }), pose('climb', 1)]);
     return true;
   }
-  return _interactB();
-};
+  return next();
+});
 
 // ---- asking Phill home. Right after his first boss: the bear heard it go quiet
 SCENES.bearInvite = def => {

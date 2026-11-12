@@ -517,8 +517,7 @@ function drawGateLook(gt) {
   if (!bars) { ctx.fillStyle = 'rgba(176,176,186,0.7)'; for (let y = y0; y < y0 + h; y += 6) ctx.fillRect(x0, y, w, 1); }
   ctx.fillStyle = bars ? '#a07a20' : '#5a5a66'; for (let y = y0 + 8; y < y0 + h; y += 40) ctx.fillRect(x0, y, w, 3);
 }
-const _drawSoftWall = drawSoftWall;
-drawSoftWall = (b, jx) => {
+wrapPart('drawSoftWall', 'playground', (next, b, jx) => {
   const x0 = b.x0 * T + jx, y0 = b.y0 * T, w = (b.x1 - b.x0 + 1) * T, h = (b.y1 - b.y0 + 1) * T, now = performance.now() / 1000;
   if (b.look === 'latch') {                                                                // a gate latch on its post: a fork the gate's bar drops into, a lever to knock it up
     const cx = x0 + w / 2, cy = y0 + h / 2;
@@ -574,8 +573,8 @@ drawSoftWall = (b, jx) => {
     if (Math.random() < 0.04) part(cx + (Math.random() * 2 - 1) * w * 0.3, y0 + 4, (Math.random() * 2 - 1) * 14, 12, 0.6, '#dcc08a', 1, 200);   // a trickle off the top
     return;
   }
-  _drawSoftWall(b, jx);
-};
+  next(b, jx);
+});
 
 // ---------- drawing the spin, the burst, the cranks turning ----------
 const _drawPondFx = drawPondFx;

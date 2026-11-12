@@ -113,11 +113,10 @@ const itemCard = window.itemCard = (() => {
 })();
 
 // picking one up: the window comes up once it's floated up over his head
-const _takeItemCard = takeItem;
-takeItem = it => {
-  _takeItemCard(it);
+wrapPart('takeItem', 'itemcard', (next, it) => {
+  next(it);
   if (ITEM_INFO[it.id]) { itemCard.pending++; setTimeout(() => { itemCard.pending--; itemCard.show(it.id); }, 1000); }   // (pending: a journal note waits for it too)
-};
+});
 
 // ---- on his map: who's waiting on him. A quest step can say whose face goes on his map and where
 // (map: { face, x, y } with the step's room), and while it's the step he's on, that face shows there, moving a little

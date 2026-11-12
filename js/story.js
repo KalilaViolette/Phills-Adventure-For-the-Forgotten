@@ -74,7 +74,7 @@ const OAK_ITEM = { crayon_oak: 0, feather: 1, memory_page: 2, cotton: 3, sneaker
 const REGION_ITEMS = { rootwood: RW_ITEM, pond: POND_ITEM, playground: PG_ITEM, oak: OAK_ITEM };
 const itemCell = it => ITEM_CELL[it.id] ?? (REGION_ITEMS[room && room.def.region] || RW_ITEM)[it.id] ?? (REGION_ITEMS[room && room.def.region] || RW_ITEM)[it.kind] ?? 0;
 const ITEM_OUT = { backpack: 5, paper: 6, crayons: 7, gear: 8 };
-function takeItem(it) {
+function takeItemItself(it) {
   world.has[it.id] = true; saveWorld();
   it.got = 2;
   if (it.kind === 'acorn') { gainAcorns(1); twinkle(it.x, it.y - 6, 4, '#e8c080'); return; }
@@ -342,13 +342,13 @@ function breakOpen(b) {
 }
 
 // ---------- someone to talk to, somewhere to rest: press up next to it ----------
-function nearby() {
+function nearbyItself() {
   const d = room.def;
   if (d.npc && Math.abs(P.x - d.npc.x) < 40 && Math.abs(P.y - d.npc.y) < 48) return { kind: 'npc', npc: d.npc };
   if (d.rest && !bossLocked() && Math.abs(P.x - d.rest.x) < 30 && Math.abs(P.y - d.rest.y) < 20) return { kind: 'rest' };
   return null;
 }
-function interact() {
+function interactItself() {
   const n = nearby();
   if (!n || scene) return false;
   P.vx = 0;

@@ -6,6 +6,44 @@ try {
   for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(OLD)) keys.push(k); }
   for (const k of keys) { const n = 'phill-forgotten-' + k.slice(OLD.length); if (localStorage.getItem(n) === null) localStorage.setItem(n, localStorage.getItem(k)); }
 } catch (e) {}
+// ---------- functions several parts of the game add to ----------
+// Each one has a list of its parts' names in the order they wrap it, the first on the outside, and what it does itself
+// in the middle (its ...Itself function). A part is added by name with wrapPart(what, name, (next, ...) => ...) and does
+// its bit before or after next(...), or instead of it, so the order is the list's whatever order the files load in. A
+// part with no place in its list, or one added twice, stops the page
+const WRAP_ORDER = {
+  update: ['trail', 'menu', 'debug', 'warren', 'oak'],
+  takeItem: ['itemcard', 'hive', 'greenhouse', 'warren'],
+  interact: ['homecoming', 'bear', 'warren', 'oak'],
+  nearby: ['bear', 'warren', 'oak'],
+  drawSoftWall: ['hive', 'playground', 'oak'],
+  drawNpc: ['swordwork', 'beetle', 'homecoming', 'bear', 'hive', 'warren'],
+};
+const wrapParts = {}, wrapChains = {};
+function wrapPart(what, name, fn) {
+  const order = WRAP_ORDER[what];
+  if (!order || !order.includes(name)) throw new Error('wrapPart: "' + name + '" has no place in WRAP_ORDER.' + what + ' (js/config.js)');
+  const parts = wrapParts[what] || (wrapParts[what] = {});
+  if (parts[name]) throw new Error('wrapPart: "' + name + '" was added to ' + what + ' twice');
+  parts[name] = fn; wrapChains[what] = null;
+}
+function runWrapped(what, itself, args) {
+  let chain = wrapChains[what];
+  if (!chain) {
+    chain = itself;
+    const parts = wrapParts[what] || {}, order = WRAP_ORDER[what];
+    for (let i = order.length - 1; i >= 0; i--) { const part = parts[order[i]], inner = chain; if (part) chain = (...a) => part(inner, ...a); }
+    wrapChains[what] = chain;
+  }
+  return chain(...args);
+}
+function update(...a) { return runWrapped('update', updateItself, a); }                // a step of the game (js/player.js)
+function takeItem(...a) { return runWrapped('takeItem', takeItemItself, a); }        // picking something up (js/story.js)
+function interact(...a) { return runWrapped('interact', interactItself, a); }        // pressing up by something (js/story.js)
+function nearby(...a) { return runWrapped('nearby', nearbyItself, a); }              // what's close enough to use (js/story.js)
+function drawSoftWall(...a) { return runWrapped('drawSoftWall', drawSoftWallItself, a); }   // a wall that can be broken (js/pond.js)
+function drawNpc(...a) { return runWrapped('drawNpc', drawNpcItself, a); }           // whoever's in the room (js/render.js)
+
 // ---------- screen ----------
 // whole-number scale keeps every art pixel the same size; the view grows or shrinks a little to fill the screen
 let VW = 640, VH = 360;

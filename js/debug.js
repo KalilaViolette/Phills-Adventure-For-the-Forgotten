@@ -24,13 +24,12 @@ function dbgFly(dt) {
   P.vx = dx * sp; P.vy = 0; P.ground = false; P.fallTop = P.y;
   stepWorld(dt);
 }
-const _updateDbg = update;
-update = function (dt) {
+wrapPart('update', 'debug', (next, dt) => {
   if (DBG.god) { P.pinned = null; P.leech = null; P.slowT = 0; P.health = Math.max(P.health, 1); }
   if (DBG.stam) { P.en = enMax(); P.stam = 100; P.winded = false; P.guardOut = false; P.gbreak = 0; P.enDelay = 0; P.stamDelay = 0; }
   if ((DBG.fly || DBG.noclip) && !P.held && !cutscene && !(P.story && !P.story.free) && P.ko <= 0 && P.respawnT <= 0 && !mapView) return dbgFly(dt);
-  return _updateDbg(dt);
-};
+  return next(dt);
+});
 
 // enemies frozen where they are (his swings still land on them)
 const _foesDbg = updateFoes;

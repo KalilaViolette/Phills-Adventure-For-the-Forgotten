@@ -133,13 +133,12 @@ const HOME = window.HOME = (() => {
     return [...steps, say(h.lines.more)];
   }
   const knows = n => n && HOMECOMING.find(h => h.who === n.kind && carrying(h) && !isHome(h));
-  const _interact = interact;
-  interact = () => {
+  wrapPart('interact', 'homecoming', next => {
     const near = nearby(), n = near && near.kind === 'npc' && near.npc, h = !scene && knows(n);
     if (h) { P.vx = 0; playScene(talkSteps(h, n)); return true; }
-    return _interact();
-  };
+    return next();
+  });
   onEvents('homecoming', () => update());
-  onNpcDraw('homecoming', next => { next(); draw(); });
+  wrapPart('drawNpc', 'homecoming', next => { next(); draw(); });
   return { list: HOMECOMING, found, isHome, carrying, setPieces };
 })();

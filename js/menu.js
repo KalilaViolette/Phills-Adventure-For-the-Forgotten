@@ -299,8 +299,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
   const saveRow = document.querySelector('#gSave .row'); if (saveRow) saveRow.prepend(tb);
 
   // ---- time played, for the save slots
-  const _updTitle = update;
-  update = function (dt) { if (started && !paused) world.playSec = (world.playSec || 0) + dt; return _updTitle(dt); };
+  wrapPart('update', 'menu', (next, dt) => { if (started && !paused) world.playSec = (world.playSec || 0) + dt; return next(dt); });
 
   // ---- where the title card is on screen, for placing the main list on it. It's fitted inside the start screen, so there
   // can be bars at the sides or top. Held upright, the picture's drawn a little bigger than the width (its sides are just
