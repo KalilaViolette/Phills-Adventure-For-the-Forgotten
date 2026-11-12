@@ -19,7 +19,7 @@ const REACT = (() => {
   let wasGround = true, fallV = 0;
   const here = () => {
     const d = window.REACT_PIECES && room && REACT_PIECES[room.def.id];
-    return d && d.pack === room.def.art.pack ? d : null;                                    // (only for the painting they were cut from)
+    return d && d.pack === (room.def.art.sameAs || room.def.art.pack) ? d : null;           // (only for the painting they were cut from, or a copy of it)
   };
   const keyOf = p => room.def.id + ':' + p.id;
   // the bounce: 1 the moment he lands, swinging back past rest and settling

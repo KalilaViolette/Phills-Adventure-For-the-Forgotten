@@ -9,6 +9,7 @@ ROOM({
  "art": {
   "main": "art/rootwood/painted/hollow.webp#main",
   "pack": "art/rootwood/painted/hollow.webp",
+  "sameAs": "art/rootwood/hollow.webp",
   "parts": {
    "main": [
     0,
