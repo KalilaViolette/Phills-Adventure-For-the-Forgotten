@@ -640,6 +640,7 @@ function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
       for (let i = 0; i < 14; i++) part(f.x, f.y - 8, kd * (30 + Math.random() * 130), -20 - Math.random() * 110, 0.7, i % 2 ? '#2c1c3c' : '#4a3462', 2, 300);
     } else
     for (let i = 0; i < 12; i++) part(f.x, f.y - 8, (Math.random() * 2 - 1) * 80, -Math.random() * 120, 0.6, i % 2 ? '#2c1c3c' : '#4a3462', 2, 300);
+    if (tune.feelEase) { hitstop = 0; slowMoment(0.04, 0.03, 0.04); }                     // (the ease try-out: the knockout slows to a stop and back in about a tenth of a second, rather than one dead hold)
     const n = foeDropCount(f);
     for (let i = 0; i < n; i++) dropAcorn(f.x, f.y - 10);
     if (FOE[f.kind].onDown) FOE[f.kind].onDown(f);

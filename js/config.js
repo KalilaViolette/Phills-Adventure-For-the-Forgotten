@@ -37,7 +37,7 @@ function runWrapped(what, itself, args) {
   }
   return chain(...args);
 }
-function update(...a) { return runWrapped('update', updateItself, a); }                // a step of the game (js/player.js)
+function update(dt, ...a) { return runWrapped('update', updateItself, [dt * momentScale(dt), ...a]); }   // a step of the game (js/player.js), slowed when a held moment's easing in or out (js/fx.js)
 function takeItem(...a) { return runWrapped('takeItem', takeItemItself, a); }        // picking something up (js/story.js)
 function interact(...a) { return runWrapped('interact', interactItself, a); }        // pressing up by something (js/story.js)
 function nearby(...a) { return runWrapped('nearby', nearbyItself, a); }              // what's close enough to use (js/story.js)
@@ -65,10 +65,10 @@ window.addEventListener('resize', resize);
 // ---------- tuning (same numbers the test room ended on) ----------
 const DEFAULTS = {
   runSpeed: 175, accelTime: 0.05, decelTime: 0.04, airAccelTime: 0.08, airDecelTime: 0.12,
-  jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42,
+  jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42, jumpMinTime: 0,
   coyote: 0.09, jumpBuffer: 0.12, attackCooldown: 0.36,
   rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, slowWalk: 0.32, keyWalk: 0.55, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
-  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
+  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
 };
 const TUNE_ROWS = [
   ['runSpeed', 'Run speed', 100, 320, 5, ' px/s'],
@@ -81,6 +81,7 @@ const TUNE_ROWS = [
   ['fallMult', 'Falls faster than he rises', 1, 3, 0.05, 'x'],
   ['maxFall', 'Max fall speed', 250, 800, 10, ' px/s'],
   ['jumpCut', 'Short hop (lower is shorter)', 0.1, 1, 0.02, ''],
+  ['jumpMinTime', 'Short hop: the rise can\'t be cut short before this long', 0, 0.15, 0.01, ' s'],
   ['coyote', 'Late jump off a ledge', 0, 0.2, 0.01, ' s'],
   ['jumpBuffer', 'Early jump before landing', 0, 0.25, 0.01, ' s'],
   ['attackCooldown', 'Attack cooldown', 0.12, 0.6, 0.01, ' s'],
@@ -122,7 +123,21 @@ const TUNE_ROWS = [
   ['feelSkill', 'Feel: his sword set changes his swing speed, how much he bounces and how far things go (0 off, 1 on)', 0, 1, 1, ''],
   ['feelTrail', 'Feel: a thread trail behind the sword, out to where it reaches (0 off, 1 on)', 0, 1, 1, ''],
   ['feelTurn', 'Feel: he can turn round sooner in a plain swing, the bigger swings stay locked (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelRoll', 'Feel: he can roll or air dodge sooner out of a plain swing, the bigger swings stay locked (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelEase', 'Feel: a knockout slows into its hitch and back out, and the long holds (getting hurt, a parry) pick back up over a moment instead of all at once (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelSnap', 'Feel: a plain swing hits right behind the press, most of pulling back skipped, the bigger swings as they were (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelSquash', 'Feel: he pulls tall and thin pushing off and presses short and wide landing, only in how he is drawn (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelCam', 'Feel: the view picks up speed after him as well as slowing in, with a shorter lead that swings across at a steady pace (0 off, 1 on)', 0, 1, 1, ''],
 ];
+// Tuning values to try together. knight: the controls set the way Hollow Knight's measure (the swing on the press and
+// hitting right behind it, no drift starting, stopping or turning, the rise stopped when jump's let go once it's
+// 0.08s in, turning and rolling out of a plain swing a tenth of a second in). knightAll: those, and the try-outs for
+// how hits land and how the view follows. Reset to defaults puts them all back
+const KNIGHT_CONTROLS = { pressSwing: 1, feelTurn: 1, feelRoll: 1, feelSnap: 1, accelTime: 0, decelTime: 0, airAccelTime: 0, airDecelTime: 0, jumpCut: 0.1, jumpMinTime: 0.08 };
+const TUNE_PRESETS = {
+  knight: KNIGHT_CONTROLS,
+  knightAll: { ...KNIGHT_CONTROLS, feelHurt: 1, feelKill: 1, feelHits: 1, feelTrail: 1, feelEase: 1, feelCam: 1 },
+};
 const tune = { ...DEFAULTS };
 // TUNE_V goes up when defaults change on purpose: saved numbers from before that for those few don't win over the new
 // ones (stamina's only for dodging, so the roll's cost and the refill changed)

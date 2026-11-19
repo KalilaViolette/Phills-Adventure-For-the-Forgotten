@@ -322,6 +322,7 @@ function hurt(fromX, kind, dmg = 1) {
   hitstop = 0.06; shakeT = 0.18; shakeA = 3;
   puff(P.x, P.y - 22, 8, 70, '#ffffff', 80);           // a bit of his fluff comes out
   if (tune.feelHurt) { hitstop = 0.2; shakeA = 6; puff(P.x, P.y - 22, 10, 110, '#ffffff', 80); }   // (the feel try-out: the whole game holds a moment, a hard shake that drops off fast, more fluff out)
+  if (tune.feelEase) slowMoment(0, hitstop, EASE_OUT);                 // (the ease try-out: time comes back in over a moment after the hold)
   sfx.hurt();
   if (P.health <= 0) {                               // knocked out: flung back, then flat out for a bit
     P.ko = 0.001; P.koBy = kind; P.koLanded = false; P.vy = -280; P.vx = dir * 150; P.inv = 9; hitstop = 0.15; shakeT = 0.2; shakeA = 3;
@@ -370,8 +371,24 @@ const comboList = () => swordSet() >= 3 ? ['side', 'chop', 'whirl', 'bashcut', '
 // Only the pictures change between sets (Sprites/sword_sets.py): the hits come from the frames he's always had, so
 // every enemy's tuning holds
 const swordSet = () => world.swordSkill || 0;
-// the feel try-out: the swings that let him turn round early (the bigger combo swings stay locked)
-const QUICK_TURN = new Set(['side', 'up', 'low', 'down']);
+// ---------- what a swing lets through, and when ----------
+// A swing commits him for a while. How far into it (seconds) each thing can cut in is all here, so what he can do out
+// of a swing is read and changed in one place. 'off' is the end of the swing's hitting part. Jumping is never held
+// back, and the next swing waits on its own cooldown (swingWait)
+const SWING_LETS = { jump: 0, turn: 'off', roll: 'off', guard: 'off', parry: 'off', swimTurn: 'off', swimDash: 'off' };
+// the feel try-outs: the plain swings let these through sooner, the way Hollow Knight does (the combo's bigger swings
+// stay locked). What it's for, the Tuning switch that turns it on, and how far in
+const QUICK_SWINGS = new Set(['side', 'up', 'low', 'down']);
+const SWING_LETS_SOONER = { turn: ['feelTurn', 0.1], roll: ['feelRoll', 0.1] };
+const SNAP_WIND = 0.025;                                    // how much of pulling back is left on a plain swing with the snap try-out on
+function swingLets(what) {                                 // how far into the swing he's in before `what` can cut in
+  const a = P.atk; if (!a) return 0;
+  const q = SWING_LETS_SOONER[what];
+  if (q && tune[q[0]] && QUICK_SWINGS.has(a.type)) return q[1];
+  const v = SWING_LETS[what];
+  return v === 'off' ? ATK[a.type].off : v;
+}
+const swingHolds = what => !!P.atk && P.atk.t < swingLets(what);   // too early in the swing for it yet
 // the feel try-out, what each sword set changes when it's on: clumsy swings again a bit slower, bounces
 // back off what he hits more and moves it less, mastered quicker and steadier. Like Silksong's crests, the same character tuned three ways
 const SKILL_FEEL = { 1: { wait: 0.42, bounce: 20, push: 0.75, hold: 0.03 }, 2: { wait: 0.36, bounce: 15, push: 1, hold: 0.04 }, 3: { wait: 0.30, bounce: 10, push: 1, hold: 0.05 } };   // (mastered pushes no further than sure on the way through the combo: tested, more push sent things out of reach and walking back in got him hurt. Its big shove is the combo's last swing)
@@ -420,6 +437,7 @@ function chargedBurst(lv) {                                                     
 }
 function startAttack(type) {
   P.atk = { type, t: 0, hit: new Set(), whiff: true };
+  if (tune.feelSnap && QUICK_SWINGS.has(type)) P.atk.t = Math.max(0, ATK[type].on - SNAP_WIND);   // (the snap try-out: a plain swing starts most of the way through pulling back, so the hit comes right behind the press)
   P.atkCD = swingWait() + (type === 'rollslash' ? 0.08 : type === 'whirl' ? 0.2 : type === 'chop' ? 0.04 : type === 'bashfin' ? 0.2 : type === 'shbash' ? 0.12 : 0); P.atkBufT = 0;   // the whirl leaves him dizzy a moment: mashing all three isn't free
   if (isCharged(type)) {
     if (!world.flags.chargedOnce) { world.flags.chargedOnce = true; saveWorld(); }
@@ -517,7 +535,7 @@ function updateItself(dt) {
   // The cooldown only starts when a window actually opens: a press mid swing let go before the lid could come up doesn't
   // spend it, so a fresh press right as the swing ends can still parry
   if (inp.guardH && can('parry') && !P.guardWas && P.parryCD <= 0 && !P.guardOut && P.gbreak <= 0) {
-    if (P.atk && P.atk.t < ATK[P.atk.type].off) P.parryQ = Math.min(0.3, ATK[P.atk.type].off - P.atk.t + 0.05);
+    if (swingHolds('parry')) P.parryQ = Math.min(0.3, swingLets('parry') - P.atk.t + 0.05);
     else { P.parryT = tune.parryWindow; P.parryCD = 0.35; }
   }
   P.guardWas = inp.guardH;
@@ -531,10 +549,10 @@ function updateItself(dt) {
   P.squeakBuf = Math.max(0, (P.squeakBuf || 0) - dt); P.spinBuf = Math.max(0, (P.spinBuf || 0) - dt);
   const squeakP = P.squeakBuf > 0 && P.squeakCD <= 0, spinP = P.spinBuf > 0 && P.squeakCD <= 0;
   // the shield comes up once a swing's hitting part is over, like the roll (it waited for the whole swing to finish)
-  if (inp.guardH && P.atk && P.atk.t >= ATK[P.atk.type].off && can('guard') && P.gbreak <= 0 && !P.guardOut && !P.swim) P.atk = null;
+  if (inp.guardH && P.atk && !swingHolds('guard') && can('guard') && P.gbreak <= 0 && !P.guardOut && !P.swim) P.atk = null;
   if (P.parryQ > 0) { P.parryQ -= dt; if (!P.atk && inp.guardH && !P.guardOut && P.gbreak <= 0) { P.parryT = tune.parryWindow; P.parryCD = 0.35; P.parryQ = 0; } else if (P.parryQ <= 0 || !inp.guardH) P.parryQ = 0; }
   P.px = P.x; P.py = P.y;
-  for (const k of ['jumpBufT', 'atkBufT', 'dodgeBufT', 'atkCD', 'rollCD', 'inv', 'landT', 'turnT', 'dropT', 'recoilT', 'blockT', 'dashRec', 'regrabT', 'rollEndT', 'parryT', 'parryCD', 'fadeIn', 'downCD', 'stamFlash', 'wallJumpT', 'clingCD', 'slowT']) P[k] = Math.max(0, (P[k] || 0) - dt);
+  for (const k of ['jumpBufT', 'atkBufT', 'dodgeBufT', 'atkCD', 'rollCD', 'inv', 'landT', 'turnT', 'dropT', 'recoilT', 'blockT', 'dashRec', 'regrabT', 'rollEndT', 'parryT', 'parryCD', 'fadeIn', 'downCD', 'stamFlash', 'wallJumpT', 'clingCD', 'slowT', 'sqT']) P[k] = Math.max(0, (P[k] || 0) - dt);
   if (P.soggyT > 0 || P.dripT > 0) {                                                         // wrung out at the pond (slow with it), or just out of a swim: water dripping off him for a while
     P.soggyT = Math.max(0, (P.soggyT || 0) - dt); P.dripT = Math.max(0, (P.dripT || 0) - dt);
     if (!P.swim && Math.random() < dt * (P.soggyT > 2 ? 9 : 4)) part(P.x + (Math.random() * 2 - 1) * 8, P.y - 6 - Math.random() * 22, (Math.random() * 2 - 1) * 6, 30, 0.5, Math.random() < 0.5 ? '#9cd4e8' : '#c4e6f0', 1, 400);
@@ -621,7 +639,7 @@ function updateItself(dt) {
     P.vx += (0 - P.vx) * Math.min(1, dt * 4);
     P.vy = Math.min(P.vy + g * dt, tune.maxFall);
   } else if (P.crawl) {
-    const busy = P.atk && P.atk.t < ATK[P.atk.type].off;
+    const busy = swingHolds('turn');
     const turnTo = inp.aim ? inp.aimX : dir;                                // (the right stick turns him lying down too, and holds him facing that way while he crawls backwards)
     if (turnTo && turnTo !== P.facing && !busy) {                           // turning round lying down: he pivots on his middle
       const was = onRamp(), x0 = P.x, y0 = P.y, f0 = P.facing;
@@ -652,7 +670,7 @@ function updateItself(dt) {
     }
     else if (P.dodgeBufT > 0 && P.rollCD <= 0 && P.ground && can('roll')) {
       const d = dir || P.facing;
-      if (!(P.atk && P.atk.t < ATK[P.atk.type].off) && spend('roll')) { P.crawl = false; P.roll = tune.rollTime * (P.tiredDodge ? 0.7 : 1); P.rollTired = P.tiredDodge; P.rollDir = d; P.facing = d; P.rollCD = tune.rollTime + (P.tiredDodge ? 0.5 : 0.25); sfx.roll(); }
+      if (!swingHolds('roll') && spend('roll')) { P.crawl = false; P.roll = tune.rollTime * (P.tiredDodge ? 0.7 : 1); P.rollTired = P.tiredDodge; P.rollDir = d; P.facing = d; P.rollCD = tune.rollTime + (P.tiredDodge ? 0.5 : 0.25); sfx.roll(); }
       P.dodgeBufT = 0;
     }
   } else if (P.roll > 0) {
@@ -676,7 +694,7 @@ function updateItself(dt) {
     if (P.dash <= 0 && !P.atk) { P.vx *= 0.55; P.h = STAND_H; P.dashRec = 0.09; P.rollEndT = 0.15; if (!hasHeadroom(STAND_H)) { P.crawl = true; P.h = ROLL_H; } }
   } else {
     const guarding = inp.guardH && !P.atk && P.gbreak <= 0 && !P.guardOut;
-    const midSwing = P.atk && P.atk.t < (tune.feelTurn && QUICK_TURN.has(P.atk.type) ? 0.1 : ATK[P.atk.type].off);   // (the feel try-out: a plain swing frees him to turn after 0.1s, the way Hollow Knight does)
+    const midSwing = swingHolds('turn');
     if (inp.aimX && !midSwing && P.facing !== inp.aimX) { P.facing = inp.aimX; if (P.ground && Math.abs(P.vx) < 40) P.turnT = 0.06; }   // the right stick turns him that way, on the ground or in the air
     const locked = midSwing || inp.aim || (guarding && P.guardLock);   // facing holds mid swing, while the right stick's held, or when the guard's locked with R3
     if (dir && !locked && dir !== P.facing) {
@@ -722,7 +740,12 @@ function updateItself(dt) {
       else doJump();
     } else if (P.jumpBufT > 0 && inp.down && canFlop()) startFlop();                      // the belly flop: {down} + {jump} in the air (before the flap)
     else if (P.jumpBufT > 0 && !P.ground && P.coyoteT <= 0 && !P.crawl && can('flap') && !P.flapUsed && !P.swim && P.hurtT <= 0) doFlap();   // the cape flap: one more jump in midair
-    if (!P.jumpHeld && P.vy < 0 && P.cut === false) { P.vy *= tune.jumpCut; P.cut = true; }
+    // letting go of jump cuts the rise short. (jumpMinTime: not before the rise has been going that long, so the
+    // quickest tap still gets a hop worth having when jumpCut is set low. 0 as it comes: cut the moment it's let go)
+    if (P.vy < 0 && P.cut === false) {
+      P.riseT = (P.riseT || 0) + dt;
+      if (!P.jumpHeld && P.riseT >= tune.jumpMinTime) { P.vy *= tune.jumpCut; P.cut = true; }
+    }
     // the big swing's little hang: slows his fall, and gives a bit of extra lift if he's still rising (the roll leap).
     // leapLift sets how much: 0 none, 1 the full original launch
     if (P.airHang) {                                                                         // a swing in the air: held up near where he swung
@@ -779,8 +802,8 @@ function updateItself(dt) {
     }
     // a swing commits him: the roll comes out once the swing's hitting part is over, not
     // through it. The press waits for it
-    const swingBusy = P.atk && P.atk.t < ATK[P.atk.type].off;
-    if (swingBusy && P.dodgeBufT > 0) P.dodgeBufT = Math.max(P.dodgeBufT, ATK[P.atk.type].off - P.atk.t + 0.05);
+    const swingBusy = swingHolds('roll');
+    if (swingBusy && P.dodgeBufT > 0) P.dodgeBufT = Math.max(P.dodgeBufT, swingLets('roll') - P.atk.t + 0.05);
     if (P.dodgeBufT > 0 && !swingBusy && P.rollCD <= 0 && (P.ground ? can('roll') : can('airDodge') && !P.dashUsed)) {
       const d = dir || P.facing;
       if ((P.ground || !P.dashUsed) && !spend(P.ground ? 'roll' : 'airdodge')) P.dodgeBufT = 0;
@@ -825,6 +848,7 @@ function updateItself(dt) {
         for (let i = 0; i < 12; i++)        // a bit of his fluff knocked loose
           addPart({ x: P.x + (Math.random() * 2 - 1) * 10, y: P.y - 6, vx: (Math.random() * 2 - 1) * 60, vy: -40 - Math.random() * 70, life: 1.2 + Math.random() * 0.5, max: 1.7, c: Math.random() < 0.6 ? '#ffffff' : '#e9e4da', s: Math.random() < 0.4 ? 2 : 1, g: 30 });
       } else if (vyBefore > 260) { P.landT = 0.085; puff(P.x, P.y, 6, 50); sfx.land(); }
+      if (!P.flop && P.splat <= 0 && vyBefore > 60) squash(0.06 + 0.1 * Math.min(1, vyBefore / tune.maxFall));   // (harder the faster he came down)
       P.dashUsed = false; P.wallPogoUsed = false; P.downCD = 0;
     }
     P.flapUsed = false;
@@ -1108,14 +1132,24 @@ function updateHang(dt) {
   }
 }
 
+// ---------- squash and stretch (how he's drawn, nothing else) ----------
+// pushing off pulls him tall and thin for a moment, landing presses him short and wide, and he springs back. It's the
+// squash try-out (tune.feelSquash) and it's only in the drawing: what he stands on, reaches and gets hit by is the same
+const SQUASH_BACK = 0.13;
+function squash(by) { P.sq = by; P.sqT = SQUASH_BACK; }                 // by > 0: short and wide. by < 0: tall and thin
+function squashNow() {                                                  // [across, up] to draw him by, about his feet
+  if (!tune.feelSquash || !(P.sqT > 0) || !P.sq) return [1, 1];
+  const k = P.sqT / SQUASH_BACK, a = P.sq * k * k;
+  return [1 + a, 1 - a];
+}
 function doJump() {
-  P.vy = -jumpVel(); P.ground = false; P.coyoteT = 0; P.jumpBufT = 0; P.jumpHeld = true; P.cut = false;
+  P.vy = -jumpVel(); P.ground = false; P.coyoteT = 0; P.jumpBufT = 0; P.jumpHeld = true; P.cut = false; P.riseT = 0; squash(-0.1);
   puff(P.x, P.y, 4, 35); sfx.jump();
 }
 
 // the cape flap (from the Greenhouse): one more jump in midair, the cape snapping down under him
 function doFlap() {
-  P.vy = -jumpVel() * 0.9; P.flapUsed = true; P.jumpBufT = 0; P.jumpHeld = true; P.cut = false; P.dashUsed = false; P.flapT = 0.22;
+  P.vy = -jumpVel() * 0.9; P.flapUsed = true; P.jumpBufT = 0; P.jumpHeld = true; P.cut = false; P.riseT = 0; P.dashUsed = false; P.flapT = 0.22; squash(-0.08);
   P.fallTop = P.y;                                                                     // a fresh jump: the splat height counts from here, the same as a glide
   for (let i = 0; i < 10; i++) addPart({ x: P.x + (Math.random() * 2 - 1) * 12, y: P.y - 4, vx: (Math.random() * 2 - 1) * 70, vy: 40 + Math.random() * 60, life: 0.35, max: 0.35, c: i % 2 ? '#f4ecd8' : '#d8c8b0', s: 2, g: 0 });
   sfx.flap ? sfx.flap() : sfx.jump();
@@ -1144,8 +1178,8 @@ function updateCling(dt, dir) {
   c.cy = P.y - HANG_FEET;
   if (Math.random() < dt * 6) addPart({ x: P.x + c.dir * HW, y: P.y - 20, vx: -c.dir * 10, vy: -10, life: 0.4, max: 0.4, c: '#e9e4da', s: 1, g: 40 });
   if (P.jumpBufT > 0) {                              // jump off the wall
-    P.cling = null; P.jumpBufT = 0; P.vx = -c.dir * 190; P.vy = -jumpVel() * 0.95; P.facing = -c.dir; P.wallJumpT = 0.14; P.clingCD = 0.1;
-    P.jumpHeld = true; P.cut = false; P.ground = false; puff(P.x + c.dir * HW, P.y - 16, 4, 30); sfx.jump(); return;
+    P.cling = null; P.jumpBufT = 0; P.vx = -c.dir * 190; P.vy = -jumpVel() * 0.95; P.facing = -c.dir; P.wallJumpT = 0.14; P.clingCD = 0.1; squash(-0.08);
+    P.jumpHeld = true; P.cut = false; P.riseT = 0; P.ground = false; puff(P.x + c.dir * HW, P.y - 16, 4, 30); sfx.jump(); return;
   }
   if (dir === -c.dir || inp.down || P.dodgeBufT > 0 || !gripBeside(c.dir)) { P.cling = null; P.clingCD = 0.25; P.dodgeBufT = 0; return; }   // let go
 }

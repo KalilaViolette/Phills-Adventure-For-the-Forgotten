@@ -121,78 +121,78 @@ ROOM({
    "piece_reveal_tree_rim": [
     0,
     4565,
-    91,
-    60
+    95,
+    68
    ],
    "piece_plant_plant_00": [
     0,
-    4625,
+    4633,
     64,
     44
    ],
    "piece_plant_plant_01": [
     0,
-    4669,
+    4677,
     47,
     32
    ],
    "piece_plant_plant_02": [
     0,
-    4701,
+    4709,
     18,
     12
    ],
    "piece_plant_plant_03": [
     0,
-    4713,
+    4721,
     10,
     11
    ],
    "piece_plant_plant_04": [
     0,
-    4724,
+    4732,
     9,
     10
    ],
    "piece_plant_plant_05": [
     0,
-    4734,
+    4742,
     20,
     12
    ],
    "piece_plant_plant_06": [
     0,
-    4746,
+    4754,
     18,
     12
    ],
    "piece_plant_plant_07": [
     0,
-    4758,
+    4766,
     37,
     20
    ],
    "piece_plant_plant_08": [
     0,
-    4778,
+    4786,
     24,
     12
    ],
    "piece_plant_plant_09": [
     0,
-    4790,
+    4798,
     10,
     11
    ],
    "piece_glow_0": [
     0,
-    4801,
+    4809,
     864,
     832
    ],
    "piece_glow_1": [
     0,
-    5633,
+    5641,
     864,
     832
    ]
@@ -295,10 +295,10 @@ ROOM({
     48
    ],
    "reveal_tree_rim": [
-    146,
-    200,
-    91,
-    60
+    144,
+    194,
+    95,
+    68
    ],
    "plant_plant_00": [
     268,

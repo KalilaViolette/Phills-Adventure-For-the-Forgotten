@@ -98,20 +98,20 @@ function swimStep(dt, dir) {
     }
   }
   if (P.atk) { const a = P.atk, info = ATK[a.type]; a.t += dt; if (atkLive(a)) doHits(); if (a.t >= info.frames[info.frames.length - 1]) P.atk = null; }
-  const midSwing = P.atk && P.atk.t < ATK[P.atk.type].off;
+  const midSwing = swingHolds('swimTurn');
   if (inp.aim) { if (P.aimV[0] && !midSwing) P.facing = Math.sign(P.aimV[0]); }            // the right stick turns him that way, any of the 8, while the left one swims
   else if (dir && !midSwing) P.facing = dir;
   // jump: out of the water at the top, or a strong kick up from underneath
   if (P.jumpBufT > 0) {
     P.jumpBufT = 0;
     if (atTop && hasHeadroom(STAND_H)) {                                             // up and out: half a jump on land (nothing to push off), the cape flap after it is a full one
-      leaveWater(); P.vy = -jumpVel() * 0.71; P.leapT = 0.45; P.ground = false; P.jumpHeld = true; P.cut = false; P.flapUsed = false; P.dashUsed = false;
+      leaveWater(); P.vy = -jumpVel() * 0.71; P.leapT = 0.45; P.ground = false; P.jumpHeld = true; P.cut = false; P.riseT = 0; P.flapUsed = false; P.dashUsed = false;
       splash(P.x, surf, 12, 1.0); sfx.jump(); P.fallTop = P.y; return true;
     }
     P.vy = -190; bubblesAt(P.x, P.y - 14, 3); sfx.bloop();
   }
-  const swingBusy = P.atk && P.atk.t < ATK[P.atk.type].off;                      // (a swing commits him here too: the dash waits for its hitting part to be over)
-  if (swingBusy && P.dodgeBufT > 0) P.dodgeBufT = Math.max(P.dodgeBufT, ATK[P.atk.type].off - P.atk.t + 0.05);
+  const swingBusy = swingHolds('swimDash');                                      // (a swing commits him here too: the dash waits for its hitting part to be over)
+  if (swingBusy && P.dodgeBufT > 0) P.dodgeBufT = Math.max(P.dodgeBufT, swingLets('swimDash') - P.atk.t + 0.05);
   if (P.dodgeBufT > 0 && !swingBusy && P.rollCD <= 0) {                          // the dash: whichever of the 8 ways he's swimming (it only went left or right), or straight ahead
     P.dodgeBufT = 0;
     if (spend('roll')) {

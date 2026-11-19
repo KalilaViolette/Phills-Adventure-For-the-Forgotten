@@ -47,6 +47,13 @@ function tunePad(gp, b, pressed, ay) {
 }
 function resetTune() { Object.assign(tune, DEFAULTS); saveTune(); refreshTune(); }
 document.getElementById('resetTune').addEventListener('click', resetTune);
+// a set of values to try together (TUNE_PRESETS, js/config.js). Its button goes in beside Reset to defaults
+function tunePreset(name) { Object.assign(tune, TUNE_PRESETS[name]); saveTune(); refreshTune(); }
+for (const [id, name, words] of [['knightTune', 'knight', "Controls like Hollow Knight's"], ['knightAllTune', 'knightAll', "Controls, hits and the view like Hollow Knight's"]]) {
+  const b = document.createElement('button'); b.type = 'button'; b.id = id; b.textContent = words;
+  b.addEventListener('click', () => tunePreset(name));
+  document.getElementById('resetTune').before(b);
+}
 document.getElementById('closeTune').addEventListener('click', toggleTune);
 document.getElementById('tuneBtn').addEventListener('click', () => { if (!started) begin(); toggleTune(); });
 document.getElementById('boxBtn').addEventListener('click', () => { showBoxes = !showBoxes; });

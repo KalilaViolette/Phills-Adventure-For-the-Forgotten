@@ -104,3 +104,38 @@ function twinkle(x, y, n = 6, col = '#fff6d8') {
   for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = 20 + Math.random() * 40; part(x, y, Math.cos(a) * v, Math.sin(a) * v - 20, 0.5 + Math.random() * 0.3, col, 1, -10); }
 }
 let hitstop = 0, shakeT = 0, shakeA = 0;
+
+// ---------- slowing into a held moment and back out of it ----------
+// hitstop stops the game dead for that long and then it's back at full speed the step after. With the ease try-out on
+// (tune.feelEase), a moment can slow down into its hold (`into` seconds) and pick back up out of it (`out` seconds), so
+// it reads as a hitch in the motion rather than a stopped picture. Any long hold (LONG_HOLD or more: getting hurt with
+// the hurt try-out on, a parry, a boss going down) picks back up the same way without having to ask
+const LONG_HOLD = 0.1, EASE_OUT = 0.05, SLOWEST = 0.1;
+const moment = { phase: '', t: 0, into: 0, hold: 0, out: 0, held: 0 };
+function slowMoment(into, hold, out) {
+  if (!tune.feelEase) { hitstop = Math.max(hitstop, hold); return; }
+  Object.assign(moment, { phase: into > 0 ? 'into' : 'hold', t: 0, into, hold, out });
+  if (!(into > 0)) hitstop = Math.max(hitstop, hold);
+}
+// how much of this step's time goes by: 1 with nothing on. (Never quite 0: the hold itself is hitstop's)
+function momentScale(dt) {
+  const m = moment;
+  if (!tune.feelEase) { m.phase = ''; m.held = 0; return 1; }
+  if (hitstop > 0) { m.held = Math.max(m.held, hitstop); if (m.phase !== 'into') m.phase = 'hold'; return 1; }
+  if (m.phase === 'hold') {                                 // the hold's just over
+    if (!(m.out > 0) && m.held >= LONG_HOLD) m.out = EASE_OUT;
+    m.phase = m.out > 0 ? 'out' : ''; m.t = 0; m.held = 0;
+  }
+  if (m.phase === 'into') {
+    const k = 1 - m.t / m.into; m.t += dt;
+    if (m.t >= m.into) { m.phase = 'hold'; if (m.hold > 0) hitstop = Math.max(hitstop, m.hold); }
+    return Math.max(SLOWEST, k);
+  }
+  if (m.phase === 'out') {
+    m.t += dt; const k = m.t / m.out;
+    if (m.t >= m.out) { m.phase = ''; m.out = 0; }
+    return Math.min(1, Math.max(SLOWEST, k));
+  }
+  m.held = 0; m.out = 0;
+  return 1;
+}

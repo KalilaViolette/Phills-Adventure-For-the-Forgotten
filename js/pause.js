@@ -155,7 +155,7 @@ const pauseMenu = window.pauseMenu = (() => {
       }
       const rest = TUNE_ROWS.filter(r => !used.has(r[0]));                          // (anything new that hasn't been put under a heading yet)
       if (rest.length) { out.push({ head: 'Other' }); rest.forEach(r => out.push(row(r))); }
-      return out.concat([{ head: ' ' }, { label: 'Reset to defaults', act: () => resetTune() }]);
+      return out.concat([{ head: ' ' }, { label: "Controls like Hollow Knight's (a set to try)", act: () => tunePreset('knight') }, { label: "Controls, hits and the view like Hollow Knight's (every try-out for them on)", act: () => tunePreset('knightAll') }, { label: 'Reset to defaults', act: () => resetTune() }]);
     },
     // his journal: the quests he's started and the ones he's done, out of js/quests.js. Picking one shows
     // the steps he's done and the one he's on (never the ones after it)
