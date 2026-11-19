@@ -629,7 +629,7 @@ function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
   f.shoveT = Math.max(f.shoveT || 0, opts.shoveT ?? (heavy || opts.full ? 0.3 : 0.15));
   foeReact(f, power, braced);
   impact(x, y, Math.sign(f.x - P.x) || P.facing, power, braced ? 'braced' : 'clean', MAT_BITS[matOf(f)]);
-  hitstop = Math.max(hitstop, heavy ? 0.08 : (sk ? sk.hold : 0.05));
+  if (heavy || f.hp <= 0 || !tune.feelNoStop) hitstop = Math.max(hitstop, heavy ? 0.08 : (sk ? sk.hold : 0.05));   // (the no stop try-out: a plain hit doesn't hold the game. A heavy one and the one that knocks it out still do)
   if (!tune.feelHits || heavy) { shakeT = heavy ? 0.14 : 0.08; shakeA = heavy ? 2.5 : 1.5; }   // (the feel try-out: neither game shakes on a plain hit, so the knockout and getting hurt stand out)
   sfx.hit(); (MAT_SFX[matOf(f)] || MAT_SFX.flex)(); if (braced) sfx.hitBraced();
   if (f.hp <= 0) {                                                                      // knocked out: the Grime seeps out of it for now

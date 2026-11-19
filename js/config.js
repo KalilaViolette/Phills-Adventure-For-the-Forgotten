@@ -68,7 +68,7 @@ const DEFAULTS = {
   jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42, jumpMinTime: 0,
   coyote: 0.09, jumpBuffer: 0.12, attackCooldown: 0.36,
   rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, slowWalk: 0.32, keyWalk: 0.55, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
-  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
+  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, feelSteady: 0, feelStick: 0, feelNoStop: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
 };
 const TUNE_ROWS = [
   ['runSpeed', 'Run speed', 100, 320, 5, ' px/s'],
@@ -128,15 +128,19 @@ const TUNE_ROWS = [
   ['feelSnap', 'Feel: a plain swing hits right behind the press, most of pulling back skipped, the bigger swings as they were (0 off, 1 on)', 0, 1, 1, ''],
   ['feelSquash', 'Feel: he pulls tall and thin pushing off and presses short and wide landing, only in how he is drawn (0 off, 1 on)', 0, 1, 1, ''],
   ['feelCam', 'Feel: the view picks up speed after him as well as slowing in, with a shorter lead that swings across at a steady pace (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelSteady', 'Feel: he is drawn steady against the view, without the one pixel shiver as he runs (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelStick', 'Feel: the stick is a full run the moment it is past the middle, no wait and no slow walk (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelNoStop', 'Feel: no stop on a plain hit. Heavy hits, knockouts and getting hurt keep theirs (0 off, 1 on)', 0, 1, 1, ''],
 ];
 // Tuning values to try together. knight: the controls set the way Hollow Knight's measure (the swing on the press and
-// hitting right behind it, no drift starting, stopping or turning, the rise stopped when jump's let go once it's
-// 0.08s in, turning and rolling out of a plain swing a tenth of a second in). knightAll: those, and the try-outs for
-// how hits land and how the view follows. Reset to defaults puts them all back
-const KNIGHT_CONTROLS = { pressSwing: 1, feelTurn: 1, feelRoll: 1, feelSnap: 1, accelTime: 0, decelTime: 0, airAccelTime: 0, airDecelTime: 0, jumpCut: 0.1, jumpMinTime: 0.08 };
+// hitting right behind it, no drift starting, stopping or turning, the stick a full run past the middle, the rise
+// stopped when jump's let go once it's 0.08s in, turning and rolling out of a plain swing a tenth of a second in).
+// knightAll: those, and the try-outs for how hits land, how the view follows and how steady he's drawn against it.
+// Reset to defaults puts them all back
+const KNIGHT_CONTROLS = { pressSwing: 1, feelTurn: 1, feelRoll: 1, feelSnap: 1, feelStick: 1, accelTime: 0, decelTime: 0, airAccelTime: 0, airDecelTime: 0, jumpCut: 0.1, jumpMinTime: 0.08 };
 const TUNE_PRESETS = {
   knight: KNIGHT_CONTROLS,
-  knightAll: { ...KNIGHT_CONTROLS, feelHurt: 1, feelKill: 1, feelHits: 1, feelTrail: 1, feelEase: 1, feelCam: 1 },
+  knightAll: { ...KNIGHT_CONTROLS, feelHurt: 1, feelKill: 1, feelHits: 1, feelNoStop: 1, feelTrail: 1, feelEase: 1, feelCam: 1, feelSteady: 1 },
 };
 const tune = { ...DEFAULTS };
 // TUNE_V goes up when defaults change on purpose: saved numbers from before that for those few don't win over the new

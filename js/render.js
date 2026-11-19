@@ -67,7 +67,13 @@ function render(alpha) {
   const q = v => Math.round(v / snap) * snap;
   let camX = cam.px + (cam.x - cam.px) * alpha, camY = cam.py + (cam.y - cam.py) * alpha;
   if (shakeT > 0) { camX += (Math.random() * 2 - 1) * shakeA * (shakeT / 0.18); camY += (Math.random() * 2 - 1) * shakeA * (shakeT / 0.18); }
+  const camXe = camX, camYe = camY;
   camX = q(camX); camY = q(camY);
+  // the view and Phill are each rounded to a screen pixel, and as it comes they're rounded on their own: running with
+  // the view keeping up, the gap between the two flickers a pixel back and forth and he shivers on the screen. With the
+  // steady try-out on (tune.feelSteady) he's moved by what rounding moved the view, so he's rounded against it and sits
+  // still on the screen while it follows him. (Against the room that's less than a screen pixel either way)
+  const steadyX = tune.feelSteady ? camX - camXe : 0, steadyY = tune.feelSteady ? camY - camYe : 0;
   ctx.setTransform(S, 0, 0, S, offX, offY);
   const main = Assets.get(room.def.art.main), front = room.def.art.front && Assets.get(room.def.art.front);
   const far = room.def.art.far && Assets.get(room.def.art.far);
@@ -130,8 +136,8 @@ function render(alpha) {
   if (typeof drawBoss === 'function') drawBoss();
   drawFoes();
   drawActors('back');
-  if (!P.held && !P.hidden) { drawIdleGround(q); drawPhill(px2, py2 + (P.idleBit ? P.idleBit.dy : 0), q); drawIdleBits(q); }
-  if (typeof drawOnPhill === 'function') drawOnPhill(px2, py2);                           // things stuck on him (the gum leech)
+  if (!P.held && !P.hidden) { drawIdleGround(q); drawPhill(px2 + steadyX, py2 + steadyY + (P.idleBit ? P.idleBit.dy : 0), q); drawIdleBits(q); }
+  if (typeof drawOnPhill === 'function') drawOnPhill(px2 + steadyX, py2 + steadyY);                           // things stuck on him (the gum leech)
   if (typeof SOFT !== 'undefined') SOFT.drawFront(ctx);                                 // the dent's walls round his feet in a mushroom's flesh (js/painted/soft.js)
 
   ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.textAlign = 'center';

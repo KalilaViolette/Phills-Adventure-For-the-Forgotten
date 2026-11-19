@@ -207,7 +207,8 @@ function bossHits(box, a) {
     return;
   }
   b.hp -= bossDmg(BOSS_DMG, a) * swordBonus() * (a.scale || 1); b.flash = 0.12; impact(cx, cy, P.facing, isCharged(a.type) ? 1.8 : 1.2, 'clean', ['#d0d4dc', '#8a90a0']); sfx.hitTin();
-  hitstop = Math.max(hitstop, isCharged(a.type) ? 0.12 : 0.06); shakeT = 0.12; shakeA = 2; sfx.hit(); rally();
+  if (isCharged(a.type) || !tune.feelNoStop) hitstop = Math.max(hitstop, isCharged(a.type) ? 0.12 : 0.06);   // (the no stop try-out: only a charged swing holds the game)
+  shakeT = 0.12; shakeA = 2; sfx.hit(); rally();
   if (a.type === 'down') pogo();
   for (let i = 0; i < 6; i++) part(cx, cy, (Math.random() * 2 - 1) * 90, -Math.random() * 90, 0.5, '#2c1c3c', 2, 300);
   if (b.phase === 1 && b.hp <= SOL.hp / 2) {                                   // winds himself up tighter

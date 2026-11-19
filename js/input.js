@@ -92,7 +92,8 @@ function activePad() {
   if (!gp) { gp = live.find(p => p.mapping === 'standard') || live[0] || null; padIdx = gp ? gp.index : -1; }
   return gp;
 }
-let padId = null, padPrevY = 0, padWant = 0, padWantT = 0, padDir = 0;
+let padId = null, padPrevY = 0, padWant = 0, padWantT = 0, padDir = 0, padHard = 0, padHardT = 0;
+const FLICK_MS = 150;                                 // how long after a hard push a soft one the other way is taken for the stick swinging back
 function pollPad() {
   const gp = activePad();
   const padEl = document.getElementById('pad');
@@ -116,14 +117,18 @@ function pollPad() {
     // him round the wrong way, so a short, soft swing is ignored
     const now = performance.now(), want = ax < -0.3 ? -1 : ax > 0.3 ? 1 : 0;
     if (want !== padWant) { padWant = want; padWantT = now; }
-    padDir = want && (want === padDir || Math.abs(ax) > 0.85 || now - padWantT >= 60) ? want : 0;
+    // (the stick try-out, tune.feelStick: a push counts the moment it's past the middle, and only one that comes right
+    // after a hard push the other way, the flick back, still has to be held a moment or pushed most of the way)
+    if (Math.abs(ax) > 0.5) { padHard = Math.sign(ax); padHardT = now; }
+    const flick = want && want === -padHard && now - padHardT < FLICK_MS;
+    padDir = want && (want === padDir || Math.abs(ax) > 0.85 || now - padWantT >= 60 || (tune.feelStick && !flick)) ? want : 0;
     inp.left = k('left') || b(14) || padDir < 0 ? 1 : 0;
     inp.right = k('right') || b(15) || padDir > 0 ? 1 : 0;
     // how fast he goes: the stick's tilt, from a slow walk just past the middle to the run he has now at full
     // tilt, smooth all the way. The d-pad and the arrow keys are a run, or a walk holding the walk key (B)
     const keyed = KEYMAP.left.some(c => keys.has(c)) || KEYMAP.right.some(c => keys.has(c)) || b(14) || b(15);   // (the arrow keys or the d-pad)
     const tilt = keyed ? 1 : padDir ? Math.abs(ax) : window.touchTilt > 0 ? window.touchTilt : 1;          // (or the stick on the touch screen)
-    const ease = Math.max(0, Math.min(1, (tilt - 0.3) / 0.6));
+    const ease = tune.feelStick && padDir && !keyed ? 1 : Math.max(0, Math.min(1, (tilt - 0.3) / 0.6));   // (the stick try-out: a run whatever the tilt)
     inp.pace = keyed && k('walk') ? tune.keyWalk : tune.slowWalk + (1 - tune.slowWalk) * ease;
     inp.up = k('up') || b(12) || ay < -0.55 ? 1 : 0;
     inp.down = k('down') || b(13) || ay > 0.55 ? 1 : 0;

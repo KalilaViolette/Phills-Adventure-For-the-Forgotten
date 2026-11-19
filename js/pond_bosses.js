@@ -15,7 +15,8 @@ function pbHit(box, a, hurtBox, onHit, mult = 1) {          // his sword reachin
   const K = bossKind(), [cx, cy] = swordContact(hurtBox);                                // (where the blade meets it)
   const dmg = bossDmg(PB_DMG, a) * swordBonus() * (b.state === 'stagger' ? 1.5 : 1) * (a.scale || 1) * mult;   // scale: the spin's follow-up hits are weaker
   b.flash = 0.12; impact(cx, cy, P.facing, isCharged(a.type) ? 1.8 : mult < 1 ? 0.8 : 1.2, mult < 1 ? 'braced' : 'clean');
-  hitstop = Math.max(hitstop, isCharged(a.type) ? 0.12 : 0.05); shakeT = 0.1; shakeA = 2; sfx.hit(); rally();
+  if (isCharged(a.type) || !tune.feelNoStop) hitstop = Math.max(hitstop, isCharged(a.type) ? 0.12 : 0.05);   // (the no stop try-out: only a charged swing holds the game)
+  shakeT = 0.1; shakeA = 2; sfx.hit(); rally();
   if (a.type === 'down') pogo(); else { P.recoilT = 0.08; P.recoilV = -P.facing * 120; }
   if (onHit) onHit(cx, cy);
   pbDamage(dmg);
