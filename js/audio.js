@@ -19,7 +19,15 @@ function audio() {
   if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
   if (actx && actx.state === 'suspended') actx.resume().catch(() => {});
 }
+// the sound try-out (tune.feelSound): the sounds in VARIED come out a little higher or lower each time, by up to their
+// share either way, so a fight isn't the same swing and the same hit over and over. sfxPitch is what every tone and
+// noise is played at while one of them is being made
+let sfxPitch = 1, pitchAt = 20261;
+const pitchRand = () => (pitchAt = (pitchAt * 1664525 + 1013904223) >>> 0) / 4294967296;   // (its own run of numbers, so a sound never moves what the game itself rolls)
+const VARIED = { jump: 0.1, land: 0.1, softLand: 0.1, swing: 0.1, bigswing: 0.1, swish: 0.1, roll: 0.1, airdodge: 0.1, hurt: 0.1, step: 0.08,
+  hit: 0.2, hitTin: 0.2, hitGlass: 0.2, hitPaper: 0.2, hitSquish: 0.2, hitCloth: 0.2, hitPlastic: 0.2, hitBraced: 0.2 };
 function tone(f0, f1, dur, type = 'square', vol = 0.06) {
+  f0 *= sfxPitch; f1 *= sfxPitch;
   if (!actx || muted || actx.state !== 'running') return;
   const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
   o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
@@ -32,6 +40,7 @@ function noiseBuffer() {
   return noiseBuf;
 }
 function noise(dur, f0, f1, vol = 0.08, q = 1.2) {
+  f0 *= sfxPitch; f1 *= sfxPitch;
   if (!actx || muted || actx.state !== 'running') return;
   noiseBuffer();
   const t = actx.currentTime, s = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
@@ -42,6 +51,7 @@ function noise(dur, f0, f1, vol = 0.08, q = 1.2) {
 const sfx = {
   jump: () => tone(260, 520, 0.09, 'square', 0.035),
   land: () => noise(0.07, 500, 200, 0.07),
+  softLand: () => noise(0.05, 420, 190, 0.03),                    // a little landing: the same thump, shorter and well under half as loud
   bigswing: () => { noise(0.22, 2600, 380, 0.13, 0.6); tone(180, 90, 0.12, 'triangle', 0.06); },
   swing: () => noise(0.16, 2200, 500, 0.1, 0.7),
   hit: () => { tone(160, 60, 0.12, 'triangle', 0.14); noise(0.06, 900, 300, 0.1); },
@@ -227,6 +237,14 @@ const sfx = {
   whee: () => { tone(520, 980, 0.55, 'triangle', 0.035); tone(1040, 1900, 0.5, 'sine', 0.012); },   // going down the slide
   laugh: () => { for (let i = 0; i < 4; i++) setTimeout(() => tone(600 - i * 40, 500 - i * 40, 0.08, 'sawtooth', 0.03), i * 110); },
 };
+for (const name in VARIED) {
+  const plain = sfx[name], by = VARIED[name];
+  if (plain) sfx[name] = (...a) => {
+    if (!tune.feelSound) return plain(...a);
+    sfxPitch = 1 + (pitchRand() * 2 - 1) * by;
+    try { return plain(...a); } finally { sfxPitch = 1; }
+  };
+}
 
 // ---------- music ----------
 // room: 16 bars in F, played A (vibes on the tune), B (piano takes the tune, vibes answer), A again, then C (marimba noodling)

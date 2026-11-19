@@ -10,7 +10,7 @@ function newPlayer(x, y, f) {
     x, y, vx: 0, vy: 0, h: STAND_H, facing: f, ground: true, wasGround: true,
     coyoteT: 0, jumpBufT: 0, atkBufT: 0, dodgeBufT: 0, jumpHeld: false,
     atk: null, atkCD: 0, roll: 0, rollDir: 1, rollCD: 0, dash: 0, dashUsed: false, dropT: 0,
-    inv: 0, hurtT: 0, respawnT: 0, health: world.maxHealth, landT: 0, turnT: 0, lookT: 0, recoilT: 0, recoilV: 0,
+    inv: 0, hurtT: 0, respawnT: 0, dipT: 0, health: world.maxHealth, landT: 0, turnT: 0, lookT: 0, recoilT: 0, recoilV: 0,
     maxHealth: world.maxHealth, safeX: x, safeY: y, safeT: 0, runDist: 0, guardDist: 0, dashRec: 0, ghostT: 0, hang: null, reach: null, regrabT: 0, rollEndT: 0, crawl: false, crawlDist: 0, guardOut: false, stamFlash: 0, stam: 100, stamDelay: 0, en: enMax(), enDelay: 0, enFlash: 0, winded: false, tiredT: 0, gbreak: 0, charge: 0, atkHeldT: 0, downCD: 0, splat: 0, fallTop: y, winceT: 0, winceNext: 1, ko: 0, koLanded: false, fadeIn: 0, parryT: 0, parryCD: 0, guardWas: false, edgeT: 0, teeter: false, wallPogoUsed: false, guardLock: false, idleT: 0, blockT: 0, px: x, py: y,
     story: null, worn: 0, loose: 0, looseBits: 0,
   });
@@ -296,6 +296,11 @@ function dodgeSafe() {
   if (P.swim && P.swimDash > 0) { const e = (P.dashTired ? 0.12 : 0.2) - P.swimDash; return e >= 0.02 && e < (P.dashTired ? 0.06 : 0.14); }   // the dash underwater gets him through things too (the bath fish's lunge)
   return false;
 }
+// the dip try-out (tune.feelFade): thorns or water putting him back where he last stood safe cut the view straight across the
+// room. With it on the screen goes dark over the last DIP_OUT before he's moved and comes back over DIP_IN after, like a
+// door. He's moved at the same moment either way and is free through the way back up
+const DIP_OUT = 0.1, DIP_IN = 0.15;
+const dipDark = () => !tune.feelFade ? 0 : P.respawnT > 0 ? Math.max(0, 1 - P.respawnT / DIP_OUT) : P.dipT > 0 ? P.dipT / DIP_IN : 0;
 // true when the hit really landed. False when it didn't (mid roll, still flashing from the last hit): then whatever came
 // with it, a grab, a slow, a pull, doesn't happen either (the sand bucket was pinning him
 // through a roll that the hit itself missed)
@@ -552,7 +557,7 @@ function updateItself(dt) {
   if (inp.guardH && P.atk && !swingHolds('guard') && can('guard') && P.gbreak <= 0 && !P.guardOut && !P.swim) P.atk = null;
   if (P.parryQ > 0) { P.parryQ -= dt; if (!P.atk && inp.guardH && !P.guardOut && P.gbreak <= 0) { P.parryT = tune.parryWindow; P.parryCD = 0.35; P.parryQ = 0; } else if (P.parryQ <= 0 || !inp.guardH) P.parryQ = 0; }
   P.px = P.x; P.py = P.y;
-  for (const k of ['jumpBufT', 'atkBufT', 'dodgeBufT', 'atkCD', 'rollCD', 'inv', 'landT', 'turnT', 'dropT', 'recoilT', 'blockT', 'dashRec', 'regrabT', 'rollEndT', 'parryT', 'parryCD', 'fadeIn', 'downCD', 'stamFlash', 'wallJumpT', 'clingCD', 'slowT', 'sqT']) P[k] = Math.max(0, (P[k] || 0) - dt);
+  for (const k of ['jumpBufT', 'atkBufT', 'dodgeBufT', 'atkCD', 'rollCD', 'inv', 'landT', 'turnT', 'dropT', 'recoilT', 'blockT', 'dashRec', 'regrabT', 'rollEndT', 'parryT', 'parryCD', 'fadeIn', 'dipT', 'downCD', 'stamFlash', 'wallJumpT', 'clingCD', 'slowT', 'sqT']) P[k] = Math.max(0, (P[k] || 0) - dt);
   if (P.soggyT > 0 || P.dripT > 0) {                                                         // wrung out at the pond (slow with it), or just out of a swim: water dripping off him for a while
     P.soggyT = Math.max(0, (P.soggyT || 0) - dt); P.dripT = Math.max(0, (P.dripT || 0) - dt);
     if (!P.swim && Math.random() < dt * (P.soggyT > 2 ? 9 : 4)) part(P.x + (Math.random() * 2 - 1) * 8, P.y - 6 - Math.random() * 22, (Math.random() * 2 - 1) * 6, 30, 0.5, Math.random() < 0.5 ? '#9cd4e8' : '#c4e6f0', 1, 400);
@@ -592,7 +597,7 @@ function updateItself(dt) {
   if (P.respawnT > 0) {
     P.respawnT -= dt;
     if (P.respawnT <= 0 && trans.state !== 'none') P.respawnT = 0;              // half way through a door: he's not coming back
-    else if (P.respawnT <= 0) { P.pinned = null; P.x = P.safeX; P.y = P.safeY; P.vx = P.vy = 0; P.hurtT = 0; P.inv = 0.8; P.px = P.x; P.py = P.y; cam.snap = true; if (typeof warpPlants === 'function') warpPlants(); P.sinkT = 0; P.swim = false; P.h = STAND_H; }
+    else if (P.respawnT <= 0) { P.pinned = null; P.x = P.safeX; P.y = P.safeY; P.vx = P.vy = 0; P.hurtT = 0; P.inv = 0.8; P.px = P.x; P.py = P.y; cam.snap = true; if (typeof warpPlants === 'function') warpPlants(); P.sinkT = 0; P.swim = false; P.h = STAND_H; if (tune.feelFade) P.dipT = DIP_IN; }
     if (P.hurtT > 0) { P.hurtT -= dt; P.vy = Math.min(P.vy + gravity() * dt, tune.maxFall); moveX(P.vx * dt); if (moveY(P.vy * dt)) P.vy = 0; }
     stepWorld(dt); return;
   }
@@ -848,6 +853,7 @@ function updateItself(dt) {
         for (let i = 0; i < 12; i++)        // a bit of his fluff knocked loose
           addPart({ x: P.x + (Math.random() * 2 - 1) * 10, y: P.y - 6, vx: (Math.random() * 2 - 1) * 60, vy: -40 - Math.random() * 70, life: 1.2 + Math.random() * 0.5, max: 1.7, c: Math.random() < 0.6 ? '#ffffff' : '#e9e4da', s: Math.random() < 0.4 ? 2 : 1, g: 30 });
       } else if (vyBefore > 260) { P.landT = 0.085; puff(P.x, P.y, 6, 50); sfx.land(); }
+      else if (tune.feelSoftLand && vyBefore > 60) { puff(P.x, P.y, 3, 22); sfx.softLand(); }   // (the little landing try-out: a step down or a tapped hop isn't silent)
       if (!P.flop && P.splat <= 0 && vyBefore > 60) squash(0.06 + 0.1 * Math.min(1, vyBefore / tune.maxFall));   // (harder the faster he came down)
       P.dashUsed = false; P.wallPogoUsed = false; P.downCD = 0;
     }

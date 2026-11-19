@@ -267,10 +267,11 @@ function regionToughness() {
 // Rootwood's enemies on the way to the tin soldier keep their lower starting health, one or two less than everywhere
 // else, so the start isn't too hard; once he's down they have the full numbers
 const EARLY_HP = { cap: 3, can: 4, spinner: 2, wrapper: 2, juice: 3 };
+// tune.foeHealth scales all of it (1 as it is), never under 1
 const foeHP = (k, kind) => {
   if (k.hp <= 1) return k.hp;
-  if (kind && earlyRootwood() && EARLY_HP[kind] !== undefined) return EARLY_HP[kind];
-  return Math.round(k.hp * regionToughness());
+  const hp = kind && earlyRootwood() && EARLY_HP[kind] !== undefined ? EARLY_HP[kind] : k.hp * regionToughness();
+  return Math.max(1, Math.round(hp * tune.foeHealth));
 };
 function spawnFoes() {
   if (foes.length && foes[0].room && foes[0].room !== room.def.id) {

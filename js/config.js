@@ -68,7 +68,7 @@ const DEFAULTS = {
   jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42, jumpMinTime: 0,
   coyote: 0.09, jumpBuffer: 0.12, attackCooldown: 0.36,
   rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, slowWalk: 0.32, keyWalk: 0.55, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
-  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, feelSteady: 0, feelStick: 0, feelNoStop: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
+  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, feelSteady: 0, feelStick: 0, feelNoStop: 0, feelSound: 0, feelFade: 0, feelSoftLand: 0, foeHealth: 1, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
 };
 const TUNE_ROWS = [
   ['runSpeed', 'Run speed', 100, 320, 5, ' px/s'],
@@ -131,6 +131,10 @@ const TUNE_ROWS = [
   ['feelSteady', 'Feel: he is drawn steady against the view, without the one pixel shiver as he runs (0 off, 1 on)', 0, 1, 1, ''],
   ['feelStick', 'Feel: the stick is a full run the moment it is past the middle, no wait and no slow walk (0 off, 1 on)', 0, 1, 1, ''],
   ['feelNoStop', 'Feel: no stop on a plain hit. Heavy hits, knockouts and getting hurt keep theirs (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelSound', 'Feel: his jump, landing, swing, hit, hurt, roll and footstep sounds come out a little higher or lower each time (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelFade', 'Feel: a short dip to dark when thorns or water put him back, instead of the view cutting across (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelSoftLand', 'Feel: a small puff and a soft sound on the little landings that have none, a step down or a tapped hop (0 off, 1 on)', 0, 1, 1, ''],
+  ['foeHealth', 'How much health ordinary enemies have, times this. Counts for enemies as a room is come into. Bosses are left alone', 0.25, 1.5, 0.05, ' x'],
 ];
 // Tuning values to try together. knight: the controls set the way Hollow Knight's measure (the swing on the press and
 // hitting right behind it, no drift starting, stopping or turning, the stick a full run past the middle, the rise

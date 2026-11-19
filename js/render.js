@@ -234,7 +234,7 @@ function render(alpha) {
   if (!scene || (P.story && P.story.free)) drawHud();
   if (!scene && !P.story) drawPrompt(px2, py2, camX, camY);
   drawLetterbox();
-  const fade = Math.max(transDark(), P.ko > KO_TIME - 0.6 ? (P.ko - (KO_TIME - 0.6)) / 0.6 : P.fadeIn > 0 ? P.fadeIn / 0.45 : 0);
+  const fade = Math.max(transDark(), dipDark(), P.ko > KO_TIME - 0.6 ? (P.ko - (KO_TIME - 0.6)) / 0.6 : P.fadeIn > 0 ? P.fadeIn / 0.45 : 0);
   if (fade > 0) { ctx.fillStyle = `rgba(8, 9, 14, ${Math.min(1, fade)})`; ctx.fillRect(0, 0, VW, VH); }
   if (sceneFade.warm) { ctx.fillStyle = 'rgba(255, 196, 130, 0.16)'; ctx.fillRect(0, 0, VW, VH); }
   if (sceneText) drawSceneText();
