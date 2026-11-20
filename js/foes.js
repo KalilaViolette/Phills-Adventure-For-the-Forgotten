@@ -280,6 +280,11 @@ const foeHP = (k, kind) => {
   const hp = kind && earlyRootwood() && EARLY_HP[kind] !== undefined ? EARLY_HP[kind] : k.hp * regionToughness();
   return Math.max(1, Math.round(hp * tune.foeHealth));
 };
+// the thinning try-out (tune.thinRootwood): Rootwood's most crowded rooms with some of their enemies left out, each named
+// by its place in its room's list. Eight standing enemies in four rooms. At 2 the caps cornering Tock stay at one as
+// well (js/warren.js)
+const THIN = { trail: [0, 2], eastedge: [0, 2], undercroft: [1], well: [2] };
+const thinned = (def, i) => tune.thinRootwood >= 1 && def.region === 'rootwood' && !!THIN[def.id] && THIN[def.id].includes(i);
 function spawnFoes() {
   if (foes.length && foes[0].room && foes[0].room !== room.def.id) {
     const down = new Set(foes.filter(f => f.state === 'down' || f.hp <= 0).map(f => f.i));
@@ -294,6 +299,7 @@ function spawnFoes() {
     const k = FOE[d.kind]; if (!k) return;
     if (d.beat && !world.flags[d.beat]) return;                       // not here yet: it turns up once the story's got that far
     if (gone && gone.has(i)) return;
+    if (thinned(room.def, i)) return;
     const f = { room: room.def.id, i, kind: d.kind, x: d.x, y: d.y, x0: d.x, y0: d.y, f: d.f || -1, hp: foeHP(k, d.kind), state: 'walk', t: 0, cd: 0.8 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: k.free ? [2 * T, room.pxW - 2 * T] : patrol(d.x, d.y) };
     f.moves = movesFor(d.kind);
     if (d.asleep) { f.state = 'asleep'; f.wake = d.wake || 72; f.after = d.after; }   // lying still till he's met the one before it, so they come one at a time: see updateFoes

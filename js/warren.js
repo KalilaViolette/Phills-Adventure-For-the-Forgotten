@@ -433,7 +433,7 @@ function setupWarrenRoom() {
     addActor('tock', { kind: 'rw', x: sp.x, y: sp.y, frame: n === 1 ? 'tock_cower' : n === 2 ? 'tock_tangled' : 'tock_rundown', layer: 'back', flip: false });
     if (n === 1) {
       room.tock.state = 'cornered';
-      for (const cx of sp.caps.slice(0, world.flags.soldierDown ? 3 : 1)) addFoe('cap', cx * T, sp.y, 'tock');   // (one cap cornering him before the tin soldier's down, three after: the first fight in the game was six)
+      for (const cx of sp.caps.slice(0, world.flags.soldierDown && tune.thinRootwood < 2 ? 3 : 1)) addFoe('cap', cx * T, sp.y, 'tock');   // (one cap cornering him before the tin soldier's down, three after: the first fight in the game was six. The thinning try-out at 2 keeps it at one)
     }
     if (n === 3) room.tockKey = { x: sp.key.x, y: sp.key.y };
   }
