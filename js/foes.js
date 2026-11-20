@@ -51,6 +51,13 @@ const COMMIT = {
   shuttle: { drop: 0, bounce: 0, shake: 0, spinwind: 0, spiral: 0 },
 };
 const committed = f => { const c = COMMIT[f.kind]; return !!c && c[f.state] !== undefined && f.t >= c[f.state]; };
+// the stagger try-out (tune.feelStagger): Rootwood's first three can be put off their attack. A plain hit landed while one
+// is still in the first state of an attack (f.windState, its wind up) starts that wind up over: it's nudged back like a
+// hit on one that's doing nothing, and has to warn again from the start. Once it's past the wind up the attack comes
+// through as ever. Swings come about as often as these wind ups are long, so mashing can hold one off for good, which is
+// why it's a try-out and not how the game ships
+const STAGGERS = new Set(['cap', 'can', 'spinner']);
+const staggers = f => !!tune.feelStagger && STAGGERS.has(f.kind) && !!f.windState && f.state === f.windState;
 const SPR = 'art/rootwood/rootwood_sprites.png';
 
 // how far it can walk either way along the ground it's standing on (stops at walls and edges)
@@ -327,6 +334,7 @@ const guardUp = () => inp.guardH && !P.atk && !P.roll && !P.dash && P.hurtT <= 0
 let guardHeldRaw = false;                       // the shield button as pressed (input gets cleared during little scenes)
 function setFoeState(f, s) {
   if (f.state === 'down' && s !== 'down') return;   // knocked out is knocked out till the room's left and they come back. A hopper knocked out mid-hop was landing back on its feet with no health, and every hit after paid out again
+  const cm = COMMIT[f.kind]; f.windState = cm && cm[s] !== undefined ? (cm[f.state] !== undefined && f.windState ? f.windState : s) : null;   // (the state an attack began in, while it's still in that attack)
   f.state = s; f.t = 0; f.hb = null; f.hitP = false;
   const hv = HEAVY[f.kind];
   if (hv && hv[0] === s) {                                                             // winding up the one the shield can't take: a red !! and a heavy sound
@@ -622,7 +630,7 @@ function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
   // held its next attack back), mashing would keep it from ever getting a turn. It takes the hit, gets nudged back, and
   // carries on: its wind-up, its attack, its next attack when it was going to. A heavy hit (the charged swing, the roll
   // swing) still knocks it out of things
-  const mid = committed(f), holds = !heavy;
+  const stag = !heavy && staggers(f), mid = committed(f) && !stag, holds = !heavy;
   const power = opts.power ?? (heavy ? 1.8 : 1), braced = mid && !heavy;
   const opening = /stuck|stagger|dizzy|flat|lie|wobble|tangle/.test(f.state);              // (in an opening it hardly moves: hitting it out of reach of the next hit wasted the opening, the spinner stuck in the ground)
   const sk = typeof skillFeel === 'function' && skillFeel();
@@ -647,6 +655,7 @@ function foeHurt(f, dmg, push, x, y, heavy = false, opts = {}) {
     if (FOE[f.kind].onDown) FOE[f.kind].onDown(f);
     return true;
   }
+  if (stag) { setFoeState(f, f.state); return false; }                                  // (the stagger try-out: its wind up starts over)
   if (holds) { if (!world.flags.foeHolds && mid) { world.flags.foeHolds = true; popup(f.x, f.y - 40, "it's not stopping. block it, or hit it harder", '#cfd6e6'); } return false; }
   if (f.state !== 'stagger' && !FOE[f.kind].noHurt && !(FOE[f.kind].keepState && FOE[f.kind].keepState(f))) setFoeState(f, 'hurt');   // keepState: an opening a hit doesn't cut short
   return false;
