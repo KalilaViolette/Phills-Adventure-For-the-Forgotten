@@ -46,6 +46,22 @@ function readTurnOver(s, kind) {
 }
 // putting it back in his backpack and getting up
 const readStandUp = kind => [ib('rf_reach', 0.3, () => sfx.rustle(0.3)), ib('rf_sit', 0.3), ib('rf_squat', 0.13)];
+// frosting on his face after the cupcake: P.frost is how many seconds of it are left. It stays on through whatever he
+// does next (the pictures are in js/render.js) and wears off a bit at a time: all of it at first, then the edges and
+// the small dabs go (FROST_LEFT[0] seconds left), then there's only a dab on each cheek and his chin ([1]). Each lot
+// fades out over FROST_FADE seconds while what's still on him stays as pink as it was. Water takes it off
+const FROST_TIME = 90, FROST_LEFT = [60, 32], FROST_FADE = 5;
+// what's drawn of it right now: [which of the three pictures (0 all of it, 2 the last of it), how solid], the lot
+// that's fading out first so the lot that's staying goes over it
+function frostLayers() {
+  const f = P.frost; if (!(f > 0)) return [];
+  const s = f > FROST_LEFT[0] ? 0 : f > FROST_LEFT[1] ? 1 : 2, out = [];
+  if (s > 0) { const a = 1 - (FROST_LEFT[s - 1] - f) / FROST_FADE; if (a > 0) out.push([s - 1, a]); }
+  out.push([s, s === 2 ? Math.min(1, f / FROST_FADE) : 1]);
+  return out;
+}
+function updateFrost(dt) { if (P.frost > 0) P.frost = Math.max(0, P.frost - dt * (P.swim ? 30 : 1)); }
+const FROST_PINK = '#f496bc';
 const BACK_COPY = new Set(['look_up', 'look_down', 'reach', 'shake_1', 'shake_2', 'rise', 'top', 'fall', 'land']);
 const IDLE_BITS = {
   // yawns and stretches, dozes off standing up (head drooping lower and lower), then jolts awake, shakes his head
@@ -207,6 +223,34 @@ const IDLE_BITS = {
       return s;
     },
   },
+  // sits down facing us and gets a birthday cupcake out of his backpack, a pretend candle on it that never goes
+  // out. He holds it up, sets it down in front of him and gives us a happy look. Then he can't help it: a look down at
+  // it, a longer one, his hands go up, and both of them go into the frosting and all over his face. He can't eat, so
+  // that's where it stays: it's still on him after the cupcake's gone back in his backpack, wearing off bit by bit
+  cake: {
+    ok: () => !!world.has.backpack && !(P.frost > 0),
+    steps: () => {
+      const s = [ib('rf_squat', 0.13, () => sfx.bump()), ib('rf_plop', 0.12), ib('rf_sit', 0.4), ib('rf_reach', 0.3), ib('rf_pull_cake', 0.3, () => sfx.rustle(0.4))];
+      // holding still with the candle going: the flame leans over and back every 0.3s, and he breathes at the pace of
+      // the map and the book (0.6s out, 0.6s in). The pictures are base_1 and _2 for the breathing, an f on the end
+      // for the flame leaning
+      const hold = (base, d, go) => { for (let k = 0; k * 0.3 < d - 0.01; k++) s.push(ib(`${base}_${k & 2 ? 2 : 1}${k & 1 ? 'f' : ''}`, 0.3, k ? null : go)); };
+      hold('rf_cake', 1.8, () => sfx.chime());
+      s.push(ib('rf_cake_lay', 0.5, () => sfx.plop()), ib('rf_cake_sit_1', 0.3), ib('rf_cake_grin', 0.7));
+      hold('rf_cake_sit', 1.8);
+      s.push(ib('rf_cake_look_1', 0.7)); hold('rf_cake_sit', 0.6); s.push(ib('rf_cake_look_1', 0.4), ib('rf_cake_look_2', 0.9));
+      for (let k = 0; k < 4; k++) s.push(ib(k % 2 ? 'rf_cake_up_2' : 'rf_cake_up_1', 0.17, k === 0 ? () => sfx.pickup() : null));
+      const splat = b => { sfx.splort(); puff(P.x, P.y - 2, 6, 26, FROST_PINK, 34); };
+      s.push(ib('rf_cake_press_1', 0.12), ib('rf_cake_press_2', 0.5, splat), ib('rf_cake_scoop', 0.45));
+      for (let k = 0; k < 10; k++) s.push(ib(k % 2 ? 'rf_cake_rub_2' : 'rf_cake_rub_1', 0.13, k % 2 ? null : () => { P.frost = FROST_TIME; sfx.hitSquish(); }));
+      s.push(ib('rf_cake_rub_3', 0.4, () => sfx.hitSquish()));
+      hold('rf_cake_done', 1.2);
+      s.push(ib('rf_cake_laugh', 0.2, () => sfx.pickup()), ib('rf_cake_done_1', 0.15), ib('rf_cake_laugh', 0.2), ib('rf_cake_done_1', 0.15), ib('rf_cake_laugh', 0.2));
+      hold('rf_cake_done', 1.2);
+      s.push(ib('rf_cake_take', 0.4, () => sfx.rustle(0.3)), ib('rf_cake_3', 0.4), ib('rf_reach', 0.3, () => sfx.rustle(0.3)), ib('rf_sit', 0.3), ib('rf_squat', 0.13));
+      return s;
+    },
+  },
   // after 3 minutes of nothing: very tired, he yawns, nods, sits down and lies back, and sleeps for 30 seconds (the
   // same lying down and waking up as in the nest at the start). Never picked at random, only by the 3 minute timer
   sleep: {
@@ -274,13 +318,27 @@ function nextIdleStep(b) {
   if (s.coin) { b.coinFly = s.coin; }
   if (s.go) s.go(b);
 }
+// asked for by name (the Dev tab's row): he does it the first moment he's standing about with nothing pressed, if
+// that comes within a few seconds. The frosting comes off first so the cupcake can come out again. One he can't do
+// right now (no backpack for the book, say) is let go
+const IDLE_NAMES = { nod: 'Nodding off on his feet', dust: 'Dusting himself off', moth: 'A visitor on his nose', toss: 'Flipping a coin',
+  sit: 'Drawing on his paper', squeak: 'Squeaking his tummy', scratch: 'A doodle in the dirt', dance: 'A little dance', map: 'His map',
+  book: 'His picture book', cake: 'The birthday cupcake', sleep: 'A nap' };
+function askIdleBit(name) { if (!IDLE_BITS[name]) return; if (P.idleBit) stopIdleBit(); idleState.ask = { name, t: 4 }; }
 function updateIdle(dt) {
+  updateFrost(dt);
+  if (idleState.ask && (idleState.ask.t -= dt) <= 0) idleState.ask = null;
   const b = P.idleBit;
   if (anyInput()) { idleState.still = 0; idleState.long = 0; idleState.wait = IDLE_WAIT[0]; if (b) stopIdleBit(); return; }
   if (b && (b.room !== room || !idleCalm())) { stopIdleBit(); idleState.still = 0; idleState.long = 0; return; }
   if (!b || b.name !== 'sleep') idleState.long += dt;
   if (!b) {
     if (!idleCalm()) { idleState.still = 0; idleState.long = 0; return; }
+    if (idleState.ask) {
+      const n = idleState.ask.name; idleState.ask = null;
+      if (n === 'cake') P.frost = 0;
+      if (IDLE_BITS[n].ok()) { startIdleBit(n); idleState.still = 0; idleState.wait = IDLE_WAIT[1]; return; }
+    }
     if (idleState.long >= IDLE_SLEEP) { startIdleBit('sleep'); idleState.still = 0; idleState.wait = IDLE_WAIT[1]; return; }   // worn out: a nap
     idleState.still += dt;
     if (idleState.still < idleState.wait) return;

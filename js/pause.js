@@ -224,7 +224,11 @@ const pauseMenu = window.pauseMenu = (() => {
             act: () => { world.swordSkill = ((world.swordSkill || 0) + 1) % 4; if (!world.swordSkill) delete world.swordSkill; saveWorld(); } }],
         typeof UPGRADES === 'undefined' ? [] : [{ head: 'Upgrades (nobody gives these yet)' },                       // (js/upgrades.js: give one or take it away, to try it)
           ...UPGRADES.map(u => ({ label: u.name[0].toUpperCase() + u.name.slice(1), sub: u.what, value: () => hasUpgrade(u.id) ? 'Has it' : 'No',
-            act: () => { if (hasUpgrade(u.id)) takeUpgrade(u.id); else giveUpgrade(u.id, true); } }))]);
+            act: () => { if (hasUpgrade(u.id)) takeUpgrade(u.id); else giveUpgrade(u.id, true); } }))],
+        typeof IDLE_BITS === 'undefined' ? [] : [{ head: 'Idle animations' },                                     // (js/idle.js: he does the one picked without the wait)
+          { label: 'Play one', sub: "He does it once this is shut, as long as he's standing about with nothing pressed and it's one he can do right now",
+            choices: () => Object.keys(IDLE_BITS).map(n => ({ label: IDLE_NAMES[n] || n, value: n })), current: () => '', show: () => 'Pick one',
+            choose: v => { closeNow(); askIdleBit(v); } }]);
     },
   };
   const WHOSE = ['Everyone', 'Phill', 'Purl'], QUEST_KINDS = [['main', 'Main story'], ['side', 'Side quests'], ['contract', "Contracts from Tock's board"]];

@@ -36,6 +36,20 @@ function capeSheet() {
   if (!capeHeld) { capeHeld = true; Assets.use(CAPE_SHEET); }
   return Assets.get(CAPE_SHEET);
 }
+// frosting on his face after the cupcake (js/idle.js): like the cape, one picture per frame in the same spot as the
+// frame on its own sheet (made by phill_sprites.py), drawn over him. Three sheets: all of it, and what's left of it
+// as it wears off (frostLayers() says which to draw). They're only loaded while there's any on him, and from when the
+// cupcake comes out, so they're in by the time he's rubbed it on
+const frostSrcs = () => ['', '2', '3'].map(n => `art/phill/phill_${sheetKind === 'nogear' ? 'nogear' : 'gear'}_frost${n}.png`);
+let frostHeld = null;
+function frostSheets() {
+  const want = P.frost > 0 || (P.idleBit && P.idleBit.name === 'cake') ? frostSrcs() : null;
+  if ((want && want[0]) !== (frostHeld && frostHeld[0])) {
+    if (frostHeld) for (const s of frostHeld) Assets.release(s);
+    frostHeld = want; if (want) for (const s of want) Assets.use(s);
+  }
+  return frostHeld;
+}
 function getGhost() {     // a pale see-through copy of him (air dodge trail, charge glow). Made only when needed
   const base = Assets.get(sheetSrcs[0]);
   if (!ghostSheet && base) {
@@ -311,7 +325,15 @@ function drawCell(c, im, fr, x, y) {
   const g = cellCv.getContext('2d'); g.clearRect(0, 0, 64, 64); g.drawImage(im, fr[0], fr[1], fr[5], fr[6], fr[3], fr[4], fr[5], fr[6]);
   c.drawImage(cellCv, 0, 0, 64, 64, x, y, 64, 64);
 }
-function body(im, fr, x, y) { drawCell(ctx, im, fr, x, y); bodyAt = { t: ctx.getTransform(), x, y }; }
+function body(im, fr, x, y) {
+  drawCell(ctx, im, fr, x, y); bodyAt = { t: ctx.getTransform(), x, y };
+  const fs = frostSheets();
+  if (fs && P.frost > 0) {
+    const a = ctx.globalAlpha;
+    for (const [i, k] of frostLayers()) { const s = Assets.get(fs[i]); if (s) { ctx.globalAlpha = a * k; drawCell(ctx, s, fr, x, y); } }
+    ctx.globalAlpha = a;
+  }   // (under his arms and feet when he's sat facing us: those go on after)
+}
 // walking into a hole in the back wall: smaller the further in he is, and going the color of the dark in
 // there till he's gone. Coming out, the same the other way
 const walkInCv = document.createElement('canvas'); walkInCv.width = walkInCv.height = 64;
