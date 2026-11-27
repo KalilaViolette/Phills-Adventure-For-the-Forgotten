@@ -229,7 +229,7 @@ BOSS_KINDS.bramble = {
     // its vines: the low lash, the slam
     const kx = b.x - 54, ky = base - 44;
     if (b.state === 'sweepWind') { const k = Math.min(1, b.t / 0.4); vine(quad([kx, ky], [kx - 30, ky - 30 * k], [kx - 14 - 16 * k, ky - 50 * k], 10), 6); }
-    if (b.state === 'sweep' || b.state === 'recoil') {
+    if (b.state === 'sweep' || (b.state === 'recoil' && b.last === 'sweep')) {               // (a slam or a cut vine ends in recoil too: the low lash pulls back only after a sweep)
       const tip = b.state === 'recoil' ? b.tip + (b.x - 90 - b.tip) * Math.min(1, b.t / 0.3) : b.tip, y = base - 7, pts = quad([kx, ky], [kx - 30, y - 2], [kx - 50, y], 6);
       for (let x = kx - 56; x > tip; x -= 12) pts.push([x, y + Math.sin(x * 0.2 + b.t * 30) * 1.5]);
       pts.push([tip, y]); vine(pts, 7);

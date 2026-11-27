@@ -127,7 +127,7 @@ Object.assign(FOE, {
         if (!moved) { f.dir = -f.dir; f.f = f.dir; }
         f.dive = Math.abs(want - f.y) > 10 && want > f.y;
         strike(f, FOE.plane.box(f), 14);
-        if (f.t > 0.4) f.hitP = false;
+        if (f.t > 0.4 && !(P.bumpSafe > 0)) f.hitP = false;                             // (not right after a block, or it blocked again every step it was on the shield)
         if (f.cd <= 0 && near(f, 300, 200)) {
           const above = P.y - f.y > 10 && P.y - f.y < 120;
           const m = choose([[1.6, 'pass'], [hasMove(f, 2) && above && adx < 90 ? 1.3 : 0, 'loop'], [hasMove(f, 3) && adx > 60 && adx < 260 ? 1 : 0, 'foldwind'], [hasMove(f, 4) && adx < 200 ? 0.9 : 0, 'climb']]);
@@ -189,8 +189,9 @@ Object.assign(FOE, {
     harmless: f => f.state === 'quake' && f.t > 0.2,
     update(f, dt) {
       baseState(f, dt);
-      if (f.state === 'down') return;
-      if (f.state === 'stagger') { f.air = false; return; }
+      if (f.state === 'down') { if (f.air) hopFoe(f, dt, 800); return; }                 // knocked out up in a bounce: it still drops to the ground
+      if (f.state === 'stagger') { if (f.air) hopFoe(f, dt, 800); return; }             // dizzy in the air: it falls, and lies there dizzy
+      if (f.state === 'walk' && !f.air) { setFoeState(f, 'squash'); return; }           // back from a stagger or a heavy hit on the ground: its next bounce starts from a squash
       const dx = P.x - f.x, adx = Math.abs(dx);
       if (f.air) {
         if (hopFoe(f, dt, 800)) {
@@ -198,7 +199,7 @@ Object.assign(FOE, {
           if (f.state === 'slam') { setFoeState(f, 'quake'); ringOut(f.x, f.y - 2, 55, '#b8d83a'); shakeT = 0.12; shakeA = 1.6; sfx.thud(); puff(f.x, f.y, 8, 50); return; }
           setFoeState(f, 'squash'); sfx.boing ? sfx.boing() : sfx.bump(); puff(f.x, f.y, 4, 30);
         }
-        else { if (f.x <= f.range[0] + 1 || f.x >= f.range[1] - 1) f.hopVX = -f.hopVX; strike(f, foeBox(f), f.state === 'slam' ? 20 : 16); if (f.t > 0.3 && f.state !== 'slam') f.hitP = false; }
+        else { if (f.x <= f.range[0] + 1 || f.x >= f.range[1] - 1) f.hopVX = -f.hopVX; strike(f, foeBox(f), f.state === 'slam' ? 20 : 16); if (f.t > 0.3 && f.state !== 'slam' && !(P.bumpSafe > 0)) f.hitP = false; }   // (not right after a block, or it blocked again every step it was on the shield)
       } else if (f.state === 'squash') {
         if (f.t >= 0.14) {
           const chase = near(f, 240, 80), sees = near(f, 260, 170);                         // it goes for him from up on its ledge too, down onto the floor after him
@@ -268,7 +269,7 @@ Object.assign(FOE, {
           if (f.rebound) { f.rebound = false; setFoeState(f, 'bounce'); f.vy = -280; f.hopVX = Math.max(-120, Math.min(120, (P.x - f.x) / 0.62)); }   // back up off the ground...
           else { setFoeState(f, 'stuck'); f.hopVX = 0; }                                   // nose stuck in the ground a moment: the time to hit it
         }
-        strike(f, FOE.shuttle.box(f), 18);
+        if (f.state === 'drop') strike(f, FOE.shuttle.box(f), 18);                        // (not on the step it lands: the new state lets it hit again, so one drop was blocked twice)
       } else if (f.state === 'bounce') {                                                 // ...and over to come down on him again
         f.vy += 900 * dt; freeMove(f, f.hopVX * dt, f.vy * dt);
         if (f.vy > 0) { setFoeState(f, 'drop'); }
@@ -505,7 +506,7 @@ SCENES.owl = npc => {
   const left = owlList();
   if (!left.length) return [...steps, say('owl', 'That is everything I know, which is everything. Do come and sit with me sometime.')];
   let picked = -1;
-  steps.push(ask('owl', `Well? You have ${world.feathers || 0} feathers.`, [...left.map(s => `${s.what} (${s.cost} feathers)`), 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('owl', `Well? You have ${world.feathers || 0} feather${world.feathers === 1 ? '' : 's'}.`, [...left.map(s => `${s.what} (${s.cost} feathers)`), 'nothing, bye'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     const s = left[picked];

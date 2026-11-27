@@ -298,7 +298,7 @@ function spawnFoes() {
   (room.def.foes || []).forEach((d, i) => {
     const k = FOE[d.kind]; if (!k) return;
     if (d.beat && !world.flags[d.beat]) return;                       // not here yet: it turns up once the story's got that far
-    if (gone && gone.has(i)) return;
+    if (gone && gone.has(i) && !k.plant) return;                       // (a plant cut down is still made: its setup lays it there cut, the same as after three rooms away or a reload)
     if (thinned(room.def, i)) return;
     const f = { room: room.def.id, i, kind: d.kind, x: d.x, y: d.y, x0: d.x, y0: d.y, f: d.f || -1, hp: foeHP(k, d.kind), state: 'walk', t: 0, cd: 0.8 + Math.random(), flash: 0, vel: 0, yoff: 0, vy: 0, hb: null, hitP: false, range: k.free ? [2 * T, room.pxW - 2 * T] : patrol(d.x, d.y) };
     f.moves = movesFor(d.kind);
@@ -336,7 +336,7 @@ function keepClearOfDoors(f, k) {
 }
 const foeBox = f => { const k = FOE[f.kind]; if (k.box) return k.box(f); return { l: f.x - k.hw, r: f.x + k.hw, t: f.y - k.h + f.yoff, b: f.y + f.yoff }; };
 const phillAround = () => P.respawnT <= 0 && P.ko <= 0 && !P.hang && !P.held && !(typeof DBG !== 'undefined' && DBG.ignore);   // (the menu's Ignore him: as far as the enemies can tell he isn't there)
-const guardUp = () => inp.guardH && !P.atk && !P.roll && !P.dash && P.hurtT <= 0 && P.gbreak <= 0 && !P.guardOut;
+const guardUp = () => inp.guardH && !P.atk && !P.roll && !P.dash && P.hurtT <= 0 && P.gbreak <= 0 && !P.guardOut && !(P.splat > 0);   // (not lying flat on his face after a fall or a trip)
 let guardHeldRaw = false;                       // the shield button as pressed (input gets cleared during little scenes)
 function setFoeState(f, s) {
   if (f.state === 'down' && s !== 'down') return;   // knocked out is knocked out till the room's left and they come back. A hopper knocked out mid-hop was landing back on its feet with no health, and every hit after paid out again
@@ -440,7 +440,7 @@ function updateFoes(dt) {
     if (FOE[f.kind].walker) {                                                          // walkers that follow him off their ledge: keep their walk (what a hit can push them along) to the ground they're on now
       f.hopCd = (f.hopCd || 0) - dt;
       if (!f.air && ((f.rt = (f.rt || 0) - dt) <= 0)) { const r = patrol(f.x, f.y); if (r[1] >= r[0]) f.range = r; f.rt = 0.25; }
-      if (f.air && f.state !== 'down' && !FOE[f.kind].ownAir) { airStep(f, dt); continue; }
+      if (f.air && !FOE[f.kind].ownAir) { airStep(f, dt); if (f.state !== 'down') continue; }   // (knocked out in the air it still comes down, then lies there as it would)
     }
     const xWas = f.x;
     (FOE[f.kind].update || (f.kind === 'cap' ? updateCap : updateCan))(f, dt);

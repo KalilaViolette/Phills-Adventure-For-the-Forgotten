@@ -217,7 +217,7 @@ SCENES.squirrel = npc => {
   const left = shopList();
   if (!left.length) return [...steps, say('squirrel', "That's everything. Everything I know and everything I had. I'll bury more, come back later.")];
   let picked = -1;
-  steps.push(ask('squirrel', `Okay, what do you want? You've got ${world.acorns || 0} acorns.`, [...left.map(s => `${s.what} (${s.cost} acorns)`), 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('squirrel', `Okay, what do you want? You've got ${world.acorns || 0} acorn${world.acorns === 1 ? '' : 's'}.`, [...left.map(s => `${s.what} (${s.cost} acorns)`), 'nothing, bye'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     const s = left[picked];

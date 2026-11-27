@@ -317,7 +317,7 @@ Object.assign(FOE, {
         const landed = hopArc(f, dt);
         if (f.vy > -40 && !f.hitP && phillAround() && artHit(f, { l: f.x - 10, r: f.x + 10, t: f.y + f.yoff - 30, b: f.y + f.yoff })) {   // (on him, and on its drawing: artHit)
           f.hitP = true; f.atkBox = { l: f.x - 10, r: f.x + 10, t: f.y + f.yoff - 30, b: f.y + f.yoff }; f.atkT = 0.1;
-          const out = foeStrike(f.x, 'bucket', { cost: 20, dmg: 1 });
+          const out = foeStrike(f.x, 'bucket', { cost: 20, dmg: 1, heavy: f.heavy });   // (heavy: its flip is the move the shield can't take, the same as every other enemy's goes through strike)
           if (out === 'hit' && P.health > 0) { pinHim(f, 6); setFoeState(f, 'trap'); f.x = P.x; f.yoff = 0; tellOnce('bucketTrap', f, 'mash to get out', 40); return; }
           if (out === 'parried') { foeStagger(f, 1.4); return; }
         }
@@ -714,7 +714,7 @@ SCENES.monkey = npc => {
   const left = monkeyList();
   if (!left.length) return [...steps, say('monkey', "That's the whole act. No more secrets, no more stuffing. Come by and keep me company sometime, though.")];
   let picked = -1;
-  steps.push(ask('monkey', `What'll it be, friend? You've got ${world.marbles || 0} marbles.`, [...left.map(s => `${s.what} (${s.cost} marbles)`), 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('monkey', `What'll it be, friend? You've got ${world.marbles || 0} marble${world.marbles === 1 ? '' : 's'}.`, [...left.map(s => `${s.what} (${s.cost} marbles)`), 'nothing, bye'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     const s = left[picked];

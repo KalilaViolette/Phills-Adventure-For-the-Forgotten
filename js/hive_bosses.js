@@ -68,7 +68,7 @@ BOSS_KINDS.worm = {
         if (b.hy >= base - 10) { bossState('stuck'); shakeT = 0.18; shakeA = 3; S('splort'); S('thud'); puff(b.hx, base, 10, 70, '#e8a020'); }
         break;
       case 'stuck': b.hy = base - 10; if (b.t >= (b.phase === 2 ? 0.9 : 1.2)) { bossState('snap'); } break;   // its head stuck in the honey: hit it
-      case 'dive': b.hy += 260 * dt; if (b.hy > base + 30) { bossState('under'); b.ux = b.hx; S('splort'); } break;
+      case 'dive': b.hy += 260 * dt; if (b.hy > base + 30) { bossState('under'); b.ux = b.hx; b.told2 = false; S('splort'); } break;   // (told2 starts clear: knocked dizzy under the honey last time, it was left set and this one came up with no !!)
       case 'under': {                                                                      // under the honey, bubbling along after him (the red !! when it locks on)
         if (b.t < 0.9 / fast) b.ux += Math.sign(P.x - b.ux) * Math.min(Math.abs(P.x - b.ux), 260 * dt);
         else if (!b.told2) { b.told2 = true; bossBigTell(b.ux, base - 50); }
@@ -89,6 +89,7 @@ BOSS_KINDS.worm = {
         sway();
         if (b.t >= 0.5 / fast) {
           for (let i = -1; i <= 1; i++) { const tx = P.x + i * 40, tt = 0.8; shots.push({ kind: 'glob', col: '#6ac040', x: b.hx, y: b.hy - 6, vx: (tx - b.hx) / tt, vy: -300, g: 600, from: null, boss: true, reflected: false, t: 0, life: 2,
+            back: () => ({ x: boss.hx, y: boss.hy }),                                    // (batted back: at its head, where it is now, not the spot it started the fight)
             onReflectHit: s => { if (boss && boss.def.kind === 'worm' && overlap({ l: s.x - 4, r: s.x + 4, t: s.y - 4, b: s.y + 4 }, BOSS_KINDS.worm.head())) { pbDamage(2); boss.flash = 0.12; popup(boss.hx, boss.hy - 30, 'right back at it', '#ffd36b'); return true; } return false; },
             draw: s => { ctx.fillStyle = '#2a2030'; ellipse(s.x, s.y, 4, 4); ctx.fillStyle = '#6ac040'; ellipse(s.x, s.y, 3, 3); ctx.fillStyle = '#e8f8c0'; ctx.fillRect(Math.round(s.x) - 1, Math.round(s.y) - 2, 1, 1); } }); }
           bossState('idle'); b.cd = (1 + Math.random() * 0.4) / fast; S('splort');

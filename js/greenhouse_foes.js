@@ -63,7 +63,7 @@ Object.assign(FOE, {
       } else if (f.state === 'hopwind') { if (f.t >= 0.3) { setFoeState(f, 'hop'); hopStart(f, P.x, -260); if (heard(f)) sfx.jump(); } }
       else if (f.state === 'hop') {
         strike(f, { l: f.x - 9, r: f.x + 9, t: f.y - 22 + f.yoff, b: f.y + f.yoff }, 16);
-        if (hopArc(f, dt)) { setFoeState(f, 'walk'); f.cd = 1.1 + Math.random() * 0.5; puff(f.x, f.y, 3, 20); }
+        if (hopArc(f, dt) && f.state === 'hop') { setFoeState(f, 'walk'); f.cd = 1.1 + Math.random() * 0.5; puff(f.x, f.y, 3, 20); }   // (parried on its way down it's dizzy now: it lands and stays dizzy)
       } else if (f.state === 'tear') {                                                       // its top torn open, leaning back...
         if (f.t >= 0.45) {                                                                   // ...and a fan of seeds at him
           setFoeState(f, 'spray'); if (heard(f)) sfx.splort();
@@ -84,7 +84,7 @@ Object.assign(FOE, {
         f.yoff = Math.min(0, -20 + f.t * 28);
         const nx = f.x + f.gvx * dt; if (nx > f.range[0] - 30 && nx < f.range[1] + 30 && !boxSolid(nx - 10, f.y - 20 + f.yoff, nx + 10, f.y - 10 + f.yoff)) f.x = nx; else f.gvx = 0;
         strike(f, { l: f.x - 13, r: f.x + 13, t: f.y - 18 + f.yoff, b: f.y - 6 + f.yoff }, 16);
-        if (f.t >= 0.75 || f.yoff >= 0) { f.yoff = 0; setFoeState(f, 'walk'); f.cd = 1.4; f.rt = 0; }
+        if ((f.t >= 0.75 || f.yoff >= 0) && f.state === 'glide') { f.yoff = 0; setFoeState(f, 'walk'); f.cd = 1.4; f.rt = 0; }   // (parried, it's dizzy on the ground now: that isn't the glide ending)
       } else if (f.state === 'burstwind') { if (f.t >= 0.6) { setFoeState(f, 'burst'); if (heard(f)) sfx.splort(); groundWave(f, f.x, f.y, 180, '#d8ccb0'); for (let i = 0; i < 5; i++) { const a = -Math.PI + (i + 0.5) * Math.PI / 5; shot(f, 'seed', f.x, f.y - 20, Math.cos(a) * 150, Math.sin(a) * 150, 420, drawSeed); } } }
       else if (f.state === 'burst' && f.t >= 0.6) { setFoeState(f, 'walk'); f.cd = 1.8 + Math.random() * 0.6; }
     },
@@ -128,7 +128,7 @@ Object.assign(FOE, {
         }
       } else if (f.state === 'slam' && f.t >= 0.7) { setFoeState(f, 'walk'); f.cd = 1.6 + Math.random() * 0.5; }
       else if (f.state === 'stack') {                                                        // a second pot of Grime wells up under it, tall, swaying...
-        if (f.t >= 0.6) { setFoeState(f, 'topple'); if (heard(f)) sfx.whoosh(); }
+        if (f.t >= 0.6) { setFoeState(f, 'topple'); f.landed = false; if (heard(f)) sfx.whoosh(); }   // (landed starts clear: a heavy hit mid topple last time could leave it set, and this one would land with no puff or thud)
       } else if (f.state === 'topple') {                                                     // ...and it topples over onto him
         if (f.t < 0.25) strike(f, { l: Math.min(f.x, f.x + f.f * 44), r: Math.max(f.x, f.x + f.f * 44), t: f.y - 30 + f.t * 60, b: f.y }, 20);
         if (f.t >= 0.25 && !f.landed) { f.landed = true; puff(f.x + f.f * 30, f.y, 6, 40); if (heard(f)) sfx.thud(); }
@@ -198,7 +198,7 @@ Object.assign(FOE, {
       } else if (f.state === 'lean') { if (f.t >= 0.35) { setFoeState(f, 'lunge'); hopStart(f, P.x, -200); if (heard(f)) sfx.whoosh(); } }
       else if (f.state === 'lunge') {
         strike(f, { l: f.x - 9, r: f.x + 9, t: f.y - 26 + f.yoff, b: f.y + f.yoff }, 16);
-        if (hopArc(f, dt)) setFoeState(f, 'stand');
+        if (hopArc(f, dt) && f.state === 'lunge') setFoeState(f, 'stand');   // (parried on its way down: it lands dizzy)
       } else if (f.state === 'aim') { if (f.t >= 0.45) { setFoeState(f, 'dart'); f.gvx = f.f * 260; if (heard(f)) sfx.whip(); } }
       else if (f.state === 'dart') {                                                         // flung along low like a dart...
         const nx = f.x + f.gvx * dt, gy = groundFoot(nx, f.y);
@@ -256,7 +256,7 @@ Object.assign(FOE, {
       else if (f.state === 'grab') {                                                         // flung at him to wrap round him...
         const out = strike(f, { l: f.x - 12, r: f.x + 12, t: f.y - 22 + f.yoff, b: f.y + f.yoff }, 18);
         if (out === 'hit' && P.health > 0) { pinHim(f, 7); setFoeState(f, 'latch'); f.yoff = 0; tellOnce('tieWrap', f, 'mash to wriggle loose', 40); return; }
-        if (hopArc(f, dt)) { setFoeState(f, 'walk'); f.cd = 1.4; }
+        if (hopArc(f, dt) && f.state === 'grab') { setFoeState(f, 'walk'); f.cd = 1.4; }   // (parried on its way down: it lands dizzy)
       } else if (f.state === 'latch') {                                                      // ...wrapped round him, squeezing
         if (!pinnedBy(f)) { setFoeState(f, 'walk'); f.cd = 1.5; setBeside(f, -P.facing * 30); return; }
         f.x = P.x; f.y = P.y; P.pinned.x = P.x;
@@ -264,7 +264,7 @@ Object.assign(FOE, {
       } else if (f.state === 'springwind') { if (f.t >= 0.4) { setFoeState(f, 'spring'); hopStart(f, P.x, -330); if (heard(f)) sfx.boing(); } }
       else if (f.state === 'spring') {
         strike(f, { l: f.x - 14, r: f.x + 14, t: f.y - 18 + f.yoff, b: f.y + f.yoff }, 16);
-        if (hopArc(f, dt)) { setFoeState(f, 'walk'); f.cd = 1.3; puff(f.x, f.y, 3, 20); }
+        if (hopArc(f, dt) && f.state === 'spring') { setFoeState(f, 'walk'); f.cd = 1.3; puff(f.x, f.y, 3, 20); }   // (parried on its way down: it lands dizzy)
       } else if (f.state === 'flat') {                                                       // a snare on the floor, waiting
         if (!f.armed && f.t > 0.3) f.armed = true;
         if (f.armed && phillAround() && P.ground && Math.abs(P.x - f.x) < 12 && Math.abs(P.y - f.y) < 6 && P.inv <= 0 && !dodgeSafe()) {
@@ -322,7 +322,7 @@ Object.assign(FOE, {
       } else if (f.state === 'crouch') { if (f.t >= 0.4) { setFoeState(f, 'leap'); hopStart(f, P.x, -380); if (heard(f)) sfx.jump(); } }
       else if (f.state === 'leap') {
         strike(f, { l: f.x - 13, r: f.x + 13, t: f.y - 18 + f.yoff, b: f.y + f.yoff }, 18);
-        if (hopArc(f, dt)) { setFoeState(f, 'walk'); f.cd = 1.4; puff(f.x, f.y, 4, 24); if (heard(f)) sfx.thud(); }
+        if (hopArc(f, dt) && f.state === 'leap') { setFoeState(f, 'walk'); f.cd = 1.4; puff(f.x, f.y, 4, 24); if (heard(f)) sfx.thud(); }   // (parried on its way down: it lands dizzy)
       } else if (f.state === 'flickwind') {                                                  // fingers back...
         if (f.t >= 0.4) { setFoeState(f, 'flick'); if (heard(f)) sfx.splort(); const a0 = Math.atan2(P.y - 14 - (f.y - 10), dx); for (let i = -1; i <= 1; i++) { const a = a0 + i * 0.25; shot(f, 'clod', f.x + f.f * 10, f.y - 10, Math.cos(a) * 190, Math.sin(a) * 190 - 60, 420, drawClod); } }   // ...three flicks of dirt
       } else if (f.state === 'flick' && f.t >= 0.4) { setFoeState(f, 'walk'); f.cd = 1.4 + Math.random() * 0.5; }
@@ -382,7 +382,7 @@ Object.assign(FOE, {
     },
     frame: f => 'sprinkler_' + ({ walk: 'idle', ringwind: 'rise', ring: 'spin_' + (Math.floor(f.t * 10) % 2 + 1), aim: 'aim', jet: 'jet', arcwind: 'arcwind', popwind: 'rise', pop: 'pop', whirlwind: 'rise', whirl: 'whirl', down: 'down', stagger: 'dizzy', asleep: 'down', hurt: 'idle' }[f.state] || 'idle'),
     draw(f) {
-      if (f.jet) { const [x0, y0, x1, y1] = f.jet; ctx.strokeStyle = 'rgba(40,24,60,0.85)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.strokeStyle = '#8a5ac0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y0 - 1); ctx.lineTo(x1, y1 - 1); ctx.stroke(); }
+      if (f.jet && f.state === 'jet') { const [x0, y0, x1, y1] = f.jet; ctx.strokeStyle = 'rgba(40,24,60,0.85)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.strokeStyle = '#8a5ac0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y0 - 1); ctx.lineTo(x1, y1 - 1); ctx.stroke(); }
       drawFoe2(f, FOE.sprinkler.frame(f), f.x, f.y, ['ringwind', 'aim', 'popwind', 'whirlwind', 'arcwind'].includes(f.state) ? shake(f) : 0);
     } },
 });

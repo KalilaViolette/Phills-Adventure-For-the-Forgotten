@@ -19,7 +19,8 @@ function newPlayer(x, y, f) {
 // coming in through a door: same Phill (health, stamina), new spot, anything he was in the middle of is dropped
 function placePlayer(x, y, f) {
   if (P.x === undefined) newPlayer(x, y, f);
-  const keep = { health: P.health, maxHealth: P.maxHealth, en: P.en, stam: P.stam, story: P.story, worn: P.worn || 0, loose: P.loose || 0, looseBits: P.looseBits || 0, looseT: P.looseT || 0, looseMax: P.looseMax || 0, slid: P.slid || false, sheathed: P.sheathed || false, calmT: P.calmT || 0 };   // (gear put away stays put away through a door)
+  const keep = { health: P.health, maxHealth: P.maxHealth, en: P.en, stam: P.stam, guardOut: P.guardOut || false, story: P.story, worn: P.worn || 0, loose: P.loose || 0, looseBits: P.looseBits || 0, looseT: P.looseT || 0, looseMax: P.looseMax || 0, slid: P.slid || false, sheathed: P.sheathed || false, calmT: P.calmT || 0, frost: P.frost || 0 };   // (gear put away stays put away through a door, and the cupcake's frosting stays on his face. A broken guard stays broken with the bar it's waiting on)
+  if (P.health <= 0) Object.assign(keep, { ko: Math.max(P.ko || 0, 0.001), koBy: P.koBy, inv: P.inv });   // knocked out as the door faded: still knocked out on the other side, so he goes down and spills there instead of standing up with nothing left
   newPlayer(x, y, f); Object.assign(P, keep);
   P.crawl = !hasHeadroom(STAND_H); if (P.crawl) P.h = ROLL_H;
   if (typeof warpPlants === 'function') warpPlants();   // (put somewhere, not walked there: the plants don't sweep the gap)
@@ -307,7 +308,7 @@ const dipDark = () => !tune.feelFade ? 0 : P.respawnT > 0 ? Math.max(0, 1 - P.re
 // through a roll that the hit itself missed)
 function hurt(fromX, kind, dmg = 1) {
   if (P.inv > 0 || dodgeSafe() || P.respawnT > 0 || P.ko > 0 || P.chute) return false;   // nothing gets him on the way down the slide
-  if (mapView) closeMapNow();
+  if (mapView || (scene && scene.map)) closeMapNow();   // (sitting down to the map or getting up after it too: the hit takes him out of it)
   // his fluff: what this hit knocks out he can still win back by fighting. Anything still loose from the hit before is
   // locked in: it wears his most health down until he sews himself up at a resting spot
   // (not till the tin soldier's down. Before that a puff he didn't win back is just gone, so the rally gets learned before it costs anything)
@@ -524,7 +525,10 @@ function updateItself(dt) {
     P.vx = P.vy = 0; P.fallTop = P.y; P.atk = null;
     updateStory(dt); stepWorld(dt); return;
   }
-  if (P.walkIn) { updateWalkIn(dt); stepWorld(dt); return; }   // walking into or out of a hole in the back wall: nothing pressed counts
+  if (P.walkIn) {                                    // walking into or out of a hole in the back wall: nothing pressed counts
+    inp.jumpP = inp.atkP = inp.dodgeP = inp.lockP = inp.upP = inp.downP = inp.mapP = inp.guardP = inp.squeakP = inp.spinP = inp.sparkP = inp.bashP = 0;   // (dropped, not kept till he's out and gone off then)
+    updateWalkIn(dt); stepWorld(dt); return;
+  }
   updateIdle(dt);                                    // left standing around a while: one of his little idle bits (anything pressed stops it)
   updateSheathe(dt);                                 // his sword and shield going away on his back, or coming back out
   // presses become short buffers, so an early press still counts
@@ -592,9 +596,9 @@ function updateItself(dt) {
   const dir = inp.right - inp.left;
 
   updateStory(dt);
-  if (!P.story && P.ground && !P.atk && P.roll <= 0 && P.ko <= 0 && !P.crawl && P.hurtT <= 0 && P.charge <= 0) {
+  if (!P.story && P.ground && !P.atk && P.roll <= 0 && P.ko <= 0 && !P.crawl && P.hurtT <= 0 && P.charge <= 0 && !P.pinned && P.splat <= 0 && P.respawnT <= 0) {   // (not held by an enemy, flat on his face, or on his way back from the tacks)
     if (upP && interact()) return stepWorld(dt);                 // talk to someone, rest
-    if (mapP) openMap();
+    if (mapP && !scene) { openMap(); if (scene) scene.map = true; }   // (marked as the map's, so a hit on the way into it or out of it ends it)
   }
   if (P.respawnT > 0) {
     P.respawnT -= dt;
@@ -632,7 +636,7 @@ function updateItself(dt) {
   else if (spinP && (!P.story || P.story.free) && P.squeakCD <= 0 && P.charge <= 0) { P.spinBuf = 0; startSpecial('spin'); }   // the spin, on its own button
   P.sparkBuf = Math.max(0, (P.sparkBuf || 0) - dt);
   P.bashBuf = Math.max(0, (P.bashBuf || 0) - dt);   // the shield bash: on his feet, nothing else going on
-  if (P.bashBuf > 0 && (!P.story || P.story.free) && P.ground && !P.atk && P.atkCD <= 0 && P.charge <= 0 && !P.crawl && !P.swim && P.roll <= 0 && P.dash <= 0 && P.gbreak <= 0) { P.bashBuf = 0; startAttack('shbash'); P.combo = 0; }
+  if (P.bashBuf > 0 && can('bash') && (!P.story || P.story.free) && P.ground && !P.atk && P.atkCD <= 0 && P.charge <= 0 && !P.crawl && !P.swim && P.roll <= 0 && P.dash <= 0 && P.gbreak <= 0) { P.bashBuf = 0; startAttack('shbash'); P.combo = 0; }
   if (P.sparkBuf > 0 && (!P.story || P.story.free) && P.charge <= 0 && !(P.sparkCD > 0)) { P.sparkBuf = 0; startSpark(); }   // static spark
   updateSparkMove(dt);
   if (swimStep(dt, dir)) { stepWorld(dt); return; }                                 // in deep water: swimming, or sinking if he isn't waterproof
@@ -788,7 +792,7 @@ function updateItself(dt) {
     // next one in the combo); let go full and it's the charged swing, that step of the combo charged (bigger each step)
     if (inp.atkH) P.atkHeldT += dt; else P.atkHeldT = 0;
     if (P.atkPress) {
-      if (P.hurtT > 0 || P.dodgeBufT > 0 || guarding || P.roll > 0) { P.atkPress = false; P.charge = 0; P.pressSwung = false; }
+      if (P.hurtT > 0 || P.dodgeBufT > 0 || guarding || P.roll > 0 || (P.story && !P.story.free)) { P.atkPress = false; P.charge = 0; P.pressSwung = false; }   // (a scene taking his controls lets the charge go with nothing swung: its cleared buttons aren't a let go)
       else if (!inp.atkH) {                                                        // let go
         if (P.charge >= tune.chargeTime && P.ground && spend('charged')) { const lv = P.chargeLv || 0; startAttack(CHARGED_STEP[lv] || 'charged'); P.atk.level = lv; comboNext(lv); if (lv) chargedBurst(lv); }
         else if (!P.pressSwung) P.atkBufT = Math.max(0.12, (P.atkCD || 0) + 0.06);   // (let go during the last swing: it waits for that one to finish, so a press in the combo isn't lost)
@@ -863,6 +867,7 @@ function updateItself(dt) {
       P.dashUsed = false; P.wallPogoUsed = false; P.downCD = 0;
     }
     P.flapUsed = false;
+    P.cut = true;                                                                          // (only a jump's own rise can be cut short. Anything else that throws him up from here, a wriggle loose, a bonk, a scene's hop, goes its full height)
     P.vy = 0; P.coyoteT = tune.coyote; P.fallTop = P.y;
   } else { P.coyoteT = Math.max(0, P.coyoteT - dt); P.fallTop = Math.min(P.fallTop, P.y); }
 
@@ -943,7 +948,7 @@ function noGrab(cx, cy) {
 // above whatever's below, so a short drop doesn't count.
 const GRAB_REACH = 14, GRAB_ABOVE = 9, GRAB_BELOW = 13;   // how far from a ledge he can still snap onto it   // how forgiving the grab is (px)
 function tryGrab(dir) {
-  if (P.ground || P.vy < -30 || P.atk || P.hurtT > 0 || P.roll > 0 || P.dash > 0 || P.regrabT > 0 || !dir || dir !== P.facing || inp.down || inp.guardH) return false;
+  if (P.ground || P.vy < -30 || P.atk || P.hurtT > 0 || P.roll > 0 || P.dash > 0 || P.flop || P.regrabT > 0 || !dir || dir !== P.facing || inp.down || inp.guardH) return false;
   const edge = dir > 0 ? P.x + HW : P.x - HW;
   if (room.detail && pixelGrab(dir, edge)) return true;
   const cols = [...new Set([1, 7, GRAB_REACH].map(d => Math.floor((edge + dir * d) / T)))];
@@ -1074,14 +1079,17 @@ function updateKO(dt) {
       const spill = Math.ceil((world[kind] || 0) / 3);
       if (spill <= 0) continue;
       world[kind] -= spill; let at = { x: Math.round(P.x), y: Math.round(P.y) };
+      if (at.x < 0 || at.x > room.pxW || at.y > room.pxH) at = { x: Math.round(P.safeX), y: Math.round(P.safeY) };   // flung out past the room's edge (through a door's gap or down a hole, no door takes him while he's out): they land where he last stood safe, or he could never reach them
       if (wetAt(at.x, at.y)) at = !wetAt(P.safeX, P.safeY) ? { x: Math.round(P.safeX), y: Math.round(P.safeY) } : dryGround(at.x, at.y) || at;   // went down in grime or deep water: they land back on the dry ground he was last on
       world.piles.push({ room: room.id, x: at.x + (kind === 'pebbles' ? 10 : 0), y: at.y, n: spill, kind, dry: true }); pileLock = 1.5;
     }
     if (world.rest) {
       Object.assign(P, { guardOut: false, stam: 100, en: enMax(), winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45, h: STAND_H });
       // where he's going is saved along with the spill, so a reload during the fade puts him back where he rested, not
-      // where he went down
-      sewUp(); world.room = world.rest.room; world.door = '@rest'; saveWorld(); trans.state = 'none'; goTo(world.rest.room, '@rest');
+      // where he went down. A scene he went down in (a memory waiting on its words) ends here, not part way through the
+      // fade, and what it was going to give him, a memory's puff or a lesson's move, is worked out from the save the way
+      // loading does, so sewing up fills the new puff too and the scene can't give it a second time
+      endScene(); settleWorld(world); sewUp(); world.room = world.rest.room; world.door = '@rest'; saveWorld(); trans.state = 'none'; goTo(world.rest.room, '@rest');
       return;
     }
     // in the middle of a boss fight: the room starts over, boss and all, the same as coming back from a resting spot
@@ -1089,14 +1097,14 @@ function updateKO(dt) {
     // the wall, and the boss kept all the damage it had taken)
     if (typeof bossLocked === 'function' && bossLocked()) {
       Object.assign(P, { guardOut: false, stam: 100, en: enMax(), winded: false, ko: 0, koBy: null, koLanded: false, vx: 0, vy: 0, inv: 1.2, hurtT: 0, fadeIn: 0.45 });
-      sewUp(); saveWorld(); trans.state = 'none'; goTo(room.id, koDoor());
+      endScene(); settleWorld(world); sewUp(); saveWorld(); trans.state = 'none'; goTo(room.id, koDoor());   // (a scene he went down in: the same as above)
       return;
     }
     const kd = koDoor(), d = kd && room.def.doors.find(o => o.id === kd), at = d ? { x: d.x, y: d.y, f: d.f } : room.def.spawn || { x: P.safeX, y: P.safeY, f: P.facing };
     // a fresh start on the spot, the same as coming in a door: the water (or a low roof) decides again whether he's
     // swimming or standing, so a knockout in deep water doesn't bring him back a full height swimmer
     sewUp(); placePlayer(at.x, at.y, at.f);
-    Object.assign(P, { stam: 100, en: enMax(), inv: 1.2, fadeIn: 0.45, story: null });
+    Object.assign(P, { guardOut: false, stam: 100, en: enMax(), inv: 1.2, fadeIn: 0.45, story: null });
     cam.snap = true; saveWorld();
   }
 }
@@ -1173,7 +1181,7 @@ function gripBeside(d) {
   return gripAt(c, Math.floor((P.y - 30) / T)) && gripAt(c, Math.floor((P.y - 8) / T));
 }
 function tryCling(dir) {
-  if (!can('velcro') || !dir || P.ground || P.atk || P.roll > 0 || P.dash > 0 || P.swim || P.clingCD > 0 || P.vy < -140 || inp.down || inp.guardH) return false;
+  if (!can('velcro') || !dir || P.ground || P.atk || P.roll > 0 || P.dash > 0 || P.flop || P.swim || P.clingCD > 0 || P.vy < -140 || inp.down || inp.guardH) return false;
   if (!gripBeside(dir)) return false;
   const wx = dir > 0 ? Math.floor((P.x + HW + 1) / T) * T : Math.ceil((P.x - HW - 1) / T) * T;   // the face of the wall
   P.cling = { dir, t: 0, cx: wx, cy: P.y - HANG_FEET }; P.hangN = 0; P.airHang = null; P.vx = 0; P.vy = Math.min(Math.max(P.vy, 0), 30); P.facing = dir; P.flapUsed = false; P.dashUsed = false; P.downCD = 0;
@@ -1186,7 +1194,7 @@ function updateCling(dt, dir) {
   const slide = wearing('bark_chip') ? 14 : 34;
   P.vy = Math.min(slide, P.vy + 300 * dt);
   if (moveY(P.vy * dt)) { P.cling = null; P.ground = true; P.vy = 0; P.landT = 0.06; return; }   // slid all the way down to the ground
-  c.cy = P.y - HANG_FEET;
+  c.cy = P.y - HANG_FEET; P.fallTop = P.y;          // (on the bark he isn't falling: a drop off the end of it counts from where he comes off)
   if (Math.random() < dt * 6) addPart({ x: P.x + c.dir * HW, y: P.y - 20, vx: -c.dir * 10, vy: -10, life: 0.4, max: 0.4, c: '#e9e4da', s: 1, g: 40 });
   if (P.jumpBufT > 0) {                              // jump off the wall
     P.cling = null; P.jumpBufT = 0; P.vx = -c.dir * 190; P.vy = -jumpVel() * 0.95; P.facing = -c.dir; P.wallJumpT = 0.14; P.clingCD = 0.1; squash(-0.08);

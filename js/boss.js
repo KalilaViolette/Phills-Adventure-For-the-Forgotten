@@ -3,7 +3,7 @@
 // A big wind-up toy soldier full of Grime, guarding the way out of Rootwood. He's tin all over, so the sword just clanks
 // off him. Parry his bayonet thrust and he's knocked off his feet for a moment: that's when hits count, and a wound up
 // big swing counts the most. He also brings his rifle down in a slam that sends a wave along the ground (jump it),
-// and once he's hurt he winds himself up tighter: faster, thrusts in threes, and a charge across the clearing.
+// and once he's hurt he winds himself up tighter: faster, thrusts in twos, and a charge across the clearing.
 let boss = null;
 const BOSS_KINDS = {};          // the other regions' bosses add themselves here: { setup, update, hits, draw, name, hp, squeaked }
 const bossKind = () => boss && boss.def.kind && BOSS_KINDS[boss.def.kind];
@@ -76,7 +76,7 @@ const boxReach = (hb, x, y, r) => Math.hypot(Math.max(hb.l - x, 0, x - hb.r), Ma
 // (so a lure can't hurt him during a down scene, and a boss beaten mid bounce doesn't land and slam again)
 function bossEnd() {
   const b = boss; if (!b) return;
-  b.waves = []; b.lures = []; b.shots = 0; b.lashEnd = null;
+  b.waves = []; b.lures = []; b.shots = 0; b.lashEnd = null; b.drops = [];   // (drops: the Bramble heart's thorns from the roof, or they hang in the air through its down scene)
   if (b.air) { b.air = false; b.vy = 0; if (b.base !== undefined) b.y = b.base; }
   for (const s of shots) s.dead = true;
 }
@@ -119,7 +119,7 @@ function updateBoss(dt) {
       if (b.phase === 2 && dist > 150 && Math.random() < 0.6) { bossState('chargeWind'); sfx.ticking(); bossBigTell(b.x, b.y - 100); break; }
       if (dist > SOL.reach + 6) { bossState('march'); break; }
       if (Math.random() < 0.32) { bossState('raise'); sfx.heavyWindup(); popup(b.x, b.y - 100, '!!', '#ff6b5a', true); break; }
-      b.combo = b.phase === 2 ? 3 : 1; bossState('aim'); sfx.windup();
+      b.combo = b.phase === 2 ? SOL.combo2 : 1; bossState('aim'); sfx.windup();
       break;
     case 'march': {
       facePhill();

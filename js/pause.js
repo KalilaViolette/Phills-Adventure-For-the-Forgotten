@@ -145,7 +145,8 @@ const pauseMenu = window.pauseMenu = (() => {
     tuning: () => {
       const row = ([key, label, mn, mx, stp, unit]) => {
         const turn = d => () => { tune[key] = Math.min(mx, Math.max(mn, Math.round((tune[key] + d * stp) / stp) * stp)); saveTune(); refreshTune(); };
-        return { label, value: () => fmt(tune[key], stp) + unit, left: turn(-1), right: turn(1), act: turn(1) };
+        const flip = mn === 0 && mx === 1 && stp === 1;                               // (an on and off switch: picking it turns it off again too, like the other menus' switches)
+        return { label, value: () => fmt(tune[key], stp) + unit, left: turn(-1), right: turn(1), act: flip ? () => turn(tune[key] >= 1 ? -1 : 1)() : turn(1) };
       };
       const out = [], used = new Set();
       for (const [head, keys] of TUNE_GROUPS) {
@@ -165,7 +166,7 @@ const pauseMenu = window.pauseMenu = (() => {
       const out = [{ label: 'Showing', value: () => whose, act: flip(1), left: flip(-1), right: flip(1) }];
       for (const [kind, head] of QUEST_KINDS) {
         const qs = QUEST.list().filter(q => q.kind === kind && (whose === 'Everyone' || q.who === whose.toLowerCase()));
-        const shown = qs.map(q => [q, QUEST.status(q)]).filter(([, st]) => st.state !== 'locked');
+        const shown = qs.map(q => [q, QUEST.status(q)]).filter(([q, st]) => st.state !== 'locked' && !(st.at >= 0 && q.steps.slice(0, st.at + 1).every(x => x.dummy)));   // (one whose steps so far are all story beats that aren't in the game yet stays out of sight till they are)
         if (!shown.length) continue;
         out.push({ head });
         shown.sort((a, b) => (a[1].state === 'done') - (b[1].state === 'done'));       // (the ones going first, then the ones done)
@@ -308,7 +309,7 @@ const pauseMenu = window.pauseMenu = (() => {
     const r = rows[at]; if (!r) return;
     if (r.choices) { openDrop(at); return; }
     if (sfx.pop && !r.main) sfx.pop();
-    r.act();
+    if (r.act) r.act();                                                              // (a row that only shows something, like Memories, has nothing to do)
     if (api.open && !closing) show(true);
   }
   function side(d) {
@@ -517,7 +518,7 @@ const pauseMenu = window.pauseMenu = (() => {
     saved = null; sitting = false;
     if (typeof idleState !== 'undefined') idleState.still = 0;
     for (const n in inp) inp[n] = 0; inp.pace = 1;
-    paused = tuneOpen();
+    paused = tuneOpen() || !!(window.itemCard && itemCard.open);                    // (an item window that came up while the menu was open keeps the game stopped)
     root.hidden = true; document.body.classList.remove('paused');
     if (C.focus) try { C.focus({ preventScroll: true }); } catch (e) {}
   }
@@ -554,6 +555,7 @@ const pauseMenu = window.pauseMenu = (() => {
     if (!api.open) {
       if ((e.code === 'Escape' || e.code === 'KeyP') && !e.repeat && !ownsKeys(e.target) && canOpen()) { e.preventDefault(); useDevice('key'); open(); return true; }
       if (e.code === 'Tab' && started && canOpen()) { e.preventDefault(); if (!e.repeat) { useDevice('key'); open(false, 'tuning'); } return true; }   // (Tab: straight to the tuning)
+      if (e.code === 'Tab' && started && !room && !tuneOpen()) { e.preventDefault(); return true; }   // (the first room's still loading: nothing yet, not the old tuning drawer, which Esc can't shut)
       return false;
     }
     if (ownsKeys(e.target)) return false;

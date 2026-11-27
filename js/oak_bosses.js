@@ -37,7 +37,7 @@ BOSS_KINDS.yoyo = {
         if (Math.random() < dt * 20) part(b.x - Math.sign(b.vx) * 24, b.base - 2, -b.vx * 0.3, -40 - Math.random() * 60, 0.4, '#a89a78', 1, 200);
         if (b.x <= lo || b.x >= hi) { b.x = Math.max(lo, Math.min(hi, b.x)); bossState('stall'); shakeT = 0.2; shakeA = 2; sfx.clunk(); popup(b.x, b.y - 70, 'it stalls', '#ffd36b'); }
         else if (b.t >= 2.2 / fast) { bossState('snap'); sfx.reel(); }
-        if (!b.hitP && phillAround() && P.inv <= 0 && !dodgeSafe() && !P.story && bossHit(this.box())) {   // once a roll (it checked every frame it touched him, so a block broke his guard on the spot)
+        if (b.state === 'sleep' && !b.hitP && phillAround() && P.inv <= 0 && !dodgeSafe() && !P.story && bossHit(this.box())) {   // once a roll (it checked every frame it touched him, so a block broke his guard on the spot. Not on the step it stalls or snaps back: the new state lets it hit again)
           b.hitP = true; const out = foeStrike(b.x, 'yoyo', { cost: 20 });
           if (out === 'parried') { bossState('stall'); b.vx = 0; popup(b.x, b.y - 70, 'knocked off its string', '#ffd36b'); }
         }

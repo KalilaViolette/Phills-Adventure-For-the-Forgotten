@@ -108,7 +108,7 @@ const plantSfx = (() => {
 })();
 
 // the scare when one gets him: the edges of the screen go dark red for a moment and pulse with his heart
-let plantScareT = 0;
+let plantScareT = 0, plantScareLast = 0;
 function plantScare(k = 1) { plantScareT = Math.max(plantScareT, 0.9 * k); shakeT = Math.max(shakeT, 0.22); shakeA = Math.max(shakeA, 3); hitstop = Math.max(hitstop, 0.08); }
 function drawPlantScare() {
   const held = P.pinned && P.pinned.by && FOE[P.pinned.by.kind] && FOE[P.pinned.by.kind].plant;
@@ -127,6 +127,7 @@ function plantLetGo(f) { if (P.plantBy === f) { P.plantBy = null; P.plantFrame =
 const _frameName0 = frameName;
 frameName = function () {
   if (P.plantBy && (!foes.includes(P.plantBy) || P.plantBy.state === 'down' || P.health <= 0)) { P.plantBy = null; P.plantFrame = null; P.plantHide = false; }
+  if (P.plantBy && P.plantFrame === 'jolt' && !P.pinned && (P.roll > 0 || P.atk || (!P.ground && P.vy < 0 && P.hurtT <= 0))) plantLetGo(P.plantBy);   // startled is for standing there: rolling, swinging or jumping out of it he's drawn doing that (a hit's knock back still shows it)
   if (P.plantBy && P.plantHide) return null;
   if (P.plantBy && P.plantFrame) return P.plantFrame + '_' + (P.facing > 0 ? 'R' : 'L');
   return _frameName0();
@@ -370,6 +371,6 @@ const _drawOnPhill0 = drawOnPhill;
 drawOnPhill = function (px, py) {
   _drawOnPhill0(px, py);
   for (const f of foes) if (FOE[f.kind].overPhill) FOE[f.kind].overPhill(f);
-  plantScareT = Math.max(0, plantScareT - 1 / 60);
+  const now = performance.now(); plantScareT = Math.max(0, plantScareT - Math.min(0.1, (now - plantScareLast) / 1000)); plantScareLast = now;   // by the time gone, not a sixtieth a picture: a faster screen draws more pictures a second
   drawPlantScare();
 };

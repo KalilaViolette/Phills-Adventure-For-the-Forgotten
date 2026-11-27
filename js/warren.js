@@ -193,7 +193,7 @@ function atWork(n, k, now) {
   let t = (now + n.x * 0.037) % w.len, i = 0;                            // (each their own place in it)
   while (t >= w.steps[i][1]) { t -= w.steps[i][1]; i++; }
   const s = w.steps[i];
-  if (s[2] && n.workStep !== i) workFx(n, w, s[2]);
+  if (s[2] && n.workStep !== i && started && !paused) workFx(n, w, s[2]);   // (this runs from the drawing, which goes on while the game's paused: no sparks or sounds piling up then)
   n.workStep = i;
   return k + '_' + s[0];
 }
@@ -309,7 +309,7 @@ wrapPart('drawNpc', 'warren', next => {
   if (room.escort) spr(room.escort.moving ? 'army_walk_' + (Math.floor(now * 6) % 2 + 1) : 'army_idle_1', room.escort.x, room.escort.y, room.escort.f > 0);
   for (const s of SUPPLIES) if (s.room === room.id && !world.has['supply_' + s.id] && !given(s.id) && world.flags.boardRead) {
     spr('sup_' + s.id, s.x, s.y - 2 + Math.round(Math.sin(now * 2.2) * 1.5), false);
-    if (Math.sin(now * 3 + s.x) > 0.97) twinkle(s.x, s.y - 14, 1);
+    if (started && !paused && Math.sin(now * 3 + s.x) > 0.97) twinkle(s.x, s.y - 14, 1);
   }
   if (room.tockKey && !world.has.tock_key) spr('tockkey', room.tockKey.x, room.tockKey.y + Math.round(Math.sin(now * 2.5)), false);
 });
@@ -420,6 +420,8 @@ function setupWarrenRoom() {
   room.sleepers = inWarren() ? sleepersHere() : null;
   if (!inWarren() && world.warrenClean && !HOLES[room.id]) { world.warrenClean = false; saveWorld(); }   // out in the park again: he'll want scrubbing next time
   if (holeArrive && HOLES[room.id]) { holeArrive = false; const h = HOLES[room.id]; placePlayer(h.x, h.y, 1); world.warrenClean = false; saveWorld(); cam.snap = true; updateCam(0); }
+  // a thank you for a supply that a reload cut off: the 8 buttons, and for Clank's battery the music box, still come
+  for (const s of SUPPLIES) if (world.flags['owed_' + s.id]) { delete world.flags['owed_' + s.id]; world.buttons = (world.buttons || 0) + 8; if (s.id === 'battery') world.flags.musicBoxFixed = true; saveWorld(); }
   // lights: once the battery's in, the night lights are brighter and the Warren's less dark
   if (inWarren() && d.shade) { d._shadeA = d._shadeA ?? d.shade.a; d.shade.a = d._shadeA * (given('battery') ? 0.78 : 1); }
   if (d.train) room.train = { x: (d.train.x0 + d.train.x1) / 2, y: d.train.y, dir: 1, wait: 0, x0: d.train.x0, x1: d.train.x1, chug: 0 };
@@ -445,6 +447,9 @@ function setupWarrenRoom() {
   moleAway = false;
   const ms = moleStopHere();
   if (ms && world.flags.moleHome) { world.moleStops = world.moleStops || {}; if (!world.moleStops[room.id]) { world.moleStops[room.id] = true; saveWorld(); } }
+  // a trip by mole is saved just before the room changes: any other room set up first means a reload cut it off, and
+  // left set it would put him at that molehill the next time he walked in there
+  if (world.moleIn && world.moleIn !== room.id) { world.moleIn = null; saveWorld(); }
   if (world.moleIn && world.moleIn === room.id && ms) { world.moleIn = null; saveWorld(); playScene(SCENES.moleArrive(ms)); }
 }
 onRoomSetup('warren', () => setupWarrenRoom());
@@ -456,8 +461,9 @@ onEvents('warren', dt => {
   const d = room.def;
   // walking down to the lid: the Nutcracker turns him away, or Tock vouches for him
   if (room.id === 'chest' && !world.flags.warrenOpen && !room.gateDone && !scene && !P.story && P.ground && P.x > 13 * T) { room.gateDone = true; const sc = gateScene(); if (sc) playScene(sc); }
-  // walking into the chest: the squeeze and the scrub, every time he's come in from outside
-  if (d.scrub && world.flags.warrenOpen && !world.warrenClean && !scene && !P.story && P.x > d.scrub.l && P.x < d.scrub.r && P.y > d.scrub.t && P.y <= d.scrub.b + 1) playScene(SCENES.scrub());
+  // walking into the chest: the squeeze and the scrub, every time he's come in from outside. Only on his way in (to the
+  // right): in by molehill, he'd only reach it from the town side on his way out
+  if (d.scrub && world.flags.warrenOpen && !world.warrenClean && !scene && !P.story && P.vx > 0 && P.x > d.scrub.l && P.x < d.scrub.r && P.y > d.scrub.t && P.y <= d.scrub.b + 1) playScene(SCENES.scrub());
   if (lidAnim) { lidAnim.t += dt; if (lidAnim.t >= 1.1) { lidAnim = null; sfx.thud(); puff(room.def.lid.x - 6, room.def.lid.y + room.def.lid.h, 8, 40); } }
   // the train
   const tr = room.train;
@@ -525,7 +531,7 @@ const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 function buttonShop(n, who, items, after) {
   let picked = -1;
   return [
-    ask(who, `You've got ${world.buttons || 0} buttons.`, [...items.map(s => `${s.what} (${s.cost} buttons)`), 'nothing, thanks'], i => { picked = i; }),
+    ask(who, `You've got ${world.buttons || 0} button${world.buttons === 1 ? '' : 's'}.`, [...items.map(s => `${s.what} (${s.cost} buttons)`), 'nothing, thanks'], i => { picked = i; }),
     t => {
       if (t > 0) return true;
       const s = items[picked];
@@ -540,12 +546,14 @@ function buttonShop(n, who, items, after) {
   ];
 }
 function giveButtons(k, x, y) { gainCoin('buttons', k); popup(P.x, P.y - 54, `+${k} buttons`, COIN_COL.buttons); twinkle(x, y - 20, 8, COIN_COL.buttons); }
+// handing it over saves that he's owed the 8 buttons (and what it fixes) too, so a reload in the middle of the thank you
+// still gets them: setupWarrenRoom pays anything still owed
 function deliverSteps(n, id, lines, effect) {
   return [
-    run(() => { world.flags['gave_' + id] = true; delete world.has['supply_' + id]; saveWorld(); sfx.pickup(); popup(P.x, P.y - 54, 'gave ' + SUPPLIES.find(s => s.id === id).name + ' away', '#e8e6f0'); }),
+    run(() => { world.flags['gave_' + id] = true; world.flags['owed_' + id] = true; delete world.has['supply_' + id]; saveWorld(); sfx.pickup(); popup(P.x, P.y - 54, 'gave ' + SUPPLIES.find(s => s.id === id).name + ' away', '#e8e6f0'); }),
     pose('reach', 0.3), pose(null),
     sayN(n, ...lines),
-    run(() => { giveButtons(8, n.x, n.y); if (effect) effect(); }),
+    run(() => { delete world.flags['owed_' + id]; giveButtons(8, n.x, n.y); if (effect) effect(); }),
   ];
 }
 
@@ -697,7 +705,9 @@ const TOCK_TOLD = [
 ];
 WSCENES.tock = n => {
   const steps = walkUp(n);
-  if (!world.has.crayon_warren) {
+  // the crayon is saved partway through this talk and the board at the end of it, so a reload in between plays it
+  // again instead of leaving the board unread for good
+  if (!world.has.crayon_warren || !world.flags.boardRead) {
     steps.push(sayN(n, '[happy] You made it! Did Peg get behind your ears? She always gets behind your ears.',
       "Oh! Wait. Wait wait wait. I found this. Out in a puddle, before I ever met you. It smelled like you. It's yours, isn't it?"),
       pose('reach', 0.3), run(() => { world.has.crayon_warren = true; saveWorld(); sfx.pickup(); popup(P.x, P.y - 54, 'the pink crayon', '#e87aa8', true); setTimeout(() => sfx.idea(), 200); }), pose(null), ...nod(),
@@ -783,7 +793,7 @@ WSCENES.sarge = n => {
     t => { if (t > 0) return true; scene.steps.splice(scene.i + 1, 0, ...(yes ? [...nod(), sayN(n, "...Alright. I'll unbolt it. Bring him back."), run(() => { world.flags.deepHatch = true; saveWorld(); applyGates(room); sfx.open(); popup(P.x, P.y - 54, 'the hatch is open', '#ffd36b', true); })] : [sayN(n, "Can't say I blame you.")])); return true; });
     return steps;
   }
-  steps.push(sayN(n, ...(!world.flags.moleHome ? ["Hatch is open. Go careful.", 'Bring him back.'] : pick([['You brought him back. I won\'t forget that.'], ["The hatch stays bolted now. Nobody goes down there that doesn't have to."]]))));
+  steps.push(sayN(n, ...(!world.flags.moleHome ? ["Hatch is open. Go careful.", 'Bring him back.'] : pick([['You brought him back. I won\'t forget that.'], ["The hatch stays unbolted now. Nobody goes down there that doesn't have to."]]))));
   return steps;
 };
 
@@ -872,7 +882,7 @@ function moleHomeKnock(ms, mn, known, name) {
 }
 SCENES.moleArrive = ms => moleInShop() ? moleArriveHome(ms, moleInShop()) : [
   run(() => { sceneFade.a = 1; P.hidden = true; addActor('peek', { kind: 'rw', x: ms.x, y: ms.y + 12, frame: 'mole_peek', layer: 'back' }); }),
-  bars(true), run(() => { placePlayer(ms.x - 22, ms.y, 1); cam.snap = true; updateCam(0); }), fadeTo(0, 0.4),
+  bars(true), run(() => { placePlayer(ms.x - 22, ms.y, 1); P.hidden = true; cam.snap = true; updateCam(0); }), fadeTo(0, 0.4),   // (placePlayer makes a new Phill: out of sight again till the puff)
   t => { if (Math.floor(t / 0.25) !== Math.floor((t - STEP) / 0.25)) sfx.dig(); return t > 0.6; },
   run(() => { P.hidden = false; puff(ms.x, ms.y - 8, 16, 50, '#5a3e24'); sfx.dig(); }), moveActor('peek', ms.x, ms.y - 2, 0.3),
   say('mole', '*snf* There.'), moveActor('peek', ms.x, ms.y + 12, 0.3), run(() => { delete actors.peek; }), bars(false),
@@ -880,7 +890,7 @@ SCENES.moleArrive = ms => moleInShop() ? moleArriveHome(ms, moleInShop()) : [
 // coming back to the workshop by mole: he comes up out of his hill and goes back to his spot
 const moleArriveHome = (ms, mn) => [
   run(() => { moleAway = true; sceneFade.a = 1; P.hidden = true; addActor('peek', { kind: 'rw', x: ms.x, y: ms.y + 12, frame: 'mole_peek', layer: 'back' }); }),
-  bars(true), run(() => { placePlayer(ms.x - 22, ms.y, 1); cam.snap = true; updateCam(0); }), fadeTo(0, 0.4),
+  bars(true), run(() => { placePlayer(ms.x - 22, ms.y, 1); P.hidden = true; cam.snap = true; updateCam(0); }), fadeTo(0, 0.4),
   t => { if (Math.floor(t / 0.25) !== Math.floor((t - STEP) / 0.25)) sfx.dig(); return t > 0.6; },
   run(() => { P.hidden = false; puff(ms.x, ms.y - 8, 16, 50, '#5a3e24'); sfx.dig(); }), moveActor('peek', ms.x, ms.y - 2, 0.3),
   say('mole', '*snf* Home.'),

@@ -63,7 +63,7 @@ const itemCard = window.itemCard = (() => {
     <button type="button" class="ic-ok">Got it</button><div class="ic-keys"></div></section>`;
   stage.appendChild(root);
   const $ = s => root.querySelector(s), pic = $('.ic-pic'), ok = $('.ic-ok');
-  let wasPaused = false, held = null, armed = false;
+  let held = null, armed = false;
   function place() {
     const dpr = window.devicePixelRatio || 1;
     root.style.setProperty('--gx', offX / dpr + 'px'); root.style.setProperty('--gy', offY / dpr + 'px');
@@ -71,11 +71,11 @@ const itemCard = window.itemCard = (() => {
   }
   function show(id) {
     const info = ITEM_INFO[id]; if (!info || api.open) return;
-    api.open = true; api.id = id; wasPaused = paused; paused = true; held = null; armed = false;
+    api.open = true; api.id = id; paused = true; held = null; armed = false;
     $('#ic-name').textContent = info.name; $('.ic-found').textContent = info.found; $('.ic-use').textContent = info.use; $('.ic-who').textContent = info.who;
     const g = pic.getContext('2d'); g.clearRect(0, 0, pic.width, pic.height); g.imageSmoothingEnabled = false;
     if (info.draw) info.draw(pic.width / 2, pic.height / 2, g);
-    $('.ic-keys').textContent = device === 'pad' ? 'Cross: got it' : device === 'touch' || document.body.classList.contains('touch') ? '' : 'Enter or Space: got it';
+    $('.ic-keys').textContent = device === 'pad' ? 'X: got it' : device === 'touch' || document.body.classList.contains('touch') ? '' : 'Enter or Space: got it';
     place(); root.hidden = false; requestAnimationFrame(() => root.classList.add('on'));
     try { ok.focus({ preventScroll: true }); } catch (e) {}
     if (sfx.pop) sfx.pop();
@@ -83,7 +83,7 @@ const itemCard = window.itemCard = (() => {
   function close() {
     if (!api.open) return;
     api.open = false; root.classList.remove('on'); setTimeout(() => { if (!api.open) root.hidden = true; }, 200);
-    paused = wasPaused; keys.clear(); if (sfx.tick) sfx.tick();
+    paused = tuneOpen() || !!(window.pauseMenu && pauseMenu.open); keys.clear(); if (sfx.tick) sfx.tick();   // (still stopped only if the pause menu's up: it may have opened over this or shut while this was up)
     try { C.focus && C.focus(); } catch (e) {}
   }
   ok.addEventListener('click', e => { e.stopPropagation(); close(); });

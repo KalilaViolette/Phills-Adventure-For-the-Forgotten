@@ -20,6 +20,7 @@ function endScene() {
   scene = null; P.autoX = null;
   if (P.story && P.story.kind === 'scene') P.story = null;
   cam.target = null; letterbox.want = 0;
+  if (typeof sceneText !== 'undefined') sceneText = null; sceneFade.warm = false;   // a memory's words and its warm light go with it, even cut short by a knockout or a door
 }
 const sceneRunning = () => !!scene;
 

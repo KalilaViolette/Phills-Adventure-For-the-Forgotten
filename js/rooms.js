@@ -203,6 +203,7 @@ function updateTrans(dt) {
   if (trans.state === 'wait') {
     trans.t += dt;
     if (Rooms.ready(trans.to)) { enterRoom(trans.to, trans.door); trans.state = 'in'; trans.t = 0; }
+    else if (Rooms.failed(trans.to) && trans.t >= 1) { trans.t = 0; Rooms.load(trans.to); }   // its file didn't come (a dropped connection): asks again every second, so it goes on once it's back
   } else if (trans.state === 'in') { trans.t += dt; if (trans.t >= FADE) trans.state = 'none'; }
 }
 // ---------- a doorway that's a hole in the back wall ----------

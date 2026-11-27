@@ -176,6 +176,7 @@ BOSS_KINDS.tangle = {
       L.life -= dt;
     }
     b.lures = b.lures.filter(L => L.life > 0);
+    if (b.state !== 'lash') b.lashEnd = null;                                      // its lashed out line goes back in whenever it isn't lashing (a hit that pulls it tight or a squeak can cut a lash short)
     switch (b.state) {
       case 'dormant': if (Math.abs(P.x - b.x) < 240 && P.ko <= 0 && !scene) playScene(pbIntro([b.x, b.y + 80])); break;
       case 'idle':

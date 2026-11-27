@@ -114,7 +114,7 @@ const HOME = window.HOME = (() => {
       h.pieces.forEach((p, i) => {
         if (p.room !== room.id || gotPiece(h, i) || isHome(h)) return;
         h.piece.draw(ctx, p.x, p.y - 1 - Math.max(0, Math.sin(t * 1.7 + i)) * 3, t + i, i);   // caught in a draught: lifting and settling
-        if (Math.sin(t * 3 + p.x) > 0.97) twinkle(p.x, p.y - 14, 1);
+        if (started && !paused && Math.sin(t * 3 + p.x) > 0.97) twinkle(p.x, p.y - 14, 1);   // (not while paused, same as the items lying about)
       });
       if (isHome(h) && h.home.room === room.id) h.home.draw(ctx, h.home.x, h.home.y, t);
     }
@@ -126,9 +126,9 @@ const HOME = window.HOME = (() => {
     const steps = [walkTo(n.x + (P.x < n.x ? -2.6 : 2.6) * T), faceTo(n.x)];
     const all = found(h) >= Math.max(1, h.pieces.length);
     if (all) return [...steps,
-      run(() => { delete world.has[key(h)]; world.flags[key(h) + '_shown'] = true; saveWorld(); sfx.pickup(); popup(P.x, P.y - 54, 'gave them back', '#e8e6f0'); }),
+      run(() => { delete world.has[key(h)]; world.flags[key(h) + '_shown'] = true; world.flags[key(h) + '_home'] = true; saveWorld(); sfx.pickup(); popup(P.x, P.y - 54, 'gave them back', '#e8e6f0'); }),   // home in the same save that takes them off him, so closing the game during the lines can't leave them with nobody
       pose('reach', 0.3), pose(null), say(h.lines.all),
-      run(() => { world.flags[key(h) + '_home'] = true; saveWorld(); if (sfx.idea) sfx.idea(); popup(P.x, P.y - 54, 'home again', '#ffd36b', true); })];
+      run(() => { if (sfx.idea) sfx.idea(); popup(P.x, P.y - 54, 'home again', '#ffd36b', true); })];
     if (!world.flags[key(h) + '_shown']) return [...steps, say(h.lines.first), run(() => { world.flags[key(h) + '_shown'] = true; saveWorld(); })];
     return [...steps, say(h.lines.more)];
   }

@@ -507,7 +507,11 @@ Object.assign(FOE, {
         }
       } else if (f.state === 'blast') { if (f.t >= 0.5) { setFoeState(f, 'walk'); f.cd = 1.8 + Math.random(); } }
       if (f.state !== 'wrap') { f.x = Math.max(2 * T, Math.min(room.pxW - 2 * T, f.x)); f.y = Math.max(4 * T, Math.min(room.pxH - T, f.y)); }
-      if (f.state === 'down') { f.y = Math.min(f.y + 40 * dt, room.pxH - T); }
+      if (f.state === 'down') {                                                         // sinking till it lies on the ground under it (or a plank), not on down through it
+        const ny = f.y + 40 * dt, gy = groundY(f.x, f.y - 8, 9 + 40 * dt, 0), py = Math.floor(ny / T) * T;
+        const plank = py >= f.y - 0.01 && tile(Math.floor(f.x / T), py / T) === 2;
+        f.y = Math.min(ny, gy ?? ny, plank ? py : ny, room.pxH - T);
+      }
     },
     draw(f) {
       if (f.state === 'wrap') return;                                                   // (drawn over him: drawOnPhill)
@@ -535,17 +539,20 @@ Object.assign(FOE, {
       if (f.air) {
         if (hopFoe(f, dt)) {
           puff(f.x, f.y, 3, 25); if (heard(f)) sfx.thunk();
+          if (f.state === 'stagger' || f.state === 'down') { f.flop = false; f.big = false; f.hops = 0; return; }   // dazed or knocked out on the way down: it just lands as it is, and the hop it was in is over
           if (f.flop || f.big) { setFoeState(f, 'quake'); f.flop = false; f.big = false; ringOut(f.x, f.y - 2, 50, '#c4b090'); shakeT = 0.1; shakeA = 1.5; sfx.thud(); return; }
           if (f.hops > 1) { f.hops--; setFoeState(f, 'crouch'); f.quick = true; return; }
           setFoeState(f, 'walk'); f.cd = 0.5 + Math.random() * 0.6; f.hops = 0;
         }
-        strike(f, foeBox(f), 16); return;
+        if (f.state !== 'stagger') strike(f, foeBox(f), 16);                           // (dazed in the air it doesn't hit him: a parry's an opening, not a second hit on the next step)
+        return;
       }
       if (f.state === 'walk' && f.cd <= 0) {
         const on = near(f, 220, 80), sees = near(f, 220, 130);                            // it sees him up on a ledge a few tiles above too, and hops up after him
         const m = choose([[2, 'crouch'], [hasMove(f, 2) && on ? 1.2 : 0, 'flopcrouch'], [hasMove(f, 3) && on ? 1.2 : 0, 'triple'], [hasMove(f, 4) && near(f, 18 * T, 8 * T) ? 0.9 : 0, 'bigcrouch']]);
         f.f = sees ? (Math.sign(P.x - f.x) || f.f) : (Math.random() < 0.5 ? -1 : 1);
         if (!m) { f.cd = 0.3; return; }
+        f.hops = 0; f.quick = false;                                                    // (three quick hops cut short by a flinch don't carry into this move: its wind up is its own)
         if (m === 'triple') { f.hops = 3; f.quick = true; setFoeState(f, 'crouch'); } else setFoeState(f, m);
         sfx.ticking();
       } else if ((f.state === 'crouch' || f.state === 'flopcrouch') && f.t >= (f.quick ? 0.16 : f.state === 'flopcrouch' ? 0.45 : 0.35)) {
@@ -586,16 +593,18 @@ Object.assign(FOE, {
       const wet = isWater(f.x, f.y - 6);
       if (f.air) {
         if (hopFoe(f, dt, wet ? 500 : 800)) {
+          if (f.state === 'stagger' || f.state === 'down') { f.pound = false; puff(f.x, f.y, 4, 30, '#9ac0c8'); sfx.splort(); return; }   // dazed or knocked out on the way down: it just lands as it is, with no pound splash
           if (f.pound) { f.pound = false; setFoeState(f, 'splash'); splash(f.x, f.y, 10, 0.8); ringOut(f.x, f.y - 2, 46, '#9cd4e8'); for (const s2 of [-1, 1]) waterDrop(f, f.x + s2 * 12, f.y - 4, s2 * 170, -90, 500, true); return; }
           setFoeState(f, 'walk'); f.cd = 0.8 + Math.random() * 0.6; puff(f.x, f.y, 4, 30, '#9ac0c8'); sfx.splort();
         }
-        strike(f, foeBox(f), 20); return;
+        if (f.state !== 'stagger') strike(f, foeBox(f), 20);                           // (dazed in the air it doesn't hit him, the same as the frog)
+        return;
       }
       if (wet && !onFloorAt(f.x, Math.ceil((f.y + 1) / T) * T) && f.state !== 'down') { f.air = true; f.vy = 0; f.hopVX = 0; return; }   // underwater: sinking slowly to the bottom
       const dx = P.x - f.x, adx = Math.abs(dx), level = Math.abs(P.y - f.y) < 30;
       if (f.state === 'walk' && f.cd <= 0 && near(f, 180, 120)) {
         const m = choose([[2, 'squish'], [hasMove(f, 2) && adx > 36 ? 1.3 : 0, 'wring'], [hasMove(f, 3) && level && adx > 30 ? 1.2 : 0, 'tumblewind'], [hasMove(f, 4) ? 1.1 : 0, 'poundcrouch']]);
-        if (m) { f.f = Math.sign(dx) || f.f; setFoeState(f, m); sfx.splort(); }
+        if (m) { f.f = Math.sign(dx) || f.f; setFoeState(f, m); f.wrung = false; sfx.splort(); }   // (wrung starts fresh: a wring cut short would leave it set, and the next one would spray nothing)
       }
       else if (f.state === 'squish' && f.t >= 0.4) { setFoeState(f, 'spring'); f.air = true; f.vy = wet ? -200 : -300; f.hopVX = f.f * 90; sfx.hop(); }
       else if (f.state === 'wring') {                                                  // twisting itself up...
@@ -692,7 +701,7 @@ Object.assign(FOE, {
           f.f = Math.sign(dx) || f.f;                                                        // always its tin face toward him
           if (f.state === 'walk' && f.cd <= 0 && d < 170) {                                // its newer three: two lunges in a row, bubble mines, and a corkscrew
             const m = choose([[d < 150 ? 2 : 0, 'aim'], [hasMove(f, 3) ? 1.2 : 0, 'mineaim'], [hasMove(f, 4) ? 1.2 : 0, 'spinaim']]);
-            if (m) { setFoeState(f, m); f.again = false; sfx.ticking(); }
+            if (m) { setFoeState(f, m); f.again = false; f.glint = false; sfx.ticking(); }   // (glint starts fresh: an aim cut short after its glint would leave it set, and the next aim would have none)
           }
         } else {                                                                             // nothing to chase: idles about where it lives
           const mx = f.hx + Math.sin(f.t * 0.45) * 48 - f.x, my = f.hy + Math.sin(f.t * 0.8) * 10 - f.y;
@@ -800,7 +809,9 @@ Object.assign(FOE, {
       }
       if (f.state === 'hold') {                                                          // squeezing him in its fist
         if (!pinnedBy(f)) { setFoeState(f, 'walk'); f.cd = 1.6; f.vx = -(P.facing || 1) * 90; f.last = [f.x, f.y]; return; }
-        P.pinned.x = f.x + Math.sin(f.t * 25) * 2; P.pinned.y = f.y + 26;
+        P.pinned.x = f.x + Math.sin(f.t * 25) * 2;
+        let hy = f.y + 26; while (hy > f.y && bodyHit(P.pinned.x, hy - P.h, hy)) hy--;      // as low under it as he fits: right over the bottom it holds him up out of the mud, not down in it
+        P.pinned.y = bodyHit(P.pinned.x, hy - P.h, hy) ? f.y + 26 : hy;
         if (f.t >= 1.6) { P.pinned = null; hurt(f.x, 'glove', 1); setFoeState(f, 'walk'); f.cd = 1.8; }
         f.last = [f.x, f.y]; return;
       }
@@ -963,6 +974,7 @@ Object.assign(FOE, {
     deflect: f => f.state !== 'stagger' && f.state !== 'down',
     squeaked() {},                                                                         // gum doesn't care about noise
     update(f, dt) {
+      if (P.leech === f && f.state !== 'latch') P.leech = null;                            // not stuck on him any more (its own bubble got him while it was on): let go of him, or no leech would hunt him again
       if (f.state === 'latch') {
         if (!P.swim || P.ko > 0 || P.respawnT > 0 || !phillAround() || P.leech !== f) {   // out of the water (or knocked out): it lets go
           if (P.leech === f) P.leech = null;
@@ -1245,7 +1257,7 @@ SCENES.snail = npc => {
   const left = snailList();
   if (!left.length) return [...steps, say('snail', 'That is all I know. I will go and find out more. Slowly.')];
   let picked = -1;
-  steps.push(ask('snail', `What would you like? You have ${world.pebbles || 0} pebbles.`, [...left.map(s => `${s.what} (${s.cost} pebbles)`), 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('snail', `What would you like? You have ${world.pebbles || 0} pebble${world.pebbles === 1 ? '' : 's'}.`, [...left.map(s => `${s.what} (${s.cost} pebbles)`), 'nothing, bye'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     const s = left[picked];

@@ -72,7 +72,7 @@ const titleMenu = window.titleMenu = (() => {                                // 
   begin = function () {
     if (api.open) {
       api.open = false; root.hidden = true; document.body.classList.remove('titlemenu'); music.play = _playTitle;
-      _playTitle(roomSong !== undefined ? roomSong : room && room.def ? room.def.music : 'home', 0.7);
+      _playTitle(!room ? null : roomSong !== undefined ? roomSong : room.def ? room.def.music : null, 0.7);   // (a new game, another slot or a file is starting with no room in yet: the title song fades out, and the room's own song starts once it's in)
     }
     return _beginTitle();
   };

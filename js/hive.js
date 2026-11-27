@@ -112,7 +112,7 @@ SCENES.bellyflop = def => {
     run(() => { world.learned.flop = true; startFlop(); }), until(() => P.ground && !P.flop), wait(0.4),
     run(() => { saveWorld(); popup(P.x, P.y - 54, 'the belly flop. {down} + {jump} in the air', '#96d2ff', true); sfx.idea(); twinkle(P.x, P.y - 40, 12); }),
     wait(0.8), camBack(), wait(0.3), bars(false),
-    run(() => room.hints.push({ text: '{down} + {jump} in the air: the belly flop. it breaks crusts', l: 0, t: 0, r: room.pxW, b: room.pxH, x: P.x, y: P.y - 70, a: 0, until: 'floppedOnce' })),
+    run(() => { world.flags.floppedOnce = false; room.hints.push({ text: '{down} + {jump} in the air: the belly flop. it breaks crusts', l: 0, t: 0, r: room.pxW, b: room.pxH, x: P.x, y: P.y - 70, a: 0, until: 'floppedOnce' }); }),   // (the flop in the scene doesn't count: the note stays up till he does one himself)
   ];
 };
 
@@ -146,7 +146,7 @@ SCENES.hivebee = npc => {
   const left = hiveBeeList();
   if (!left.length) return [...steps, say('hivebee', "That's all I know in here. Bzzm.")];
   let picked = -1;
-  steps.push(ask('hivebee', `Mm? You've got ${world.sprinkles || 0} sprinkles. I like the pink ones.`, [...left.map(s => `${s.what} (${s.cost} sprinkles)`), 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('hivebee', `Mm? You've got ${world.sprinkles || 0} sprinkle${world.sprinkles === 1 ? '' : 's'}. I like the pink ones.`, [...left.map(s => `${s.what} (${s.cost} sprinkles)`), 'nothing, bye'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     const s = left[picked];

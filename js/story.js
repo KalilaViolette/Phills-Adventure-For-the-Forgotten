@@ -384,6 +384,7 @@ function checkPiles() {
   for (let i = world.piles.length - 1; i >= 0; i--) {
     const p = world.piles[i];
     if (p.room === room.id && !p.dry) { p.dry = true; const at = dryGround(p.x, p.y); if (at) { p.x = at.x; p.y = at.y; saveWorld(); } }   // older piles that landed somewhere wet
+    if (p.room === room.id && (p.x < 0 || p.x > room.pxW + 10 || p.y > room.pxH) && P.safeT > 0.15) { p.x = Math.round(P.safeX); p.y = Math.round(P.safeY); saveWorld(); }   // older piles out past the room's edge, where he can't reach: to the safe spot he's standing on (pebbles sit 10 px right of where he went down)
     if (p.room !== room.id || Math.abs(P.x - p.x) > 16 || Math.abs(P.y - p.y) > 24) continue;
     const kind = p.kind || 'acorns';
     world.piles.splice(i, 1); gainCoin(kind, p.n); popup(P.x, P.y - 50, `+${p.n} ${kind}`, COIN_COL[kind]); twinkle(p.x, p.y - 8, 10, COIN_COL[kind]);

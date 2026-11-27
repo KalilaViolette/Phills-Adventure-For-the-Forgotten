@@ -5,7 +5,7 @@ const CARRY = ['carry_1', 'carry_2', 'carry_3', 'carry_4'], FLY = ['fly_1', 'fly
 
 // the backyard: he steps out and stares at everything. Way up over the park, a bird is circling
 SCENES.backyard = () => {
-  if (world.flags.snatched) return [run(() => goTo('flight', null))];   // came back to a save made mid-snatch
+  if (world.flags.snatched) return world.flags.wokeInNest ? null : [run(() => goTo('flight', null))];   // came back to a save made mid-snatch (once he's woken in the nest, it's just the backyard)
   addActor('speck', { anim: FLY, fps: 6, scale: 0.22, layer: 'back',
     path: t => { const a = t * 0.7; return [58 * 16 + Math.cos(a) * 140, 3 * 16 + Math.sin(a) * 26, Math.sin(a) > 0]; } });
   if (world.flags.yardAwe) return null;
@@ -115,7 +115,7 @@ SCENES.nest = def => {
 };
 
 // down at the bottom: he picks himself up in the dark
-SCENES.oakfall = () => null;
+SCENES.oakfall = () => { if (world.flags.wokeInNest && !world.flags.landed) P.scared = true; return null; };   // still scared falling in from the nest (a new room builds him fresh), till he sees his sword and shield
 SCENES.landed = () => {
   const gear = room.items.find(it => it.id === 'gear' && !it.got);
   return [

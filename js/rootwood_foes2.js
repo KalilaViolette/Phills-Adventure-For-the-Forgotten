@@ -43,7 +43,7 @@ function drawFoe2(f, fr, x, y, shake = 0) {
   spr(fr, x + shake, y, f.f > 0);
   if (f.flash > 0) { ctx.globalCompositeOperation = 'lighter'; spr(fr, x, y, f.f > 0, 0.6); ctx.globalCompositeOperation = 'source-over'; }
 }
-function tellOnce(flag, f, text, dy = 66) { if (!world.flags[flag]) { world.flags[flag] = true; popup(f.x, f.y - dy, tune.feelHold ? text.replace(/^mash to /, 'mash or hold to ') : text, '#ffd36b'); } }
+function tellOnce(flag, f, text, dy = 66) { if (!world.flags[flag]) { world.flags[flag] = true; popup(f.x, f.y - dy, tune.feelHold && pinnedBy(f) ? text.replace(/\bmash to /, 'mash or hold to ') : text, '#ffd36b'); } }   // (or hold: only when it's really holding him. The wrap and the gum or dew on his feet are shaken off by presses only)
 
 Object.assign(FOE, {
   // ---- the maple spinner: hangs in the air spinning on its one wing, follows him round the room keeping up over his
@@ -59,10 +59,12 @@ Object.assign(FOE, {
     keepState: f => f.state === 'drop' || f.state === 'stuck',                   // a hit doesn't stop it falling, or pull it out of the ground
     update(f, dt) {
       if (f.state === 'down') { fallDown(f, dt); return; }
-      baseState(f, dt);
+      if (f.state !== 'stagger') baseState(f, dt);                                 // (its own stagger ends in a rise, below, which pulls it up out of the ground. Sent straight back to walk it stayed stuck in it)
       f.spin += dt * (f.state === 'whirl' ? 26 : 13);
       const dx = P.x - f.x, on = near(f, 22 * T, 15 * T) && sightLine(f.x, f.y, P.x, P.y - 20);
       if (f.state === 'walk' || f.state === 'hurt') {
+        const b = FOE.spinner.box(f);                                               // hit hard just as it started pulling out of the ground: straight up out of it first, the same as its rise
+        if (boxSolid(b.l, b.t, b.r, b.b) && !boxSolid(b.l, b.t, b.r, b.t + 4)) { f.y -= 60 * dt; return; }
         const tx = on ? P.x + f.off * 0.5 + Math.sin(f.t * 1.3) * 12 : f.hx + Math.sin(f.t * 0.5) * 30;
         const ty = on ? P.y - 96 + Math.sin(f.t * 2.1) * 6 : f.hy + Math.sin(f.t * 0.9) * 6;
         flyTo(f, tx, ty, on ? 82 : 30, dt);
@@ -156,7 +158,7 @@ Object.assign(FOE, {
           if (m) { if (m !== 'coil') f.f = Math.sign(dx) || f.f; setFoeState(f, m); if (heard(f)) sfx.hiss(); return; }   // (the lash only at his feet while he's on them: jump and it rears instead)
         }
         if (on && f.cd <= 0 && Math.abs(dx) < 30 && dy < -26 && dy > -96) { f.f = Math.sign(dx) || f.f; setFoeState(f, 'rear'); if (heard(f)) sfx.hiss(); return; }   // (the snap reaches 24 px)
-        if (on && Math.abs(dx) <= 26 && Math.abs(dy) < 24) return;                      // right on him: it holds there for its next go
+        if (on && Math.abs(dx) <= 34 && Math.abs(dy) < 24) return;                      // right by him: it holds there for its next go (its head's 26 out in front, so any closer it stands on him and its body hurts him)
         const res = groundStep(f, dir, sp, dt);
         if (res === 'edge') {
           if (on && (dy > 8 || (Math.abs(dx) > 30 && safeDip(f, dir)))) { f.air = true; f.vy = 0; f.hopVX = dir * 90; setFoeState(f, 'hop'); }   // he's below (or across a dip): off it goes after him

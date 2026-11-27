@@ -125,6 +125,8 @@ function spawnWild(w) {
     dir = Math.abs(px - e.x0) > Math.abs(px - e.x1) ? 1 : -1;               // start at the far end and walk toward the other
     if (Math.max(Math.abs(px - e.x0), Math.abs(px - e.x1)) < shy * 0.8) { w.next = rnd(4, 9); return; }
   }
+  // one spot (the turtle's log): not while he's close enough there to send it straight off again
+  if (shy && d.kind === 'stander' && e.x !== undefined && Math.abs(px - e.x) < shy && Math.abs(toLayerY(P.y, w.f) - e.y) < 140 * w.f) { w.next = rnd(4, 9); return; }
   const c = { t: 0, ph: rnd(0, 6), dir, x: dir > 0 ? e.x0 : e.x1, y: e.y, state: 'move', frame: null, fi: 0, pauseT: 0, gone: false, alpha: 1 };
   const spot = () => { let x = rnd(e.x0 + 10, e.x1 - 10); for (let k = 0; k < 6 && Math.abs(x - px) < shy; k++) x = rnd(e.x0 + 10, e.x1 - 10); return x; };
   if (d.kind === 'percher' || d.kind === 'stander') { c.x = e.x !== undefined ? e.x : spot(); c.state = 'sit'; c.dir = e.dir || (Math.random() < 0.5 ? -1 : 1); c.sitT = rnd(1, 3); }
@@ -191,7 +193,7 @@ function updateWildlife(dt) {
       if (c.fawn) updateFawn(c, d, dt);
       const hiding = c.state === 'hide';
       if (!hiding && d.flee && near < d.flee && nearY && (busy || near < d.flee * 0.5) && c.state !== 'flee') { c.state = 'flee'; c.dir = dx > 0 ? -1 : 1; c.t = 0; }
-      if (!hiding && d.scare && near < d.scare && nearY && c.state !== 'scared') { c.state = 'scared'; c.pauseT = d.scareT; }
+      if (!hiding && d.scare && near < d.scare && nearY && c.state !== 'scared') { c.state = 'scared'; c.pauseT = d.scareT; if (d.scareFrame) c.frame = d.scareFrame; }   // (the hedgehog curls up)
       if (!hiding && d.flyOff && near < d.flyOff && nearY && c.state !== 'fly') { c.state = 'fly'; c.t = 0; c.vy = -40; c.dir = dx > 0 ? -1 : 1; }
       if (c.state === 'move' || c.state === 'flee') {
         const sp = c.state === 'flee' ? d.fleeSpeed : d.speed;
@@ -215,17 +217,18 @@ function updateWildlife(dt) {
     } else if (d.kind === 'hopper') {
       if (d.flee && near < d.flee && nearY && (busy || near < d.flee * 0.5) && c.state !== 'flee' && c.state !== 'hide') { c.state = 'flee'; c.dir = dx > 0 ? -1 : 1; c.hopT = 0; }
       if (c.state === 'sit') { c.frame = c.sitT > 1.2 ? 'sit' : 'nibble'; c.sitT -= dt; if (c.sitT <= 0) { c.state = 'hop'; c.hops = 2 + Math.floor(Math.random() * 3); c.hopT = 0; if (Math.random() < 0.4) c.dir = -c.dir; } }
-      else {
+      else if (c.state === 'hide') {                     // slipping away on the spot, sitting, the same as the walkers (not hopping back while it fades)
+        c.hideT -= dt; c.alpha = Math.max(0, c.hideT / 0.5); if (c.hideT <= 0) { done(); continue; }
+      } else {
         const fast = c.state === 'flee', per = fast ? 0.32 : 0.5;
         c.hopT += dt; const k = (c.hopT % per) / per;
         const hx = c.x + c.dir * (fast ? (d.hopSpeed ? d.hopSpeed[1] : 150) : (d.hopSpeed ? d.hopSpeed[0] : 70)) * dt;
         if (c.terrain) {                                 // hopping along the real ground: a bigger rise is fine in a hop, a wall isn't
           const s = wildSize(w), gy = wildTop(hx, c.y, s.climb * 2, s.drop * 2), fx = hx + c.dir * s.front;
           let wall = gy === null; if (!wall) for (let yy = gy - s.h; yy <= gy - 3; yy += 2) if (solidPx(fx, yy)) { wall = true; break; }
-          if (wall) { if (fast) { c.state = 'hide'; c.hideT = 0.5; c.frame = 'sit'; continue; } c.dir = -c.dir; } else { c.x = hx; c.y = gy; }
+          if (wall) { if (fast) { c.state = 'hide'; c.hideT = 0.5; c.frame = 'sit'; c.hy = 0; continue; } c.dir = -c.dir; } else { c.x = hx; c.y = gy; }
         } else c.x = hx; c.hy = Math.sin(k * Math.PI) * (fast ? (d.hopH ? d.hopH[1] : 14) : (d.hopH ? d.hopH[0] : 9)); c.frame = k < 0.5 ? 'hop_1' : 'hop_2';
-        if (c.state === 'hide') { c.hideT -= dt; c.alpha = Math.max(0, c.hideT / 0.5); if (c.hideT <= 0) { done(); continue; } }
-        else if (c.hopT >= per * (fast ? 999 : c.hops)) { c.state = 'sit'; c.sitT = rnd(1.5, 4); c.hy = 0; }
+        if (c.hopT >= per * (fast ? 999 : c.hops)) { c.state = 'sit'; c.sitT = rnd(1.5, 4); c.hy = 0; }
         if (c.x < e.x0 - 20 || c.x > e.x1 + 20) { done(); continue; }
         if (!fast && (c.x < e.x0 + 10 || c.x > e.x1 - 10)) c.dir = -c.dir;
       }

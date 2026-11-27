@@ -43,6 +43,7 @@ function stepWorld(dt) {
 let startGen = 0;
 function startGame() {
   const gen = ++startGen, w = world;
+  trans.state = 'none'; cutscene = null;                                  // a door change or a "comes next" card from before doesn't carry on into this game
   // new game: asleep in the bedroom. Otherwise back where he was
   const fresh = !Object.keys(w.has).length && w.room === 'bedroom' && !w.door;
   useSheets(w.has.gear ? 'gear' : 'nogear');
@@ -53,7 +54,7 @@ function startGame() {
     if (gen !== startGen || w !== world) return;
     if (Rooms.failed(id)) {
       if (w.rest && w.rest.room !== id) { id = w.rest.room; door = '@rest'; Rooms.load(id); }
-      else { console.warn('could not start in', id); return; }
+      else { console.warn('could not start in', id); setTimeout(() => { if (gen === startGen && w === world) { Rooms.load(id); go(); } }, 1000); return; }   // (asks again every second: a dropped connection comes back)
     }
     if (!Rooms.ready(id)) { setTimeout(go, 30); return; }
     enterRoom(id, door);

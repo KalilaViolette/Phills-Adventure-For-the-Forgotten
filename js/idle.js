@@ -304,7 +304,7 @@ function startIdleBit(name) {
   const strap = () => { sfx.bump(); };
   // straps his sword and shield on his back first (unless they're already there), and leaves them there after: nothing's
   // around, so they stay put away till he swings or raises the shield. The sword doodle needs the sword out
-  if (!d.held && !P.sheathed) steps.unshift(ib('b_stow', 0.22, strap));
+  if (world.has.gear && !d.held && !P.sheathed) steps.unshift(ib('b_stow', 0.22, strap));   // (before the crow there's nothing to strap on)
   if (world.has.gear) P.sheathed = !d.held;
   const b = { name, steps, back: !d.held, i: -1, st: 0, t: 0, room, facing0: P.facing, dy: 0, paper: name === 'sit', zt: 0, nt: 0 };
   P.idleBit = b; idleState.last = name;

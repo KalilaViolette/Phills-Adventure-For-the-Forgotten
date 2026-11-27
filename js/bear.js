@@ -168,7 +168,7 @@ function checkLeave() {
 }
 const _goToB = goTo;
 goTo = (id, door) => {                                                                // (and if he gets to a way out anyway, he doesn't go through it)
-  if (mustGoUp() && id !== BEAR_AT.home.room) { if (!sceneRunning()) playScene(SCENES.bearThisWay(room.def, P.x < room.pxW / 2 ? 6 * T : 44.5 * T)); return; }
+  if (mustGoUp() && id !== BEAR_AT.home.room && door !== '@rest') { if (!sceneRunning()) playScene(SCENES.bearThisWay(room.def, P.x < room.pxW / 2 ? 6 * T : 44.5 * T)); return; }   // (waking up at his rest spot after a knockout always goes)
   _goToB(id, door);
 };
 // in his home he turns to look at Phill

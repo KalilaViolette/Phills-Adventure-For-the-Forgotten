@@ -17,7 +17,10 @@ const questNote = window.questNote = (() => {
   const SHOW = 3.4;
   function take(w) {
     const out = {};
-    for (const q of QUEST.list()) { const st = QUEST.status(q, w); out[q.id] = { state: st.state, done: st.done, at: st.at }; }
+    for (const q of QUEST.list()) {
+      const st = QUEST.status(q, w), unbuilt = st.at >= 0 && q.steps.slice(0, st.at + 1).every(s => s.dummy);   // (every step so far not in the game yet: no note, the same as the journal leaves it out, js/pause.js)
+      out[q.id] = { state: unbuilt ? 'locked' : st.state, done: st.done, at: st.at };
+    }
     return out;
   }
   function quiet() { snap = null; }                                                   // (start again from what's there now, without notes)

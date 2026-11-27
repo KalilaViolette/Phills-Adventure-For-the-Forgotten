@@ -61,6 +61,7 @@ function getGhost() {     // a pale see-through copy of him (air dodge trail, ch
 }
 const motes = [];
 let vignette = null;
+let drawLast = 0, drawDt = 0;      // the time since the last frame was drawn, for the few fades done in the drawing (so they take as long on any screen)
 
 // ---------- drawing ----------
 // a popup's words broken into lines no wider than w, in the font that's set
@@ -71,6 +72,7 @@ function wrapLines(t, w) {
   return out.length ? out : [''];
 }
 function render(alpha) {
+  const drawNow = performance.now(); drawDt = Math.min(0.1, (drawNow - drawLast) / 1000); drawLast = drawNow;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#0b0c12'; ctx.fillRect(0, 0, C.width, C.height);
   if (!room) return;
@@ -116,7 +118,7 @@ function render(alpha) {
     if (it.kind === 'gall') drawGall(it.x, it.y - 7 + bob);                           // (the oak gall's drawn here, not on the sheet: js/sword.js)
     else if (it.kind === 'pin') { const ps = Assets.get(PIN_SHEET); if (ps && PINS[it.pin]) ctx.drawImage(ps, PINS[it.pin].cell * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32); }
     else ctx.drawImage(items, itemCell(it) * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32);
-    if (Math.sin(now * 1.3 + it.bob * 3) > 0.985) twinkle(it.x + 6, it.y - 18, 1);
+    if (started && !paused && Math.sin(now * 1.3 + it.bob * 3) > 0.985) twinkle(it.x + 6, it.y - 18, 1);   // (not while paused: nothing moves the sparkles then, so they'd pile up and all go off at once after)
     if (sk) ctx.restore();
   }
   if (room.ball && items) {
@@ -183,7 +185,8 @@ function render(alpha) {
   if (typeof drawGallsShine === 'function') drawGallsShine();                            // the oak gall shining once he's right there with it (js/sword.js)
   if (layers.some(L => L.f > 1)) {                // close to the camera, sliding past faster than the room
     ctx.setTransform(S, 0, 0, S, offX, offY);
-    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) { const v = frontAt(im, L, camX, camY); drawView(im, v[0], v[1]); } if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY); } });
+    layers.forEach((L, i) => { if (L.f > 1) { const im = Assets.get(L.src); if (im) { const v = frontAt(im, L, camX, camY); drawView(im, v[0], v[1]); } } });
+    if (typeof drawWildlife === 'function') drawWildlife('front', camX, camY);   // whatever lives up front, once, over all of them
     ctx.translate(-camX, -camY);
   }
 
@@ -478,7 +481,7 @@ function drawGuardMeter(px, py, q) {
     ctx.fillStyle = '#2a2234'; ctx.fillRect(bx, by, bw, 2);
     ctx.fillStyle = P.winded ? (Math.floor(now / 160) % 2 ? '#c9d48a' : '#8e9a5a') : '#b8e07a';
     ctx.fillRect(bx, by, Math.round(bw * k), 2);
-    ctx.fillStyle = '#0e0f18'; for (let c = tune.rollCost; c < enMax() - tune.rollCost / 2; c += tune.rollCost) ctx.fillRect(bx + Math.round(bw * c / enMax()), by, 1, 2);   // where each roll's worth ends
+    ctx.fillStyle = '#0e0f18'; if (tune.rollCost > 0) for (let c = tune.rollCost; c < enMax() - tune.rollCost / 2; c += tune.rollCost) ctx.fillRect(bx + Math.round(bw * c / enMax()), by, 1, 2);   // where each roll's worth ends (none when rolls are free: a cost of 0 would never get past the start)
     if (P.enFlash > 0) { ctx.fillStyle = `rgba(255, 110, 90, ${P.enFlash / 0.3 * 0.8})`; ctx.fillRect(bx, by, bw, 2); }
   }
   ctx.globalAlpha = 1;
@@ -617,7 +620,7 @@ function drawHud() {
     spr(COIN_ICON[coin], ax + 5, ay + 10, false);
     ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.fillStyle = acornFlash > 0 ? '#ffd36b' : '#e8dcc0';
     ctx.fillText(String(world[coin] || 0), ax + 14, ay + 8);
-    acornFlash = Math.max(0, acornFlash - 1 / 60);
+    acornFlash = Math.max(0, acornFlash - drawDt);
   }
   // (his stamina and the shield's are over his head: drawGuardMeter)
   drawSpecialIcons();
@@ -659,7 +662,7 @@ function drawCard() {
   ctx.fillText(c.lines[0], VW / 2, VH / 2 - 10);
   ctx.font = '600 8px "Pixelify Sans", ui-monospace, monospace'; ctx.fillStyle = '#e8e6f0';
   for (let i = 1; i < c.lines.length; i++) ctx.fillText(c.lines[i], VW / 2, VH / 2 + 8 + i * 12);
-  if (c.t > 0.7) { ctx.fillStyle = '#9aa0bb'; ctx.fillText(c.prompt || 'press x to go back', VW / 2, VH / 2 + 50); }
+  if (c.t > 0.7) { ctx.fillStyle = '#9aa0bb'; ctx.fillText(c.prompt || fmtKeys('press {jump} to go back'), VW / 2, VH / 2 + 50); }
   ctx.globalAlpha = 1; ctx.textAlign = 'left';
 }
 
@@ -1002,7 +1005,7 @@ function drawCovers() {
     if (!b.cover) continue;
     const c = b.cover, inside = P.x > (c.pas[0] - 0.5) * T && P.x < (c.pas[2] + 1.5) * T && P.y > c.pas[1] * T - 4 && P.y <= (c.pas[3] + 1) * T + 4;
     if ((inside || b.broken) && !world.flags['seen_' + b.id]) { world.flags['seen_' + b.id] = true; saveWorld(); }
-    if (world.flags['seen_' + b.id]) b.coverA = Math.max(0, b.coverA - 0.05);
+    if (world.flags['seen_' + b.id]) b.coverA = Math.max(0, b.coverA - 3 * drawDt);   // gone in a third of a second
     const draw = (name, a) => { const r = pieces[name], im = Assets.get(room.def.art.pack + '#piece_' + name); if (r && im && a > 0) { ctx.globalAlpha = a; ctx.drawImage(im, r[0], r[1]); ctx.globalAlpha = 1; } };
     draw('cover_' + b.id + '_pass', b.coverA);
     if (!b.broken) { const jx = b.shake > 0 ? Math.round((Math.random() * 2 - 1) * 2) : 0; ctx.save(); ctx.translate(jx, 0); draw('cover_' + b.id + '_wall', 1); ctx.restore(); }
@@ -1069,7 +1072,7 @@ function drawPiles() {
     if (p.room !== room.id) continue;
     const kind = p.kind || 'acorns';
     for (let i = 0; i < Math.min(6, p.n); i++) spr(COIN_SPR[kind], p.x - 8 + (i % 3) * 7 + (i > 2 ? 3 : 0), p.y - (i > 2 ? 4 : 0), false);
-    if (Math.sin(performance.now() / 300 + p.x) > 0.97) twinkle(p.x, p.y - 8, 1, COIN_COL[kind]);
+    if (started && !paused && Math.sin(performance.now() / 300 + p.x) > 0.97) twinkle(p.x, p.y - 8, 1, COIN_COL[kind]);   // (not while paused, same as the items)
   }
 }
 // whoever's in the room, drawn (drawNpc, js/config.js, wraps this with what other parts of the game add)

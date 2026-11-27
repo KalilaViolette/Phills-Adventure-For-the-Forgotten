@@ -1,10 +1,16 @@
 'use strict';
 // ---------- saves and settings from before the game had its name ----------
-// they were kept under the working title's keys: copied over to the new ones once, the old ones left where they were
+// they were kept under the working title's keys: copied over to the new ones once, the old ones left where they were.
+// Anything already under the new name means the copy's been made (phill-forgotten-moved stays to say so), so a slot
+// deleted since then doesn't come back on the next load
 try {
   const OLD = 'phill-metro-', keys = [];   // (the working title)
-  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(OLD)) keys.push(k); }
-  for (const k of keys) { const n = 'phill-forgotten-' + k.slice(OLD.length); if (localStorage.getItem(n) === null) localStorage.setItem(n, localStorage.getItem(k)); }
+  let had = false;
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(OLD)) keys.push(k); if (k && k.startsWith('phill-forgotten-')) had = true; }
+  if (!had && keys.length) {
+    for (const k of keys) { const n = 'phill-forgotten-' + k.slice(OLD.length); if (localStorage.getItem(n) === null) localStorage.setItem(n, localStorage.getItem(k)); }
+    localStorage.setItem('phill-forgotten-moved', '1');
+  }
 } catch (e) {}
 // ---------- functions several parts of the game add to ----------
 // Each one has a list of its parts' names in the order they wrap it, the first on the outside, and what it does itself

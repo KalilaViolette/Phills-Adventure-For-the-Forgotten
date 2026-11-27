@@ -112,9 +112,10 @@ Object.assign(FOE, {
     box: f => (f.state === 'ceil' || f.state === 'stretch' ? { l: f.x - 8, r: f.x + 8, t: f.y + f.stretch, b: f.y + f.stretch + 15 } : { l: f.x - 11, r: f.x + 11, t: f.y - 9, b: f.y }),
     harmless: f => f.state === 'climb' || f.state === 'fall',
     update(f, dt) {
-      if (f.state === 'down') { if (f.y < f.floorY) fallDown(f, dt); return; }
-      if (f.state === 'stagger' && f.t >= f.stagT) { setFoeState(f, f.onGround ? 'walk' : 'ceil'); f.cd = 0.8; }
-      if (f.state === 'hurt' && f.t >= 0.25) { setFoeState(f, f.onGround ? 'walk' : 'ceil'); f.cd = 0.5; }
+      if (f.state === 'down') { if (f.y < f.floorY || !f.onGround || f.air) fallDown(f, dt); return; }   // (knocked out up on the ceiling or on its way down, it drops to the ground: most are put at the ceiling in their room, so floorY alone can be the ceiling)
+      if ((f.state === 'stagger' || f.state === 'hurt') && f.air && hopFoe(f, dt)) { f.onGround = true; f.range = patrol(f.x, f.y); }   // parried or hit hard on its way down: it still comes down, and lands
+      if (f.state === 'stagger' && f.t >= f.stagT && !f.air) { setFoeState(f, f.onGround ? 'walk' : 'ceil'); f.cd = 0.8; }
+      if (f.state === 'hurt' && f.t >= 0.25 && !f.air) { setFoeState(f, f.onGround ? 'walk' : 'ceil'); f.cd = 0.5; }
       if (f.state === 'ceil') {
         f.stretch = Math.max(0, f.stretch - 30 * dt);
         if (f.climbed && near(f, 10 * T, 12 * T) && Math.abs(P.x - f.x) > 6) {                // back up from the ground: it creeps along the ceiling to get over him
@@ -162,7 +163,7 @@ Object.assign(FOE, {
       }
     },
     draw(f) {
-      const hang = f.state === 'ceil' || f.state === 'stretch' || ((f.state === 'hurt' || f.state === 'stagger') && !f.onGround);
+      const hang = f.state === 'ceil' || f.state === 'stretch' || ((f.state === 'hurt' || f.state === 'stagger') && !f.onGround && !f.air);
       if (f.state === 'climb') { ctx.fillStyle = '#ec7aac'; ctx.fillRect(Math.round(f.x) - 1, f.ceil, 2, Math.max(0, Math.round(f.y - f.ceil - 6))); spr('gum_splat', f.x, f.y, f.f > 0); return; }
       if (hang) {
         if (f.stretch > 0) { ctx.fillStyle = '#ec7aac'; ctx.fillRect(Math.round(f.x) - 1, f.y, 2, Math.round(f.stretch) + 2); }

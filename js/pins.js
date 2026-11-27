@@ -3,8 +3,8 @@
 // He buys them (the squirrel has a few) and pins them on at a resting spot: sitting on the cushion, the shield
 // button gets out his pin board. He can wear two at once for now.
 const PINS = {
-  acorn_cap: { name: 'acorn cap pin', what: 'one more acorn whenever an enemy drops any', cell: 0, cost: 24 },
-  magnet: { name: 'fridge magnet', what: 'acorns come to you from farther away', cell: 1, cost: 16 },
+  acorn_cap: { name: 'acorn cap pin', what: 'one more whenever an enemy drops anything', cell: 0, cost: 24 },
+  magnet: { name: 'fridge magnet', what: 'drops come to you from farther away', cell: 1, cost: 16 },
   thimble: { name: 'thimble', what: 'blocking wears your shield down slower', cell: 2, cost: 34 },
   stitch: { name: 'lucky stitch', what: 'two hits win back a puff instead of three', cell: 3, cost: 40 },
   dfwing: { name: 'dragonfly wing', what: 'the air dodge carries farther', cell: 4, cost: 30 },

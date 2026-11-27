@@ -40,7 +40,9 @@ function updateMap(dt) {
 // color once he has its crayon). All the lines go down first and then all the insides, so where two rooms meet at a
 // door the line's covered and you can see the way through
 const mapCache = {};
+let mapCacheS = 0;                 // the size the kept pictures were drawn at
 function roomPic(id, s, colored) {
+  if (s !== mapCacheS) { for (const k in mapCache) delete mapCache[k]; mapCacheS = s; }   // a new size (he's seen more, or the window changed): the ones at the old size go instead of piling up (each comes out the same if it's made again)
   const key = id + s + colored;
   if (mapCache[key]) return mapCache[key];
   const m = window.MAP_ROOMS[id], w = Math.ceil(m.w * s) + 6, h = Math.ceil(m.h * s) + 6;

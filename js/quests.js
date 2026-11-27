@@ -36,7 +36,7 @@ const QUESTS = [
     steps: [
       { text: 'Get his backpack, his paper and his crayons', done: ['has:backpack', 'has:paper', 'has:crayons'], room: 'bedroom' },
       { text: 'Watch where the ball rolls', done: ['watchedBall'], also: ['learned:roll'], room: 'bedroom' },
-      { text: 'Pick up his sword and shield', done: ['has:gear'], room: 'bedroom' },
+      { text: 'Pick up his sword and shield', done: ['has:gear|lostGear'], room: 'bedroom' },   // (lostGear: the crow dropping them doesn't undo this step)
       { text: 'Go out into the backyard', done: ['yardAwe'], room: 'backyard' },
       { text: 'Get carried off by the crow', done: ['snatched'], also: ['lostGear', '-has:gear'], room: 'backyard' },
     ] },

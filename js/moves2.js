@@ -20,7 +20,7 @@ function startSpark() {
 function fireSpark() {
   const a = P.sparkAim, vx = a === 'side' ? P.facing * SPARK.speed : 0, vy = a === 'up' ? -SPARK.speed : a === 'down' ? SPARK.speed : 0;
   const x = P.x + (a === 'side' ? P.facing * 12 : 0), y = P.y - (a === 'up' ? 34 : a === 'down' ? 4 : 20);
-  sparks.push({ x, y, x0: x, y0: y, vx, vy, t: 0, hit: new Set(), trail: [] });
+  sparks.push({ x, y, x0: x, y0: y, vx, vy, t: 0, hit: new Set(), trail: [], room });
   sfx.zap ? sfx.zap() : sfx.tink();
   for (let i = 0; i < 6; i++) part(x, y, (Math.random() * 2 - 1) * 80, (Math.random() * 2 - 1) * 80, 0.2, i % 2 ? '#d8f0ff' : '#fff6a0', 1, 0);
 }
@@ -35,6 +35,7 @@ function updateSparkMove(dt) {
 function sparkBox(s) { return { l: s.x - 4, r: s.x + 4, t: s.y - 4, b: s.y + 4 }; }
 function updateSparks(dt) {
   for (const s of sparks) {
+    if (s.room && s.room !== room) { s.dead = true; continue; }                                 // fired in the room he's left: gone with it, not flying on through this one
     const n = 4;
     for (let k = 0; k < n && !s.dead; k++) {
       s.x += s.vx * dt / n; s.y += s.vy * dt / n;

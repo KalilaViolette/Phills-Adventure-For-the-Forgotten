@@ -101,7 +101,7 @@ SCENES.chrysalis = def => {
     run(() => { world.learned.flap = true; saveWorld(); popup(P.x, P.y - 54, 'the cape flap. {jump} again in the air', '#96d2ff', true); sfx.idea(); twinkle(P.x, P.y - 40, 12); }),
     moveActor('bfly', c.x + 260, c.y - 200, 1.6, { arc: -30 }), run(() => { b().hidden = true; }),
     camBack(), wait(0.4), bars(false),
-    run(() => room.hints.push({ text: '{jump}, then {jump} again in the air: the cape flap', l: 0, t: 0, r: room.pxW, b: room.pxH, x: P.x, y: P.y - 70, a: 0, until: 'flappedOnce' })),
+    run(() => { P.flapT = 0; world.flags.flappedOnce = false; room.hints.push({ text: '{jump}, then {jump} again in the air: the cape flap', l: 0, t: 0, r: room.pxW, b: room.pxH, x: P.x, y: P.y - 70, a: 0, until: 'flappedOnce' }); }),   // (the flap in the scene doesn't count, flapT and all: the note stays up till he does one himself)
   ];
 };
 
@@ -110,7 +110,7 @@ SCENES.chrysalis = def => {
 // buried in the Bramble now. Not from here: it just visits, everywhere (it turns up again in the Hive)
 const BEE_SHOP = [
   { id: 'toldCrayonGreenhouse', what: 'where the pink crayon went', cost: 10, done: () => world.has.crayon_greenhouse, mark: { room: 'boiler', x: 32.5 * 16, y: 10 * 16 },
-    line: "*bzzm* Down the steps, under the ferns. The cold room. Up on the pipes, the top one. Pink, like the roses used to be. Before. Bzzm." },
+    line: "*bzzm* Down the steps, under the ferns. The cold boiler room. Up on the pipes, the top one. Pink, like the roses used to be. Before. Bzzm." },
   { id: 'toldLambPocket', what: 'something behind the thorns', cost: 8, done: () => world.flags.lambpocket, mark: { room: 'lambsear', x: 3 * 16, y: 20 * 16 },
     line: "In the lamb's ear, round the left side. Behind the thorns. Somebody left seeds back there. Not mine. I don't plant things, I just visit them." },
 ];
@@ -140,7 +140,7 @@ SCENES.bee = npc => {
   const left = beeList();
   if (!left.length) return [...steps, say('bee', "That's all I know. Come sit by the orchids sometime. Bzzm.")];
   let picked = -1;
-  steps.push(ask('bee', `Mm? You've got ${world.seeds || 0} seeds.`, [...left.map(s => `${s.what} (${s.cost} seeds)`), 'nothing, bye'], i => { picked = i; }));
+  steps.push(ask('bee', `Mm? You've got ${world.seeds || 0} seed${world.seeds === 1 ? '' : 's'}.`, [...left.map(s => `${s.what} (${s.cost} seeds)`), 'nothing, bye'], i => { picked = i; }));
   steps.push(t => {
     if (t > 0) return true;
     const s = left[picked];
