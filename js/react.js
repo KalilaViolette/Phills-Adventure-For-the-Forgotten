@@ -13,13 +13,18 @@
 //   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
 //            (amt: how far it turns, free: which end is free, 1 right, -1 left)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
+// The later parts (more in the list: the well's caps and brackets) are a try-out, only there with tune.reactMore on.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
   const live = {};                                                                        // each part moving: how long since it was landed on, and how hard
   let wasGround = true, fallV = 0;
+  const lists = {};                                                                       // each room's parts with the try-out off and on
   const here = () => {
     const d = window.REACT_PIECES && room && REACT_PIECES[room.def.id];
-    return d && d.pack === (room.def.art.sameAs || room.def.art.pack) ? d : null;           // (only for the painting they were cut from, or a copy of it)
+    if (!d || d.pack !== (room.def.art.sameAs || room.def.art.pack)) return null;           // (only for the painting they were cut from, or a copy of it)
+    const key = room.def.id + (tune.reactMore ? ':more' : '');
+    if (!lists[key]) { const parts = d.parts.filter(p => !p.more || tune.reactMore); lists[key] = parts.length ? { pack: d.pack, sheet: d.sheet, parts, more: !!tune.reactMore } : { none: true }; }
+    return lists[key].none ? null : lists[key];
   };
   const keyOf = p => room.def.id + ':' + p.id;
   // the bounce: 1 the moment he lands, swinging back past rest and settling
@@ -52,17 +57,17 @@ const REACT = (() => {
     const d = here(); if (!d || !main) return main;
     const im = Assets.get(d.sheet);
     if (!im) { Assets.use(d.sheet); return main; }
-    if (!cut || cut.main !== main || cut.im !== im) {
+    if (!cut || cut.main !== main || cut.im !== im || cut.d !== d) {
       const cv = document.createElement('canvas'); cv.width = main.width; cv.height = main.height;
       const g = cv.getContext('2d'); g.drawImage(main, 0, 0);
       g.globalCompositeOperation = 'destination-out';
       for (const p of d.parts) g.drawImage(im, p.piece[0], p.piece[1], p.w, p.h, p.x, p.y, p.w, p.h);
-      cut = { main, im, cv };
+      cut = { main, im, cv, d };
     }
     return cut.cv;
   }
   function draw() {
-    const d = here(); if (!d || !cut) return;
+    const d = here(); if (!d || !cut || cut.d !== d) return;
     for (const p of d.parts) {
       const m = live[keyOf(p)];
       if (!m) { ctx.drawImage(cut.im, p.piece[0], p.piece[1], p.w, p.h, p.x, p.y, p.w, p.h); continue; }   // at rest: just as the painting had it
@@ -75,7 +80,18 @@ const REACT = (() => {
       ctx.restore();
     }
   }
-  return { update, draw, mainFor, live, here };
+  // how far down the part under his feet is right now, in whole pixels, so he's drawn going down and back up with it
+  // and not left in the air over it (js/render.js). Only the try-out's parts
+  function sink() {
+    const d = here(); if (!d || !d.more || !P.ground) return 0;
+    for (const p of d.parts) {
+      const m = live[keyOf(p)]; if (!m || !p.more || !onTop(p)) continue;
+      const k = m.k * spring(m.t);
+      return Math.round(p.kind === 'flex' ? (P.x - p.anchor[0]) * Math.sin(p.amt * k * (p.free || 1)) : (p.anchor[1] - P.y) * p.amt * k) || 0;
+    }
+    return 0;
+  }
+  return { update, draw, mainFor, live, here, sink };
 })();
 // ---------- leaves kicked up crawling ----------
 // The leaves: crawling through the leaves under the fallen log on the litter path, he scuffs a few

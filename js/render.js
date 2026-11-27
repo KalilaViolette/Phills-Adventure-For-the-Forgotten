@@ -150,7 +150,7 @@ function render(alpha) {
   if (typeof drawBoss === 'function') drawBoss();
   drawFoes();
   drawActors('back');
-  if (!P.held && !P.hidden) { drawIdleGround(q); drawPhill(px2 + steadyX, py2 + steadyY + (P.idleBit ? P.idleBit.dy : 0), q); drawIdleBits(q); }
+  if (!P.held && !P.hidden) { drawIdleGround(q); drawPhill(px2 + steadyX, py2 + steadyY + (P.idleBit ? P.idleBit.dy : 0) + (typeof REACT !== 'undefined' ? REACT.sink() : 0), q); drawIdleBits(q); }
   if (typeof drawOnPhill === 'function') drawOnPhill(px2 + steadyX, py2 + steadyY);                           // things stuck on him (the gum leech)
   if (typeof SOFT !== 'undefined') SOFT.drawFront(ctx);                                 // the dent's walls round his feet in a mushroom's flesh (js/painted/soft.js)
 
