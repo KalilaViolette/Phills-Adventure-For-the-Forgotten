@@ -68,7 +68,7 @@ const DEFAULTS = {
   jumpHeight: 84, apexTime: 0.36, fallMult: 1.55, maxFall: 460, jumpCut: 0.42, jumpMinTime: 0,
   coyote: 0.09, jumpBuffer: 0.12, attackCooldown: 0.36,
   rollSpeed: 330, rollTime: 0.28, airDashSpeed: 380, pogo: 420, pixelSnap: 0, guardSpeed: 110, swingLunge: 130, edgeHesitate: 0.45, parryWindow: 0.18, splatHeight: 150, downCooldown: 1.0, leapLift: 1.0, chargeTime: 0.85, swordReach: 14, backSpeed: 0.6, slowWalk: 0.32, keyWalk: 0.55, airHang: 1, crawlSpeed: 70, blockCost: 30, stamRegen: 25, guardBack: 50, iframeStart: 0.04, iframeLen: 0.12, heavyParry: 0.07,
-  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, feelSteady: 0, feelStick: 0, feelNoStop: 0, feelSound: 0, feelFade: 0, feelSoftLand: 0, foeHealth: 1, feelStagger: 0, thinRootwood: 0, reactMore: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
+  pressSwing: 0, feelHurt: 0, feelKill: 0, feelHits: 0, feelSkill: 0, feelTrail: 0, feelTurn: 0, feelRoll: 0, feelEase: 0, feelSnap: 0, feelSquash: 0, feelCam: 0, feelSteady: 0, feelStick: 0, feelNoStop: 0, feelSound: 0, feelFade: 0, feelSoftLand: 0, foeHealth: 1, feelStagger: 0, thinRootwood: 0, reactMore: 0, feelRumble: 0, rallyTime: 4, cdSqueak: 3, cdSpin: 2.5, cdBurst: 3.5, enRegen: 55, enDelay: 0.4, rollCost: 33, airDodgeCost: 24,
 };
 const TUNE_ROWS = [
   ['runSpeed', 'Run speed', 100, 320, 5, ' px/s'],
@@ -135,6 +135,7 @@ const TUNE_ROWS = [
   ['feelFade', 'Feel: a short dip to dark when thorns or water put him back, instead of the view cutting across (0 off, 1 on)', 0, 1, 1, ''],
   ['feelSoftLand', 'Feel: a small puff and a soft sound on the little landings that have none, a step down or a tapped hop (0 off, 1 on)', 0, 1, 1, ''],
   ['feelStagger', 'Feel: a plain hit on a cap, a can or a spinner while it winds up sends it back to the start of the wind up. Its attack itself still comes through (0 off, 1 on)', 0, 1, 1, ''],
+  ['feelRumble', 'Feel: the controller rumbles with the shakes and stops the game already has, a tick on a plain hit, a thump when he is hurt or his guard breaks, a roll under a slam (0 off, 1 on)', 0, 1, 1, ''],
   ['foeHealth', 'How much health ordinary enemies have, times this. Counts for enemies as a room is come into. Bosses are left alone', 0.25, 1.5, 0.05, ' x'],
   ['reactMore', "More of the painted rooms giving when he lands on them, to try: the well's four glowing caps squash and puff spores, and the six brackets up its dead trunk dip at their free ends. The same for the caps, the brackets and the branches in the grime pool, the root lattice, the east edge, the moss bank and the undercroft. In the Pond the bent reeds dip and the lily pads bob, in the Playground the dandelion leaves tip and the toys floating in the puddle bob, and up the Old Oak the twigs growing out of the trunk and the bracket fungi inside it dip. A pickup or an enemy standing on one goes down with it (0 off, 1 on)", 0, 1, 1, ''],
   ['thinRootwood', 'Rootwood with fewer enemies, to try: 1 leaves out eight in its four most crowded rooms (trail, eastedge, undercroft, the well). 2 also keeps the caps cornering Tock at one after the tin soldier. Counts as a room is come into (0 off)', 0, 2, 1, ''],

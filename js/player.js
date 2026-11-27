@@ -516,6 +516,7 @@ function attackBox() {
 
 function updateItself(dt) {
   maskInput();
+  RUMBLE.follow();                                   // the controller's rumble, from the shakes and stops of the step before (js/input.js)
   if (P.held) {                                      // carried by something in a scene: he goes where it goes
     const a = actors[P.held];
     if (a) { P.px = P.x; P.py = P.y; P.x = a.x; P.y = a.y + 40; }

@@ -94,8 +94,40 @@ function activePad() {
 }
 let padId = null, padPrevY = 0, padWant = 0, padWantT = 0, padDir = 0, padHard = 0, padHardT = 0;
 const FLICK_MS = 150;                                 // how long after a hard push a soft one the other way is taken for the stick swinging back
+// ---------- the controller's rumble (tune.feelRumble, a try-out, off as it ships) ----------
+// The game already says how hard something landed with a shake of the view and a stop of the whole game. The rumble
+// follows those two, so nothing's tuned attack by attack: a plain hit is a tick, getting hurt or a broken guard is a
+// thump, a boss's slam rolls for as long as the view shakes. A smaller one never cuts a bigger one short. It only
+// goes to the controller he's playing on, and one that can't rumble (or a keyboard) is left alone.
+//   strong and weak: the two motors, 0 to 1 (the heavy low one and the light buzzy one), ms: how long
+const RUMBLE = (() => {
+  let lastShake = 0, lastStop = 0, until = 0, level = 0;
+  const sent = [];                                    // the last few, for the checks
+  function buzz(strong, weak, ms) {
+    if (!tune.feelRumble) return false;
+    const now = performance.now();
+    if (now < until && strong + weak <= level) return false;
+    until = now + ms; level = strong + weak;
+    sent.push([+strong.toFixed(2), +weak.toFixed(2), Math.round(ms)]); if (sent.length > 20) sent.shift();
+    const act = padNow && padNow.vibrationActuator;
+    if (!act || !act.playEffect) return false;
+    try { const r = act.playEffect('dual-rumble', { startDelay: 0, duration: Math.round(ms), strongMagnitude: strong, weakMagnitude: weak }); if (r && r.catch) r.catch(() => {}); } catch (e) { return false; }
+    return true;
+  }
+  // once a step, before anything else: has a shake or a stop just started (or been topped up)?
+  function follow() {
+    if (tune.feelRumble) {
+      if (shakeT > lastShake + 0.001) buzz(Math.min(1, shakeA / 6), Math.min(1, shakeA / 4), Math.min(400, shakeT * 1000 + 40));
+      else if (hitstop > lastStop + 0.001) buzz(0, Math.min(0.6, 0.25 + hitstop * 2), 50);
+    }
+    lastShake = shakeT; lastStop = hitstop;
+  }
+  return { buzz, follow, sent };
+})();
+let padNow = null;                                    // the controller he's playing on, as of the last look
 function pollPad() {
   const gp = activePad();
+  padNow = gp;
   const padEl = document.getElementById('pad');
   if ((gp && gp.index + '|' + gp.id) !== padId) {
     padId = gp ? gp.index + '|' + gp.id : null;
