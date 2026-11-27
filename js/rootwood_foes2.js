@@ -43,7 +43,7 @@ function drawFoe2(f, fr, x, y, shake = 0) {
   spr(fr, x + shake, y, f.f > 0);
   if (f.flash > 0) { ctx.globalCompositeOperation = 'lighter'; spr(fr, x, y, f.f > 0, 0.6); ctx.globalCompositeOperation = 'source-over'; }
 }
-function tellOnce(flag, f, text, dy = 66) { if (!world.flags[flag]) { world.flags[flag] = true; popup(f.x, f.y - dy, text, '#ffd36b'); } }
+function tellOnce(flag, f, text, dy = 66) { if (!world.flags[flag]) { world.flags[flag] = true; popup(f.x, f.y - dy, tune.feelHold ? text.replace(/^mash to /, 'mash or hold to ') : text, '#ffd36b'); } }
 
 Object.assign(FOE, {
   // ---- the maple spinner: hangs in the air spinning on its one wing, follows him round the room keeping up over his

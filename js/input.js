@@ -1,7 +1,7 @@
 'use strict';
 // ---------- input: keyboard and controller (PlayStation layout) ----------
 const keys = new Set();
-const inp = { left: 0, right: 0, up: 0, down: 0, jumpH: 0, guardH: 0, atkH: 0, aim: 0, aimX: 0, aimY: 0, aimUp: 0, aimDown: 0, pace: 1, jumpP: 0, atkP: 0, dodgeP: 0, lockP: 0, upP: 0, downP: 0, mapP: 0, guardP: 0, squeakP: 0, spinP: 0, sparkP: 0, bashP: 0, any: 0 };
+const inp = { left: 0, right: 0, up: 0, down: 0, jumpH: 0, guardH: 0, atkH: 0, dodgeH: 0, aim: 0, aimX: 0, aimY: 0, aimUp: 0, aimDown: 0, pace: 1, jumpP: 0, atkP: 0, dodgeP: 0, lockP: 0, upP: 0, downP: 0, mapP: 0, guardP: 0, squeakP: 0, spinP: 0, sparkP: 0, bashP: 0, any: 0 };
 const talkIn = { press: 0, up: 0, down: 0, back: 0, map: 0, move: 0, guard: 0 };   // presses for talking and menus (read before a scene clears the input)
 const KEYMAP = {
   left: ['ArrowLeft', 'KeyA'], right: ['ArrowRight', 'KeyD'], up: ['ArrowUp', 'KeyW'], down: ['ArrowDown', 'KeyS'],
@@ -176,6 +176,7 @@ function pollPad() {
     inp.aimY = inp.aim && Math.abs(ry) > 0.4 ? Math.sign(ry) : 0;                      // (under water the lid points all 8 ways)
     inp.guardH = k('guard') || b(4) ? 1 : 0;
     inp.atkH = k('atk') || b(5) ? 1 : 0;
+    inp.dodgeH = k('dodge') || b(1) ? 1 : 0;
     if (pressed(0)) inp.jumpP = 1;
     if (pressed(5)) inp.atkP = 1;
     if (pressed(1)) inp.dodgeP = 1;

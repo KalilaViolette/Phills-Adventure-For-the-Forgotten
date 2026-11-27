@@ -12,7 +12,8 @@
 //   squash   flattens toward where it joins and spreads a little, a few times smaller each bounce (amt: how far)
 //   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
 //            (amt: how far it turns, free: which end is free, 1 right, -1 left)
-//   bob      something floating: the whole of it goes down into the water and bobs back up (amt: how many pixels)
+//   bob      something floating: the whole of it goes down into the water and bobs back up (amt: how many pixels),
+//            and a few drops jump off its two ends
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
 // The later parts (more in the list: the caps, brackets and branches in Rootwood's other rooms, the Pond's bent reeds
 // and lily pads, the Playground's dandelion leaves and the toys floating in its puddle, the Old Oak's twigs and
@@ -35,6 +36,14 @@ const REACT = (() => {
   const shape = (p, k) => p.kind === 'squash' ? { sx: 1 + p.amt * k * 0.45, sy: 1 - p.amt * k } : { sx: 1, sy: 1 };
   const onTop = p => P.x >= p.top[0] && P.x <= p.top[1] && P.y >= p.top[2] && P.y <= p.top[3];
   function hit(p, k) { live[keyOf(p)] = { t: 0, k: Math.max(k, (live[keyOf(p)] || { k: 0 }).k * 0.5) }; }
+  // something floating pushed down: a few drops thrown up off each end of it at the waterline, more for a harder landing
+  function drips(p, k) {
+    if (typeof part !== 'function') return;
+    const y = p.top[2] + 8, n = k > 0.6 ? 4 : 2;
+    for (const [x, dir] of [[p.x + 3, -1], [p.x + p.w - 3, 1]])
+      for (let i = 0; i < n; i++) part(x + dir * Math.random() * 3, y, dir * (15 + Math.random() * 40 * k), -30 - Math.random() * 70 * k, 0.4, i % 3 ? '#c4e6e0' : '#ffffff', i % 2 ? 1 : 2, 420);
+    if (k > 0.6 && typeof sfx !== 'undefined' && sfx.splash) sfx.splash(0.4);
+  }
 
   function update(dt) {
     const d = here();
@@ -42,7 +51,7 @@ const REACT = (() => {
     if (!d) { wasGround = P.ground; return; }
     if (!P.ground && P.vy > 0) fallV = P.vy;
     if (P.ground && !wasGround) {                                                          // landing
-      for (const p of d.parts) if (onTop(p)) hit(p, Math.max(0.3, Math.min(1, fallV / 520)));
+      for (const p of d.parts) if (onTop(p)) { const k = Math.max(0.3, Math.min(1, fallV / 520)); hit(p, k); if (p.kind === 'bob') drips(p, k); }
       fallV = 0;
     }
     if (!P.ground && wasGround && P.vy < 0) {                                              // jumping off

@@ -228,7 +228,10 @@ const pauseMenu = window.pauseMenu = (() => {
         typeof IDLE_BITS === 'undefined' ? [] : [{ head: 'Idle animations' },                                     // (js/idle.js: he does the one picked without the wait)
           { label: 'Play one', sub: "He does it once this is shut, as long as he's standing about with nothing pressed and it's one he can do right now",
             choices: () => Object.keys(IDLE_BITS).map(n => ({ label: IDLE_NAMES[n] || n, value: n })), current: () => '', show: () => 'Pick one',
-            choose: v => { closeNow(); askIdleBit(v); } }]);
+            choose: v => { closeNow(); askIdleBit(v); } },
+          ...(typeof REST_BITS === 'undefined' ? [] : [{ label: 'Play one sitting down', sub: "The ones he does at a rest spot. He does it once this is shut, as long as he's sitting at one with nothing pressed",   // (js/scenes/rootwood.js)
+            choices: () => Object.keys(REST_BITS).map(n => ({ label: REST_NAMES[n] || n, value: n })), current: () => '', show: () => 'Pick one',
+            choose: v => { closeNow(); askRestBit(v); } }])]);
     },
   };
   const WHOSE = ['Everyone', 'Phill', 'Purl'], QUEST_KINDS = [['main', 'Main story'], ['side', 'Side quests'], ['contract', "Contracts from Tock's board"]];

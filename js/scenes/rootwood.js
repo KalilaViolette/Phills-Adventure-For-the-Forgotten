@@ -114,6 +114,12 @@ REST_BITS.book = () => {
 };
 const restPick = () => [...(idleCrayons().length ? ['doodle', 'doodle'] : []), 'stretch', 'stretch', 'nap', ...['lean', 'kick', 'look', 'scratch'].filter(n => restHas({ lean: 'sit_lean_1', kick: 'sit_kick_1', look: 'sit_round_l', scratch: 'sit_scratch_1' }[n])), ...(world.has.crayon_black ? ['map', 'map'] : []), ...(world.has.backpack ? ['book', 'book'] : [])];   // (the nap less often)
 const REST_WAIT = [7, 7];          // seconds sitting there before the first one, then between each one after
+// the Dev tab's "Play one sitting down" (js/pause.js): the one asked for starts the next moment he's sitting at a rest
+// spot with nothing pressed, without the wait, as long as that's within a few seconds of asking
+const REST_NAMES = { doodle: 'A doodle on his paper', stretch: 'A stretch and a rub of his eyes', nap: 'Nodding off', lean: 'Leaning back on his hands', kick: 'Kicking his feet',
+  look: 'Looking round the room', scratch: 'Scratching his head', map: 'His map', book: 'His picture book' };
+let restAsk = null;
+function askRestBit(name) { if (REST_BITS[name]) restAsk = { name, until: performance.now() + 4000 }; }
 const restSit = () => {
   let sub = null, st = 0, bit = null, still = 0, wait = REST_WAIT[0], last = null;
   const stopBit = () => { if (!bit) return; bit = null; P.paper = null; P.crayon = null; P.restHuh = false; P.story = { kind: 'scene', frame: 'sit_3', t: 0 }; };
@@ -133,9 +139,11 @@ const restSit = () => {
       if (bit) { P.story = { kind: 'scene', frame: bit.steps[bit.i].f, t }; P.restHuh = !!bit.steps[bit.i].huh; }
       return false;
     }
-    if (t > 0.3 && !anyInput() && !talkIn.move && (still += dt) >= wait) {
+    if (restAsk && performance.now() > restAsk.until) restAsk = null;
+    if (t > 0.3 && !anyInput() && !talkIn.move && (restAsk || (still += dt) >= wait)) {
       const names = restPick().filter(n => n !== last);
-      last = names[Math.floor(Math.random() * names.length)];
+      last = restAsk ? restAsk.name : names[Math.floor(Math.random() * names.length)];
+      restAsk = null;
       bit = { steps: REST_BITS[last](), i: 0, st: 0 };
       if (bit.steps[0].go) bit.steps[0].go();
       P.story = { kind: 'scene', frame: bit.steps[0].f, t }; P.restHuh = !!bit.steps[0].huh;

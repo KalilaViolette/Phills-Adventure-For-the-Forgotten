@@ -2,6 +2,7 @@
 // ---------- Phill ----------
 // Ported from Phill's Test Room. Everything he does is here; which moves he's allowed is in world.js (can()).
 const STAND_H = 36, ROLL_H = 20, HW = 8, CLIMB_T = 0.3;
+const HOLD_STEP = 0.16;                             // held in a grab with the hold try-out on: seconds a wriggle
 let HANG_FEET = 37;                                // how far his feet hang below his hand (set from the sprite sheet)
 const P = {};
 function newPlayer(x, y, f) {
@@ -617,6 +618,9 @@ function updateItself(dt) {
   if (P.pinned) {                                    // held (the reacher's grab, the rings' snag): mash anything to wriggle loose before it squeezes
     const pn = P.pinned;
     if (P.jumpBufT > 0 || P.atkBufT > 0 || P.dodgeBufT > 0) { pn.left--; P.jumpBufT = P.atkBufT = P.dodgeBufT = 0; puff(P.x, P.y - 18, 2, 30); sfx.squeak(); }
+    // the hold try-out (tune.feelHold): a button kept down wriggles too, one wriggle each HOLD_STEP, about a steady mash
+    if (tune.feelHold && pn.left > 0 && (inp.jumpH || inp.atkH || inp.dodgeH)) { pn.holdT = (pn.holdT || 0) + dt; if (pn.holdT >= HOLD_STEP) { pn.holdT -= HOLD_STEP; pn.left--; puff(P.x, P.y - 18, 2, 30); sfx.squeak(); } }
+    else pn.holdT = 0;
     if (pn.left <= 0 || !pn.by || pn.by.state === 'down' || !foes.includes(pn.by) || P.health <= 0) { P.pinned = null; P.inv = Math.max(P.inv, 0.5); if (pn.left <= 0) { pn.freed = true; popup(P.x, P.y - 54, 'wriggled free', '#cfd6e6'); } }
     else { if (pn.x !== undefined) { P.x = pn.x; P.y = pn.y; } P.vx = P.vy = 0; P.atk = null; P.roll = 0; P.dash = 0; P.charge = 0; P.fallTop = P.y; P.px = P.x; P.py = P.y; }
     stepWorld(dt); return;
