@@ -13,7 +13,8 @@
 //   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
 //            (amt: how far it turns, free: which end is free, 1 right, -1 left)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
-// The later parts (more in the list: the well's caps and brackets) are a try-out, only there with tune.reactMore on.
+// The later parts (more in the list: the caps and brackets in Rootwood's other rooms) are a try-out, only there with
+// tune.reactMore on.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
   const live = {};                                                                        // each part moving: how long since it was landed on, and how hard

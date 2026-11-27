@@ -136,7 +136,7 @@ const TUNE_ROWS = [
   ['feelSoftLand', 'Feel: a small puff and a soft sound on the little landings that have none, a step down or a tapped hop (0 off, 1 on)', 0, 1, 1, ''],
   ['feelStagger', 'Feel: a plain hit on a cap, a can or a spinner while it winds up sends it back to the start of the wind up. Its attack itself still comes through (0 off, 1 on)', 0, 1, 1, ''],
   ['foeHealth', 'How much health ordinary enemies have, times this. Counts for enemies as a room is come into. Bosses are left alone', 0.25, 1.5, 0.05, ' x'],
-  ['reactMore', "More of the painted rooms giving when he lands on them, to try: the well's four glowing caps squash and puff spores, and the six brackets up its dead trunk dip at their free ends (0 off, 1 on)", 0, 1, 1, ''],
+  ['reactMore', "More of the painted rooms giving when he lands on them, to try: the well's four glowing caps squash and puff spores, and the six brackets up its dead trunk dip at their free ends. The same for the caps and brackets in the grime pool, the root lattice, the east edge, the moss bank and the undercroft (0 off, 1 on)", 0, 1, 1, ''],
   ['thinRootwood', 'Rootwood with fewer enemies, to try: 1 leaves out eight in its four most crowded rooms (trail, eastedge, undercroft, the well). 2 also keeps the caps cornering Tock at one after the tin soldier. Counts as a room is come into (0 off)', 0, 2, 1, ''],
 ];
 // Tuning values to try together. knight: the controls set the way Hollow Knight's measure (the swing on the press and
