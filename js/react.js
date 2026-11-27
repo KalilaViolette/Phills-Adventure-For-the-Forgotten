@@ -13,7 +13,7 @@
 //   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
 //            (amt: how far it turns, free: which end is free, 1 right, -1 left)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
-// The later parts (more in the list: the caps and brackets in Rootwood's other rooms) are a try-out, only there with
+// The later parts (more in the list: the caps, brackets and branches in Rootwood's other rooms) are a try-out, only there with
 // tune.reactMore on.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
@@ -81,18 +81,20 @@ const REACT = (() => {
       ctx.restore();
     }
   }
-  // how far down the part under his feet is right now, in whole pixels, so he's drawn going down and back up with it
-  // and not left in the air over it (js/render.js). Only the try-out's parts
-  function sink() {
-    const d = here(); if (!d || !d.more || !P.ground) return 0;
+  // how far down a part is right now under a spot on its top, in whole pixels, so what's standing there is drawn going
+  // down and back up with it and not left in the air over it: him (sink), and a pickup, a coin or an enemy that's on
+  // it when he lands (js/render.js, js/foes.js). Only the try-out's parts
+  function sinkAt(x, y) {
+    const d = here(); if (!d || !d.more) return 0;
     for (const p of d.parts) {
-      const m = live[keyOf(p)]; if (!m || !p.more || !onTop(p)) continue;
+      const m = live[keyOf(p)]; if (!m || !p.more || x < p.top[0] || x > p.top[1] || y < p.top[2] || y > p.top[3]) continue;
       const k = m.k * spring(m.t);
-      return Math.round(p.kind === 'flex' ? (P.x - p.anchor[0]) * Math.sin(p.amt * k * (p.free || 1)) : (p.anchor[1] - P.y) * p.amt * k) || 0;
+      return Math.round(p.kind === 'flex' ? (x - p.anchor[0]) * Math.sin(p.amt * k * (p.free || 1)) : (p.anchor[1] - y) * p.amt * k) || 0;
     }
     return 0;
   }
-  return { update, draw, mainFor, live, here, sink };
+  const sink = () => P.ground ? sinkAt(P.x, P.y) : 0;
+  return { update, draw, mainFor, live, here, sink, sinkAt };
 })();
 // ---------- leaves kicked up crawling ----------
 // The leaves: crawling through the leaves under the fallen log on the litter path, he scuffs a few

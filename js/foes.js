@@ -785,9 +785,13 @@ function foeFrame(f) {
   }
 }
 function drawFoes() {
-  for (const f of foes) { if (f.state === 'hidden') continue; if (f.react) { ctx.save(); reactTransform(f); drawOneFoe(f); ctx.restore(); } else drawOneFoe(f); }
+  for (const f of foes) {
+    if (f.state === 'hidden') continue;
+    const sk = typeof REACT !== 'undefined' ? REACT.sinkAt(f.x, f.y) : 0;             // (standing on a cap or a bracket that's giving under him: js/react.js)
+    if (f.react || sk) { ctx.save(); if (sk) ctx.translate(0, sk); if (f.react) reactTransform(f); drawOneFoe(f); ctx.restore(); } else drawOneFoe(f);
+  }
   for (const s of shots) { if (s.draw) { s.draw(s); continue; } spr(s.kind === 'blob' ? 'blob' : s.kind === 'pblob' ? 'pblob' : s.kind === 'ball' ? 'pblob' : s.kind === 'sand' ? 'sandball' : 'acorn_small', s.x, s.y, false); }
-  for (const d of drops) spr(COIN_SPR[d.kind] || 'acorn_small', d.x, d.y + 3, false);
+  for (const d of drops) spr(COIN_SPR[d.kind] || 'acorn_small', d.x, d.y + 3 + (typeof REACT !== 'undefined' ? REACT.sinkAt(d.x, d.y) : 0), false);
   drawSweeps(); if (typeof drawSparks === 'function') drawSparks(); drawImpacts();
 }
 function drawOneFoe(f) {

@@ -110,11 +110,14 @@ function render(alpha) {
   for (const it of room.items) {
     if (it.got === 2 || it.hidden || !items || hiddenByCover(it.x, it.y)) continue;
     const bob = Math.round(Math.sin(now * 2.2 + it.bob) * 1.5) - 1;
+    const sk = typeof REACT !== 'undefined' ? REACT.sinkAt(it.x, it.y) : 0;      // (on a cap or a bracket that's giving under him: down and up with it)
+    if (sk) { ctx.save(); ctx.translate(0, sk); }
     if (!it.float) { ctx.fillStyle = 'rgba(16,8,16,0.22)'; ellipse(it.x, it.y, 9 + bob, 1); }   // a little shadow under it
     if (it.kind === 'gall') drawGall(it.x, it.y - 7 + bob);                           // (the oak gall's drawn here, not on the sheet: js/sword.js)
     else if (it.kind === 'pin') { const ps = Assets.get(PIN_SHEET); if (ps && PINS[it.pin]) ctx.drawImage(ps, PINS[it.pin].cell * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32); }
     else ctx.drawImage(items, itemCell(it) * 32, 0, 32, 32, Math.round(it.x - 16), Math.round(it.y - 32 + bob), 32, 32);
     if (Math.sin(now * 1.3 + it.bob * 3) > 0.985) twinkle(it.x + 6, it.y - 18, 1);
+    if (sk) ctx.restore();
   }
   if (room.ball && items) {
     const b = room.ball;
