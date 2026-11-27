@@ -12,9 +12,11 @@
 //   squash   flattens toward where it joins and spreads a little, a few times smaller each bounce (amt: how far)
 //   flex     a bracket growing out of the trunk: its free end dips and springs back, turning about where it joins
 //            (amt: how far it turns, free: which end is free, 1 right, -1 left)
+//   bob      something floating: the whole of it goes down into the water and bobs back up (amt: how many pixels)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
-// The later parts (more in the list: the caps, brackets and branches in Rootwood's other rooms) are a try-out, only there with
-// tune.reactMore on.
+// The later parts (more in the list: the caps, brackets and branches in Rootwood's other rooms, the Pond's bent reeds
+// and lily pads, the Playground's dandelion leaves and the toys floating in its puddle) are a try-out, only there
+// with tune.reactMore on.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
   const live = {};                                                                        // each part moving: how long since it was landed on, and how hard
@@ -75,7 +77,7 @@ const REACT = (() => {
       const k = m.k * spring(m.t), s = shape(p, k);
       ctx.drawImage(cut.im, p.under[0], p.under[1], p.w, p.h, p.x, p.y, p.w, p.h);         // what's under it
       ctx.save(); ctx.translate(p.anchor[0], p.anchor[1]);
-      if (p.kind === 'flex') ctx.rotate(p.amt * k * (p.free || 1)); else ctx.scale(s.sx, s.sy);
+      if (p.kind === 'flex') ctx.rotate(p.amt * k * (p.free || 1)); else if (p.kind === 'bob') ctx.translate(0, Math.round(p.amt * k)); else ctx.scale(s.sx, s.sy);
       ctx.translate(-p.anchor[0], -p.anchor[1]);
       ctx.drawImage(cut.im, p.piece[0], p.piece[1], p.w, p.h, p.x, p.y, p.w, p.h);         // and it, squashed toward where it joins (or turned, a bracket)
       ctx.restore();
@@ -89,7 +91,7 @@ const REACT = (() => {
     for (const p of d.parts) {
       const m = live[keyOf(p)]; if (!m || !p.more || x < p.top[0] || x > p.top[1] || y < p.top[2] || y > p.top[3]) continue;
       const k = m.k * spring(m.t);
-      return Math.round(p.kind === 'flex' ? (x - p.anchor[0]) * Math.sin(p.amt * k * (p.free || 1)) : (p.anchor[1] - y) * p.amt * k) || 0;
+      return Math.round(p.kind === 'flex' ? (x - p.anchor[0]) * Math.sin(p.amt * k * (p.free || 1)) : p.kind === 'bob' ? p.amt * k : (p.anchor[1] - y) * p.amt * k) || 0;
     }
     return 0;
   }
