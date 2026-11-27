@@ -15,8 +15,8 @@
 //   bob      something floating: the whole of it goes down into the water and bobs back up (amt: how many pixels)
 // How hard depends on how fast he came down: a hop barely moves it, a long drop flattens it the most it goes.
 // The later parts (more in the list: the caps, brackets and branches in Rootwood's other rooms, the Pond's bent reeds
-// and lily pads, the Playground's dandelion leaves and the toys floating in its puddle) are a try-out, only there
-// with tune.reactMore on.
+// and lily pads, the Playground's dandelion leaves and the toys floating in its puddle, the Old Oak's twigs and
+// bracket fungi) are a try-out, only there with tune.reactMore on.
 const REACT = (() => {
   const LIFE = 0.9;                                                                       // how long one bounce takes to settle
   const live = {};                                                                        // each part moving: how long since it was landed on, and how hard
